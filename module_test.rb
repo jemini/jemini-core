@@ -15,6 +15,9 @@ class Behavior
   def self.declared_methods(*methods)
     @@method_list[self] = methods
   end
+  def self.declared_method_list
+    @@method_list[self]
+  end
   
   @@behavior_dependencies = Hash.new{|h,k| h[k] = []}
   def self.add_dependency(behavior)
@@ -34,18 +37,16 @@ class Behavior
       @dependant_behaviors << dependant_instance
     end
     
-    @@method_list[self.class].each do |method|
+    self.class.declared_method_list.each do |method|
       if method.to_s =~ /=/
         code = <<-ENDL
         def #{method}(arg)
-          puts "in method #{method}"
           @behaviors[:#{self.class}].#{method}(arg)
         end
         ENDL
       else
         code = <<-ENDL
         def #{method}(*args, &blk)
-          puts "in method #{method}"
           @behaviors[:#{self.class}].#{method}(*args, &blk)
         end
         ENDL
@@ -54,38 +55,27 @@ class Behavior
     end
   end
   
-  def add; end
-  def remove; end
-  def load; end
+  def delete
+    unload
+    @dependant_behaviors.each {|dependant| dependant.delete}
+    self.class.declared_method_list.each do |method|
+      begin
+        target_class = class <<@target; self; end
+        target_class.send(:remove_method, method)
+      rescue NameError
+        # just continue if this method isn't there anymore
+      end
+    end
+  end
   
   def method_missing(method, *args, &blk)
     @target.send(method, *args, &blk)
   end
-end
-
-class Position2D < Behavior
-  attr_accessor :x, :y
-  declared_methods :x, :y, :x=, :y=
   
-  def load
-    @x = 0
-    @y = 0    
-  end
-end
-
-class Movable2D < Behavior
-  depends_on :Position2D
-  declared_methods :move
-  has_callback :before_move
-  has_callback :after_move
-  
-  def move(x, y)
-    # notify :before_move
-    self.x = x
-    self.y = y
-    # notify :after_move
-    puts "in move!"
-  end
+  def add; end
+  def remove; end
+  def load; end
+  def unload; end
 end
 
 class GameObject
@@ -112,6 +102,40 @@ class GameObject
       end
     end
   end
+  
+  def remove_behavior(behavior)
+    behavior_instance = @behaviors.delete(behavior)
+    behavior_instance.dependant_behaviors.each do |dependant_behavior|
+      @behaviors.delete(dependant_behavior.class.name.to_sym)
+    end
+    behavior_instance.delete
+  end
+end
+
+#==============
+
+class Position2D < Behavior
+  attr_accessor :x, :y
+  declared_methods :x, :y, :x=, :y=
+  
+  def load
+    @x = 0
+    @y = 0    
+  end
+end
+
+class Movable2D < Behavior
+  depends_on :Position2D
+  declared_methods :move
+  has_callback :before_move
+  has_callback :after_move
+  
+  def move(x, y)
+    # notify :before_move
+    self.x = x
+    self.y = y
+    # notify :after_move
+  end
 end
 
 class PacMan < GameObject
@@ -124,6 +148,8 @@ p pacman.methods.sort
 pacman.move(5,4)
 puts pacman.x
 puts pacman.y
+pacman.remove_behavior :Movable2D
+p pacman.methods.sort
 
 
 # class Fast
