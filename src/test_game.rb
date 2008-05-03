@@ -1,5 +1,7 @@
 require 'jruby'
 
+$CLASSPATH << File.expand_path(File.dirname(__FILE__) + "/../lib/core.jar")
+
 include_class 'processing.core.PApplet'
 include_class 'java.awt.Frame'
 include_class 'java.awt.BorderLayout'
