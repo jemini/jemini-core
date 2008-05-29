@@ -1,6 +1,6 @@
 class Behavior
   attr_accessor :dependant_behaviors
-  
+    
   protected
   def self.depends_on(behavior)
     add_dependency(behavior)
@@ -53,6 +53,7 @@ class Behavior
       end
       @target.send(:instance_eval, code, __FILE__, __LINE__)
     end
+    self.load
   end
   
   def delete
@@ -77,77 +78,3 @@ class Behavior
   def load; end
   def unload; end
 end
-
-class GameObject
-  @@behaviors = Hash.new{|h,k| h[k] = []}
-  def self.has_behavior(behavior)
-    @@behaviors[self] << behavior
-  end
-
-  private
-  def behaviors
-    @@behaviors[self.class]
-  end
-  public
-  
-  def initialize
-    @behaviors = {}
-    behaviors.each do |behavior|
-      klass = Object.const_get(behavior)
-      behavior_instance = klass.new(self)
-      behavior_instance.load
-      @behaviors[klass.name.to_sym] = behavior_instance
-      behavior_instance.dependant_behaviors.each do |dependant_behavior|
-        @behaviors[dependant_behavior.class.name.to_sym] = dependant_behavior
-      end
-    end
-  end
-  
-  def remove_behavior(behavior)
-    behavior_instance = @behaviors.delete(behavior)
-    behavior_instance.dependant_behaviors.each do |dependant_behavior|
-      @behaviors.delete(dependant_behavior.class.name.to_sym)
-    end
-    behavior_instance.delete
-  end
-end
-
-#==============
-
-class Position2D < Behavior
-  attr_accessor :x, :y
-  declared_methods :x, :y, :x=, :y=
-  
-  def load
-    @x = 0
-    @y = 0    
-  end
-end
-
-class Movable2D < Behavior
-  depends_on :Position2D
-  declared_methods :move
-  has_callback :before_move
-  has_callback :after_move
-  
-  def move(x, y)
-    #notify :before_move
-    self.x = x
-    self.y = y
-    #notify :after_move
-  end
-end
-
-class PacMan < GameObject
-  has_behavior :Movable2D
-  view.after_animation(:die) { @dead = true }
-  before_move { check_for_wall_collision }
-end
-
-pacman = PacMan.new
-p pacman.methods.sort
-pacman.move(5,4)
-puts pacman.x
-puts pacman.y
-pacman.remove_behavior :Movable2D
-p pacman.methods.sort
