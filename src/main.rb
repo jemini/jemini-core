@@ -184,4 +184,4 @@
 #app.start()
 
 require 'gemini'
-Gemini.new("Test game", 640, 480)
+Gemini::Main.new("Test game", 640, 480)
