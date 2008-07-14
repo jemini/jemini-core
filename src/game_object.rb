@@ -1,3 +1,5 @@
+require 'behavior'
+
 module Gemini
   class GameObject
     @@behaviors = Hash.new{|h,k| h[k] = []}
