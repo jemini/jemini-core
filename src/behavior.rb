@@ -23,16 +23,74 @@ module Gemini
       end
     end
     
-    protected
+    def self.method_added(method)
+      if callback_methods_to_wrap.member? method
+        begin
+          return if instance_method(:"wrapped_#{method}")
+        rescue NameError; end #Intentionally swallow this section is to prevent infinite recursion
+
+        alias_method :"wrapped_#{method}", method
+        arity = instance_method(:"wrapped_#{method}").arity
+        if arity.abs > 0
+          args = (1..arity).inject([]){|args, i| args << "arg#{i}" }
+          args[-1].insert(0,"*") if arity < 0
+        end
+        
+        if match = /^(.*)=$/.match(method.to_s)
+          method_name = match[1]
+          code = <<-ENDL
+            def #{method}(#{args})
+              callback_abort = Callback.new
+              notify :before_#{method_name}_changes, callback_abort
+              if callback_abort.continue?              
+                self.wrapped_#{method}(#{args})
+                notify :after_#{method_name}_changes
+              end
+            end
+          ENDL
+          wrapped_methods << "before_#{method_name}_changes"
+          wrapped_methods << "after_#{method_name}_changes"
+        else
+          code = <<-ENDL
+            def #{method}(#{args + "," if args} &block)
+              callback_abort = CallbackStatus.new
+              notify :before_#{method}, callback_abort
+              if callback_abort.continue?              
+                self.wrapped_#{method}(#{args + "," if args} &block)
+                notify :after_#{method}
+              end
+            end
+          ENDL
+          wrapped_methods << "before_#{method}"
+          wrapped_methods << "after_#{method}"
+        end
+        self.class_eval(code, __FILE__, __LINE__)
+      else
+        super
+      end
+    end
+    
+  protected
+  
     def self.depends_on(behavior)
       add_dependency(behavior)
     end
 
-    def self.has_callback(*args)
-
+    def self.wrap_with_callbacks(*args)
+      @@callback_methods_to_wrap[self].concat args
+    end
+    
+    @@callback_methods_to_wrap = Hash.new {|h,k| h[k] = []}
+    def self.callback_methods_to_wrap
+      @@callback_methods_to_wrap[self]
     end
 
-    private
+    @@wrapped_methods = Hash.new {|h,k| h[k] = []}
+    def self.wrapped_methods
+      @@wrapped_methods[self]
+    end
+    
+  private
     
     def self.new(*args)
       super
@@ -53,7 +111,7 @@ module Gemini
     def self.dependencies
       @@behavior_dependencies[self]
     end
-
+    
     def initialize(target)
       @target = target
       @dependant_behaviors = []
@@ -83,6 +141,12 @@ module Gemini
         end
         @target.send(:instance_eval, code, __FILE__, __LINE__)
       end
+      
+      self.class.wrapped_methods.each do |method|
+        puts "calling @target.add_listener_for with method #{method.inspect}"
+        @target.add_listener_for method
+      end
+      
       self.load
     end
 
@@ -115,5 +179,11 @@ module Gemini
 
     def load; end
     def unload; end
+  end
+  
+  class CallbackStatus
+    def continue?
+      true
+    end
   end
 end

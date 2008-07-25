@@ -1,7 +1,7 @@
 class MainState < Gemini::BaseState
   def load
     @sprites = []
-    1000.times {@sprites << Duke.new}
+    1.times {@sprites << Duke.new}
   end
   
   def update(delta)

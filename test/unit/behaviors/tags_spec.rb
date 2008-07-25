@@ -1,4 +1,5 @@
 require 'behaviors/tags'
+require 'game_object'
 
 describe Tags do
   class TagGameObject < Gemini::GameObject
