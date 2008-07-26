@@ -1,6 +1,5 @@
 module Gemini
   class Behavior
-    attr_accessor :dependant_behaviors
     attr_reader :reference_count
 
     @@depended_on_by = Hash.new{|h,k| h[k] = []}
@@ -40,7 +39,8 @@ module Gemini
           method_name = match[1]
           code = <<-ENDL
             def #{method}(#{args})
-              callback_abort = Callback.new
+              puts "in #{method}"
+              callback_abort = CallbackStatus.new
               notify :before_#{method_name}_changes, callback_abort
               if callback_abort.continue?              
                 self.wrapped_#{method}(#{args})
@@ -53,6 +53,7 @@ module Gemini
         else
           code = <<-ENDL
             def #{method}(#{args + "," if args} &block)
+              puts "in #{method}"
               callback_abort = CallbackStatus.new
               notify :before_#{method}, callback_abort
               if callback_abort.continue?              
@@ -115,6 +116,8 @@ module Gemini
     def initialize(target)
       @target = target
       @dependant_behaviors = []
+      @reference_count = 0
+      
       self.class.dependencies.each do |dependant_behavior|
         begin
           dependant_class = Object.const_get(dependant_behavior)
@@ -125,16 +128,25 @@ module Gemini
         @dependant_behaviors << dependant_instance
       end
 
+      behavior_list = target.send(:instance_variable_get, "@behaviors")
+      behavior_list[self.class.name.to_sym] = self
+      @dependant_behaviors.each do |dependant_behavior|
+        behavior_list[dependant_behavior.class.name.to_sym] = dependant_behavior
+      end
+      
       self.class.declared_method_list.each do |method|
         if method.to_s =~ /=/
           code = <<-ENDL
           def #{method}(arg)
+            puts "in #{method} in game object \#{self}"
+            puts "calling #{method} on \#{@behaviors[:#{self.class}]}"
             @behaviors[:#{self.class}].#{method}(arg)
           end
           ENDL
         else
           code = <<-ENDL
           def #{method}(*args, &blk)
+            puts "in #{method} in game object \#{self}"
             @behaviors[:#{self.class}].#{method}(*args, &blk)
           end
           ENDL
@@ -143,7 +155,6 @@ module Gemini
       end
       
       self.class.wrapped_methods.each do |method|
-        puts "calling @target.add_listener_for with method #{method.inspect}"
         @target.add_listener_for method
       end
       
@@ -162,10 +173,10 @@ module Gemini
         end
       end
     end
-    public
+    
+  public
     
     def add_reference_count
-      @reference_count ||= 0
       @reference_count += 1
     end
     
