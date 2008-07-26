@@ -39,7 +39,6 @@ module Gemini
           method_name = match[1]
           code = <<-ENDL
             def #{method}(#{args})
-              puts "in #{method}"
               callback_abort = CallbackStatus.new
               notify :before_#{method_name}_changes, callback_abort
               if callback_abort.continue?              
@@ -53,7 +52,6 @@ module Gemini
         else
           code = <<-ENDL
             def #{method}(#{args + "," if args} &block)
-              puts "in #{method}"
               callback_abort = CallbackStatus.new
               notify :before_#{method}, callback_abort
               if callback_abort.continue?              
@@ -138,15 +136,12 @@ module Gemini
         if method.to_s =~ /=/
           code = <<-ENDL
           def #{method}(arg)
-            puts "in #{method} in game object \#{self}"
-            puts "calling #{method} on \#{@behaviors[:#{self.class}]}"
             @behaviors[:#{self.class}].#{method}(arg)
           end
           ENDL
         else
           code = <<-ENDL
           def #{method}(*args, &blk)
-            puts "in #{method} in game object \#{self}"
             @behaviors[:#{self.class}].#{method}(*args, &blk)
           end
           ENDL

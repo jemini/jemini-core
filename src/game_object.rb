@@ -43,8 +43,6 @@ module Gemini
     end
     
     def notify(event_name, callback_status = nil)
-      puts "notifying for event #{event_name.inspect}, @callbacks[#{event_name.inspect}] = #{@callbacks[event_name].inspect}"
-      #puts "@callbacks: #{@callbacks.inspect}"
       @callbacks[event_name.to_sym].each do |callback| 
         callback.call(callback_status)
         break unless callback_status.nil? or callback_status.continue?

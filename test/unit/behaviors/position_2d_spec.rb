@@ -11,15 +11,15 @@ describe Position2D do
     @game_object = Position2DGameObject.new
   end
   
-#  it "allows the x and y values to be read and written to" do
-#    @game_object.x.should == 0
-#    @game_object.x = 10
-#    @game_object.x.should == 10
-#    
-#    @game_object.y.should == 0
-#    @game_object.y = 10
-#    @game_object.y.should == 10
-#  end
+  it "allows the x and y values to be read and written to" do
+    @game_object.x.should == 0
+    @game_object.x = 10
+    @game_object.x.should == 10
+    
+    @game_object.y.should == 0
+    @game_object.y = 10
+    @game_object.y.should == 10
+  end
   
   it "notifies listeners when x changes" do
     before_called = false
@@ -33,5 +33,17 @@ describe Position2D do
     before_called.should be_true
     after_called.should be_true
   end
-
+  
+  it "notifies listeners when y changes" do
+    before_called = false
+    after_called = false
+    
+    @game_object.on_before_y_changes { before_called = true }
+    @game_object.on_after_y_changes { after_called = true }
+    
+    @game_object.y = 5
+    
+    before_called.should be_true
+    after_called.should be_true
+  end
 end

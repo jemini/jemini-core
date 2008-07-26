@@ -1,7 +1,7 @@
 class Position2D < Gemini::Behavior
+  attr_accessor :x, :y
   wrap_with_callbacks :x=, :y=
   declared_methods :x, :y, :x=, :y=
-  attr_accessor :x, :y
   
   def load
     @x = 0
