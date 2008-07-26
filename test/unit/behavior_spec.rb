@@ -179,16 +179,17 @@ describe Gemini::Behavior, ".wrap_with_callbacks" do
   
   it "renames wrapped methods to wrapped_<method>" do
     class RenameWrappedMethodsBehavior < Gemini::Behavior
-      wrap_with_callbacks :foo=, :bar=, :baz, :quux
+      wrap_with_callbacks :foo=, :bar, :baz, :quux, :quuux
       def foo=; end
-      def bar=; end
-      def baz; end
-      def quux; end
+      def bar; end
+      def baz(arg1); end
+      def quux(arg1, arg2); end
+      def quuux(arg1, *arg2); end
     end
     
     behavior = RenameWrappedMethodsBehavior.add_to(@game_object)
     behavior.methods.member?("wrapped_foo=").should be_true
-    behavior.methods.member?("wrapped_bar=").should be_true
+    behavior.methods.member?("wrapped_bar").should be_true
     behavior.methods.member?("wrapped_baz").should be_true
     behavior.methods.member?("wrapped_quux").should be_true
   end
@@ -229,8 +230,7 @@ describe Gemini::Behavior, ".wrap_with_callbacks" do
   
   it "adds listener registration methods of the form on_before_<method> and on_after_<method> to target GameObject" do
     class ListenerRegistrationMethodsAddedBehavior < Gemini::Behavior
-      wrap_with_callbacks :foo
-      wrap_with_callbacks :bar=
+      wrap_with_callbacks :foo,:bar=
       def foo; end
       def bar=(value); end
     end

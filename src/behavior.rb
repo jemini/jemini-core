@@ -26,15 +26,13 @@ module Gemini
       if callback_methods_to_wrap.member? method
         begin
           return if instance_method(:"wrapped_#{method}")
-        rescue NameError; end #Intentionally swallow this section is to prevent infinite recursion
-
+        rescue NameError; end #Intentionally swallow, this section is to prevent infinite recursion
         alias_method :"wrapped_#{method}", method
         arity = instance_method(:"wrapped_#{method}").arity
         if arity.abs > 0
-          args = (1..arity).inject([]){|args, i| args << "arg#{i}" }
+          args = (1..arity.abs).inject([]){|args, i| args << "arg#{i}" }
           args[-1].insert(0,"*") if arity < 0
         end
-        
         if match = /^(.*)=$/.match(method.to_s)
           method_name = match[1]
           code = <<-ENDL
@@ -51,11 +49,11 @@ module Gemini
           wrapped_methods << "after_#{method_name}_changes"
         else
           code = <<-ENDL
-            def #{method}(#{args + "," if args} &block)
+            def #{method}(#{(args.join(",") + ",") if args} &block)
               callback_abort = CallbackStatus.new
               notify :before_#{method}, callback_abort
               if callback_abort.continue?              
-                self.wrapped_#{method}(#{args + "," if args} &block)
+                self.wrapped_#{method}(#{(args.join(",") + ",") if args} &block)
                 notify :after_#{method}
               end
             end

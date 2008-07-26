@@ -1,4 +1,3 @@
-require 'behavior'
 require 'game_object'
 require 'behaviors/position_2d'
 
