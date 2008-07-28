@@ -1,6 +1,6 @@
 module Gemini
   class Behavior
-    attr_reader :reference_count
+    attr_reader :reference_count, :target
 
     @@depended_on_by = Hash.new{|h,k| h[k] = []}
     def self.add_to(target)

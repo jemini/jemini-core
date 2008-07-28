@@ -7,14 +7,14 @@ module Gemini
       @@behaviors[self] << behavior
     end
 
-    def initialize
+    def initialize(*args)
       @callbacks = Hash.new {|h,k| h[k] = []}
       @behaviors = {}
       
       behaviors.each do |behavior|
         add_behavior(behavior)
       end
-      load
+      load(*args)
     end
 
     # TODO: Refactor the removal of behaviors from @behavior to live in the
@@ -42,14 +42,14 @@ module Gemini
       self.instance_eval code, __FILE__, __LINE__
     end
     
-    def notify(event_name, callback_status = nil)
+    def notify(event_name, event = nil, callback_status = nil)
       @callbacks[event_name.to_sym].each do |callback| 
-        callback.call(callback_status)
+        callback.call(event || Gemini::BehaviorEvent.new, callback_status)
         break unless callback_status.nil? or callback_status.continue?
       end
     end
     
-    def load; end
+    def load(*args); end
     
     private
     def behaviors

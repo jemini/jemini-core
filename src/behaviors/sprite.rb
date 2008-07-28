@@ -9,6 +9,8 @@ class Sprite < Gemini::Behavior
     else
       @image = Image.new("data/#{sprite_name}")
     end
+    self.width = @image.width
+    self.height = @image.height
   end
   
   def draw

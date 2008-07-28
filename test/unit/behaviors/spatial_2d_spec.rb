@@ -1,13 +1,13 @@
 require 'game_object'
 require 'behaviors/position_2d'
 
-describe Position2D do
-  class Position2DGameObject < Gemini::GameObject
+describe Spatial2D do
+  class Spatial2DGameObject < Gemini::GameObject
     has_behavior :Position2D
   end
   
   before(:each) do
-    @game_object = Position2DGameObject.new
+    @game_object = Spatial2DGameObject.new
   end
   
   it "allows the x and y values to be read and written to" do
@@ -45,4 +45,8 @@ describe Position2D do
     before_called.should be_true
     after_called.should be_true
   end
+  
+  it "allows the width and height to be read and written to"
+  it "notifies listeners when width changes"
+  it "notifies listeners when height changes"
 end

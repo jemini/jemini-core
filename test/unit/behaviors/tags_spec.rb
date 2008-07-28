@@ -1,4 +1,4 @@
-require 'behaviors/tags'
+require 'behaviors/tag'
 require 'game_object'
 
 describe Tags do

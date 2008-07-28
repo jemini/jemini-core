@@ -1,5 +1,5 @@
 class Movable2D < Gemini::Behavior
-  depends_on :Position2D
+  depends_on :Spatial2D
   wrap_with_callbacks :move
   declared_methods :move
   
