@@ -1,7 +1,7 @@
 class MainState < Gemini::BaseState
   def load
     @sprites = []
-    1000.times do
+    250.times do
       ball = Ball.new
       ball.x = rand(640 -ball.width)
       ball.y = rand(480 - ball.height)
