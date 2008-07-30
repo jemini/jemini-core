@@ -2,10 +2,8 @@ class MainState < Gemini::BaseState
   def load
     @sprites = []
     250.times do
-      ball = Ball.new
-      ball.x = rand(640 -ball.width)
-      ball.y = rand(480 - ball.height)
-      ball.vector = [rand(10)-5, rand(10)-5]
+      ball = Ball.new [rand(10)-5, rand(10)-5]
+      ball.move(rand(640 -ball.width), rand(480 - ball.height))
       @sprites << ball
     end
     @walls = []

@@ -5,14 +5,14 @@ class Ball < Gemini::GameObject
   has_behavior :BoundingBoxCollidable
   has_behavior :Sprite
   
-  def load
+  def load(vector)
     collides_with_tags :wall
     preferred_collision_check BoundingBoxCollidable::TAGS
     self.image = "ball.png"
     self.updates_per_second = 30
     self.x = rand(640 - width)
     self.y = rand(480 - height)
-    @vector = [0,0]
+    @vector = vector
     
     on_collided do |event, continue|
       vector[0] = -1 if x > (640 - width)
