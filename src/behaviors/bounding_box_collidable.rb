@@ -29,12 +29,6 @@ class BoundingBoxCollidable < Gemini::Behavior
     @@collidables.delete self
   end
   
-  def collision_check(collidable)
-    return if self == collidable
-
-    notify :collided, BoundingBoxCollisionEvent.new(@target, collidable.target) if bounds.intersects(collidable.bounds)
-  end
-  
   def collides_with_tags(*tags)
     @tags = tags
   end
@@ -46,6 +40,13 @@ class BoundingBoxCollidable < Gemini::Behavior
   
   def tags_to_use_for_collision(*tags)
     @collision_tags = tags
+  end
+  
+private
+  def collision_check(collidable)
+    return if self == collidable
+
+    notify :collided, BoundingBoxCollisionEvent.new(@target, collidable.target) if bounds.intersects(collidable.bounds)
   end
 end
 

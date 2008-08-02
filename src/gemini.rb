@@ -1,5 +1,4 @@
 include_class 'org.newdawn.slick.BasicGame'
-include_class 'org.newdawn.slick.state.GameState'
 include_class 'org.newdawn.slick.AppGameContainer'
 
 require 'message_queue'
@@ -16,7 +15,7 @@ end
 
 module Gemini
   class Main < BasicGame
-    def initialize(screen_title, screen_width, screen_height, fullscreen=false)
+    def initialize(screen_title, screen_width=640, screen_height=480, fullscreen=false)
       super(screen_title)
       @screen_width, @screen_height = screen_width, screen_height
       app = AppGameContainer.new(self, screen_width, screen_height, fullscreen)
@@ -25,7 +24,7 @@ module Gemini
 
     def init(container)
       MessageQueue.instance.start_processing
-      InputManager.instance.setup(container)
+      InputManager.instance.setup(container, :MainGameKeymap)
       @state = load_state :MainState
     end
     
