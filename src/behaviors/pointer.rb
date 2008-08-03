@@ -1,7 +1,7 @@
 class Pointer < Gemini::Behavior
   depends_on :BoundingBoxCollidable
   depends_on :Sprite
-  declared_methods :clicking?
+  depends_on :Movable2D
 
   def load
     add_tag :ui, :gui, :pointer
@@ -19,20 +19,19 @@ class Pointer < Gemini::Behavior
       when :mouseReleased
         stop_click
       end
-      #puts "input in button!"
-      #puts "#{input_type.inspect} - #{message[1].inspect}"
+    end
+    
+    on_collided do |event, continue|
+      event.collided_object.click if event.collided_object.respond_to? :click
     end
   end
   
-  def clicking?
-    @clicking
-  end
-  
   def start_click
+    Tags.find_by_all_tags(:gui).each {|collidable| collision_check collidable }
     @clicking = true
   end
   
   def stop_click
-    @clicking = false
+    
   end
 end

@@ -5,9 +5,8 @@ class BoundingBoxCollidable < Gemini::Behavior
   DISTANCE = :distance
   TAGS = :tags
   depends_on :Tags
-  depends_on :Movable2D
   
-  declared_methods :preferred_collision_check, :collides_with_tags
+  declared_methods :preferred_collision_check, :collides_with_tags, :collision_check
   
   @@collidables = []
   
@@ -16,13 +15,6 @@ class BoundingBoxCollidable < Gemini::Behavior
     @algorithm = DISTANCE
     
     @target.add_listener_for :collided
-    @target.on_after_move do
-      if TAGS == @algorithm
-        Tags.find_by_all_tags(*@tags).each {|collidable| collision_check collidable }
-      elsif DISTANCE == @algorithm
-        @@collidables.each {|collidable| collision_check collidable, source_bounds }
-      end
-    end
   end
   
   def unload
@@ -41,10 +33,9 @@ class BoundingBoxCollidable < Gemini::Behavior
   def tags_to_use_for_collision(*tags)
     @collision_tags = tags
   end
-  
-private
+
   def collision_check(collidable)
-    return if self == collidable
+    return if self == collidable || @target == collidable.target
 
     notify :collided, BoundingBoxCollisionEvent.new(@target, collidable.target) if bounds.intersects(collidable.bounds)
   end
