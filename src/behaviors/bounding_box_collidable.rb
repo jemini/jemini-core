@@ -1,4 +1,5 @@
 require 'behavior_event'
+include_class 'org.newdawn.slick.geom.Rectangle'
 
 class BoundingBoxCollidable < Gemini::Behavior
   DISTANCE = :distance
@@ -19,23 +20,13 @@ class BoundingBoxCollidable < Gemini::Behavior
       if TAGS == @algorithm
         Tags.find_by_all_tags(*@tags).each {|collidable| collision_check collidable }
       elsif DISTANCE == @algorithm
-        @@collidables.each {|collidable| collision_check collidable }
+        @@collidables.each {|collidable| collision_check collidable, source_bounds }
       end
     end
   end
   
   def unload
     @@collidables.delete self
-  end
-  
-  def collision_check(collidable)
-    return if self == collidable
-    if (((x <= collidable.x && (x >= (collidable.x - width))) || 
-         (x >= collidable.x && (x <= (collidable.x + collidable.width)))) &&
-        ((y <= collidable.y && (y >= (collidable.y - height))) || 
-         (y >= collidable.y && (y <= (collidable.y + collidable.height)))))
-      notify :collided, BoundingBoxCollisionEvent.new(@target, collidable.target)
-    end
   end
   
   def collides_with_tags(*tags)
@@ -49,6 +40,13 @@ class BoundingBoxCollidable < Gemini::Behavior
   
   def tags_to_use_for_collision(*tags)
     @collision_tags = tags
+  end
+  
+private
+  def collision_check(collidable)
+    return if self == collidable
+
+    notify :collided, BoundingBoxCollisionEvent.new(@target, collidable.target) if bounds.intersects(collidable.bounds)
   end
 end
 

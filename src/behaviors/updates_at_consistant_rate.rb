@@ -3,7 +3,7 @@ class UpdatesAtConsistantRate < Gemini::Behavior
   attr_accessor :updates_per_second
   
   def load
-    @updates_per_second = 0
+    @updates_per_second = 30
     @update_delay = 0
     @time_since_last_update = 0
   end
