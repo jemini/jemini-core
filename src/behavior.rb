@@ -148,7 +148,7 @@ module Gemini
       end
       
       self.class.wrapped_methods.each do |method|
-        @target.add_listener_for method
+        @target.enable_listeners_for method
       end
       
       self.load

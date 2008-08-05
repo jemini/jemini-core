@@ -1,6 +1,16 @@
 require 'singleton'
 require 'thread'
 module Gemini
+  
+  # Message object that is posted to the MessageQueue.
+  class Message
+    attr_accessor :name, :value
+    def initialize(name, value)
+      @name = name
+      @value = value
+    end
+  end
+  
   class MessageQueue
     include Singleton
 
@@ -19,10 +29,9 @@ module Gemini
 
           message = @messages.shift
 
-          type = message[0]
-          @listeners[type].each do |listener|
+          @listeners[message.name].each do |listener|
             begin
-              listener[1].call(type, message[1])
+              listener[1].call(message)
             rescue Exception => e
               # Replace this with a logger
               $stderr << "Error in callback #{listener[1]} for key: #{listener[0]}\n#{e.class} - #{e.message}\n#{e.backtrace.join("\n")}"
@@ -36,8 +45,8 @@ module Gemini
       @continue_processing = false
     end
 
-    def post_message(type, message)
-      @messages << [type.to_sym, message]
+    def post_message(message)
+      @messages << message
     end
 
     # Listeners are registered on a certain type of message.  This type is arbitrary

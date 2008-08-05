@@ -15,12 +15,12 @@ class BoundingBoxCollidable < Gemini::Behavior
     @@collidables << self
     @algorithm = DISTANCE
     
-    @target.add_listener_for :collided
+    @target.enable_listeners_for :collided
     @target.on_after_move do
       if TAGS == @algorithm
-        Tags.find_by_all_tags(*@tags).each {|collidable| collision_check collidable }
+        Tags.find_by_any_tags(*@tags).each {|collidable| collision_check collidable }
       elsif DISTANCE == @algorithm
-        @@collidables.each {|collidable| collision_check collidable, source_bounds }
+        @@collidables.each {|collidable| collision_check collidable }
       end
     end
   end
@@ -36,10 +36,6 @@ class BoundingBoxCollidable < Gemini::Behavior
   def preferred_collision_check(type)
     raise "Invalid collision type" unless DISTANCE == type || TAGS == type
     @algorithm = type
-  end
-  
-  def tags_to_use_for_collision(*tags)
-    @collision_tags = tags
   end
   
 private

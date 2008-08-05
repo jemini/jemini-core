@@ -29,10 +29,10 @@ module Gemini
     end
     
     # Takes a method and adds a corresponding listener registration method. Given
-    # the method foo, add_listener_for would generate the method on_foo and when
+    # the method foo, enable_listeners_for would generate the method on_foo and when
     # notify was called with an event name of :foo, all callback blocks registered 
     # with the on_foo method would be called.
-    def add_listener_for(method)
+    def enable_listeners_for(method)
       code = <<-ENDL
         def on_#{method}(&callback)
           @callbacks[:#{method}] << callback

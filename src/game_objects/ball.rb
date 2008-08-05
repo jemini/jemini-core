@@ -1,20 +1,21 @@
 class Paddle < Gemini::GameObject
   has_behavior :UpdatesAtConsistantRate
   has_behavior :RecievesEvents
-  has_behavior :Movable2D
+  has_behavior :BoundingBoxCollidable
   has_behavior :Sprite
   
-  def load
+  def load(player_number)
     self.image = "duke.png"
-    handle_event :paddle_movement, :move_paddle
+    handle_event :"p#{player_number}_paddle_movement", :move_paddle
     @movement = []
+    add_tag :paddle
   end
   
-  def move_paddle(type, message)
-    if :start == message[0]
-      @movement << message[1]
+  def move_paddle(message)
+    if :start == message.value[0]
+      @movement << message.value[1]
     else
-      @movement.delete message[1]
+      @movement.delete message.value[1]
     end
   end
   
@@ -22,13 +23,11 @@ class Paddle < Gemini::GameObject
     @movement.each do |direction|
       case direction
       when :up
-        self.y -= 1
+        self.y -= 0.5
+        self.y = 0 if y < 0
       when :down
-        self.y += 1
-      when :right
-        self.x += 1
-      when :left
-        self.x -= 1
+        self.y += 0.5
+        self.y = 480-height if y > 480-height
       end
     end
   end
@@ -40,7 +39,7 @@ class Ball < Gemini::GameObject
   has_behavior :Sprite
   
   def load(vector)
-    collides_with_tags :wall
+    collides_with_tags :wall, :paddle
     preferred_collision_check BoundingBoxCollidable::TAGS
     self.image = "ball.png"
     self.updates_per_second = 30
@@ -49,10 +48,14 @@ class Ball < Gemini::GameObject
     @vector = vector
     
     on_collided do |event, continue|
-      vector[0] = -1 if x > (640 - width)
-      vector[0] = 1 if x < 0
-      vector[1] = -1 if y > (480 - height)
-      vector[1] = 1 if y < 0
+      if event.collided_object.has_tag? :wall
+        vector[0] *= -1 if x > (640 - width)
+        vector[0] *= -1 if x < 0
+        vector[1] *= -1 if y > (480 - height)
+        vector[1] *= -1 if y < 0
+      else
+        puts "hit paddle"
+      end
     end
   end
   
@@ -69,6 +72,6 @@ class Wall < Gemini::GameObject
     self.y = y
     self.width = width
     self.height = height
-    self.add_tag :wall
+    add_tag :wall
   end
 end

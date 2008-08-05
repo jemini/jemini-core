@@ -1,21 +1,14 @@
-# Requirements
-# - allow overriding a default keymapping
-# - syntax that a game designer could grok
-# - DRY
-# - allow logic in the translation, i.e. mouse up may mean "accelerate" or "jump"
-#
+map KEY_PRESSED, :source_value => Input::KEY_Q, :destination_type => :p1_paddle_movement, :destination_value => [:start, :up]
+map KEY_PRESSED, :source_value => Input::KEY_A, :destination_type => :p1_paddle_movement, :destination_value => [:start, :down]
+map KEY_PRESSED, :source_value => Input::KEY_O, :destination_type => :p2_paddle_movement, :destination_value => [:start, :up]
+map KEY_PRESSED, :source_value => Input::KEY_L, :destination_type => :p2_paddle_movement, :destination_value => [:start, :down]
 
+map KEY_RELEASED, :source_value => Input::KEY_Q, :destination_type => :p1_paddle_movement, :destination_value => [:stop, :up]
+map KEY_RELEASED, :source_value => Input::KEY_A, :destination_type => :p1_paddle_movement, :destination_value => [:stop, :down]
+map KEY_RELEASED, :source_value => Input::KEY_O, :destination_type => :p2_paddle_movement, :destination_value => [:stop, :up]
+map KEY_RELEASED, :source_value => Input::KEY_L, :destination_type => :p2_paddle_movement, :destination_value => [:stop, :down]
 
-# This code will be instance_eval'd inside a class that has a method_missing
-# designed to define new events
-
-
-map :source_type => :key, :source_value => Input::KEY_UP, :source_state => :down, :destination_type => :paddle_movement, :destination_value => [:start, :up]
-map :source_type => :key, :source_value => Input::KEY_DOWN, :source_state => :down, :destination_type => :paddle_movement, :destination_value => [:start, :down]
-map :source_type => :key, :source_value => Input::KEY_RIGHT, :source_state => :down, :destination_type => :paddle_movement, :destination_value => [:start, :right]
-map :source_type => :key, :source_value => Input::KEY_LEFT, :source_state => :down, :destination_type => :paddle_movement, :destination_value => [:start, :left]
-
-map :source_type => :key, :source_value => Input::KEY_UP, :source_state => :up, :destination_type => :paddle_movement, :destination_value => [:stop, :up]
-map :source_type => :key, :source_value => Input::KEY_DOWN, :source_state => :up, :destination_type => :paddle_movement, :destination_value => [:stop, :down]
-map :source_type => :key, :source_value => Input::KEY_RIGHT, :source_state => :up, :destination_type => :paddle_movement, :destination_value => [:stop, :right]
-map :source_type => :key, :source_value => Input::KEY_LEFT, :source_state => :up, :destination_type => :paddle_movement, :destination_value => [:stop, :left]
+#map MOUSE_BUTTON1_PRESSED, :destination_type => :action, :destination_value => :fire
+#map MOUSE_MOVED, :destination_type => :character_movement do |raw_value, message|
+#  message.value = [raw_value[2], raw_value[3]]
+#end

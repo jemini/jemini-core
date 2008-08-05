@@ -5,7 +5,7 @@ class Tags < Gemini::Behavior
   @@tagged_objects = Hash.new { |h,k| h[k] = [] }
   
   def self.find_by_all_tags(*tags)
-    tags[1..-1].inject(@@tagged_objects[tags[0]]) do |results, tag|
+    tags.inject([]) do |results, tag|
       results & @@tagged_objects[tag]
     end
   end
