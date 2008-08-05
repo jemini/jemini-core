@@ -38,7 +38,8 @@ module Gemini
                  :mouse => {:moved => Hash.new{|h,k| h[k] = []},
                             :pressed => Hash.new{|h,k| h[k] = []},
                             :released => Hash.new{|h,k| h[k] = []},
-                            :clicked => Hash.new{|h,k| h[k] = []}}
+                            :clicked => Hash.new{|h,k| h[k] = []},
+                            :wheel_moved => Hash.new{|h,k| h[k] = []}}
                 }
       begin
         keymap_contents = File.readlines(File.expand_path(File.dirname(__FILE__) + "/keymaps/#{keymap.underscore}.rb"))
@@ -68,6 +69,12 @@ module Gemini
         when :mouseReleased
           type = :mouse
           action = :released
+        when :mouseClicked
+          type = :mouse
+          action = :clicked
+        when :mouseWheelMoved
+          type = :mouse
+          action = :wheel_moved
         end
         
         next if type.nil? or action.nil?

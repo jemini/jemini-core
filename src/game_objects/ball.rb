@@ -7,8 +7,21 @@ class Paddle < Gemini::GameObject
   def load(player_number)
     self.image = "duke.png"
     handle_event :"p#{player_number}_paddle_movement", :move_paddle
+    handle_event :button_action, :handle_button_actions
+    handle_event :mouse_action, :handle_mouse_actions
     @movement = []
     add_tag :paddle
+  end
+  
+  def handle_button_actions(message)
+    case message.value
+    when :fire
+      puts "bang"
+    end
+  end
+  
+  def handle_mouse_actions(message)
+    puts "mouse moved to: #{message.value[0]}, #{message.value[1]}"
   end
   
   def move_paddle(message)
