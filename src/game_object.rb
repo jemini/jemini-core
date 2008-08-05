@@ -17,6 +17,11 @@ module Gemini
       load(*args)
     end
 
+    def add_behavior(behavior)
+      klass = Object.const_get(behavior)
+      behavior_instance = klass.add_to(self)
+    end
+    
     # TODO: Refactor the removal of behaviors from @behavior to live in the
     # behavior class.  This will mirror how behaviors get added to the array
     # in Behavior#add_to
@@ -51,14 +56,9 @@ module Gemini
     
     def load(*args); end
     
-    private
+  private
     def behaviors
       @@behaviors[self.class]
-    end
-    
-    def add_behavior(behavior)
-      klass = Object.const_get(behavior)
-      behavior_instance = klass.add_to(self)
-    end
+    end  
   end
 end

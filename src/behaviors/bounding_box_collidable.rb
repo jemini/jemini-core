@@ -2,45 +2,16 @@ require 'behavior_event'
 include_class 'org.newdawn.slick.geom.Rectangle'
 
 class BoundingBoxCollidable < Gemini::Behavior
-  DISTANCE = :distance
-  TAGS = :tags
-  depends_on :Tags
-  depends_on :Movable2D
+  depends_on :Spatial2D
   
-  declared_methods :preferred_collision_check, :collides_with_tags
-  
-  @@collidables = []
+  declared_methods :collision_check
   
   def load
-    @@collidables << self
-    @algorithm = DISTANCE
-    
     @target.enable_listeners_for :collided
-    @target.on_after_move do
-      if TAGS == @algorithm
-        Tags.find_by_any_tags(*@tags).each {|collidable| collision_check collidable }
-      elsif DISTANCE == @algorithm
-        @@collidables.each {|collidable| collision_check collidable }
-      end
-    end
   end
   
-  def unload
-    @@collidables.delete self
-  end
-  
-  def collides_with_tags(*tags)
-    @tags = tags
-  end
-  
-  def preferred_collision_check(type)
-    raise "Invalid collision type" unless DISTANCE == type || TAGS == type
-    @algorithm = type
-  end
-  
-private
   def collision_check(collidable)
-    return if self == collidable
+    return if self == collidable || @target == collidable.target
 
     notify :collided, BoundingBoxCollisionEvent.new(@target, collidable.target) if bounds.intersects(collidable.bounds)
   end

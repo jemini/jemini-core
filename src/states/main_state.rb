@@ -1,10 +1,10 @@
 class MainState < Gemini::BaseState
   def load
-    @sprites = []
+    
     3.times do
       ball = Ball.new [rand(11)-5, rand(11)-5]
       ball.move(rand(640 -ball.width), rand(480 - ball.height))
-      @sprites << ball
+      add_game_object ball
     end
     @walls = []
     @walls << Wall.new(0, -10, 640, 10)
@@ -14,18 +14,10 @@ class MainState < Gemini::BaseState
     
     paddle = Paddle.new(1)
     paddle.move(100, 100)
-    @sprites << paddle
+    add_game_object paddle
     
     paddle = Paddle.new(2)
     paddle.move(500, 300)
-    @sprites << paddle
-  end
-  
-  def update(delta)
-    @sprites.each { |sprite| sprite.update(delta) }
-  end
-  
-  def render(graphics)
-    @sprites.each { |sprite| sprite.draw }
+    add_game_object paddle
   end
 end
