@@ -73,6 +73,10 @@ module Gemini
       add_dependency(behavior)
     end
 
+    def self.depends_on_kind_of(behavior)
+      add_kind_of_dependency(behavior)
+    end
+    
     def self.wrap_with_callbacks(*args)
       @@callback_methods_to_wrap[self].concat args
     end
@@ -102,11 +106,21 @@ module Gemini
     end
 
     @@behavior_dependencies = Hash.new{|h,k| h[k] = []}
+    def self.dependencies
+      @@behavior_dependencies[self]
+    end
+    
     def self.add_dependency(behavior)
       @@behavior_dependencies[self] << behavior
     end
-    def self.dependencies
-      @@behavior_dependencies[self]
+    
+    @@kind_of_behavior_dependencies = Hash.new{|h,k| h[k] = []}
+    def self.kind_of_dependencies
+      @@kind_of_behavior_dependencies[self]
+    end
+    
+    def self.add_kind_of_dependency(behavior)
+      @@kind_of_behavior_dependencies[self] << behavior
     end
     
     def initialize(target)
@@ -117,17 +131,24 @@ module Gemini
       self.class.dependencies.each do |dependant_behavior|
         begin
           dependant_class = Object.const_get(dependant_behavior)
-        rescue NameError => e
+        rescue NameError
           raise "Cannot load dependant behavior '#{dependant_behavior}' in behavior '#{self.class}'"
         end
         dependant_instance = dependant_class.add_to(@target)
         @dependant_behaviors << dependant_instance
       end
-
+      
       behavior_list = target.send(:instance_variable_get, "@behaviors")
       behavior_list[self.class.name.to_sym] = self
       @dependant_behaviors.each do |dependant_behavior|
         behavior_list[dependant_behavior.class.name.to_sym] = dependant_behavior
+      end
+      
+      self.class.kind_of_dependencies.each do |dependant_behavior|
+        dependency = dependant_behavior.constantize
+        next if behavior_list.inject(false) {|behavior_matched, behavior| behavior_matched || behavior.kind_of?(dependency)}
+        
+        raise "Dependant behavior '#{dependant_behavior}' was not found on class #{self.class}" 
       end
       
       self.class.declared_method_list.each do |method|

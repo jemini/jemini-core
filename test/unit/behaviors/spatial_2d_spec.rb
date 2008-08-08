@@ -1,9 +1,9 @@
 require 'game_object'
-require 'behaviors/position_2d'
+require 'behaviors/spatial_2d'
 
 describe Spatial2D do
   class Spatial2DGameObject < Gemini::GameObject
-    has_behavior :Position2D
+    has_behavior :Spatial2D
   end
   
   before(:each) do

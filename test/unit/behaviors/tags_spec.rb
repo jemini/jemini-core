@@ -1,4 +1,4 @@
-require 'behaviors/tag'
+require 'behaviors/tags'
 require 'game_object'
 
 describe Tags do
@@ -38,6 +38,7 @@ describe Tags do
     game_object1.add_tag :all_test
     game_object2 = TagGameObject.new
     game_object2.add_tag :all_test
+    p Tags.find_by_all_tags(:all_test)
     Tags.find_by_all_tags(:all_test).size.should == 2
     game_object1.add_tag :all_test2
     Tags.find_by_all_tags(:all_test, :all_test2).size.should == 1

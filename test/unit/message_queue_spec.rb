@@ -15,9 +15,9 @@ describe Gemini::MessageQueue do
   end
   
   it "allows messages to be added to the queue" do
-    Gemini::MessageQueue.instance.post_message(:test_type, "A test message")
+    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type, "A test message"))
     Gemini::MessageQueue.instance.instance_variable_get("@messages").size.should == 1
-    Gemini::MessageQueue.instance.post_message(:test_type2, "Another test message")
+    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type2, "Another test message"))
     Gemini::MessageQueue.instance.instance_variable_get("@messages").size.should == 2
   end
   
@@ -36,18 +36,13 @@ describe Gemini::MessageQueue do
   end
   
   it "notifies listener objects when a new message arrives" do
-    class CallbackTest
-      attr_reader :test_value
-      def callback_method(type, message)
-        @test_value = true
-      end
-    end
-    callback = CallbackTest.new
+    
+    callback_was_called = false
     Gemini::MessageQueue.instance.start_processing
-    Gemini::MessageQueue.instance.add_listener(:test_type, self, callback.method(:callback_method))
-    Gemini::MessageQueue.instance.post_message(:test_type, "Some test message")
+    Gemini::MessageQueue.instance.add_listener(:test_type, self) { callback_was_called = true }
+    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type, "Some test message"))
     sleep 0.01
-    callback.test_value.should be_true
+    callback_was_called.should be_true
   end
   
   it "allows new messages to be posted to the queue, even if messages are being processed" do
@@ -61,12 +56,12 @@ describe Gemini::MessageQueue do
       end
     end
     Gemini::MessageQueue.instance.start_processing
-    Gemini::MessageQueue.instance.post_message(:test_type, "Some test message")
+    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type, "Some test message"))
     sleep 0.01
     callback_started.should be_true #First message has been consumed and is being proccessed
-    Gemini::MessageQueue.instance.post_message(:test_type, "Some test message")
-    Gemini::MessageQueue.instance.post_message(:test_type, "Some test message")
-    Gemini::MessageQueue.instance.post_message(:test_type, "Some test message")
+    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type, "Some test message"))
+    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type, "Some test message"))
+    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type, "Some test message"))
     sleep 0.01 #Show that sufficient time has elapsed to process these messages if the callback wasn't blocking
     Gemini::MessageQueue.instance.instance_variable_get("@messages").size.should == 3
     blocking = false

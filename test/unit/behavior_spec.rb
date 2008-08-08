@@ -1,4 +1,5 @@
 require 'behavior'
+require 'behavior_event'
 require 'game_object'
 
 describe Gemini::Behavior do
@@ -11,6 +12,12 @@ describe Gemini::Behavior do
   it "can declare dependant behaviors" do
     class DeclareDependantBehavior < Gemini::Behavior
       depends_on :dependency
+    end
+  end
+  
+  it "can declare kind_of dependant behaviors" do
+    class DeclareKindOfDependantBehavior < Gemini::Behavior
+      depends_on_kind_of :dependency
     end
   end
   
