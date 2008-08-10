@@ -1,5 +1,6 @@
 require 'game_object'
 require 'behaviors/movable_2d'
+require 'base_state'
 
 describe Movable2D, "#move" do
   class Movable2DGameObject < Gemini::GameObject

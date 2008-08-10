@@ -1,39 +1,22 @@
-class Tags < Gemini::Behavior
+class Taggable < Gemini::Behavior
   declared_methods :add_tag, :remove_tag, :has_tag?
   attr_reader :tags
-  
-  @@tagged_objects = Hash.new { |h,k| h[k] = [] }
-  
-  def self.find_by_all_tags(*tags)
-    tags[1..-1].inject(@@tagged_objects[tags[0]]) do |results, tag|
-      results & @@tagged_objects[tag]
-    end
-  end
-  
-  def self.find_by_any_tags(*tags)
-    tags.inject([]) do |results, tag|
-      results.concat @@tagged_objects[tag]
-    end.uniq
-  end
-  
+
   def load
     @tags = []
+    @target.enable_listeners_for :tag_added, :tag_removed
   end
   
   def add_tag(*tags)
-    @tags.concat tags
-    tags.each do |tag|
-      next if @@tagged_objects[tag].member? self
-      @@tagged_objects[tag] << self
-    end
+    new_tags = tags - @tags
+    @tags.concat new_tags
+    new_tags.each { |tag| notify :tag_added, tag }  
   end
   
   def remove_tag(*tags)
-    @tags -= tags
-    tags.each do |tag|
-      next if @@tagged_objects[tag].member? self
-      @@tagged_objects[tag].delete self
-    end
+    tags_to_remove = @tags & tags
+    @tags -= tags_to_remove
+    tags_to_remove.each {|tag| notify :tag_removed, tag}
   end
   
   def has_tag?(*tags)

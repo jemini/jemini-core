@@ -10,6 +10,7 @@ module Gemini
     end
 
     def initialize(*args)
+      @state = BaseState.active_state
       @callbacks = Hash.new {|h,k| h[k] = []}
       @behaviors = {}
       
@@ -21,7 +22,9 @@ module Gemini
 
     def add_behavior(behavior)
       klass = Object.const_get(behavior)
-      behavior_instance = klass.add_to(self)
+      klass.add_to(self)
+    rescue NameError => e
+      raise "Unable to load behavior #{behavior}, #{e.message}"
     end
     
     # TODO: Refactor the removal of behaviors from @behavior to live in the

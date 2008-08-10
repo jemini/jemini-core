@@ -29,15 +29,16 @@ module Gemini
       MessageQueue.instance.start_processing
       InputManager.instance.setup(container, :MainGameKeymap)
       BaseState.active_state = load_state :MainState
+      BaseState.active_state.load
     end
     
     def update(container, delta)
       InputManager.instance.poll(@screen_width, @screen_height)
-      BaseState.active_state.update(delta)
+      BaseState.active_state.manager(:update).update(delta)
     end
 
     def render(container, graphics)
-      BaseState.active_state.render(graphics)
+      BaseState.active_state.manager(:render).render(graphics)
     end
     
   private

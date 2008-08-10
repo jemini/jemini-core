@@ -74,7 +74,7 @@ end
 
 class Wall < Gemini::GameObject
   has_behavior :BoundingBoxCollidable
-  has_behavior :Tags
+  has_behavior :Taggable
   
   def load(x, y, width, height)
     self.x = x

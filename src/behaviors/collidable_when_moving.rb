@@ -1,7 +1,7 @@
 class CollidableWhenMoving < Gemini::Behavior
   depends_on :BoundingBoxCollidable
   depends_on :Movable2D
-  depends_on :Tags
+  depends_on :Taggable
   
   declared_methods :preferred_collision_check, :collides_with_tags
   
@@ -16,7 +16,7 @@ class CollidableWhenMoving < Gemini::Behavior
   
     @target.on_after_move do
       if TAGS == @algorithm
-        Tags.find_by_any_tags(*@tags).each {|collidable| collision_check collidable }
+        state.manager(:tag).find_by_any_tags(*@tags).each {|collidable| collision_check collidable }
       elsif DISTANCE == @algorithm
         @@collidables.each {|collidable| collision_check collidable }
       end

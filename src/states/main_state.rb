@@ -1,5 +1,8 @@
-class MainState < Gemini::BaseState
+require 'managers/tag_manager'
+
+class MainState < Gemini::BaseState 
   def load
+    set_manager(:tag, TagManager.new(self))
     
     3.times do
       ball = Ball.new [rand(11)-5, rand(11)-5]
