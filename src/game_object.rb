@@ -2,6 +2,8 @@ require 'behavior'
 
 module Gemini
   class GameObject
+    attr_accessor :state
+    
     @@behaviors = Hash.new{|h,k| h[k] = []}
     def self.has_behavior(behavior)
       @@behaviors[self] << behavior
@@ -37,14 +39,16 @@ module Gemini
     # the method foo, enable_listeners_for would generate the method on_foo and when
     # notify was called with an event name of :foo, all callback blocks registered 
     # with the on_foo method would be called.
-    def enable_listeners_for(method)
-      code = <<-ENDL
-        def on_#{method}(&callback)
-          @callbacks[:#{method}] << callback
-        end
-      ENDL
+    def enable_listeners_for(*methods)
+      methods.each do |method|
+        code = <<-ENDL
+          def on_#{method}(&callback)
+            @callbacks[:#{method}] << callback
+          end
+        ENDL
 
-      self.instance_eval code, __FILE__, __LINE__
+        self.instance_eval code, __FILE__, __LINE__
+      end
     end
     
     def notify(event_name, event = nil, callback_status = nil)

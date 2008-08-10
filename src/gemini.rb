@@ -6,6 +6,9 @@ require 'input_manager'
 require 'base_state'
 require 'game_object'
 require 'inflector'
+require 'basic_game_object_manager'
+require 'basic_update_manager'
+require 'basic_render_manager'
 
 ['behaviors', 'game_objects'].each do |dir|
   Dir.glob(File.expand_path(File.dirname(__FILE__) + "/#{dir}/**")).each do |file|

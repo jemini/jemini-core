@@ -8,27 +8,28 @@ module Gemini
     def self.active_state=(state)
       @@active_state = state
     end
-    
+        
     def initialize
-      @game_objects = []
+      @game_object_manager = BasicGameObjectManager.new(self)
+      @update_manager = BasicUpdateManager.new(self)
+      @render_manager = BasicRenderManager.new(self)
+      @managers = {:game_object => @game_object_manager, :update => @update_manager, :render => @render_manager}
+      
       @paused = false
       load
     end
     
-    def pause
-      @paused = true
-    end
-    
-    def resume
-      @paused = false
-    end
-    
-    def paused?
-      @paused
+    def manager(type)
+      @managers[type]
     end
     
     def add_game_object(game_object)
-      @game_objects << game_object
+      game_object.state = self
+      @game_object_manager.add_game_object game_object
+    end
+    
+    def remove_game_object(game_object)
+      @game_object_manager.remove_game_object(game_object)
     end
     
     def switch_state(state)
@@ -36,11 +37,16 @@ module Gemini
     end
     
     def update(delta)
-      @game_objects.each { |game_object| game_object.update(delta) if game_object.respond_to? :update } unless @paused
+      @update_manager.update(delta)
     end
 
     def render(graphics)
-      @game_objects.each { |game_object| game_object.draw if game_object.respond_to? :draw }
+      @render_manager.render(graphics)
+    end
+    
+  private
+    def set_manager(type, manager)
+      @managers[type] = manager
     end
   end
 end
