@@ -41,13 +41,15 @@ module Gemini
                             :clicked => Hash.new{|h,k| h[k] = []},
                             :wheel_moved => Hash.new{|h,k| h[k] = []}}
                 }
-      begin
-        keymap_contents = File.readlines(File.expand_path(File.dirname(__FILE__) + "/keymaps/#{keymap.underscore}.rb"))
-      rescue Errno::ENOENT
-        raise "Could not load keymap at #{File.expand_path(File.dirname(__FILE__) + "/keymaps/#{keymap.underscore}.rb")}"
+      keymap_name = "/keymaps/#{keymap.underscore}.rb"
+      keymap_path = $LOAD_PATH.find do |path|
+        File.exist? path + keymap_name
       end
 
-      instance_eval(keymap_contents.join)
+      raise "Could not find keymap: #{keymap_name} on load path" if keymap_path.nil?
+      keymap_contents = IO.read(keymap_path + keymap_name)
+
+      instance_eval(keymap_contents)
       @raw_input = container.input
       @raw_input.add_listener Gemini::SlickInputListener.new
       MessageQueue.instance.add_listener(:slick_input, self) do |message|

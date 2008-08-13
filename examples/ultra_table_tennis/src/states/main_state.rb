@@ -1,8 +1,10 @@
 require 'managers/tag_manager'
+require 'ball'
 
 class MainState < Gemini::BaseState 
   def load
     set_manager(:tag, TagManager.new(self))
+    load_keymap :MainGameKeymap
     
     3.times do
       ball = Ball.new [rand(11)-5, rand(11)-5]

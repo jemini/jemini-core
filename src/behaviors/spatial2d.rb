@@ -1,4 +1,4 @@
-class Spatial2D < Gemini::Behavior
+class Spatial2d < Gemini::Behavior
   attr_accessor :x, :y, :width, :height
   wrap_with_callbacks :x=, :y=, :width=, :height=
   declared_methods :x, :y, :x=, :y=, :width, :width=, :height, :height=, :bounds

@@ -1,6 +1,6 @@
 class Sprite < Gemini::Behavior
   include_class 'org.newdawn.slick.Image'
-  depends_on :Spatial2D
+  depends_on :Spatial2d
   declared_methods :draw, :image, :image=
   attr_accessor :image
   

@@ -70,6 +70,7 @@ module Gemini
   protected
   
     def self.depends_on(behavior)
+      require "behaviors/#{behavior.underscore}"
       add_dependency(behavior)
     end
 

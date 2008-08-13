@@ -6,6 +6,7 @@ module Gemini
     
     @@behaviors = Hash.new{|h,k| h[k] = []}
     def self.has_behavior(behavior)
+      require "behaviors/#{behavior.underscore}"
       @@behaviors[self] << behavior
     end
 

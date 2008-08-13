@@ -1,7 +1,7 @@
 class Pointer < Gemini::Behavior
   depends_on :BoundingBoxCollidable
   depends_on :Sprite
-  depends_on :Movable2D
+  depends_on :Movable2d
 
   def load
     add_tag :ui, :gui, :pointer

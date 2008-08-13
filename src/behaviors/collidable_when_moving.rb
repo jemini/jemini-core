@@ -1,6 +1,6 @@
 class CollidableWhenMoving < Gemini::Behavior
   depends_on :BoundingBoxCollidable
-  depends_on :Movable2D
+  depends_on :Movable2d
   depends_on :Taggable
   
   declared_methods :preferred_collision_check, :collides_with_tags

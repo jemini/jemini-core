@@ -10,12 +10,6 @@ require 'basic_game_object_manager'
 require 'basic_update_manager'
 require 'basic_render_manager'
 
-['behaviors', 'game_objects'].each do |dir|
-  Dir.glob(File.expand_path(File.dirname(__FILE__) + "/#{dir}/**")).each do |file|
-    require file if file =~ /\.\w+$/ #File.directory? is broken in current JRuby for dirs inside jars
-  end
-end
-
 module Gemini
   class Main < BasicGame
     def initialize(screen_title, screen_width=640, screen_height=480, fullscreen=false)
@@ -26,9 +20,10 @@ module Gemini
     end
 
     def init(container)
+      @container = container
       MessageQueue.instance.start_processing
-      InputManager.instance.setup(container, :MainGameKeymap)
-      BaseState.active_state = load_state :MainState
+      
+      BaseState.active_state = load_state(:MainState)
       BaseState.active_state.load
     end
     
@@ -44,7 +39,7 @@ module Gemini
   private
     def load_state(state_name)
       require "states/#{state_name.underscore}" unless Object.const_defined? state_name.camelize
-      state_name.camelize.constantize.new
+      state_name.camelize.constantize.new @container
     end
   end
 end

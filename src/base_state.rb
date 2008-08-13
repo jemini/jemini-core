@@ -9,12 +9,14 @@ module Gemini
       @@active_state = state
     end
         
-    def initialize
+    def initialize(container)
+      @container = container
+      
       game_object_manager = BasicGameObjectManager.new(self)
       update_manager = BasicUpdateManager.new(self)
       render_manager = BasicRenderManager.new(self)
       @managers = {:game_object => game_object_manager, :update => update_manager, :render => render_manager}
-
+      
       @paused = false
     end
     
@@ -32,6 +34,10 @@ module Gemini
     
     def switch_state(state)
       self.class.active_state = state
+    end
+    
+    def load_keymap(keymap)
+      InputManager.instance.setup(@container, keymap)
     end
     
     def load(*args); end

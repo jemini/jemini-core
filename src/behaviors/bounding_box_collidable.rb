@@ -2,7 +2,7 @@ require 'behavior_event'
 include_class 'org.newdawn.slick.geom.Rectangle'
 
 class BoundingBoxCollidable < Gemini::Behavior
-  depends_on :Spatial2D
+  depends_on :Spatial2d
   
   declared_methods :collision_check
   
