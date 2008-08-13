@@ -1,6 +1,5 @@
 class Taggable < Gemini::Behavior
-  declared_methods :add_tag, :remove_tag, :has_tag?
-  attr_reader :tags
+  declared_methods :add_tag, :remove_tag, :has_tag?, :tags
 
   def load
     @tags = []
@@ -21,5 +20,9 @@ class Taggable < Gemini::Behavior
   
   def has_tag?(*tags)
     tags.inject(true) { |current, tag| current && @tags.member?(tag) }
+  end
+  
+  def tags
+    @tags.clone
   end
 end

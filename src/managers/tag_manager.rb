@@ -3,7 +3,7 @@ class TagManager < Gemini::GameObject
     @state = state
     @tagged_objects = Hash.new { |h,k| h[k] = [] }
     @state.manager(:game_object).on_after_add_game_object do |game_object|
-      if game_object.respond_to? :tags
+      if game_object.kind_of? Taggable
         game_object.tags.each do |tag|
           @tagged_objects[tag] << game_object
         end

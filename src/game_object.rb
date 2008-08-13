@@ -55,11 +55,24 @@ module Gemini
     end
     
     def notify(event_name, event = nil, callback_status = nil)
-      @callbacks[event_name.to_sym].each do |callback| 
-        callback.call(event || Gemini::BehaviorEvent.new, callback_status)
-        break unless callback_status.nil? or callback_status.continue?
+      @callbacks[event_name.to_sym].each do |callback|
+        if event
+          if callback_status
+            callback.call(event, callback_status)
+            break unless callback_status.nil? or callback_status.continue?
+          else
+            callback.call(event)
+          end
+        else
+          callback.call
+        end
       end
     end
+    
+    def kind_of?(klass)
+      super || @behaviors.values.inject(false){|result, behavior| result || behavior.class == klass}
+    end
+    alias_method :is_a?, :kind_of?
     
     def load(*args); end
     

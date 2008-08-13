@@ -9,11 +9,11 @@ class MainState < Gemini::BaseState
       ball.move(rand(640 -ball.width), rand(480 - ball.height))
       add_game_object ball
     end
-    @walls = []
-    @walls << Wall.new(0, -10, 640, 10)
-    @walls << Wall.new(640, 0, 10, 480)
-    @walls << Wall.new(-10, 0, 10, 480)
-    @walls << Wall.new(0, 480, 640, 10)
+    
+    add_game_object Wall.new(0, -10, 640, 10)
+    add_game_object Wall.new(640, 0, 10, 480)
+    add_game_object Wall.new(-10, 0, 10, 480)
+    add_game_object Wall.new(0, 480, 640, 10)
     
     paddle = Paddle.new(1)
     paddle.move(100, 100)

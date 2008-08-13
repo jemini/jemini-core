@@ -11,9 +11,9 @@ class BoundingBoxCollidable < Gemini::Behavior
   end
   
   def collision_check(collidable)
-    return if self == collidable || @target == collidable.target
+    return if self == collidable || @target == collidable
 
-    notify :collided, BoundingBoxCollisionEvent.new(@target, collidable.target) if bounds.intersects(collidable.bounds)
+    notify :collided, BoundingBoxCollisionEvent.new(@target, collidable) if bounds.intersects(collidable.bounds)
   end
 end
 

@@ -8,23 +8,17 @@ class CollidableWhenMoving < Gemini::Behavior
   DISTANCE = :distance
   TAGS = :tags
   
-  @@collidables = []
-  
   def load
-    @@collidables << self
+    
     @algorithm = DISTANCE
-  
+    
     @target.on_after_move do
       if TAGS == @algorithm
         state.manager(:tag).find_by_any_tags(*@tags).each {|collidable| collision_check collidable }
       elsif DISTANCE == @algorithm
-        @@collidables.each {|collidable| collision_check collidable }
+        state.manager(:game_object).game_objects.each {|collidable| collision_check collidable }
       end
     end
-  end
-  
-  def unload
-    @@collidables.delete self
   end
   
   def collides_with_tags(*tags)
