@@ -1,37 +1,36 @@
 class Pointer < Gemini::Behavior
-  depends_on :BoundingBoxCollidable
   depends_on :Sprite
   depends_on :Movable2d
-
+  depends_on :CollisionPoolAlgorithmTaggable
+  depends_on :WorldCollidable
+  depends_on :RecievesEvents
+  
+  declared_methods :mouse_movement, :start_click, :stop_click
+  
   def load
     add_tag :ui, :gui, :pointer
-    preferred_collision_check BoundingBoxCollidable::TAGS
-    collides_with_tags :gui
-    require 'message_queue'
-    Gemini::MessageQueue.instance.add_listener(:slick_input, self) do |type, message|
-      input_type = message[0]
-      input_data = message[1]
-      case input_type
-      when :mouseMoved
-        move(input_data[2], input_data[3])
-      when :mousePressed
-        start_click
-      when :mouseReleased
-        stop_click
-      end
-    end
+    collides_with_tags :gui, :clickable
+    
+    handle_event :mouse_move, :mouse_movement
+    handle_event :start_click, :start_click
+    handle_event :stop_click, :stop_click
     
     on_collided do |event, continue|
       event.collided_object.click if event.collided_object.respond_to? :click
     end
   end
   
-  def start_click
-    Tags.find_by_all_tags(:gui).each {|collidable| collision_check collidable }
+  def mouse_movement(message)
+    vector = message.value
+    move(vector[0], vector[1])
+  end
+  
+  def start_click(message)
+    world_collision_check
     @clicking = true
   end
   
-  def stop_click
+  def stop_click(message)
     
   end
 end

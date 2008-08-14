@@ -1,11 +1,9 @@
 class Clickable < Gemini::Behavior
-  depends_on :BoundingBoxCollidable
+  depends_on :WorldCollidable
+  depends_on :CollisionPoolAlgorithmTaggable
+  
   wrap_with_callbacks :click
   declared_methods :click
-  
-  def load
-    preferred_collision_check BoundingBoxCollidable::TAGS
-  end
   
   def click; end
 end

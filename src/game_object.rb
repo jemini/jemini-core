@@ -18,14 +18,21 @@ module Gemini
       behaviors.each do |behavior|
         add_behavior(behavior)
       end
+      
+      validate_dependant_behaviors
       load(*args)
     end
 
     def add_behavior(behavior)
+      require "behaviors/#{behavior.underscore}"
       klass = Object.const_get(behavior)
       klass.add_to(self)
+      validate_dependant_behaviors
     rescue NameError => e
       raise "Unable to load behavior #{behavior}, #{e.message}"
+    rescue
+      klass.remove_from(self)
+      raise
     end
     
     # TODO: Refactor the removal of behaviors from @behavior to live in the
@@ -78,6 +85,18 @@ module Gemini
     def load(*args); end
     
   private
+  
+    def validate_dependant_behaviors
+        behaviors.each do |behavior|
+          behavior.constantize.kind_of_dependencies.each do |dependant_behavior|
+          dependency = dependant_behavior.constantize
+          next if behaviors.find {|behavior| behavior.last.kind_of?(dependency)}
+
+          raise "Dependant behavior '#{dependant_behavior}' was not found on class #{self.class}" 
+        end
+      end
+    end
+    
     def behaviors
       @@behaviors[self.class]
     end  
