@@ -9,8 +9,9 @@ module Gemini
       @@active_state = state
     end
         
-    def initialize(container)
+    def initialize(container, game)
       @container = container
+      @game = game
       
       game_object_manager = BasicGameObjectManager.new(self)
       update_manager = BasicUpdateManager.new(self)
@@ -32,8 +33,12 @@ module Gemini
       @managers[:game_object].remove_game_object(game_object)
     end
     
-    def switch_state(state)
-      self.class.active_state = state
+    def switch_state(state_name)
+      state = @game.load_state state_name
+      @game.queue_state state
+      #self.class.active_state = state
+      #state.load
+      state
     end
     
     def load_keymap(keymap)

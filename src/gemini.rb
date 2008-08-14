@@ -28,6 +28,13 @@ module Gemini
     end
     
     def update(container, delta)
+      # Workaround for image loading with Slick.
+      # Must be done in game init or game loop (instead of immediately in the event).
+      if @queued_state
+        @queued_state.load
+        BaseState.active_state = @queued_state
+        @queued_state = nil
+      end
       InputManager.instance.poll(@screen_width, @screen_height)
       BaseState.active_state.manager(:update).update(delta)
     end
@@ -36,10 +43,13 @@ module Gemini
       BaseState.active_state.manager(:render).render(graphics)
     end
     
-  private
     def load_state(state_name)
       require "states/#{state_name.underscore}" unless Object.const_defined? state_name.camelize
-      state_name.camelize.constantize.new @container
+      state_name.camelize.constantize.new @container, self
+    end
+    
+    def queue_state(state)
+      @queued_state = state
     end
   end
 end
