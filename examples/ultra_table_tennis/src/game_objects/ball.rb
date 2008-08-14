@@ -2,16 +2,18 @@ class Paddle < Gemini::GameObject
   has_behavior :UpdatesAtConsistantRate
   has_behavior :RecievesEvents
   has_behavior :CollidableWhenMoving
-  has_behavior :Sprite
+  has_behavior :AnimatedSprite
   
   def load(player_number)
-    self.image = "duke.png"
+    sprites "paddle1.png", "paddle2.png", "paddle3.png", "paddle4.png", "paddle5.png"
+    animation_mode :ping_pong
+    animation_fps 5
     handle_event :"p#{player_number}_paddle_movement", :move_paddle
     handle_event :button_action, :handle_button_actions
     handle_event :mouse_action, :handle_mouse_actions
-    @movement = []
     add_tag :paddle
     
+    @movement = []
     on_tick do
       @movement.each do |direction|
         case direction

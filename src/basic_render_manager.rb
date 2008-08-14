@@ -5,8 +5,8 @@ class BasicRenderManager < Gemini::GameObject
   end
   
   def render(graphics)
-    notify :before_render
+    notify :before_render, graphics
     state.manager(:game_object).game_objects.each { |game_object| game_object.draw if game_object.respond_to? :draw}
-    notify :after_render
+    notify :after_render, graphics
   end
 end
