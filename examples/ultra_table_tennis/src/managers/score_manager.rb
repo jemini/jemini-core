@@ -25,12 +25,10 @@ class ScoreManager < Gemini::GameObject
     end
     @state.manager(:game_object).remove_game_object ball
     spawn_new_ball
-    puts "Player 1: #{@player1_score} - Player 2: #{@player2_score}"
   end
   
 private
   def spawn_new_ball
-    puts "spawning new ball"
     ball = Ball.new
     ball.move(320, rand(480 - ball.height))
     ball.inertia = [negative_or_positive_random(7), negative_or_positive_random(4)]
