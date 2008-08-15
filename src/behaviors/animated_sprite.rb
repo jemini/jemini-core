@@ -11,7 +11,6 @@ class AnimatedSprite < Gemini::Behavior
       @animation.update(delta)
     end
     @mode = :normal
-    puts @animation.speed
   end
   
   def sprites(*sprite_names)
