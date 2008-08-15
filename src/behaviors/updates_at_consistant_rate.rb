@@ -3,10 +3,10 @@ class UpdatesAtConsistantRate < Gemini::Behavior
   attr_accessor :updates_per_second
   
   def load
-    @updates_per_second = 30
     @update_delay = 0
     @time_since_last_update = 0
     @target.enable_listeners_for :tick
+    self.updates_per_second = 30
   end
   
   def updates_per_second=(count)

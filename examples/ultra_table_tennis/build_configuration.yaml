@@ -1,5 +1,5 @@
       # Name of the created jar file
-      project_name: change_me
+      project_name: ultra_table_tennis
 
       # Directory to create and place produced project files in
       output_dir: package

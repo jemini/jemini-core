@@ -42,7 +42,6 @@ class Ball < Gemini::GameObject
     collides_with_tags :wall, :paddle
     preferred_collision_check CollidableWhenMoving::TAGS
     self.image = "ball.png"
-    self.updates_per_second = 30
     self.x = rand(640 - width)
     self.y = rand(480 - height)
     
@@ -53,7 +52,11 @@ class Ball < Gemini::GameObject
           @state.manager(:score).ball_scored self
         end
       else
-        inertia[0] *= -1
+        if x < 320
+          inertia[0] = inertia[0].abs
+        else
+          inertia[0] = -(inertia[0].abs)
+        end
       end
     end
   end

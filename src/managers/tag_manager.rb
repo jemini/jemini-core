@@ -28,4 +28,8 @@ class TagManager < Gemini::GameObject
       results.concat @tagged_objects[tag]
     end.uniq
   end
+  
+  def find_by_tag(tag)
+    @tagged_objects[tag]
+  end
 end
