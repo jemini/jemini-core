@@ -2,7 +2,9 @@ class Paddle < Gemini::GameObject
   has_behavior :UpdatesAtConsistantRate
   has_behavior :RecievesEvents
   has_behavior :CollidableWhenMoving
+  has_behavior :Taggable
   has_behavior :AnimatedSprite
+  has_behavior :CollisionPoolAlgorithmTaggable
   
   def load(player_number)
     sprites "paddle1.png", "paddle2.png", "paddle3.png", "paddle4.png", "paddle5.png"
@@ -51,12 +53,12 @@ end
 class Ball < Gemini::GameObject
   has_behavior :UpdatesAtConsistantRate
   has_behavior :CollidableWhenMoving
+  has_behavior :CollisionPoolAlgorithmTaggable
   has_behavior :Sprite
   has_behavior :Inertial
   
   def load(vector)
     collides_with_tags :wall, :paddle
-    preferred_collision_check CollidableWhenMoving::TAGS
     self.image = "ball.png"
     self.updates_per_second = 30
     self.x = rand(640 - width)
