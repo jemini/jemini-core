@@ -1,6 +1,5 @@
 class BasicRenderManager < Gemini::GameObject
-  def load(state)
-    @state = state
+  def load
     enable_listeners_for :before_render, :after_render
   end
   

@@ -145,12 +145,12 @@ module Gemini
         behavior_list[dependant_behavior.class.name.to_sym] = dependant_behavior
       end
       
-      self.class.kind_of_dependencies.each do |dependant_behavior|
-        dependency = dependant_behavior.constantize
-        next if behavior_list.inject(false) {|behavior_matched, behavior| behavior_matched || behavior.kind_of?(dependency)}
-        
-        raise "Dependant behavior '#{dependant_behavior}' was not found on class #{self.class}" 
-      end
+#      self.class.kind_of_dependencies.each do |dependant_behavior|
+#        dependency = dependant_behavior.constantize
+#        next if behavior_list.find {|behavior| behavior.last.kind_of?(dependency)}
+#        
+#        raise "Dependant behavior '#{dependant_behavior}' was not found on class #{self.class}" 
+#      end
       
       self.class.declared_method_list.each do |method|
         if method.to_s =~ /=/

@@ -4,21 +4,19 @@ require 'ball'
 
 class MainState < Gemini::BaseState 
   def load
-    set_manager(:tag, TagManager.new(self))
-    set_manager(:score, ScoreManager.new(self))
+    set_manager :tag, create_game_object(:TagManager)
+    set_manager :score, create_game_object(:ScoreManager)
     load_keymap :MainGameKeymap
     
-    add_game_object Wall.new(0, -10, 640, 10)
-    add_game_object Wall.new(640, 0, 10, 480)
-    add_game_object Wall.new(-10, 0, 10, 480)
-    add_game_object Wall.new(0, 480, 640, 10)
+    create_game_object :Wall, 0, -10, 640, 10
+    create_game_object :Wall, 640, 0, 10, 480
+    create_game_object :Wall, -10, 0, 10, 480
+    create_game_object :Wall, 0, 480, 640, 10
     
-    paddle = Paddle.new(1)
-    paddle.move(50, 200)
-    add_game_object paddle
+    paddle = create_game_object :Paddle, 1
+    paddle.move(100, 100)
     
-    paddle = Paddle.new(2)
-    paddle.move(590, 200)
-    add_game_object paddle
+    paddle = create_game_object :Paddle, 2
+    paddle.move(500, 300)
   end
 end

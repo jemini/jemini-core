@@ -2,8 +2,7 @@ include_class "org.newdawn.slick.TrueTypeFont"
 include_class "java.awt.Font"
 
 class ScoreManager < Gemini::GameObject
-  def load(state)
-    @state = state
+  def load
     @player1_score = 0
     @player2_score = 0
     @balls = []
@@ -28,11 +27,10 @@ class ScoreManager < Gemini::GameObject
   end
   
 private
-  def spawn_new_ball
-    ball = Ball.new
+  def spawn_new_ball    
+    ball = @state.create_game_object :Ball
     ball.move(320, rand(480 - ball.height))
     ball.inertia = [negative_or_positive_random(7), negative_or_positive_random(4)]
-    @state.manager(:game_object).add_game_object ball
   end
   
   def negative_or_positive_random(max)

@@ -8,7 +8,7 @@ class Duke < Gemini::GameObject
     self.image = "duke.png"
     image_scaling 0.7
     4.times do
-      @state.manager(:game_object).add_game_object Bullet.new
+      @state.create_game_object :Bullet
     end
     @last_fire_time = Time.now
     @moving_up = false
@@ -18,7 +18,7 @@ class Duke < Gemini::GameObject
     handle_event :shoot, :shoot
     handle_event :move, :move
     
-    on_tick do
+    on_update do
       if @moving_up
         self.y -= 4
       end
@@ -59,6 +59,7 @@ class Bullet < Gemini::GameObject
   has_behavior :Sprite
   has_behavior :CollidableWhenMoving
   has_behavior :UpdatesAtConsistantRate
+  has_behavior :Taggable
   
   def load
     self.image = "jruby.png"
@@ -66,7 +67,7 @@ class Bullet < Gemini::GameObject
     add_tag :bullet
     self.x = 700
   
-    on_tick do
+    on_update do
       if x < 640
         self.x += 10
       end
@@ -79,6 +80,7 @@ class DotNet < Gemini::GameObject
   
   has_behavior :Sprite
   has_behavior :CollidableWhenMoving
+  has_behavior :CollisionPoolAlgorithmTaggable
   has_behavior :UpdatesAtConsistantRate
   
   def load
@@ -86,34 +88,32 @@ class DotNet < Gemini::GameObject
     image_scaling 0.1
     
     @timer = rand(300)
-    @state = :waiting
+    @action = :waiting
     @y_median = 240
     collides_with_tags :duke, :bullet
     add_tag :dot_net
     
-    on_tick do
-      case @state
+    on_update do
+      case @action
       when :waiting
         @timer += 1
         if @timer > 300
-          @state = :attacking
+          @action = :attacking
           @timer = 0
           self.x = 640
           @y_median = rand(480 - height)
         end
       when :attacking
         if x < (0 - width)
-          @state = :waiting
+          @action = :waiting
         end
-        self.x -= 3
-        self.y = @y_median + (50 * Math.sin(self.x * RADIANS_PER_DEGREE))
+        move(x - 3, @y_median + (50 * Math.sin(self.x * RADIANS_PER_DEGREE)))
       end  
     end
     
     on_collided do |event, continue|
-      puts "collided with #{event}"
       if event.collided_object.has_tag? :bullet
-        @state = :dead
+        @action = :dead
         self.x = 700
       end
     end
