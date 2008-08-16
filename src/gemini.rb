@@ -30,12 +30,19 @@ module Gemini
     end
     
     def update(container, delta)
+      #don't tell the new state that it now has to update load time worth of a delta
+      if @fresh_state
+        delta = 0
+        @fresh_state = false
+      end
       # Workaround for image loading with Slick.
       # Must be done in game init or game loop (instead of immediately in the event).
       if @queued_state
-        BaseState.active_state = @queued_state
         @queued_state.load
+        BaseState.active_state = @queued_state
         @queued_state = nil
+        @fresh_state = true
+        return
       end
       BaseState.active_state.manager(:input).poll(@screen_width, @screen_height)
       BaseState.active_state.manager(:update).update(delta)
