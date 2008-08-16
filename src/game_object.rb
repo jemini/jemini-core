@@ -10,8 +10,8 @@ module Gemini
       @@behaviors[self] << behavior
     end
 
-    def initialize(*args)
-      @state = BaseState.active_state
+    def initialize(state, *args)
+      @state = state
       @callbacks = Hash.new {|h,k| h[k] = []}
       @behaviors = {}
       
@@ -29,7 +29,7 @@ module Gemini
       klass.add_to(self)
       validate_dependant_behaviors
     rescue NameError => e
-      raise "Unable to load behavior #{behavior}, #{e.message}"
+      raise "Unable to load behavior #{behavior}, #{e.message}\n#{e.backtrace.join("\n")}"
     rescue
       klass.remove_from(self)
       raise
@@ -87,11 +87,12 @@ module Gemini
   private
   
     def validate_dependant_behaviors
-        behaviors.each do |behavior|
-          behavior.constantize.kind_of_dependencies.each do |dependant_behavior|
+      behaviors.each do |behavior|
+        behavior.constantize.kind_of_dependencies.each do |dependant_behavior|
           dependency = dependant_behavior.constantize
-          next if behaviors.find {|behavior| behavior.last.kind_of?(dependency)}
-
+          #TODO: This code cannot work until the game object has a list of behavior objects (behaviors returns names)
+          #next if behaviors.find {|behavior| p behavior; behavior.last.kind_of?(dependency)}
+          next
           raise "Dependant behavior '#{dependant_behavior}' was not found on class #{self.class}" 
         end
       end

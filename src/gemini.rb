@@ -1,10 +1,12 @@
 include_class 'org.newdawn.slick.BasicGame'
 include_class 'org.newdawn.slick.AppGameContainer'
 
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/managers')
+
+require 'game_object'
 require 'message_queue'
 require 'input_manager'
 require 'base_state'
-require 'game_object'
 require 'inflector'
 require 'basic_game_object_manager'
 require 'basic_update_manager'
@@ -21,7 +23,7 @@ module Gemini
 
     def init(container)
       @container = container
-      MessageQueue.instance.start_processing
+      #MessageQueue.instance.start_processing
       
       BaseState.active_state = load_state(:MainState)
       BaseState.active_state.load
@@ -31,11 +33,11 @@ module Gemini
       # Workaround for image loading with Slick.
       # Must be done in game init or game loop (instead of immediately in the event).
       if @queued_state
-        @queued_state.load
         BaseState.active_state = @queued_state
+        @queued_state.load
         @queued_state = nil
       end
-      InputManager.instance.poll(@screen_width, @screen_height)
+      BaseState.active_state.manager(:input).poll(@screen_width, @screen_height)
       BaseState.active_state.manager(:update).update(delta)
     end
 

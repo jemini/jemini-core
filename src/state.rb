@@ -1,3 +1,0 @@
-class State
-  
-end

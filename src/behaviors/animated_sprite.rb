@@ -2,13 +2,14 @@ class AnimatedSprite < Gemini::Behavior
   include_class 'org.newdawn.slick.Image'
   include_class 'org.newdawn.slick.Animation'
   depends_on :Spatial2d
-  declared_methods :draw, :sprites, :animation_fps, :animation_mode
+  declared_methods :draw, :sprites, :animation_fps, :animation_mode, :animation, :animation=
+  attr_accessor :animation
   
   def load
     @fps = 1
     @animation = Animation.new
     @target.state.manager(:update).on_before_update do |delta|
-      @animation.update(delta)
+      @animation.update(delta) unless @animation.nil?
     end
     @mode = :normal
     puts @animation.speed
@@ -40,6 +41,6 @@ class AnimatedSprite < Gemini::Behavior
   end
   
   def draw
-    @animation.draw(x, y)
+    @animation.draw(x, y) unless @animation.nil?
   end
 end

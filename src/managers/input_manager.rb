@@ -1,26 +1,29 @@
 include_class 'org.newdawn.slick.Input'
 include_class 'org.newdawn.slick.InputListener'
 require 'message_queue'
-require 'singleton'
 
 module Gemini
   class SlickInputListener
     include InputListener
 
+    def initialize(state)
+      @state = state
+    end
+    
     def isAcceptingInput
+      #@state == BaseState.active_state
       true
     end
 
     def method_missing(method, *args)
-      return if method == :inputEnded
-      MessageQueue.instance.post_message(Message.new(:slick_input, [method, args]))
+      return if (method == :inputEnded) || @state != BaseState.active_state
+      @state.manager(:message_queue).post_message(Message.new(:slick_input, [method, args]))
     end
   end
 
   # Consumes raw slick_input events and output events based on 
   # registered key bindings.
-  class InputManager
-    include Singleton
+  class InputManager < Gemini::GameObject
     
     KEY_PRESSED = {:source_type => :key, :source_state => :pressed}
     KEY_RELEASED = {:source_type => :key, :source_state => :released}
@@ -32,7 +35,12 @@ module Gemini
     MOUSE_BUTTON3_PRESSED = {:source_type => :mouse, :source_state => :pressed, :source_value => Input::MOUSE_MIDDLE_BUTTON}
     MOUSE_BUTTON3_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_MIDDLE_BUTTON}
     
-    def setup(container, keymap)
+    def load(container)
+      @raw_input = container.input
+      @raw_input.add_listener Gemini::SlickInputListener.new(@state)
+    end
+    
+    def load_keymap(keymap)
       @keymap = {:key => {:pressed => Hash.new{|h,k| h[k] = []}, 
                           :released => Hash.new{|h,k| h[k] = []}}, 
                  :mouse => {:moved => Hash.new{|h,k| h[k] = []},
@@ -50,9 +58,8 @@ module Gemini
       keymap_contents = IO.read(keymap_path + keymap_name)
 
       instance_eval(keymap_contents)
-      @raw_input = container.input
-      @raw_input.add_listener Gemini::SlickInputListener.new
-      MessageQueue.instance.add_listener(:slick_input, self) do |message|
+      
+      @state.manager(:message_queue).add_listener(:slick_input, self) do |message|
         value = message.value[1][0]
         case message.value[0]
         when :keyPressed
@@ -88,7 +95,7 @@ module Gemini
             if key_map[2] #block param
               key_map[2].call(message.value[1], message_to_post)
             end
-            MessageQueue.instance.post_message(message_to_post)
+            @state.manager(:message_queue).post_message(message_to_post)
           end
         end
       end

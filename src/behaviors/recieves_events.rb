@@ -5,9 +5,9 @@ class RecievesEvents < Gemini::Behavior
   
   def handle_event(type, method_name=nil, &block)
     if !method_name.nil?
-      Gemini::MessageQueue.instance.add_listener(type, self, @target.send(:method, method_name).to_proc)
+      state.manager(:message_queue).add_listener(type, self, @target.send(:method, method_name).to_proc)
     elsif block_given?
-      Gemini::MessageQueue.instance.add_listener(type, self) &block
+      state.manager(:message_queue).add_listener(type, self) &block
     else
       raise "Either a method name or a block must be provided"
     end

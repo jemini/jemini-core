@@ -1,6 +1,5 @@
 class BasicUpdateManager < Gemini::GameObject
-  def load(state)
-    @state = state
+  def load
     enable_listeners_for :before_update, :after_update
   end
   

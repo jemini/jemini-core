@@ -6,7 +6,7 @@ class UpdatesAtConsistantRate < Gemini::Behavior
     @updates_per_second = 30
     @update_delay = 0
     @time_since_last_update = 0
-    @target.enable_listeners_for :tick
+    @target.enable_listeners_for :update
   end
   
   def updates_per_second=(count)
@@ -21,7 +21,7 @@ class UpdatesAtConsistantRate < Gemini::Behavior
     @time_since_last_update += delta_in_milliseconds
     if @time_since_last_update > @update_delay
       @time_since_last_update -= @update_delay
-      notify :tick
+      notify :update
     end
   end
 end

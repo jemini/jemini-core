@@ -1,4 +1,3 @@
-require 'singleton'
 require 'thread'
 module Gemini
   
@@ -11,10 +10,9 @@ module Gemini
     end
   end
   
-  class MessageQueue
-    include Singleton
+  class MessageQueue < Gemini::GameObject
 
-    def initialize
+    def load
       @listeners = Hash.new {|h,k| h[k] = []}
       @messages = Queue.new
       @listener_hash_in_use = Mutex.new

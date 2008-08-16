@@ -1,6 +1,6 @@
 class TagManager < Gemini::GameObject
-  def load(state)
-    @state = state
+  def load
+    require 'behaviors/taggable'
     @tagged_objects = Hash.new { |h,k| h[k] = [] }
     @state.manager(:game_object).on_after_add_game_object do |game_object|
       if game_object.kind_of? Taggable

@@ -1,7 +1,6 @@
 class BasicGameObjectManager < Gemini::GameObject
   
-  def load(state)
-    @state = state
+  def load
     @game_objects = []
     enable_listeners_for :before_add_game_object, :after_add_game_object, :before_remove_game_object, :after_remove_game_object
   end

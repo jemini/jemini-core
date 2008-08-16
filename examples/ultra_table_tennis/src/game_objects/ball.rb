@@ -16,7 +16,7 @@ class Paddle < Gemini::GameObject
     add_tag :paddle
     
     @movement = []
-    on_tick do
+    on_update do
       @movement.each do |direction|
         case direction
         when :up

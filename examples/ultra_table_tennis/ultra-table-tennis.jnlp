@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+  <jnlp spec='1.0+' codebase='http://edit.your.codebase.url' href='ultra-table-tennis.jnlp'>
+    <information>
+    <title>ultra-table-tennis</title>
+    <vendor></vendor>
+    <homepage href='edit.your.homepage' />
+    <description>Fun!</description>
+  </information>
+
+  <offline-allowed/>
+
+  <security>
+    <all-permissions/>
+  </security>
+
+  <resources>
+    <j2se version='1.6'/>
+    <j2se version='1.5'/>
+    <jar href='ultra-table-tennis.jar'/>
+      <jar href='/Users/logan/dev/gemini/examples/ultra_table_tennis/../../lib/jinput.jar'/>
+<jar href='/Users/logan/dev/gemini/examples/ultra_table_tennis/../../lib/jruby-complete.jar'/>
+<jar href='/Users/logan/dev/gemini/examples/ultra_table_tennis/../../lib/lwjgl.jar'/>
+<jar href='/Users/logan/dev/gemini/examples/ultra_table_tennis/../../lib/lwjgl_util_applet.jar'/>
+<jar href='/Users/logan/dev/gemini/examples/ultra_table_tennis/../../lib/natives-linux.jar'/>
+<jar href='/Users/logan/dev/gemini/examples/ultra_table_tennis/../../lib/natives-mac.jar'/>
+<jar href='/Users/logan/dev/gemini/examples/ultra_table_tennis/../../lib/natives-win32.jar'/>
+<jar href='/Users/logan/dev/gemini/examples/ultra_table_tennis/../../lib/slick.jar'/>
+  </resources>
+
+  <application-desc main-class='org.rubyforge.rawr.AppletMain' />
+</jnlp>
