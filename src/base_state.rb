@@ -33,13 +33,10 @@ module Gemini
     
     def create_game_object(type, *params)
       game_object_type = begin
-                          type.constantize
+                           type.constantize
                          rescue NameError
-                           if 'GameObject' == type.to_s
-                             Gemini::GameObject
-                           else
-                             raise
-                           end
+                           require type.underscore 
+                           type.constantize
                          end
       
       game_object = game_object_type.new(self, *params)

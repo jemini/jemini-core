@@ -2,6 +2,9 @@ include_class 'org.newdawn.slick.BasicGame'
 include_class 'org.newdawn.slick.AppGameContainer'
 
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/managers')
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/game_objects')
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/states')
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/behaviors')
 
 require 'game_object'
 require 'message_queue'
@@ -23,7 +26,6 @@ module Gemini
 
     def init(container)
       @container = container
-      #MessageQueue.instance.start_processing
       
       BaseState.active_state = load_state(:MainState)
       BaseState.active_state.load

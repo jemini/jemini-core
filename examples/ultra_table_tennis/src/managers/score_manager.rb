@@ -1,26 +1,23 @@
-include_class "org.newdawn.slick.TrueTypeFont"
-include_class "java.awt.Font"
-
 class ScoreManager < Gemini::GameObject
   def load
     @player1_score = 0
     @player2_score = 0
+    @player1_score_text = @state.create_game_object :Text, 10, 460, "Score: 0"
+    @player2_score_text = @state.create_game_object :Text, 580, 460, "Score: 0"
     @balls = []
+    
     3.times do
       spawn_new_ball
-    end
-    @font = TrueTypeFont.new(Font.new("Arial", Font::PLAIN, 12), true)
-    @state.manager(:render).on_after_render do |graphics|
-      @font.draw_string(10,460, "Score: #{@player1_score}")
-      @font.draw_string(580,460, "Score: #{@player2_score}")
     end
   end
   
   def ball_scored(ball)
     if ball.x < 320
       @player2_score += 1
+      @player2_score_text.text = "Score: #{@player2_score}"
     else
       @player1_score += 1
+      @player1_score_text.text = "Score: #{@player1_score}"
     end
     @state.manager(:game_object).remove_game_object ball
     spawn_new_ball
