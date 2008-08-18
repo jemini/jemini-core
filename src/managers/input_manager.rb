@@ -93,7 +93,7 @@ module Gemini
         
         next if type.nil? or action.nil?
 
-        invoke_callbacks_for(type, action, value)
+        invoke_callbacks_for(type, action, value, message)
       end
     end
     
@@ -102,7 +102,7 @@ module Gemini
       
       # Check for any held keys
       @held_keys.each do |key_id|
-        invoke_callbacks_for(:key, :held, key_id)
+        invoke_callbacks_for(:key, :held, key_id, nil)
       end
     end
     
@@ -114,7 +114,7 @@ module Gemini
     end
     
   private
-    def invoke_callbacks_for(type, action, value)
+    def invoke_callbacks_for(type, action, value, message)
       key_mappings = @keymap[type][action][value]
       unless key_mappings.empty?
         key_mappings.each do |key_map|
