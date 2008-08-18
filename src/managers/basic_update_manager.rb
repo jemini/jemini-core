@@ -7,7 +7,7 @@ class BasicUpdateManager < Gemini::GameObject
     return if paused?
     
     notify :before_update, delta
-    state.manager(:game_object).game_objects.each { |game_object| game_object.update(delta) if game_object.respond_to? :update}
+    game_state.manager(:game_object).game_objects.each { |game_object| game_object.update(delta) if game_object.respond_to? :update}
     notify :after_update, delta
   end
   

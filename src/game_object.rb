@@ -2,7 +2,7 @@ require 'behavior'
 
 module Gemini
   class GameObject
-    attr_accessor :state
+    attr_reader :game_state
     
     @@behaviors = Hash.new{|h,k| h[k] = []}
     def self.has_behavior(behavior)
@@ -11,7 +11,7 @@ module Gemini
     end
 
     def initialize(state, *args)
-      @state = state
+      @game_state = state
       @callbacks = Hash.new {|h,k| h[k] = []}
       @behaviors = {}
       

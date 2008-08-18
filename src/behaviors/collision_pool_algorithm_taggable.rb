@@ -8,6 +8,6 @@ class CollisionPoolAlgorithmTaggable < CollisionPoolAlgorithm
   end
   
   def get_collision_candidates
-    state.manager(:tag).find_by_any_tags(*@tags)#.each {|collidable| collision_check collidable }
+    game_state.manager(:tag).find_by_any_tags(*@tags)#.each {|collidable| collision_check collidable }
   end
 end

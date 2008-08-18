@@ -8,7 +8,7 @@ class Duke < Gemini::GameObject
     self.image = "duke.png"
     image_scaling 0.7
     4.times do
-      @state.create_game_object :Bullet
+      @game_state.create_game_object :Bullet
     end
     @last_fire_time = Time.now
     @moving_up = false
@@ -43,7 +43,7 @@ class Duke < Gemini::GameObject
   
   def shoot(message)
     if (Time.now - @last_fire_time) > 0.2
-      @state.manager(:tag).find_by_tag(:bullet).each do |bullet|
+      @game_state.manager(:tag).find_by_tag(:bullet).each do |bullet|
         if bullet.x >= 640
           bullet.x = x + 80
           bullet.y = y + 10

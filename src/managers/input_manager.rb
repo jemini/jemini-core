@@ -38,7 +38,7 @@ module Gemini
     
     def load(container)
       @raw_input = container.input
-      @raw_input.add_listener Gemini::SlickInputListener.new(@state)
+      @raw_input.add_listener Gemini::SlickInputListener.new(@game_state)
     end
     
     def load_keymap(keymap)
@@ -62,7 +62,7 @@ module Gemini
 
       instance_eval(keymap_contents)
       
-      @state.manager(:message_queue).add_listener(:slick_input, self) do |message|
+      @game_state.manager(:message_queue).add_listener(:slick_input, self) do |message|
         value = message.value[1][0]
         case message.value[0]
         when :keyPressed
@@ -122,7 +122,7 @@ module Gemini
           if key_map[2] #block param
             key_map[2].call(message.value[1], message_to_post)
           end
-          @state.manager(:message_queue).post_message(message_to_post)
+          @game_state.manager(:message_queue).post_message(message_to_post)
         end
       end
     end
