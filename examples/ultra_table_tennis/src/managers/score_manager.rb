@@ -2,8 +2,8 @@ class ScoreManager < Gemini::GameObject
   def load
     @player1_score = 0
     @player2_score = 0
-    @player1_score_text = @state.create_game_object :Text, 10, 460, "Score: 0"
-    @player2_score_text = @state.create_game_object :Text, 580, 460, "Score: 0"
+    @player1_score_text = @game_state.create_game_object :Text, 10, 460, "Score: 0"
+    @player2_score_text = @game_state.create_game_object :Text, 580, 460, "Score: 0"
     @balls = []
     
     3.times do
@@ -19,13 +19,13 @@ class ScoreManager < Gemini::GameObject
       @player1_score += 1
       @player1_score_text.text = "Score: #{@player1_score}"
     end
-    @state.manager(:game_object).remove_game_object ball
+    @game_state.manager(:game_object).remove_game_object ball
     spawn_new_ball
   end
   
 private
   def spawn_new_ball    
-    ball = @state.create_game_object :Ball
+    ball = @game_state.create_game_object :Ball
     ball.move(320, rand(480 - ball.height))
     ball.inertia = [negative_or_positive_random(7), negative_or_positive_random(4)]
   end

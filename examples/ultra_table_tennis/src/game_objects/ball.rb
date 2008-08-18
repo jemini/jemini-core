@@ -51,7 +51,7 @@ class Ball < Gemini::GameObject
       if event.collided_object.has_tag? :wall
         inertia[1] *= -1 if y > (480 - height) || y < 0
         if x > (640-width) || x < 0
-          @state.manager(:score).ball_scored self
+          @game_state.manager(:score).ball_scored self
         end
       else
         if x < 320
