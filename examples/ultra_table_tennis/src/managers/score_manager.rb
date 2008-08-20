@@ -6,7 +6,7 @@ class ScoreManager < Gemini::GameObject
     @player2_score_text = @game_state.create_game_object :Text, 580, 460, "Score: 0"
     @balls = []
     
-    3.times do
+    30.times do
       spawn_new_ball
     end
   end

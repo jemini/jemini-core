@@ -35,8 +35,13 @@ module Gemini
       game_object_type = begin
                            type.constantize
                          rescue NameError
-                           require type.underscore 
-                           type.constantize
+                           # Feel free to remove this on the merge, as it has bee implemented on another repo already
+                           begin
+                             require type.underscore 
+                             type.constantize
+                           rescue NameError
+                             "Gemini::#{type}".constantize
+                           end
                          end
       
       game_object = game_object_type.new(self, *params)

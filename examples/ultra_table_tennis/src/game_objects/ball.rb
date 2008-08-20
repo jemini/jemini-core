@@ -1,45 +1,10 @@
-class Paddle < Gemini::GameObject
-  has_behavior :UpdatesAtConsistantRate
-  has_behavior :RecievesEvents
-  has_behavior :CollidableWhenMoving
-  has_behavior :Taggable
-  has_behavior :AnimatedSprite
-  has_behavior :CollisionPoolAlgorithmTaggable
-  
-  def load(player_number)
-    sprites "paddle1.png", "paddle2.png", "paddle3.png", "paddle4.png", "paddle5.png"
-    animation_mode :ping_pong
-    animation_fps 4
-    handle_event :"p#{player_number}_paddle_movement", :move_paddle
-    add_tag :paddle
-    
-    @movement = []
-    on_update do
-      @movement.each do |direction|
-        case direction
-        when :up
-          self.y -= 0.5
-          self.y = 0 if y < 0
-        when :down
-          self.y += 0.5
-          self.y = 480-height if y > 480-height
-        end
-      end
-      @movement.clear
-    end
-  end
-  
-  def move_paddle(message)
-    @movement << message.value
-  end
-end
-
 class Ball < Gemini::GameObject
   has_behavior :UpdatesAtConsistantRate
   has_behavior :CollidableWhenMoving
   has_behavior :CollisionPoolAlgorithmTaggable
   has_behavior :Sprite
   has_behavior :Inertial
+  has_behavior :TriangleTrailEmittable
   
   def load
     collides_with_tags :wall, :paddle
@@ -61,18 +26,5 @@ class Ball < Gemini::GameObject
         end
       end
     end
-  end
-end
-
-class Wall < Gemini::GameObject
-  has_behavior :BoundingBoxCollidable
-  has_behavior :Taggable
-  
-  def load(x, y, width, height)
-    self.x = x
-    self.y = y
-    self.width = width
-    self.height = height
-    add_tag :wall
   end
 end
