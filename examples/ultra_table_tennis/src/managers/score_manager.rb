@@ -6,7 +6,7 @@ class ScoreManager < Gemini::GameObject
     @player2_score_text = @game_state.create_game_object :Text, 580, 460, "Score: 0"
     @balls = []
     
-    30.times do
+    15.times do
       spawn_new_ball
     end
   end
@@ -28,6 +28,8 @@ private
     ball = @game_state.create_game_object :Ball
     ball.move(320, rand(480 - ball.height))
     ball.inertia = [negative_or_positive_random(7), negative_or_positive_random(4)]
+    #ball.inertia = [negative_or_positive_random(7), 0]
+    #ball.inertia = [0, negative_or_positive_random(7)]
   end
   
   def negative_or_positive_random(max)

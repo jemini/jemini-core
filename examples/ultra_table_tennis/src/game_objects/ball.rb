@@ -11,6 +11,8 @@ class Ball < Gemini::GameObject
     self.image = "ball.png"
     self.x = rand(640 - width)
     self.y = rand(480 - height)
+    emit_triangle_trail_from_offset(relative_center_vector)
+    emit_triangle_trail_with_radius((width / 2))
     
     on_collided do |event, continue|
       if event.collided_object.has_tag? :wall
