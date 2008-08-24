@@ -7,7 +7,7 @@ class Gemini::TriangleTrail < Gemini::GameObject
     @trail_poly_size = 10
     @trail_size = 50
     @radius = 10
-    @alpha = 1
+    @alpha = 0.5
     @flip = false
     on_after_move do
       @trail.pop if @trail.size >= @trail_size

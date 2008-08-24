@@ -1,3 +1,6 @@
+require 'color'
+require 'vector'
+
 include_class 'org.newdawn.slick.BasicGame'
 include_class 'org.newdawn.slick.AppGameContainer'
 

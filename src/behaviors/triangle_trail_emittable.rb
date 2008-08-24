@@ -2,7 +2,6 @@ require 'drawable'
 
 class TriangleTrailEmittable < Gemini::Behavior
   depends_on :Movable2d
-  #depends_on :Drawable
   declared_methods :emit_triangle_trail_from_offset, :emit_triangle_trail_with_radius, :alpha, :alpha=
   
   def load
@@ -11,7 +10,9 @@ class TriangleTrailEmittable < Gemini::Behavior
     
     on_after_move do
       @emitter.move(@emitter_offset[0] + x, @emitter_offset[1] + y)
-      #@emitter.inertia = inertia
+    end
+    game_state.manager(:game_object).on_after_remove_game_object do |game_object|
+      game_state.manager(:game_object).remove_game_object @emitter if game_object == @target
     end
   end
   

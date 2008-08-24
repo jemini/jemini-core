@@ -15,6 +15,7 @@ class UpdatesAtConsistantRate < Gemini::Behavior
     else
       @update_delay = 1000 / count
     end
+    @updates_per_second = count
   end
   
   def update(delta_in_milliseconds)

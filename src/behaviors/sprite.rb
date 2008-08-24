@@ -3,8 +3,12 @@ require 'behaviors/drawable'
 class Sprite < Drawable
   include_class 'org.newdawn.slick.Image'
   depends_on :Spatial2d
-  declared_methods :draw, :image, :image=, :image_scaling
-  attr_accessor :image
+  declared_methods :draw, :image, :image=, :image_scaling, :color, :color=
+  attr_accessor :image, :color
+  
+  def load
+    @color = clr(1.0, 1.0, 1.0 , 1.0)
+  end
   
   def image=(sprite_name)
     if sprite_name.kind_of? Image
@@ -22,7 +26,7 @@ class Sprite < Drawable
   end
   
   def draw
-    @image.draw(x, y)
+    @image.draw(x, y, @color.native_color)
   end
 
 private
