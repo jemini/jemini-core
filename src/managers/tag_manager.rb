@@ -15,6 +15,14 @@ class TagManager < Gemini::GameObject
         end
       end
     end
+    
+    @game_state.manager(:game_object).on_after_remove_game_object do |game_object|
+      if game_object.kind_of? Taggable
+        game_object.tags.each do |tag|
+          @tagged_objects[tag].delete game_object
+        end
+      end
+    end
   end
   
   def find_by_all_tags(*tags)

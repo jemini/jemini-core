@@ -35,6 +35,12 @@ module Gemini
       raise
     end
     
+    def unload
+      #TODO: Perhaps expose this as a method on Behavior
+      Gemini::Behavior.send(:class_variable_get, :@@depended_on_by).delete self
+      #@behaviors.each {|name, behavior| behavior.class.remove_from self}
+    end
+    
     # TODO: Refactor the removal of behaviors from @behavior to live in the
     # behavior class.  This will mirror how behaviors get added to the array
     # in Behavior#add_to

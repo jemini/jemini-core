@@ -6,18 +6,19 @@ module Gemini
     def self.add_to(target)
       unless instance = @@depended_on_by[target].find {|behavior| behavior.class == self}
         instance = self.new(target)
-        @@depended_on_by[target] << instance  
+        @@depended_on_by[target] << instance
       end
       instance.add_reference_count
       instance
     end
     
     def self.remove_from(target)
-      if instance = @@depended_on_by[target].find {|behavior| behavior.class == self}
+      if instance = @@depended_on_by[target.class].find {|behavior| behavior.class == self}
         instance.remove_reference_count
         if 0 == instance.reference_count
-          @@depended_on_by[target].delete_if {|behavior| behavior.class == self}
+          @@depended_on_by[target.class].delete_if {|behavior| behavior.class == self}
           instance.send(:delete)
+          #@@depended_on_by.delete target if @@depended_on_by[target].empty?
         end
       end
     end
