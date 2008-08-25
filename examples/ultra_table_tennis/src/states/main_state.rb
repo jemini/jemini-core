@@ -18,5 +18,13 @@ class MainState < Gemini::BaseState
     
     paddle = create_game_object :Paddle, 2
     paddle.move(500, 300)
+    
+    quitter = create_game_object :GameObject
+    quitter.add_behavior :RecievesEvents
+    quitter.handle_event :quit do
+      Profiler__::print_profile(STDERR) if $profiling
+      #TODO: File bug in JRuby - JRuby END blocks are not respected when a System exit is used
+      Java::java::lang::System.exit 0
+    end
   end
 end
