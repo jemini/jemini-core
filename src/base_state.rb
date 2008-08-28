@@ -31,7 +31,7 @@ module Gemini
       message_manager.start_processing
     end
     
-    def create_game_object(type, *params)
+    def create_game_object_on_layer(type, layer_name, *params)
       game_object_type = begin
                            type.constantize
                          rescue NameError
@@ -45,8 +45,12 @@ module Gemini
                          end
       
       game_object = game_object_type.new(self, *params)
-      add_game_object game_object
+      add_game_object_to_layer game_object, layer_name
       game_object
+    end
+    
+    def create_game_object(type, *params)
+      create_game_object_on_layer(type, :default, *params)
     end
     
     def manager(type)
@@ -55,6 +59,10 @@ module Gemini
     
     def add_game_object(game_object)
       @managers[:game_object].add_game_object game_object
+    end
+
+    def add_game_object_to_layer(game_object, layer_name)
+      @managers[:game_object].add_game_object_to_layer game_object, layer_name
     end
     
     def remove_game_object(game_object)

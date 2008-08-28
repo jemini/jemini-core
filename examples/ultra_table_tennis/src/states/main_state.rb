@@ -4,6 +4,9 @@ require 'ball'
 
 class MainState < Gemini::BaseState 
   def load
+    manager(:game_object).add_layer_at(:ball_effects_layer, 1)
+    manager(:game_object).add_layer_at(:ball_layer, 2)
+    
     set_manager :tag, create_game_object(:TagManager)
     set_manager :score, create_game_object(:ScoreManager)
     load_keymap :MainGameKeymap

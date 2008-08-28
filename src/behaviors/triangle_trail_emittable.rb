@@ -2,7 +2,7 @@ require 'drawable'
 
 class TriangleTrailEmittable < Gemini::Behavior
   depends_on :Movable2d
-  declared_methods :emit_triangle_trail_from_offset, :emit_triangle_trail_with_radius, :alpha, :alpha=
+  declared_methods :emit_triangle_trail_from_offset, :emit_triangle_trail_with_radius, :alpha, :alpha=, :layer=
   
   def load
     @emitter = game_state.create_game_object :TriangleTrail
@@ -30,5 +30,9 @@ class TriangleTrailEmittable < Gemini::Behavior
   
   def emit_triangle_trail_with_radius(radius)
     @emitter.radius = radius
+  end
+  
+  def layer=(layer_name)
+    game_state.manager(:game_object).move_game_object_to_layer(@emitter, layer_name)
   end
 end

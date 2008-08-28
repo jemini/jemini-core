@@ -6,7 +6,7 @@ class ScoreManager < Gemini::GameObject
     @player2_score_text = @game_state.create_game_object :Text, 580, 460, "Score: 0"
     @balls = []
     
-    10.times do
+    20.times do
       spawn_new_ball
     end
   end
@@ -25,12 +25,13 @@ class ScoreManager < Gemini::GameObject
   
 private
   def spawn_new_ball
-    ball = @game_state.create_game_object :Ball
+    ball = @game_state.create_game_object_on_layer :Ball, :ball_layer
     ball.move(320, rand(480 - ball.height))
-    if false
+    if true
       ball.add_behavior :TriangleTrailEmittable
       ball.emit_triangle_trail_from_offset(ball.relative_center_vector)
       ball.emit_triangle_trail_with_radius(ball.width / 2)
+      ball.layer = :ball_effects_layer
     else
       ball.add_behavior :FadingImageTrailEmittable
       ball.emit_fading_image(ball.image)
