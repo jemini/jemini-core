@@ -1,12 +1,34 @@
 class ScoreManager < Gemini::GameObject
+  has_behavior :Timeable
+  
   def load
     @player1_score = 0
     @player2_score = 0
     @player1_score_text = @game_state.create_game_object :Text, 10, 460, "Score: 0"
     @player2_score_text = @game_state.create_game_object :Text, 580, 460, "Score: 0"
+    
     @balls = []
     
-    10.times do
+    countdown_to_new_round
+  end
+  
+  def countdown_to_new_round
+    @countdown_count = 5
+    @countdown_text = @game_state.create_game_object :Text, 640 / 2, 480 / 2, "5"
+    add_countdown(:new_round_countdown, 5, 1)
+    
+    on_timer_tick do
+      @countdown_text.text = (@countdown_text.text.to_i - 1).to_s
+    end
+    
+    on_countdown_complete do
+      @game_state.remove_game_object @countdown_text
+      new_round
+    end
+  end
+  
+  def new_round
+    3.times do
       spawn_new_ball
     end
   end
