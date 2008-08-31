@@ -6,7 +6,7 @@ class ScoreManager < Gemini::GameObject
     @player2_score_text = @game_state.create_game_object :Text, 580, 460, "Score: 0"
     @balls = []
     
-    50.times do
+    10.times do
       spawn_new_ball
     end
   end
@@ -27,18 +27,32 @@ private
   def spawn_new_ball
     ball = @game_state.create_game_object_on_layer :Ball, :ball_layer
     ball.move(320, rand(480 - ball.height))
-    if false
+    add_random_behavior_to_ball ball
+
+    ball.inertia = [negative_or_positive_random(7), negative_or_positive_random(4)]
+    #ball.inertia = [negative_or_positive_random(7), 0]
+    #ball.inertia = [0, negative_or_positive_random(7)]
+  end
+  
+  def add_random_behavior_to_ball(ball, recursed = false)
+    max = recursed ? 3 : 4
+    random = rand(max)
+    case random
+    when 0
       ball.add_behavior :TriangleTrailEmittable
       ball.emit_triangle_trail_from_offset(ball.relative_center_vector)
       ball.emit_triangle_trail_with_radius(ball.width / 2)
       ball.layer = :ball_effects_layer
-    else
+    when 1
       ball.add_behavior :FadingImageTrailEmittable
       ball.emit_fading_image(ball.image)
+    when 2
+      ball.add_behavior :SplineStretchableSprite
+      stretch_spline = Spline.new([0,1.033], [1, 1.066], [2, 1.1], [3, 1.066], [4, 1.033], [5, 1.0], [6, 0.966], [7, 0.933], [8, 0.9], [9, 0.933], [10, 0.966])
+      ball.set_stretch_spline stretch_spline
+    when 3
+      2.times { add_random_behavior_to_ball(ball) }
     end
-    ball.inertia = [negative_or_positive_random(7), negative_or_positive_random(4)]
-    #ball.inertia = [negative_or_positive_random(7), 0]
-    #ball.inertia = [0, negative_or_positive_random(7)]
   end
   
   def negative_or_positive_random(max)

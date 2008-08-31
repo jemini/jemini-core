@@ -6,8 +6,9 @@ class Ball < Gemini::GameObject
   has_behavior :Inertial
   
   def load
-    collides_with_tags :wall, :paddle
     self.image = "ball.png"
+    
+    collides_with_tags :wall, :paddle
     self.x = rand(640 - width)
     self.y = rand(480 - height)
     

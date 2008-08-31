@@ -1,5 +1,6 @@
 require 'color'
 require 'vector'
+require 'spline'
 
 include_class 'org.newdawn.slick.BasicGame'
 include_class 'org.newdawn.slick.AppGameContainer'
