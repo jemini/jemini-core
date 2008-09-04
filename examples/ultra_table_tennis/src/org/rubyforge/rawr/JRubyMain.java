@@ -6,8 +6,12 @@
 package org.rubyforge.rawr;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import org.jruby.Ruby;
 import org.jruby.RubyInstanceConfig;
@@ -20,63 +24,64 @@ import org.jruby.javasupport.JavaEmbedUtils;
 public class JRubyMain {
     public static void startJRubyApp(String[] args) {
         RubyInstanceConfig config = new RubyInstanceConfig();
-        config.setArgv(new String[0]);
-        
+        config.setArgv(args);
         Ruby runtime = JavaEmbedUtils.initialize(new ArrayList(0));
-        boolean use_defaults = false;
 
-        ArrayList<String> lines = new ArrayList<String>();
-        try
+        String config_yaml = "";
+        try{
+          java.io.InputStream ins = Main.class.getClassLoader().getResourceAsStream("run_configuration");
+          if (ins == null ) {
+            System.err.println("Did not find configuration file 'run_configuration', using defaults.");
+          }
+          else {
+            config_yaml = getConfigFileContents(ins);
+          }
+        }
+        catch(IOException ioe)
         {
-            DataInputStream dis = new DataInputStream(new BufferedInputStream(Main.class.getClassLoader().getResourceAsStream("run_configuration")));
+          System.err.println("Error loading run configuration file 'run_configuration', using defaults: " + ioe);
+          config_yaml = "";
+        }
+        catch(java.lang.NullPointerException npe)
+        {
+          System.err.println("Error loading run configuration file 'run_configuration', using defaults: " + npe );
+          config_yaml = "";
+        }
 
-            while(dis.available() != 0)
-            {
-                lines.add(dis.readLine());
-            }
-            dis = null;
-        }
-        catch(IOException e)
-        {
-            System.err.println("Error loading run configuration file 'run_configuration', using configuration defaults");
-            use_defaults = true;
-        }
+        String bootRuby = "require 'java'\n" + 
+          "require 'yaml'\n" + 
+          "config_yaml = '" + config_yaml + "'\n" +
+          "if config_yaml.strip.empty?\n" +
+          "  main_file = 'src/main'\n" +
+          "else\n" +
+          "  config_hash = YAML.load( \"" + config_yaml + "\" )\n" + 
+          "  $LOAD_PATH.unshift(config_hash['ruby_source_dir'])\n" + 
+          "  main_file = config_hash['main_ruby_file']\n" + 
+          "end\n\n" +
 
-        if(use_defaults)
-        {
-            runtime.evalScriptlet("require 'java'\n" + 
-                    "$: << 'src'\n" +
-                    "begin\n" +
-                    "require 'src/main'\n" +
-                    "rescue LoadError => e\n" +
-                    "warn \"Error starting the application\"\n" +
-                    "warn e\n" + 
-                    "end"
-                    );
-        }
-        else
-        {
-            if(3 == lines.size())
-            {
-                System.setProperty("java.library.path",lines.get(2));
-            }
+          "begin\n" + 
+          "  require main_file\n" + 
+          "rescue LoadError => e\n" + 
+          "  warn 'Error starting the application'\n" + 
+          "  warn \"#{e}\\n#{e.backtrace.join(\"\\n\")}\"\n" + 
+          "end\n";
+        runtime.evalScriptlet(bootRuby);
+    }
 
-            if(2 <= lines.size())
-            {
-                runtime.evalScriptlet("require 'java'\n" +
-                        "$: << '" + lines.get(0) + "'\n" +
-                        "begin\n" +
-                        "require '" + lines.get(0) + "/" + lines.get(1) + "'\n" +
-                        "rescue LoadError => e\n" +
-                        "warn \"Error starting the application\"\n" +
-                        "warn e\n" + 
-                        "end"
-                        );
-            }
-            else
-            {
-                System.err.println("Incorrect format for file 'run_configuration'");
-            }
+    public static URL getResource(String path) {
+        return JRubyMain.class.getClassLoader().getResource(path);
+    }
+
+    private static String getConfigFileContents(InputStream input) throws IOException, java.lang.NullPointerException {
+        InputStreamReader isr = new InputStreamReader(input);
+        BufferedReader reader = new BufferedReader(isr);
+        String line;
+        String buf;
+        buf = "";
+        while ((line = reader.readLine()) != null) {
+          buf += line + "\n";
         }
+        reader.close();
+        return(buf);
     }
 }
