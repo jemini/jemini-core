@@ -18,7 +18,7 @@ class Text < Gemini::GameObject
     load_font
   end
   
-  def draw
+  def draw(graphics)
     @font.draw_string(@x, @y, @text)
   end
 
@@ -26,17 +26,20 @@ class Text < Gemini::GameObject
     @font_name = name
     load_font
   end
+  alias_method :set_font_name, :font_name=
   
   def size=(size)
     @size = size
     load_font
   end
+  alias_method :set_size, :size=
   
   def style=(style)
     raise "Invalid font style, must be PLAIN, ITALIC or BOLD" unless [PLAIN, ITALIC, BOLD].member? style
     @style = style
     load_font
   end
+  alias_method :set_style, :style=
   
 private
   def load_font

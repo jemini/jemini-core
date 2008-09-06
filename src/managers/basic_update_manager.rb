@@ -1,6 +1,6 @@
 class BasicUpdateManager < Gemini::GameObject
   def load
-    enable_listeners_for :before_update, :after_update
+    enable_listeners_for :update, :before_update, :after_update
   end
   
   def update(delta)
@@ -8,6 +8,7 @@ class BasicUpdateManager < Gemini::GameObject
     
     notify :before_update, delta
     game_state.manager(:game_object).game_objects.each { |game_object| game_object.update(delta) if game_object.respond_to? :update}
+    notify :update, delta
     notify :after_update, delta
   end
   
