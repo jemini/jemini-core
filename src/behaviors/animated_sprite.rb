@@ -39,7 +39,7 @@ class AnimatedSprite < Gemini::Behavior
     end
   end
   
-  def draw
+  def draw(graphics)
     @animation.draw(x, y) unless @animation.nil?
   end
 end

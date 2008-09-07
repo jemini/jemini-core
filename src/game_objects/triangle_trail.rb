@@ -15,7 +15,7 @@ class Gemini::TriangleTrail < Gemini::GameObject
     end
   end
   
-  def draw
+  def draw(graphics)
     if @trail.size > 3
       gl = Java::org::newdawn::slick::opengl::renderer::Renderer.get
 

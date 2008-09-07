@@ -7,14 +7,16 @@ class MainState < Gemini::BaseState
     manager(:game_object).add_layer_at(:ball_effects_layer, 1)
     manager(:game_object).add_layer_at(:ball_layer, 2)
     
+    set_manager :physics, create_game_object(:BasicPhysicsManager)
     set_manager :tag, create_game_object(:TagManager)
     set_manager :score, create_game_object(:ScoreManager)
+    
     load_keymap :MainGameKeymap
     
-    create_game_object :Wall, 0, -10, 640, 10, :top
-    create_game_object :Wall, 640, 0, 10, 480, :right, :score_region
-    create_game_object :Wall, -10, 0, 10, 480, :left, :score_region
-    create_game_object :Wall, 0, 480, 640, 10, :bottom
+    #create_game_object :Wall, 0, 0, 630, 10, :top
+    create_game_object :Wall, 300, 100, 30, 100, :right, :score_region
+    create_game_object :Wall, 0, 300, 15, 200, :left, :score_region
+    #create_game_object :Wall, 0, 470, 630, 10, :bottom
     
     paddle = create_game_object :Paddle, 1
     paddle.move(100, 100)
@@ -26,7 +28,6 @@ class MainState < Gemini::BaseState
     quitter.add_behavior :RecievesEvents
     quitter.handle_event :quit do
       Profiler__::print_profile(STDERR) if $profiling
-      #TODO: File bug in JRuby - JRuby END blocks are not respected when a System exit is used
       Java::java::lang::System.exit 0
     end
   end
