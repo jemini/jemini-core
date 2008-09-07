@@ -1,6 +1,12 @@
 $profiling = false
 require 'profile' if $profiling
 # VM OPTIONS : -Djava.library.path=../../lib/native_files
+require 'fileutils'
+
+puts "this is the file we're in: #{__FILE__}"
+puts "This is where we think we are: #{File.expand_path(File.dirname(__FILE__))}"
+puts "pwd: #{FileUtils.pwd}"
+
 module Gemini
   class Resolver
     IN_FILE_SYSTEM = :in_file_system
@@ -18,25 +24,47 @@ module Gemini
 end
 
 class File
+  require 'rbconfig'
+  require 'fileutils'
   puts "-----------------------fixing expand_path-------------------------"
   class_eval do
     class << self
-      alias_method :new_expand_path, :expand_path
+      alias_method :original_expand_path, :expand_path
     end
   end
 
-  def File.is_jnlp_url?(path)
+  def self.is_jar_path?(path)
     #path =~ /^(http)|(file)/
-    path =~ /^http/
+    #path =~ /^http/
+    #JRuby.runtime.class.security_restricted?
+    path =~ /\.jar\!/
+    
   end
 
-  def File.expand_path fname, dir_string=nil
-    if is_jnlp_url?(fname)
-      local_url = fname.split( 'jar!/').last
-       "./#{local_url}"
-    else
-      new_expand_path( fname, dir_string )
-    end
+#  def self.expand_path(fname, dir_string=nil)
+#    if is_jar_path?(fname)
+#      puts "using jar path stuff"
+#      local_url = fname.split('jar!/').last
+#      "./#{local_url}"
+#    else
+#      original_expand_path(fname, dir_string)
+#    end
+##    if result =~ /jar!/
+##      result = result.split('.jar!/').last if Config::CONFIG["host_os"] =~ /^win|mswin/i
+##    else
+#      puts "pwd: #{FileUtils.pwd}"
+#      puts "before sub: #{result}"
+#      result.sub!(FileUtils.pwd + '/', '')
+#      puts "after sub: #{result}"
+##    end
+#    result
+#  end
+
+  def self.expand_path(fname, dir_string=nil)
+    return original_expand_path(fname, dir_string) unless (Config::CONFIG["host_os"] =~ /^win|mswin/i) && (!is_jar_path?(fname))
+    pre_jar, post_jar = fname.split('.jar!/')
+    expanded_windows_path = "#{pre_jar}.jar!/#{original_expand_path(post_jar).sub(FileUtils.pwd + '/', '')}"
+    'http' + expanded_windows_path.split('http').last
   end
 end
 
@@ -49,10 +77,16 @@ else
   $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
   $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../lib/ruby/gemini")
   #$LOAD_PATH << (File.expand_path(File.dirname(__FILE__) + "/..") + "/../../src")
+  $LOAD_PATH << 'lib/ruby/gemini'
+  $LOAD_PATH << 'lib/ruby/gemini/managers'
+  $LOAD_PATH << 'lib/ruby/gemini/game_objects'
+  $LOAD_PATH << 'lib/ruby/gemini/states'
+  $LOAD_PATH << 'lib/ruby/gemini/behaviors'
 end
 
 %w{behaviors game_objects keymaps managers states}.each do |dir|
   $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/#{dir}")
+  $LOAD_PATH << "src/#{dir}"
 end
 
 puts $LOAD_PATH

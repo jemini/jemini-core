@@ -29,14 +29,10 @@
      version="b184" -->
     <extension href="http://slick.cokeandcode.com/demos/slick.jnlp"/>
   </resources>
-  
+  <!--
   <resources os="Mac OS">
-    <!--
-    <j2se href="http://java.sun.com/products/autodl/j2se" onclick="javascript:mytracker(this.href);" version="1.4+"/>
-    <jar href="../lib/jogl.jar"/> 
-    -->
     <nativelib href="lib/java/natives-mac.jar"/>
   </resources>
-
+  -->
   <application-desc main-class='org.rubyforge.rawr.Main' />
 </jnlp>
