@@ -14,8 +14,8 @@ class MainState < Gemini::BaseState
     load_keymap :MainGameKeymap
     
     #create_game_object :Wall, 0, 0, 630, 10, :top
-    create_game_object :Wall, 300, 100, 30, 100, :right, :score_region
-    create_game_object :Wall, 0, 300, 15, 200, :left, :score_region
+    #create_game_object :Wall, 20, 10, 30, 40, :right, :score_region
+    create_game_object :Wall, 100, 200, 50, 100, :left, :score_region
     #create_game_object :Wall, 0, 470, 630, 10, :bottom
     
     paddle = create_game_object :Paddle, 1

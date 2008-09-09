@@ -22,51 +22,51 @@ module Gemini
     end
   end
 end
-
-class File
-  require 'rbconfig'
-  require 'fileutils'
-  puts "-----------------------fixing expand_path-------------------------"
-  class_eval do
-    class << self
-      alias_method :original_expand_path, :expand_path
-    end
-  end
-
-  def self.is_jar_path?(path)
-    #path =~ /^(http)|(file)/
-    #path =~ /^http/
-    #JRuby.runtime.class.security_restricted?
-    path =~ /\.jar\!/
-    
-  end
-
-#  def self.expand_path(fname, dir_string=nil)
-#    if is_jar_path?(fname)
-#      puts "using jar path stuff"
-#      local_url = fname.split('jar!/').last
-#      "./#{local_url}"
-#    else
-#      original_expand_path(fname, dir_string)
+#
+#class File
+#  require 'rbconfig'
+#  require 'fileutils'
+#  puts "-----------------------fixing expand_path-------------------------"
+#  class_eval do
+#    class << self
+#      alias_method :original_expand_path, :expand_path
 #    end
-##    if result =~ /jar!/
-##      result = result.split('.jar!/').last if Config::CONFIG["host_os"] =~ /^win|mswin/i
-##    else
-#      puts "pwd: #{FileUtils.pwd}"
-#      puts "before sub: #{result}"
-#      result.sub!(FileUtils.pwd + '/', '')
-#      puts "after sub: #{result}"
-##    end
-#    result
 #  end
-
-  def self.expand_path(fname, dir_string=nil)
-    return original_expand_path(fname, dir_string) unless (Config::CONFIG["host_os"] =~ /^win|mswin/i) && (!is_jar_path?(fname))
-    pre_jar, post_jar = fname.split('.jar!/')
-    expanded_windows_path = "#{pre_jar}.jar!/#{original_expand_path(post_jar).sub(FileUtils.pwd + '/', '')}"
-    'http' + expanded_windows_path.split('http').last
-  end
-end
+#
+#  def self.is_jar_path?(path)
+#    #path =~ /^(http)|(file)/
+#    #path =~ /^http/
+#    #JRuby.runtime.class.security_restricted?
+#    path =~ /\.jar\!/
+#    
+#  end
+#
+##  def self.expand_path(fname, dir_string=nil)
+##    if is_jar_path?(fname)
+##      puts "using jar path stuff"
+##      local_url = fname.split('jar!/').last
+##      "./#{local_url}"
+##    else
+##      original_expand_path(fname, dir_string)
+##    end
+###    if result =~ /jar!/
+###      result = result.split('.jar!/').last if Config::CONFIG["host_os"] =~ /^win|mswin/i
+###    else
+##      puts "pwd: #{FileUtils.pwd}"
+##      puts "before sub: #{result}"
+##      result.sub!(FileUtils.pwd + '/', '')
+##      puts "after sub: #{result}"
+###    end
+##    result
+##  end
+#
+#  def self.expand_path(fname, dir_string=nil)
+#    return original_expand_path(fname, dir_string) unless (Config::CONFIG["host_os"] =~ /^win|mswin/i) && (!is_jar_path?(fname))
+#    pre_jar, post_jar = fname.split('.jar!/')
+#    expanded_windows_path = "#{pre_jar}.jar!/#{original_expand_path(post_jar).sub(FileUtils.pwd + '/', '')}"
+#    'http' + expanded_windows_path.split('http').last
+#  end
+#end
 
 
 if Gemini::Resolver.run_location == Gemini::Resolver::IN_FILE_SYSTEM
@@ -75,7 +75,8 @@ if Gemini::Resolver.run_location == Gemini::Resolver::IN_FILE_SYSTEM
   $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../../../src")
 else
   $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
-  $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../lib/ruby/gemini")
+#  $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../lib/ruby/gemini")
+  $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../../../src")
   #$LOAD_PATH << (File.expand_path(File.dirname(__FILE__) + "/..") + "/../../src")
   $LOAD_PATH << 'lib/ruby/gemini'
   $LOAD_PATH << 'lib/ruby/gemini/managers'
@@ -92,5 +93,7 @@ end
 puts $LOAD_PATH
 #require 'src/gemini'
 #require 'file:/Users/logan/dev/gemini/examples/ultra_table_tennis/package/deploy/ultra-table-tennis.jar!/src/gemini'
+puts "classpath:"
+puts $CLASSPATH
 require 'gemini'
 Gemini::Main.new("Ultra Table Tennis", 640, 480)

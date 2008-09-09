@@ -6,7 +6,9 @@ class Wall < Gemini::GameObject
   def load(x, y, width, height, *tags)
     set_shape :Box, width, height
     move(x, y)
-    set_mass 100000
+    set_mass 100000000
+    move(x, y)
+    move(x, y)
     add_tag :wall, *tags
   end
 end
