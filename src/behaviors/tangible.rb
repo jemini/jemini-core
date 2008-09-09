@@ -14,7 +14,7 @@ class Tangible < Spatial
   attr_reader :mass, :name, :shape
   wrap_with_callbacks :move
   declared_methods :x, :y, :height, :width, :move, :mass, :mass=, :set_mass, :shape,
-                   :set_shape, :name, :name=, :rotation, :rotation=, :set_rotation, :add_force,
+                   :set_shape, :name, :name=, :rotation, :rotation=, :set_rotation, :add_force, :force,
                    :set_force, :come_to_rest, :add_to_world, :remove_from_world, :set_tangible_debug_mode,
                    :tangible_debug_mode=, :restitution, :restitution=, :set_restitution, :add_velocity,
                    :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity
@@ -24,6 +24,8 @@ class Tangible < Spatial
     @shape = Box.new(1,1)
     setup_body
     @body.restitution = 0.0
+    @body.user_data = @target
+    @target.enable_listeners_for :collided
   end
   
   def x
@@ -74,6 +76,10 @@ class Tangible < Spatial
   
   def set_force(x, y)
     @body.set_force(x, y)
+  end
+  
+  def force
+    @body.force
   end
   
   def add_velocity(x, y)

@@ -20,7 +20,7 @@ class MainState < Gemini::BaseState
     
     paddle = create_game_object :Paddle, 1
     paddle.move(100, 100)
-    #paddle.set_rotation 45
+    
     paddle = create_game_object :Paddle, 2
     paddle.move(500, 300)
     

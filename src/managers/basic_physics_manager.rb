@@ -8,6 +8,7 @@ class BasicPhysicsManager < Gemini::GameObject
   
   def load
     @world = World.new(Vector2f.new(0, 0), 10, QuadSpaceStrategy.new(20, 5))
+    @world.add_listener self
     @game_state.manager(:update).on_update {|delta| @world.step(delta) }
     
     @game_state.manager(:game_object).on_after_add_game_object do |game_object|
@@ -22,6 +23,12 @@ class BasicPhysicsManager < Gemini::GameObject
     end
     
     handle_event :toggle_debug_mode, :toggle_debug_mode
+  end
+  
+  # there's a typo in the API, I swears it.
+  def collision_occured(event)
+    event.body_a.user_data.notify :collided, event
+    event.body_b.user_data.notify :collided, event
   end
   
   def toggle_debug_mode(message)

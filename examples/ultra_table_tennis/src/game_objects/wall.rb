@@ -1,5 +1,4 @@
 class Wall < Gemini::GameObject
-#  has_behavior :BoundingBoxCollidable
   has_behavior :Taggable
   has_behavior :Tangible
   
