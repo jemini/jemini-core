@@ -17,7 +17,8 @@ class Tangible < Spatial
                    :set_shape, :name, :name=, :rotation, :rotation=, :set_rotation, :add_force, :force,
                    :set_force, :come_to_rest, :add_to_world, :remove_from_world, :set_tangible_debug_mode,
                    :tangible_debug_mode=, :restitution, :restitution=, :set_restitution, :add_velocity,
-                   :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity
+                   :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity,
+                   :set_movable, :movable=, :movable?
   
   def load
     @mass = 1
@@ -142,6 +143,14 @@ class Tangible < Spatial
   end
   alias_method :set_tangible_debug_mode, :tangible_debug_mode=
   
+  def movable=(movable)
+    @body.moveable = movable
+  end
+  alias_method :set_movable, :movable=
+  
+  def movable?
+    @body.moveable?
+  end
   
   def set_static_body
     @body.moveable = false

@@ -13,8 +13,9 @@ class Paddle < Gemini::GameObject
 #    animation_mode :ping_pong
 #    animation_fps 4
     set_bounded_image "paddle1.png"
-    set_mass 100
+    set_mass Tangible::INFINITE_MASS
     set_restitution 1.0
+    #set_movable false
     set_rotatable false
     handle_event :"p#{player_number}_paddle_movement", :move_paddle
     add_tag :paddle
@@ -27,7 +28,7 @@ class Paddle < Gemini::GameObject
       puts "velocity: #{velocity}"
       puts "force: #{force}"
       #add_force(-event.normal.x * event.penetration_depth * 2, 0)
-      add_velocity(event.normal.x * event.penetration_depth, 0)
+      #add_velocity(event.normal.x * event.penetration_depth, 0)
       #come_to_rest
     end
   end
