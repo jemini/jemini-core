@@ -20,14 +20,14 @@ class Paddle < Gemini::GameObject
     add_tag :paddle
     
     # restrict horizontal movement
-    on_collided do |event|
-      puts "collision occured in paddle!"
-      puts "normal: #{event.normal}"
-      puts "penetration: #{event.penetration_depth}"
-      puts "velocity: #{velocity}"
-      puts "force: #{force}"
+    listen_for(:collided) do |message|
+#      puts "collision occured in paddle!"
+#      puts "normal: #{event.normal}"
+#      puts "penetration: #{event.penetration_depth}"
+#      puts "velocity: #{velocity}"
+#      puts "force: #{force}"
       #add_force(-event.normal.x * event.penetration_depth * 2, 0)
-      add_velocity(event.normal.x * event.penetration_depth, 0)
+      #add_velocity(event.normal.x * event.penetration_depth, 0)
       #come_to_rest
     end
   end

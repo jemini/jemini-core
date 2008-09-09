@@ -15,7 +15,7 @@ class Pointer < Gemini::Behavior
     handle_event :start_click, :start_click
     handle_event :stop_click, :stop_click
     
-    on_collided do |event, continue|
+    listen_for(:collided) do |event, continue|
       event.collided_object.click if event.collided_object.respond_to? :click
     end
   end

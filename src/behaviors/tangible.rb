@@ -36,8 +36,12 @@ class Tangible < Spatial
     @body.position.y
   end
   
-  def move(x, y)
+  def set_position(x, y)
     @body.set_position(x, y)
+  end
+  
+  def move(x, y)
+    @body.move(x, y)
   end
   
   def width
@@ -141,7 +145,6 @@ class Tangible < Spatial
     end
   end
   alias_method :set_tangible_debug_mode, :tangible_debug_mode=
-  
   
   def set_static_body
     @body.moveable = false

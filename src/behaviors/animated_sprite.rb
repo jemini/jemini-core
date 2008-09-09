@@ -8,7 +8,7 @@ class AnimatedSprite < Gemini::Behavior
   def load
     @fps = 1
     @animation = Animation.new
-    game_state.manager(:update).on_before_update do |delta|
+    listen_for(:before_update, game_state.manager(:update)) do |delta|
       @animation.update(delta) unless @animation.nil?
     end
     @mode = :normal

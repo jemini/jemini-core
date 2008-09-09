@@ -5,7 +5,7 @@ class Timeable < Gemini::Behavior
   def load
     @target.enable_listeners_for :timer_tick, :countdown_complete
     @timers = {}
-    on_update do |delta|
+    listen_for(:update) do |delta|
       update_timers delta
     end
   end

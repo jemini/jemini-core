@@ -9,7 +9,7 @@ class Gemini::TriangleTrail < Gemini::GameObject
     @radius = 10
     @alpha = 0.5
     @flip = false
-    on_after_move do
+    listen_for(:after_move) do
       @trail.pop if @trail.size >= @trail_size
       @trail.unshift([x, y])
     end

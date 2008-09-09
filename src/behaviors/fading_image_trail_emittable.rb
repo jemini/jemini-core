@@ -6,7 +6,7 @@ class FadingImageTrailEmittable < Gemini::Behavior
     @move_threshold = 4
     @move_count = 0
     @seconds_to_fade_away = 2
-    on_after_move do
+    listen_for(:after_move, @target) do
       @move_count += 1
       if @move_count >= @move_threshold
         fading_image = game_state.create_game_object :FadingImage, @image, clr(:white), @seconds_to_fade_away
