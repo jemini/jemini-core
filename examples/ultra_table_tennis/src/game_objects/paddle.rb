@@ -15,8 +15,14 @@ class Paddle < Gemini::GameObject
     set_bounded_image "paddle1.png"
     set_mass 100
     set_restitution 1.0
+    set_rotatable false
     handle_event :"p#{player_number}_paddle_movement", :move_paddle
     add_tag :paddle
+    
+    # restrict horizontal movement
+#    on_update do
+#      add_velocity(-velocity.x, 0)
+#    end
 #    collides_with_tags :wall
     
 #    on_collided do |event, continue|

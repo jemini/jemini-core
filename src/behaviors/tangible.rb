@@ -16,7 +16,8 @@ class Tangible < Spatial
   declared_methods :x, :y, :height, :width, :move, :mass, :mass=, :set_mass, :shape,
                    :set_shape, :name, :name=, :rotation, :rotation=, :set_rotation, :add_force,
                    :set_force, :come_to_rest, :add_to_world, :remove_from_world, :set_tangible_debug_mode,
-                   :tangible_debug_mode=, :restitution, :restitution=, :set_restitution, :add_velocity
+                   :tangible_debug_mode=, :restitution, :restitution=, :set_restitution, :add_velocity,
+                   :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity
   
   def load
     @mass = 1
@@ -54,6 +55,15 @@ class Tangible < Spatial
     @body.rotation * RADIANS_TO_DEGREES_MULTIPLIER
   end
   
+  def rotatable?
+    @body.rotatable?
+  end
+  
+  def rotatable=(rotatable)
+    @body.rotatable = rotatable
+  end
+  alias_method :set_rotatable, :rotatable=
+  
   def add_force(x, y = nil)
     if y.nil?
       @body.add_force(x)
@@ -68,6 +78,10 @@ class Tangible < Spatial
   
   def add_velocity(x, y)
     @body.adjust_velocity(Java::net::phys2d::math::Vector2f.new(x, y))
+  end
+  
+  def velocity
+    @body.velocity
   end
   
   def come_to_rest
@@ -121,6 +135,13 @@ class Tangible < Spatial
     end
   end
   alias_method :set_tangible_debug_mode, :tangible_debug_mode=
+  
+  
+  def set_static_body
+    @body.moveable = false
+    @body.rotatable = false
+    @body.is_resting = true
+  end
   
 private
   def setup_body
