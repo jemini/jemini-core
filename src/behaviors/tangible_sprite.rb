@@ -3,7 +3,8 @@ require 'sprite'
 class TangibleSprite < Sprite
   depends_on :Tangible
   #:width, :height, 
-  declared_methods :draw, :image, :image=, :set_image, :image_scaling, :color, :set_color, :rotation, :rotation=, :set_rotation, :bounded_image=, :set_bounded_image
+  declared_methods :draw, :image, :image=, :set_image, :image_scaling, :color, :set_color, :bounded_image=, :set_bounded_image
+  #:rotation, :rotation=, :set_rotation, 
   wrap_with_callbacks :draw
 #  use_behaviors_methods :Tangible => [:width, :height]
   
@@ -27,9 +28,13 @@ class TangibleSprite < Sprite
   alias_method :set_bounded_image, :bounded_image=
   
   
+  def center_position
+    vec(x - (width / 2), y - (height / 2))
+  end
   
   def draw(graphics)
     image.rotation = @target.rotation
-    super
+    position = center_position
+    @image.draw(position.x, position.y, @color.native_color)
   end
 end

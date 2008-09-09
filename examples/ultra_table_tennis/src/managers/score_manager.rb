@@ -51,9 +51,9 @@ private
     ball.move(320, rand(480 - ball.height))
     #add_random_behavior_to_ball ball
 
-    ball.set_force(negative_or_positive_random(7) * 0.01, negative_or_positive_random(4) * 0.01)
+    #ball.set_force(negative_or_positive_random(7) * 0.01, negative_or_positive_random(4) * 0.01)
 #    ball.inertia = [negative_or_positive_random(7), negative_or_positive_random(4)]
-    #ball.inertia = [negative_or_positive_random(7), 0]
+    ball.set_force(negative_or_positive_random(7) * 0.01, 0)
     #ball.inertia = [0, negative_or_positive_random(7)]
   end
   

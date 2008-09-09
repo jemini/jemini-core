@@ -1,6 +1,6 @@
 class Tangible < Spatial
-  DEGREES_TO_RADIANS_MULTIPLIER = 180 / Math::PI
-  RADIANS_TO_DEGREES_MULTIPLIER = Math::PI / 180
+  DEGREES_TO_RADIANS_MULTIPLIER = Math::PI / 180
+  RADIANS_TO_DEGREES_MULTIPLIER = 180 / Math::PI
   
   include_class "net.phys2d.raw.Body"
   include_class "net.phys2d.raw.shapes.Box"
@@ -10,9 +10,13 @@ class Tangible < Spatial
   include_class "net.phys2d.raw.shapes.ConvexPolygon"
   include_class "net.phys2d.math.Vector2f"
   
+  INFINITE_MASS = Body::INFINITE_MASS
   attr_reader :mass, :name, :shape
   wrap_with_callbacks :move
-  declared_methods :x, :y, :height, :width, :move, :mass, :mass=, :set_mass, :shape, :set_shape, :name, :name=, :rotation, :rotation=, :set_rotation, :add_force, :set_force, :come_to_rest, :add_to_world, :remove_from_world, :set_tangible_debug_mode, :tangible_debug_mode=
+  declared_methods :x, :y, :height, :width, :move, :mass, :mass=, :set_mass, :shape,
+                   :set_shape, :name, :name=, :rotation, :rotation=, :set_rotation, :add_force,
+                   :set_force, :come_to_rest, :add_to_world, :remove_from_world, :set_tangible_debug_mode,
+                   :tangible_debug_mode=, :restitution, :restitution=, :set_restitution, :add_velocity
   
   def load
     @mass = 1
@@ -62,7 +66,13 @@ class Tangible < Spatial
     @body.set_force(x, y)
   end
   
+  def add_velocity(x, y)
+    @body.adjust_velocity(Java::net::phys2d::math::Vector2f.new(x, y))
+  end
+  
   def come_to_rest
+    current_velocity = @body.velocity
+    add_velocity(-current_velocity.x, -current_velocity.y)
     @body.is_resting = true
   end
   
@@ -71,7 +81,16 @@ class Tangible < Spatial
     @body.set(@shape, @mass)
   end
   alias_method :set_mass, :mass=
-    
+  
+  def restitution
+    @body.restitution
+  end
+  
+  def restitution=(restitution)
+    @body.restitution = restitution
+  end
+  alias_method :set_restitution, :restitution=
+  
   def set_shape(shape, *params)
     if shape.respond_to?(:to_str) || shape.kind_of?(Symbol)
       @shape = ("Tangible::" + shape.to_s).constantize.new(*params)

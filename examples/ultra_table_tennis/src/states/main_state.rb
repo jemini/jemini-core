@@ -13,14 +13,14 @@ class MainState < Gemini::BaseState
     
     load_keymap :MainGameKeymap
     
-    #create_game_object :Wall, 0, 0, 630, 10, :top
-    #create_game_object :Wall, 20, 10, 30, 40, :right, :score_region
-    create_game_object :Wall, 100, 200, 50, 100, :left, :score_region
-    #create_game_object :Wall, 0, 470, 630, 10, :bottom
+    create_game_object :Wall, 0, 0, 629, 9, :top
+    create_game_object :Wall, 630, 0, 9, 470, :right, :score_region
+    create_game_object :Wall, 0, 9, 9, 460, :left, :score_region
+    create_game_object :Wall, 0, 471, 630, 10, :bottom
     
     paddle = create_game_object :Paddle, 1
     paddle.move(100, 100)
-    
+    #paddle.set_rotation 45
     paddle = create_game_object :Paddle, 2
     paddle.move(500, 300)
     

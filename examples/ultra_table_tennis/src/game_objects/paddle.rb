@@ -13,8 +13,8 @@ class Paddle < Gemini::GameObject
 #    animation_mode :ping_pong
 #    animation_fps 4
     set_bounded_image "paddle1.png"
-    set_mass 1000
-    
+    set_mass 100
+    set_restitution 1.0
     handle_event :"p#{player_number}_paddle_movement", :move_paddle
     add_tag :paddle
 #    collides_with_tags :wall
@@ -31,13 +31,10 @@ class Paddle < Gemini::GameObject
   def move_paddle(message)
     case message.value
     when :up
-#      inertia[1] = -5
-      set_force(0.0, -50.0)
+      add_velocity(0.0, -0.3)
     when :down
-#      inertia[1] = 5
-      set_force(0.0, 50.0)
+      add_velocity(0.0, 0.3)
     when :stop
-#      inertia[1] = 0
       come_to_rest
     end
   end

@@ -8,6 +8,7 @@ class Ball < Gemini::GameObject
   def load
     set_image "ball.png"
     set_shape :Circle, 15
+    set_restitution 0.0
 #    collides_with_tags :wall, :paddle
 #    move(rand(640 - width), rand(480 - height))
     
