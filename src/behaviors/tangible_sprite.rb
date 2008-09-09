@@ -33,7 +33,7 @@ class TangibleSprite < Sprite
   end
   
   def draw(graphics)
-    image.rotation = @target.rotation
+    @image.rotation = @target.rotation
     position = center_position
     @image.draw(position.x, position.y, @color.native_color)
   end
