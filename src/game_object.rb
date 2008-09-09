@@ -59,8 +59,12 @@ module Gemini
     def enable_listeners_for(*methods)
       methods.each do |method|
         code = <<-ENDL
-          def on_#{method}(&callback)
+          def on_#{method}(callback)
             @callbacks[:#{method}] << callback
+          end
+
+          def remove_#{method}(object)
+            @callbacks[:#{method}].delete {|callback| callback.origin == object }
           end
         ENDL
 
@@ -72,15 +76,19 @@ module Gemini
       @callbacks[event_name.to_sym].each do |callback|
         if event
           if callback_status
-            callback.call(event, callback_status)
+            callback.notify(event, callback_status)
             break unless callback_status.nil? or callback_status.continue?
           else
-            callback.call(event)
+            callback.notify(event)
           end
         else
-          callback.call
+          callback.notify
         end
       end
+    end
+    
+    def listen_for(message, target=self, &block)
+      target.send("on_#{message}", Callback.new(self, block))
     end
     
     def kind_of?(klass)
@@ -107,5 +115,22 @@ module Gemini
     def behaviors
       @@behaviors[self.class]
     end  
+  end
+  
+  class Callback
+    attr_reader :origin
+    
+    def initialize(origin, block)
+      @origin = origin
+      @block = block
+    end
+    
+    def notify(event, status = nil)
+      if status.nil?
+        @block.call(event)
+      else
+        @block.call(event, status)
+      end
+    end
   end
 end

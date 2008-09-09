@@ -37,8 +37,12 @@ class Tangible < Spatial
     @body.position.y
   end
   
-  def move(x, y)
+  def set_position(x, y)
     @body.set_position(x, y)
+  end
+  
+  def move(x, y)
+    @body.move(x, y)
   end
   
   def width

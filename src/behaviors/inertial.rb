@@ -6,7 +6,7 @@ class Inertial < Gemini::Behavior
   
   def load
     @inertia = [0,0]
-    @target.on_update do
+    listen_for(:update) do
       move(@inertia[0] + x, @inertia[1] + y)
     end
   end

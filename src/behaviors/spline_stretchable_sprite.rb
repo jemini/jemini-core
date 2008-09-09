@@ -7,7 +7,7 @@ class SplineStretchableSprite < Gemini::Behavior
   declared_methods :set_stretch_spline, :set_stretch_splines
   
   def load
-    @target.on_update do
+    listen_for(:update) do
 #      @target.width = @original_width
 #      @target.height = @original_height
       old_width = @target.width

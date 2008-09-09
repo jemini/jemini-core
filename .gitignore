@@ -4,3 +4,4 @@ manifest.mf
 build
 nbbuild.xml
 .DS_Store
+dist

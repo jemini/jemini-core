@@ -8,10 +8,10 @@ class TriangleTrailEmittable < Gemini::Behavior
     @emitter = game_state.create_game_object :TriangleTrail
     @emitter_offset = [0,0]
     
-    on_after_move do
+    update(:after_move) do
       @emitter.move(@emitter_offset[0] + x, @emitter_offset[1] + y)
     end
-    game_state.manager(:game_object).on_after_remove_game_object do |game_object|
+    listen_for(:after_remove_game_object, game_state.manager(:game_object)) do |game_object|
       game_state.manager(:game_object).remove_game_object @emitter if game_object == @target
     end
   end
