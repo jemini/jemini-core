@@ -1,6 +1,7 @@
 class Tangible < Spatial
   DEGREES_TO_RADIANS_MULTIPLIER = Math::PI / 180
   RADIANS_TO_DEGREES_MULTIPLIER = 180 / Math::PI
+  SQUARE_ROOT_OF_TWO = Math.sqrt(2)
   
   include_class "net.phys2d.raw.Body"
   include_class "net.phys2d.raw.shapes.Box"
@@ -19,7 +20,7 @@ class Tangible < Spatial
                    :tangible_debug_mode=, :restitution, :restitution=, :set_restitution, :add_velocity,
                    :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity, :wish_move,
                    :set_movable, :movable=, :movable?, :set_position, #:set_safe_move, :safe_move=,
-                   :damping, :set_damping, :damping=
+                   :damping, :set_damping, :damping=, :set_speed_limit, :speed_limit= #, :speed_limit
   
   def load
     @mass = 1
@@ -41,6 +42,17 @@ class Tangible < Spatial
   def set_position(x, y)
     @body.set_position(x, y)
   end
+  
+  def speed_limit=(speed_limit_or_x, y=nil)
+    if y.nil?
+      axis_limit_x = axis_limit_y = speed_limit_or_x / SQUARE_ROOT_OF_TWO
+    else
+      axis_limit_x = speed_limit_or_x
+      axis_limit_y = y
+    end
+    @body.set_max_velocity(axis_limit_x, axis_limit_y)
+  end
+  alias_method :set_speed_limit, :speed_limit=
   
 #  def safe_move=(safe_move)
 #    @safe_move = safe_move

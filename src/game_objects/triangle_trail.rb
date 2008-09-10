@@ -1,5 +1,6 @@
 class Gemini::TriangleTrail < Gemini::GameObject
-  has_behavior :Movable2d
+  #has_behavior :Movable2d
+  has_behavior :Spatial
   attr_accessor :radius, :alpha
   
   def load
@@ -9,7 +10,8 @@ class Gemini::TriangleTrail < Gemini::GameObject
     @radius = 10
     @alpha = 0.5
     @flip = false
-    listen_for(:after_move) do
+    #TODO: Remove message when the callback stuff is checked in
+    listen_for(:after_move) do |message|
       @trail.pop if @trail.size >= @trail_size
       @trail.unshift([x, y])
     end

@@ -9,7 +9,7 @@ class BasicPhysicsManager < Gemini::GameObject
   def load
     @world = World.new(Vector2f.new(0, 0), 10, QuadSpaceStrategy.new(20, 5))
     @world.add_listener self
-    listen_for(:update, @game_state.manager(:update)) {|delta| @world.step(delta) }
+    @game_state.manager(:update).on_update {|delta| @world.step(delta) }
     
     listen_for(:after_add_game_object, @game_state.manager(:game_object)) do |game_object|
       if game_object.kind_of? Tangible

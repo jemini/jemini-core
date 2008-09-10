@@ -19,6 +19,7 @@ class Paddle < Gemini::GameObject
     #set_safe_move true
     set_rotatable false
     set_damping 500.0
+    set_speed_limit 0, 0.5
 #    listen_for :collided, self do |message|
 #      if message.other.kind_of? Ball
 #        puts "colliding with ball"
@@ -40,9 +41,7 @@ class Paddle < Gemini::GameObject
     case message.value
     when :up
       add_force(0, -100.0)
-      #wish_move(x + 0.0, y - 1)
     when :down
-      #wish_move(x + 0.0, y + 1)
       add_force(0, 100.0)
     end
   end

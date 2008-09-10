@@ -23,13 +23,15 @@ module Gemini
       load(*args)
     end
 
-    def add_behavior(behavior)
-      require "behaviors/#{behavior.underscore}"
-      klass = Object.const_get(behavior)
-      klass.add_to(self)
-      validate_dependant_behaviors
+    def add_behavior(behavior_name)
+      require "behaviors/#{behavior_name.underscore}"
+      klass = Object.const_get(behavior_name)
+#      unless @behaviors.values.find {|behavior| behavior.kind_of? klass}
+        klass.add_to(self) 
+        validate_dependant_behaviors
+ #     end
     rescue NameError => e
-      raise "Unable to load behavior #{behavior}, #{e.message}\n#{e.backtrace.join("\n")}"
+      raise "Unable to load behavior #{behavior_name}, #{e.message}\n#{e.backtrace.join("\n")}"
     rescue
       klass.remove_from(self)
       raise
@@ -59,7 +61,7 @@ module Gemini
     def enable_listeners_for(*methods)
       methods.each do |method|
         code = <<-ENDL
-          def on_#{method}(callback)
+          def on_#{method}(&callback)
             @callbacks[:#{method}] << callback
           end
 
@@ -76,19 +78,19 @@ module Gemini
       @callbacks[event_name.to_sym].each do |callback|
         if event
           if callback_status
-            callback.notify(event, callback_status)
+            callback.call(event, callback_status)
             break unless callback_status.nil? or callback_status.continue?
           else
-            callback.notify(event)
+            callback.call(event)
           end
         else
-          callback.notify
+          callback.call
         end
       end
     end
     
     def listen_for(message, target=self, &block)
-      target.send("on_#{message}", Callback.new(self, block))
+      target.send("on_#{message}", &block)
     end
     
     def kind_of?(klass)
@@ -117,20 +119,20 @@ module Gemini
     end  
   end
   
-  class Callback
-    attr_reader :origin
-    
-    def initialize(origin, block)
-      @origin = origin
-      @block = block
-    end
-    
-    def notify(event, status = nil)
-      if status.nil?
-        @block.call(event)
-      else
-        @block.call(event, status)
-      end
-    end
-  end
+#  class Callback
+#    attr_reader :origin
+#    
+#    def initialize(origin, block)
+#      @origin = origin
+#      @block = block
+#    end
+#    
+#    def notify(event, status = nil)
+#      if status.nil?
+#        @block.call(event)
+#      else
+#        @block.call(event, status)
+#      end
+#    end
+#  end
 end

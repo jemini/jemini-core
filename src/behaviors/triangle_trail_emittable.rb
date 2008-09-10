@@ -1,16 +1,19 @@
 require 'drawable'
 
 class TriangleTrailEmittable < Gemini::Behavior
-  depends_on :Movable2d
+  #depends_on :Movable2d
+  depends_on :Updates
+  depends_on_kind_of :Spatial
   declared_methods :emit_triangle_trail_from_offset, :emit_triangle_trail_with_radius, :alpha, :alpha=, :layer=
   
   def load
     @emitter = game_state.create_game_object :TriangleTrail
     @emitter_offset = [0,0]
     
-    update(:after_move) do
+    @target.on_update do
       @emitter.move(@emitter_offset[0] + x, @emitter_offset[1] + y)
     end
+    
     listen_for(:after_remove_game_object, game_state.manager(:game_object)) do |game_object|
       game_state.manager(:game_object).remove_game_object @emitter if game_object == @target
     end
