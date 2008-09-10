@@ -10,6 +10,7 @@ $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/game_objects')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/states')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/behaviors')
 
+require 'proc_enhancement'
 require 'game_object'
 require 'message_queue'
 require 'input_manager'
