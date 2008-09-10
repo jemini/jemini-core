@@ -13,16 +13,16 @@ class MainState < Gemini::BaseState
     
     load_keymap :MainGameKeymap
     
-    create_game_object :Wall, 640 / 2, 0, 640, 10, :top
-    create_game_object :Wall, 640 - 10,  480 / 2, 10, 480, :right, :score_region
+    create_game_object :Wall, 640 / 2, 0, 640, 20, :top
+    create_game_object :Wall, 640 - 10,  480 / 2, 20, 480, :right, :score_region
     create_game_object :Wall, 0, 480 / 2, 10, 480, :left, :score_region
-    create_game_object :Wall, 640 / 2, 480 - 10, 640, 10, :bottom
+    create_game_object :Wall, 640 / 2, 480 - 10, 640, 20, :bottom
     
     paddle = create_game_object :Paddle, 1
-    paddle.move(100, 100)
+    paddle.set_position(100, 100)
     
     paddle = create_game_object :Paddle, 2
-    paddle.move(500, 300)
+    paddle.set_position(500, 300)
     
     quitter = create_game_object :GameObject
     quitter.add_behavior :RecievesEvents

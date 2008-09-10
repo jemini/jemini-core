@@ -1,46 +1,49 @@
 class Paddle < Gemini::GameObject
   has_behavior :UpdatesAtConsistantRate
   has_behavior :RecievesEvents
-#  has_behavior :CollidableWhenMoving
   has_behavior :Taggable
-#  has_behavior :Inertial
 #  has_behavior :AnimatedSprite
   has_behavior :TangibleSprite
-#  has_behavior :CollisionPoolAlgorithmTaggable
   
   def load(player_number)
 #    sprites "paddle1.png", "paddle2.png", "paddle3.png", "paddle4.png", "paddle5.png"
 #    animation_mode :ping_pong
 #    animation_fps 4
     set_bounded_image "paddle1.png"
-    set_mass Tangible::INFINITE_MASS
-    set_restitution 1.0
-    #set_movable false
-    set_rotatable false
+    #set_mass Tangible::INFINITE_MASS / 2
+    set_mass 10000
+    set_restitution 1
+    #set_static_body
     handle_event :"p#{player_number}_paddle_movement", :move_paddle
     add_tag :paddle
-    
-    # restrict horizontal movement
-    listen_for(:collided) do |message|
-#      puts "collision occured in paddle!"
-#      puts "normal: #{event.normal}"
-#      puts "penetration: #{event.penetration_depth}"
-#      puts "velocity: #{velocity}"
-#      puts "force: #{force}"
-      #add_force(-event.normal.x * event.penetration_depth * 2, 0)
-      #add_velocity(event.normal.x * event.penetration_depth, 0)
-      #come_to_rest
-    end
+    #set_safe_move true
+    set_rotatable false
+    set_damping 500.0
+#    listen_for :collided, self do |message|
+#      if message.other.kind_of? Ball
+#        puts "colliding with ball"
+#        puts "event info"
+#        puts "++normal: #{message.event.normal}"
+#        puts "++depth:  #{message.event.penetration_depth}"
+#        puts "\n"
+#        puts "paddle info"
+#        puts "--force:    #{force}"
+#        puts "--velocity: #{velocity}"
+#        puts "--"
+#        #add_force(-force.x, -force.y) 
+#        #add_velocity(velocity.x, velocity.y)
+#      end
+#    end
   end
   
   def move_paddle(message)
     case message.value
     when :up
-      add_velocity(0.0, -0.3)
+      add_force(0, -100.0)
+      #wish_move(x + 0.0, y - 1)
     when :down
-      add_velocity(0.0, 0.3)
-    when :stop
-      come_to_rest
+      #wish_move(x + 0.0, y + 1)
+      add_force(0, 100.0)
     end
   end
 end

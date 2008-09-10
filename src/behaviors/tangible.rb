@@ -17,8 +17,9 @@ class Tangible < Spatial
                    :set_shape, :name, :name=, :rotation, :rotation=, :set_rotation, :add_force, :force,
                    :set_force, :come_to_rest, :add_to_world, :remove_from_world, :set_tangible_debug_mode,
                    :tangible_debug_mode=, :restitution, :restitution=, :set_restitution, :add_velocity,
-                   :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity,
-                   :set_movable, :movable=, :movable?
+                   :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity, :wish_move,
+                   :set_movable, :movable=, :movable?, :set_position, #:set_safe_move, :safe_move=,
+                   :damping, :set_damping, :damping=
   
   def load
     @mass = 1
@@ -39,6 +40,32 @@ class Tangible < Spatial
   
   def set_position(x, y)
     @body.set_position(x, y)
+  end
+  
+#  def safe_move=(safe_move)
+#    @safe_move = safe_move
+#    if safe_move
+#      puts "adding safe move listener"
+#      listen_for(:collided, @target) do
+#        puts "collision event"
+#        if @safe_move
+#          puts "position: #{@body.position}"
+#          puts "last position: #{@body.last_position}"
+#          #@body.set_position(@body.last_position.x, @body.last_position.y)
+#          puts "reseting position to #{@last_x}, #{@last_y}"
+#          @body.set_position(@last_x, @last_y)
+#        end
+#      end
+#    end
+#  end
+#  alias_method :set_safe_move, :safe_move=
+  
+  def wish_move(x, y)
+    # WARNING: @body.last_position is not to be trusted. We'll just handle it ourselves.
+    @last_x = @target.x
+    @last_y = @target.y
+    @body.move(x, y)
+    #@body.set_position(@last_x, @last_y) if @target.game_state.manager(:physics).colliding? @body
   end
   
   def move(x, y)
@@ -156,10 +183,19 @@ class Tangible < Spatial
     @body.moveable?
   end
   
+  def damping
+    @body.damping
+  end
+  
+  def damping=(damping)
+    @body.damping = damping
+  end
+  alias_method :set_damping, :damping=
+  
   def set_static_body
     @body.moveable = false
     @body.rotatable = false
-    @body.is_resting = true
+    #@body.is_resting = true
   end
   
 private

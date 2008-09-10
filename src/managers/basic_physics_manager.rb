@@ -38,6 +38,10 @@ class BasicPhysicsManager < Gemini::GameObject
     end
   end
   
+#  def colliding?(body)
+#    0 < @world.get_contacts(body).size
+#  end
+  
   class PhysicsMessage
     attr_reader :other, :event
     
