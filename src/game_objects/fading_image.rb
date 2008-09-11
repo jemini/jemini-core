@@ -9,7 +9,7 @@ class FadingImage < Gemini::GameObject
     self.color = color
     @initial_alpha = self.color.alpha
     @alpha = 1.0
-    listen_for(:update) do
+    on_update do
       fade
     end
   end

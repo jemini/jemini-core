@@ -6,25 +6,26 @@ class Color
       @native_color = new_native_color(red_or_other, blue, green, alpha)
     else
       # create from predefined Slick colors
-      #@native_color = "Java::org::newdawn::slick::Color::#{red_or_other.to_s.downcase}".constantize
-      @native_color = Java::org::newdawn::slick::Color.send(red_or_other.to_s.downcase)
+      fixed_color = Java::org::newdawn::slick::Color.send(red_or_other.to_s.downcase)
+      # we don't want to change the original, so we copy it
+      @native_color = new_native_color(fixed_color.r, fixed_color.g, fixed_color.b, fixed_color.a)
     end
   end
   
   def red
-    @native_color.red_byte.to_f / 255
+    @native_color.r
   end
   
   def blue
-    @native_color.blue_byte.to_f / 255
+    @native_color.b
   end
   
   def green
-    @native_color.green_byte.to_f / 255
+    @native_color.g
   end
   
   def alpha
-    @native_color.alpha_byte.to_f / 255
+    @native_color.a
   end
   
   def transparency
@@ -32,19 +33,19 @@ class Color
   end
   
   def red=(new_red)
-    @native_color = new_native_color new_red, green, blue, alpha
+    @native_color.r = new_red
   end
   
   def green=(new_green)
-    @native_color = new_native_color red, new_green, blue, alpha
+    @native_color.g = new_green
   end
   
   def blue=(new_blue)
-    @native_color = new_native_color red, green, new_blue, alpha
+    @native_color.b = new_blue
   end
   
   def alpha=(new_alpha)
-    @native_color = new_native_color red, green, blue, new_alpha
+    @native_color.a = new_alpha
   end
   
   def transparency=(new_transparency)
