@@ -13,15 +13,14 @@ class ScoreManager < Gemini::GameObject
   end
   
   def countdown_to_new_round
-    @countdown_count = 5
     @countdown_text = @game_state.create_game_object :Text, 640 / 2, 480 / 2, "5"
     add_countdown(:new_round_countdown, 5, 1)
     
-    listen_for(:timer_tick) do
-      @countdown_text.text = (@countdown_text.text.to_i - 1).to_s
+    on_timer_tick do |timer|
+      @countdown_text.text = timer.ticks_left.to_s
     end
     
-    listen_for(:countdown_complete) do
+    on_countdown_complete do
       @game_state.remove_game_object @countdown_text
       new_round
     end
