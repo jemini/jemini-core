@@ -1,4 +1,4 @@
-require 'tangible'
+require 'behaviors/tangible'
 
 class BasicPhysicsManager < Gemini::GameObject
   include_class 'net.phys2d.math.Vector2f'

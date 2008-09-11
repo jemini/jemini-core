@@ -62,14 +62,14 @@ private
     max = recursed ? 3 : 4
     random = rand(max)
     case random
-    when 0, 1, 2, 3
+    when 0, 1
       ball.add_behavior :TriangleTrailEmittable
       #ball.emit_triangle_trail_from_offset(ball.relative_center_vector)
       ball.emit_triangle_trail_with_radius(ball.width / 2)
       ball.layer = :ball_effects_layer
-#    when 1
-#      ball.add_behavior :FadingImageTrailEmittable
-#      ball.emit_fading_image(ball.image)
+    when 2, 3 #1
+      ball.add_behavior :FadingImageTrailEmittable
+      ball.emit_fading_image(ball.image)
 #    when 2
 #      ball.add_behavior :SplineStretchableSprite
 #      stretch_spline = Spline.new([0,1.033], [1, 1.066], [2, 1.1], [3, 1.066], [4, 1.033], [5, 1.0], [6, 0.966], [7, 0.933], [8, 0.9], [9, 0.933], [10, 0.966])

@@ -1,4 +1,4 @@
-require 'sprite'
+require 'behaviors/sprite'
 
 class TangibleSprite < Sprite
   depends_on :Tangible
@@ -26,11 +26,6 @@ class TangibleSprite < Sprite
     set_shape(:Box, image.width, image.height)
   end
   alias_method :set_bounded_image, :bounded_image=
-  
-  
-  def center_position
-    vec(x - (width / 2), y - (height / 2))
-  end
   
   def draw(graphics)
     @image.rotation = @target.rotation

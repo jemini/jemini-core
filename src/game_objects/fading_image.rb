@@ -1,7 +1,7 @@
 class FadingImage < Gemini::GameObject
   has_behavior :Sprite
   has_behavior :UpdatesAtConsistantRate
-  has_behavior :Movable2d
+  has_behavior :Spatial
   
   def load(sprite, color, seconds_to_fade_away)
     @seconds_to_fade_away = seconds_to_fade_away

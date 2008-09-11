@@ -2,13 +2,9 @@ require 'color'
 require 'vector'
 require 'spline'
 
-include_class 'org.newdawn.slick.BasicGame'
-include_class 'org.newdawn.slick.AppGameContainer'
-
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/managers')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/game_objects')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/states')
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/behaviors')
 
 require 'proc_enhancement'
 require 'game_object'
@@ -22,6 +18,9 @@ require 'basic_render_manager'
 
 module Gemini
   class Main < BasicGame
+    include_class 'org.newdawn.slick.BasicGame'
+    include_class 'org.newdawn.slick.AppGameContainer'
+    
     def initialize(screen_title, screen_width=640, screen_height=480, fullscreen=false)
       super(screen_title)
       @screen_width, @screen_height = screen_width, screen_height

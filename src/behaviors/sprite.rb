@@ -1,11 +1,11 @@
-require 'drawable'
+require 'behaviors/drawable'
 
 class Sprite < Drawable
   include_class 'org.newdawn.slick.Image'
   depends_on :Spatial
   
   attr_accessor :image, :color
-  declared_methods :draw, :width, :height, :image, :image=, :set_iamge, :image_scaling, :color, :set_color, :rotation, :rotation=, :set_rotation
+  declared_methods :draw, :width, :height, :image, :image=, :set_iamge, :image_scaling, :color, :set_color, :color=, :rotation, :rotation=, :set_rotation, :center_position
   wrap_with_callbacks :draw
     
   def load
@@ -29,9 +29,10 @@ class Sprite < Drawable
   end
   alias_method :set_image, :image=
   
-  def set_color(r, g, b, a = 1.0)
-    @color = clr(r.to_f, g.to_f, b.to_f, a)
+  def color=(color)
+    @color = color
   end
+  alias_method :set_color, :color=
   
   def image_scaling(x_scale, y_scale = nil)
     y_scale = x_scale if y_scale.nil?
@@ -49,6 +50,10 @@ class Sprite < Drawable
   
   def add_rotation(rotation)
     @image.rotate rotation
+  end
+  
+  def center_position
+    vec(x - (width / 2), y - (height / 2))
   end
   
   def draw(graphics)
