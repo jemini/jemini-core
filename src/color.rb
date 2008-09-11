@@ -68,9 +68,3 @@ class Color
     Java::org::newdawn::slick::Color.new(red, blue, green, alpha)
   end
 end
-
-class Object
-  def clr(red_or_other, blue = 0.0, green = 0.0, alpha = 0.0)
-    Color.new(red_or_other, blue, green, alpha)
-  end
-end

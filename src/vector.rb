@@ -29,9 +29,3 @@ class Vector
     @native_vector.z = new_z
   end
 end
-
-class Object
-  def vec(x = 0.0, y = 0.0, z = nil)
-    Vector.new(x, y, z)
-  end
-end

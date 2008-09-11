@@ -3,7 +3,7 @@ class FadingImageTrailEmittable < Gemini::Behavior
   depends_on :Updates
   
   def load
-    @fading_image_offset = vec(0,0)
+    @fading_image_offset = Vector.new(0,0)
     @move_threshold = 4
     @move_count = 0
     @seconds_to_fade_away = 2
@@ -11,7 +11,7 @@ class FadingImageTrailEmittable < Gemini::Behavior
     @target.on_update do
       @move_count += 1
       if @move_count >= @move_threshold
-        fading_image = game_state.create_game_object :FadingImage, @image, clr(:white), @seconds_to_fade_away
+        fading_image = game_state.create_game_object :FadingImage, @image, Color.new(:white), @seconds_to_fade_away
         if @target.kind_of? TangibleSprite
           x = self.x - (width / 2)
           y = self.y - (height / 2)

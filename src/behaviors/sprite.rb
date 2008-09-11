@@ -9,7 +9,7 @@ class Sprite < Drawable
   wrap_with_callbacks :draw
     
   def load
-    @color = clr(1.0, 1.0, 1.0, 1.0)
+    @color = Color.new(1.0, 1.0, 1.0, 1.0)
   end
   
   def width
@@ -53,7 +53,7 @@ class Sprite < Drawable
   end
   
   def center_position
-    vec(x - (width / 2), y - (height / 2))
+    Vector.new(x - (width / 2), y - (height / 2))
   end
   
   def draw(graphics)
