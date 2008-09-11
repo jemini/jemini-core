@@ -1,4 +1,4 @@
-require 'drawable'
+require 'behaviors/drawable'
 
 class TriangleTrailEmittable < Gemini::Behavior
   #depends_on :Movable2d

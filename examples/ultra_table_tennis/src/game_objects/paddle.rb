@@ -40,9 +40,9 @@ class Paddle < Gemini::GameObject
   def move_paddle(message)
     case message.value
     when :up
-      add_force(0, -100.0)
+      add_force(0, -75.0)
     when :down
-      add_force(0, 100.0)
+      add_force(0, 75.0)
     end
   end
 end

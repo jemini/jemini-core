@@ -17,8 +17,7 @@ require 'basic_update_manager'
 require 'basic_render_manager'
 
 module Gemini
-  class Main < BasicGame
-    include_class 'org.newdawn.slick.BasicGame'
+  class Main < Java::org::newdawn::slick::BasicGame
     include_class 'org.newdawn.slick.AppGameContainer'
     
     def initialize(screen_title, screen_width=640, screen_height=480, fullscreen=false)

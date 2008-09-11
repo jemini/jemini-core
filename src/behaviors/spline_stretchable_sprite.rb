@@ -1,13 +1,14 @@
 class SplineStretchableSprite < Gemini::Behavior
   INDEPENDENT_MODE = :independent
   MERGED_MODE = :merged
-  depends_on :Sprite
+  depends_on_kind_of :Sprite
   depends_on :UpdatesAtConsistantRate
   
   declared_methods :set_stretch_spline, :set_stretch_splines
   
   def load
-    listen_for(:update) do
+    @original_image = @target.image
+    @target.on_update do
 #      @target.width = @original_width
 #      @target.height = @original_height
       old_width = @target.width
@@ -21,7 +22,7 @@ class SplineStretchableSprite < Gemini::Behavior
       
       new_width = @target.width
       new_height = @target.height
-      recenter_position(old_width, old_height, new_width, new_height)
+      recenter_position(old_width, old_height, new_width, new_height) unless @target.kind_of? TangibleSprite
     end
   end
   
