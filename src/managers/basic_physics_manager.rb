@@ -7,7 +7,7 @@ class BasicPhysicsManager < Gemini::GameObject
   has_behavior :RecievesEvents
   
   def load
-    @world = World.new(Vector2f.new(0, 0), 10, QuadSpaceStrategy.new(20, 5))
+    @world = World.new(Vector2f.new(0, 0), 30, QuadSpaceStrategy.new(20, 5))
     @world.add_listener self
     @game_state.manager(:update).on_update {|delta| @world.step(delta) }
     

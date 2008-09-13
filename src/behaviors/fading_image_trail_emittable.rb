@@ -7,19 +7,12 @@ class FadingImageTrailEmittable < Gemini::Behavior
     @move_threshold = 4
     @move_count = 0
     @seconds_to_fade_away = 2
-    #@target.on_after_move do
     @target.on_update do
       @move_count += 1
       if @move_count >= @move_threshold
         fading_image = game_state.create_game_object :FadingImage, @image, Color.new(:white), @seconds_to_fade_away
-        if @target.kind_of? TangibleSprite
-          x = self.x - (width / 2)
-          y = self.y - (height / 2)
-        else
-          x = self.x
-          y = self.y
-        end
-        fading_image.move(@fading_image_offset.x + x, @fading_image_offset.y + y)
+        center_position = @target.center_position
+        fading_image.move(@fading_image_offset.x + center_position.x, @fading_image_offset.y + center_position.y)
         @move_count = 0
       end
     end 

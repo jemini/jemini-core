@@ -22,7 +22,7 @@ class SplineStretchableSprite < Gemini::Behavior
       
       new_width = @target.width
       new_height = @target.height
-      recenter_position(old_width, old_height, new_width, new_height) unless @target.kind_of? TangibleSprite
+      #recenter_position(old_width, old_height, new_width, new_height) unless @target.kind_of? TangibleSprite
     end
   end
   

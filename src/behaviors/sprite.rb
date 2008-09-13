@@ -3,9 +3,8 @@ require 'behaviors/drawable'
 class Sprite < Drawable
   include_class 'org.newdawn.slick.Image'
   depends_on :Spatial
-  
   attr_accessor :image, :color
-  declared_methods :draw, :width, :height, :image, :image=, :set_image, :image_scaling, :color, :set_color, :color=, :rotation, :rotation=, :set_rotation, :center_position
+  declared_methods :center_position, :draw, :width, :height, :image, :image=, :set_image, :image_scaling, :color, :set_color, :color=, :rotation, :rotation=, :set_rotation
   wrap_with_callbacks :draw
     
   def load
@@ -53,10 +52,11 @@ class Sprite < Drawable
   end
   
   def center_position
-    Vector.new(x - (width / 2), y - (height / 2))
+    Vector.new(@target.x, @target.y)
   end
   
   def draw(graphics)
-    @image.draw(x, y, @color.native_color)
+    position = center_position
+    @image.draw(position.x, position.y, @color.native_color)
   end
 end
