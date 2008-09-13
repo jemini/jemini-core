@@ -38,6 +38,9 @@ class BasicPhysicsManager < Gemini::GameObject
     end
   end
   
+  def gravity=(gravity)
+    @world.gravity = gravity
+  end
 #  def colliding?(body)
 #    0 < @world.get_contacts(body).size
 #  end

@@ -24,6 +24,7 @@ module Gemini
       super(screen_title)
       @screen_width, @screen_height = screen_width, screen_height
       app = AppGameContainer.new(self, screen_width, screen_height, fullscreen)
+      app.vsync = true
       app.start
     end
 
