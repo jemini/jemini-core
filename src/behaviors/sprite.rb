@@ -5,7 +5,7 @@ class Sprite < Drawable
   depends_on :Spatial
   
   attr_accessor :image, :color
-  declared_methods :draw, :width, :height, :image, :image=, :set_iamge, :image_scaling, :color, :set_color, :color=, :rotation, :rotation=, :set_rotation, :center_position
+  declared_methods :draw, :width, :height, :image, :image=, :set_image, :image_scaling, :color, :set_color, :color=, :rotation, :rotation=, :set_rotation, :center_position
   wrap_with_callbacks :draw
     
   def load
