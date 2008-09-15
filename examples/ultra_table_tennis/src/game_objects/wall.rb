@@ -8,6 +8,7 @@ class Wall < Gemini::GameObject
     move(x, y)
     set_static_body
     set_restitution 1.0
+    set_friction 1.0
     #come_to_rest
     add_tag :wall, *tags
   end

@@ -28,4 +28,14 @@ class Vector
   def z=(new_z)
     @native_vector.z = new_z
   end
+  
+  def to_phys2d_vector
+    Java::net::phys2d::math::Vector2f.new(@native_vector.x, @native_vector.y)
+  end
+end
+
+class Java::net::phys2d::math::Vector2f
+  def to_vector
+    Vector.new(x, y)
+  end
 end

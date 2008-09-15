@@ -5,7 +5,8 @@ require 'message_queue'
 module Gemini
   class SlickInputListener
     include InputListener
-
+    attr_accessor :delta
+    
     def initialize(state)
       @state = state
     end
@@ -17,7 +18,7 @@ module Gemini
 
     def method_missing(method, *args)
       return if (method == :inputEnded) || @state != BaseState.active_state
-      @state.manager(:message_queue).post_message(Message.new(:slick_input, [method, args]))
+      @state.manager(:message_queue).post_message(Message.new(:slick_input, [method, args], @delta))
     end
   end
 
@@ -38,7 +39,8 @@ module Gemini
     
     def load(container)
       @raw_input = container.input
-      @raw_input.add_listener Gemini::SlickInputListener.new(@game_state)
+      @input_listener = Gemini::SlickInputListener.new(@game_state)
+      @raw_input.add_listener @input_listener
     end
     
     def load_keymap(keymap)
@@ -93,16 +95,17 @@ module Gemini
         
         next if type.nil? or action.nil?
 
-        invoke_callbacks_for(type, action, value, message)
+        invoke_callbacks_for(type, action, value, message, message.delta)
       end
     end
     
-    def poll(screen_width, screen_height)
+    def poll(screen_width, screen_height, delta)
+      @input_listener.delta = delta
       @raw_input.poll(screen_width, screen_height)
       
       # Check for any held keys
       @held_keys.each do |key_id|
-        invoke_callbacks_for(:key, :held, key_id, nil)
+        invoke_callbacks_for(:key, :held, key_id, nil, delta)
       end
     end
     
@@ -114,11 +117,11 @@ module Gemini
     end
     
   private
-    def invoke_callbacks_for(type, action, value, message)
+    def invoke_callbacks_for(type, action, value, message, delta)
       key_mappings = @keymap[type][action][value]
       unless key_mappings.empty?
         key_mappings.each do |key_map|
-          message_to_post = Message.new(key_map[0], key_map[1])
+          message_to_post = Message.new(key_map[0], key_map[1], delta)
           if key_map[2] #block param
             key_map[2].call(message.value[1], message_to_post)
           end

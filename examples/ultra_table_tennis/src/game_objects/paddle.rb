@@ -16,15 +16,15 @@ class Paddle < Gemini::GameObject
     handle_event :"p#{player_number}_paddle_movement", :move_paddle
     add_tag :paddle
     set_damping 500.0
-    set_speed_limit 0, 0.5
+    set_speed_limit Vector.new(0, 60)
   end
   
   def move_paddle(message)
     case message.value
     when :up
-      add_force(0, -75.0)
+      add_force(0, -75000.0)
     when :down
-      add_force(0, 75.0)
+      add_force(0, 75000.0)
     end
   end
 end

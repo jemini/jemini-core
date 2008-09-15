@@ -3,10 +3,11 @@ module Gemini
   
   # Message object that is posted to the MessageQueue.
   class Message
-    attr_accessor :name, :value
-    def initialize(name, value)
+    attr_accessor :name, :value, :delta
+    def initialize(name, value, delta)
       @name = name
       @value = value
+      @delta = delta
     end
   end
   

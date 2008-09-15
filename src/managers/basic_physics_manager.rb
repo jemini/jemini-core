@@ -7,18 +7,18 @@ class BasicPhysicsManager < Gemini::GameObject
   has_behavior :RecievesEvents
   
   def load
-    @world = World.new(Vector2f.new(0, 0), 30, QuadSpaceStrategy.new(20, 5))
+    @world = World.new(Vector2f.new(0, 0), 10, QuadSpaceStrategy.new(20, 5))
     @world.add_listener self
-    @game_state.manager(:update).on_update {|delta| @world.step(delta) }
+    @game_state.manager(:update).on_update {|delta| @world.step(delta * 0.01) }
     
-    listen_for(:after_add_game_object, @game_state.manager(:game_object)) do |game_object|
+    @game_state.manager(:game_object).on_after_add_game_object do |game_object|
       if game_object.kind_of? Tangible
         game_object.add_to_world(@world) 
         game_object.set_tangible_debug_mode(true) if @debug_mode
       end
     end
     
-    listen_for(:after_remove_game_object, @game_state.manager(:game_object)) do |game_object|
+    @game_state.manager(:game_object).on_after_remove_game_object do |game_object|
       game_object.remove_from_world(@world) if game_object.kind_of? Tangible
     end
     
@@ -38,8 +38,12 @@ class BasicPhysicsManager < Gemini::GameObject
     end
   end
   
-  def gravity=(gravity)
-    @world.gravity = gravity
+  def gravity=(gravity_or_x, y=nil)
+    if y.nil?
+      @world.set_gravity(0, gravity_or_x)
+    else
+      @world.set_gravity(gravity_or_x, y)
+    end
   end
 #  def colliding?(body)
 #    0 < @world.get_contacts(body).size

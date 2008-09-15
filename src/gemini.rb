@@ -25,6 +25,8 @@ module Gemini
       @screen_width, @screen_height = screen_width, screen_height
       app = AppGameContainer.new(self, screen_width, screen_height, fullscreen)
       app.vsync = true
+      app.maximum_logic_update_interval = 60
+      @fresh_state = true
       app.start
     end
 
@@ -39,6 +41,7 @@ module Gemini
       #don't tell the new state that it now has to update load time worth of a delta
       if @fresh_state
         delta = 0
+        #@last_update = Time.now
         @fresh_state = false
       end
       # Workaround for image loading with Slick.
@@ -50,8 +53,10 @@ module Gemini
         @fresh_state = true
         return
       end
-      BaseState.active_state.manager(:input).poll(@screen_width, @screen_height)
+      #delta = (Time.now - @last_update) * 1000.0
+      BaseState.active_state.manager(:input).poll(@screen_width, @screen_height, delta)
       BaseState.active_state.manager(:update).update(delta)
+      #@last_update = Time.now
     end
 
     def render(container, graphics)

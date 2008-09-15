@@ -1,3 +1,5 @@
+require 'behaviors/spatial'
+
 class Tangible < Spatial
   DEGREES_TO_RADIANS_MULTIPLIER = Math::PI / 180
   RADIANS_TO_DEGREES_MULTIPLIER = 180 / Math::PI
@@ -17,10 +19,12 @@ class Tangible < Spatial
   declared_methods :x, :y, :height, :width, :move, :mass, :mass=, :set_mass, :shape,
                    :set_shape, :name, :name=, :rotation, :rotation=, :set_rotation, :add_force, :force,
                    :set_force, :come_to_rest, :add_to_world, :remove_from_world, :set_tangible_debug_mode,
-                   :tangible_debug_mode=, :restitution, :restitution=, :set_restitution, :add_velocity,
+                   :tangible_debug_mode=, :restitution, :restitution=, :set_restitution,
+                   :add_velocity, :set_velocity, :velocity=,
                    :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity, :wish_move,
                    :set_movable, :movable=, :movable?, :set_position, #:set_safe_move, :safe_move=,
-                   :damping, :set_damping, :damping=, :set_speed_limit, :speed_limit= #, :speed_limit
+                   :damping, :set_damping, :damping=, :set_speed_limit, :speed_limit=, #, :speed_limit
+                   :gravity_effected=, :set_gravity_effected, :friction, :set_friction, :friction=
   
   def load
     @mass = 1
@@ -43,12 +47,12 @@ class Tangible < Spatial
     @body.set_position(x, y)
   end
   
-  def speed_limit=(speed_limit_or_x, y=nil)
-    if y.nil?
-      axis_limit_x = axis_limit_y = speed_limit_or_x / SQUARE_ROOT_OF_TWO
+  def speed_limit=(vector_or_shared_value)
+    if vector_or_shared_value.kind_of? Numeric
+      axis_limit_x = axis_limit_y = vector_or_shared_value / SQUARE_ROOT_OF_TWO
     else
-      axis_limit_x = speed_limit_or_x
-      axis_limit_y = y
+      axis_limit_x = vector_or_shared_value.x
+      axis_limit_y = vector_or_shared_value.y
     end
     @body.set_max_velocity(axis_limit_x, axis_limit_y)
   end
@@ -131,8 +135,13 @@ class Tangible < Spatial
   end
   
   def velocity
-    @body.velocity
+    @body.velocity.to_vector
   end
+  
+  def velocity=(vector)
+    @body.adjust_velocity(Java::net::phys2d::math::Vector2f.new(vector.x - @body.velocity.x, vector.y - @body.velocity.y))
+  end
+  alias_method :set_velocity, :velocity=
   
   def come_to_rest
     current_velocity = @body.velocity
@@ -209,6 +218,20 @@ class Tangible < Spatial
     @body.rotatable = false
     #@body.is_resting = true
   end
+  
+  def gravity_effected=(effected)
+    @body.gravity_effected = effected
+  end
+  alias_method :set_gravity_effected, :gravity_effected=
+  
+  def friction
+    @body.friction
+  end
+  
+  def friction=(friction)
+    @body.friction = friction
+  end
+  alias_method :set_friction, :friction=
   
 private
   def setup_body

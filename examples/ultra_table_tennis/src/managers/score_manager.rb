@@ -50,7 +50,7 @@ private
     ball.move(320, rand(400 - ball.height) + 40)
     add_random_behavior_to_ball ball
 
-    ball.set_force(negative_or_positive_random(7) * 0.02, negative_or_positive_random(4) * 0.02)
+    ball.set_force(negative_or_positive_random(7) * 20000, negative_or_positive_random(4) * 20000)
 #    ball.inertia = [negative_or_positive_random(7), negative_or_positive_random(4)]
     #ball.set_force(negative_or_positive_random(7) * 0.01, 0)
     #ball.set_force(negative_or_positive_random(7) * 10.01, 0)

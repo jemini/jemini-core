@@ -5,7 +5,7 @@ class Timeable < Gemini::Behavior
   def load
     @target.enable_listeners_for :timer_tick, :countdown_complete
     @timers = {}
-    listen_for(:update) do |delta|
+    @target.on_update do |delta|
       update_timers delta
     end
   end
@@ -36,8 +36,8 @@ class Timer
   def initialize(name, direction, seconds, notify_frequency, &notify_callback)
     @name = name
     @direction = direction
-    @seconds = seconds
-    @notify_frequency = notify_frequency
+    @milliseconds = seconds * 1000.0
+    @notify_frequency = notify_frequency * 1000.0 if notify_frequency
     @notify_callback = notify_callback unless notify_frequency.nil?
     @current_milliseconds = 0
     @milliseconds_since_last_notify = 0
@@ -49,12 +49,11 @@ class Timer
     @current_milliseconds += delta_in_milliseconds
     @milliseconds_since_last_notify += delta_in_milliseconds
     
-    if @notify_callback && @notify_frequency && (@milliseconds_since_last_notify >= @notify_frequency * 1000)
+    if @notify_callback && @notify_frequency && (@milliseconds_since_last_notify >= @notify_frequency)
       @notify_callback.call(self)
       @milliseconds_since_last_notify = 0
     end
-    
-    @countdown_complete = true if (COUNTDOWN == @direction) && (@current_milliseconds >= @seconds * 1000)
+    @countdown_complete = true if (COUNTDOWN == @direction) && (@current_milliseconds >= @milliseconds)
   end
   
   def reset
@@ -63,15 +62,15 @@ class Timer
   end
   
   def ticks_elapsed
-    (@current_milliseconds / (@notify_frequency * 1000.0)).round
+    (@current_milliseconds / (@notify_frequency)).round
   end
   
   def ticks_left
-    ((@seconds * 1000.0 - @current_milliseconds) / (@notify_frequency * 1000.0)).round
+    ((@milliseconds - @current_milliseconds) / (@notify_frequency)).round
   end
   
   def percent_complete
-    @current_milliseconds / (@seconds * 1000.0)
+    @current_milliseconds / @milliseconds
   end
   
   def countdown_complete?
