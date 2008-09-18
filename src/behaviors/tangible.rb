@@ -24,7 +24,8 @@ class Tangible < Spatial
                    :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity, :wish_move,
                    :set_movable, :movable=, :movable?, :set_position, #:set_safe_move, :safe_move=,
                    :damping, :set_damping, :damping=, :set_speed_limit, :speed_limit=, #, :speed_limit
-                   :gravity_effected=, :set_gravity_effected, :friction, :set_friction, :friction=
+                   :gravity_effected=, :set_gravity_effected, :friction, :set_friction, :friction=,
+                   :get_collision_events
   
   def load
     @mass = 1
@@ -180,10 +181,12 @@ class Tangible < Spatial
   
   def add_to_world(world)
     world.add @body
+    @world = world
   end
   
   def remove_from_world(world)
     world.remove @body
+    @world = nil
   end
   
   def tangible_debug_mode=(mode)
@@ -233,6 +236,14 @@ class Tangible < Spatial
   end
   alias_method :set_friction, :friction=
   
+#  def get_colliding_game_objects(tangible_game_object)
+#    # TODO: Tangibles only?
+#    tangible_game_object
+#  end
+  
+  def get_collision_events
+    @world.get_contacts(@body)
+  end
 private
   def setup_body
     if @name

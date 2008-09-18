@@ -20,6 +20,10 @@ class MainState < Gemini::BaseState
     create_game_object :StaticSprite, "platform.png", 0, 480 / 2, 30, 500
     create_game_object :StaticSprite, "platform.png", 640, 480 / 2, 30, 500
     
+    #platforms!
+    create_game_object :StaticSprite, "platform.png", (640) / 4, (480 * 3)/ 4, 250, 30
+    create_game_object :StaticSprite, "platform.png", (640) / 2, (480 / 2), 250, 30
+    
     microman = create_game_object :Microman
     microman.set_position(640 / 2, 450)
     
