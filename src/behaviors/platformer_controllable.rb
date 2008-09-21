@@ -126,10 +126,10 @@ class PlatformerControllable < Gemini::Behavior
     if grounded?
       puts "jump!"
       animate :jump
-      #@target.gravity_effected = true
+      # This should help us get the object unstuck if it's sunk a little into another body
+      # Although, this might also get us stuck too
+      # TODO: Test to see if super low cielings cause PlatformerControllable to get stuck.
       @target.move(@target.x, @target.y - 10)
-      #@target.gravity_effected = false
-      #@enable_gravity_on_next_update = true
       #@target.add_force(0, -@jump_force)
       # addForce doesn't always get added. Perhaps a Phys2D bug?
       @target.add_velocity(0, -@jump_force)
