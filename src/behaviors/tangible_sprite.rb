@@ -2,7 +2,7 @@ require 'behaviors/sprite'
 
 class TangibleSprite < Sprite
   depends_on :Tangible 
-  declared_methods :center_position, :draw, :image, :image=, :set_image, :image_scaling, :color, :set_color, :bounded_image=, :set_bounded_image
+  declared_methods :center_position, :draw, :image, :image=, :set_image, :image_scaling, :color, :set_color, :bounded_image=, :set_bounded_image, :flip_horizontally
   wrap_with_callbacks :draw
   
   def bounded_image=(new_image)

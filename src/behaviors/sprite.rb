@@ -3,12 +3,16 @@ require 'behaviors/drawable'
 class Sprite < Drawable
   include_class 'org.newdawn.slick.Image'
   depends_on :Spatial
-  attr_accessor :image, :color
-  declared_methods :center_position, :draw, :width, :height, :image, :image=, :set_image, :image_scaling, :color, :set_color, :color=, :rotation, :rotation=, :set_rotation
+  attr_accessor :image, :color, :texture_coords
+  declared_methods :center_position, :draw, :width, :height, :image, :image=, :set_image,
+                   :image_scaling, :color, :set_color, :color=, :rotation, :rotation=, :set_rotation,
+                   :texture_coords, :flip_horizontally
+                 
   wrap_with_callbacks :draw
     
   def load
     @color = Color.new(1.0, 1.0, 1.0, 1.0)
+    @texture_coords = [Vector.new(0.0, 0.0), Vector.new(1.0, 1.0)]
   end
   
   def width
@@ -55,8 +59,14 @@ class Sprite < Drawable
     Vector.new(@target.x, @target.y)
   end
   
+  def flip_horizontally
+    @texture_coords[1].x, @texture_coords[0].x = @texture_coords[0].x, @texture_coords[1].x
+  end
+  
   def draw(graphics)
     position = center_position
-    @image.draw(position.x, position.y, @color.native_color)
+    @image.draw(position.x, position.y, position.x + @image.width, position.y + @image.height,
+                @texture_coords[0].x * @image.width, @texture_coords[0].y * @image.height, @texture_coords[1].x * @image.width, @texture_coords[1].y * @image.height,
+                @color.native_color)
   end
 end

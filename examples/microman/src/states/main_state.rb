@@ -15,7 +15,8 @@ class MainState < Gemini::BaseState
     load_keymap :MainGameKeymap
     
     #ground
-    create_game_object :StaticSprite, "platform.png", 640 / 2, 480 - 10, 650, 30
+    create_game_object :StaticSprite, "platform.png", 640 / 2, 480 - 10, 610, 30
+    
     # left and right walls
     create_game_object :StaticSprite, "platform.png", 0, 480 / 2, 30, 500
     create_game_object :StaticSprite, "platform.png", 640, 480 / 2, 30, 500

@@ -152,7 +152,11 @@ class Tangible < Spatial
   
   def mass=(mass)
     @mass = mass
+    x, y = @target.x, @target.y
     @body.set(@shape, @mass)
+    # TODO: Consider moving to set_shape
+    # A body's position is lost when it moves, reset the position to where it was
+    @body.move x, y
   end
   alias_method :set_mass, :mass=
   
@@ -219,7 +223,7 @@ class Tangible < Spatial
   def set_static_body
     @body.moveable = false
     @body.rotatable = false
-    #@body.is_resting = true
+    @body.is_resting = true
   end
   
   def gravity_effected=(effected)

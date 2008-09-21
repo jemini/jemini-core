@@ -5,6 +5,7 @@
 # TODO: Make a CardinalMovable, for moving N E S W
 # TODO: Allow Walljumping?
 # TODO: Jump-platform exclusion list
+# TODO: Stateful behavior to know when we're jumping, walking, jumping + shooting, walking + shooting, etc
 class PlatformerControllable < Gemini::Behavior
   depends_on :RecievesEvents
   depends_on :MultiAnimatedSprite
@@ -22,12 +23,35 @@ class PlatformerControllable < Gemini::Behavior
     set_rotatable false
     @horizontal_speed = 100
     @jump_force = 20000
-    @platform_state = :grounded
+    @facing_right = true
     @target.on_update do
+      if @check_grounded_on_next_update
+        detect_grounded
+        puts "collided with something, are we grounded? #{@grounded}"
+        @check_grounded_on_next_update = false
+        if @moving && grounded?
+          animate :walk
+        elsif !@moving && grounded?
+          animate :stand
+        else
+          animate :jump
+        end
+      end
+      
       if @moving
         # causes smooth movement
         velocity = @target.velocity
-        velocity.x = @facing_right ? @horizontal_speed : -@horizontal_speed
+        # Another shameless rip of Kevin Glass's code
+        # if we've been pushed back from a collision horizontally
+        # then kill the velocity - don't want to keep pushing during
+        # this frame
+        if (velocity.x > 0 && !@facing_right) || (velocity.x < 0 && @facing_right)
+          puts "pushing back"
+          velocity.x = 0
+        else
+          velocity.x = @facing_right ? @horizontal_speed : -@horizontal_speed
+        end
+        
         @target.set_velocity(velocity)
       else
         # comment out to allow for momentum?
@@ -35,11 +59,17 @@ class PlatformerControllable < Gemini::Behavior
       end
     end
     @target.on_collided do |message|
-      @platform_state = :grounded
+      # The collision event hasn't been resolved yet, so we can't check all of our collisions yet
+      # Queue up the collision check for the next update.
+      @check_grounded_on_next_update = true
       #@target.gravity_effected = false
     end
     #TODO: Configure some basic animations (standing, jumping, falling, running)
     
+  end
+  
+  def grounded?
+    @grounded
   end
   
   def player_number=(player_number)
@@ -58,13 +88,19 @@ class PlatformerControllable < Gemini::Behavior
   
   def start_platform_move(message)
     @moving = true
-    animate :walk
+    if grounded?
+      animate :walk
+    else
+      animate :jump
+    end
     case message.value
     #TODO: Up and down for ladders (aka PlatformerClimbables)
     when :left
+      @target.flip_horizontally if @facing_right
       @facing_right = false
       @target.add_force(-@horizontal_speed, 0)
     when :right
+      @target.flip_horizontally unless @facing_right
       @facing_right = true
       @target.add_force( @horizontal_speed, 0)
     end
@@ -72,7 +108,11 @@ class PlatformerControllable < Gemini::Behavior
   
   def stop_platform_move(message)
     puts "stopping move for #{message.value}"
-    animate :stand
+    if grounded?
+      animate :stand
+    else
+      animate :jump
+    end
     case message.value
     when :left
       @moving = false unless @facing_right
@@ -82,29 +122,40 @@ class PlatformerControllable < Gemini::Behavior
   end
   
   def platform_jump(message)
-    #if :grounded == @platform_state
+    detect_grounded
     if grounded?
       puts "jump!"
-      @target.gravity_effected = true
-      @platform_state = :jumping
-      @target.add_countdown(:jump, 1.0, 0.2)
-      @target.add_force(0, -@jump_force) if :jumping == @platform_state
+      animate :jump
+      #@target.gravity_effected = true
+      @target.move(@target.x, @target.y - 10)
+      #@target.gravity_effected = false
+      #@enable_gravity_on_next_update = true
+      #@target.add_force(0, -@jump_force)
+      # addForce doesn't always get added. Perhaps a Phys2D bug?
+      @target.add_velocity(0, -@jump_force)
+      @grounded = false
+    else
+      puts "can't jump, not grounded"
     end
   end
   
-  def grounded?
-    @target.get_collision_events.each do |event|
+  def detect_grounded
+    @target.get_collision_events.each do |collision_event|
       # shameless rip/port from Kevin Glass's platformer example, with his comments
       # if the point of collision was below the centre of the actor
       # i.e. near the feet
-      if event.point.y > (y + (height / 4))
+      if collision_event.point.y > (y + (height / 4))
         # check the normal to work out which body we care about
         # if the right body is involved and a collision has happened
         # below it then we're on the ground
-        return true if (event.normal.y < -0) && (event.body_b.user_data == @target)
-        return true if (event.normal.y >  0) && (event.body_a.user_data == @target)
+        if (collision_event.normal.y <  0) && (collision_event.body_b.user_data == @target) ||
+           (collision_event.normal.y >  0) && (collision_event.body_a.user_data == @target) 
+           @grounded = true
+           return true
+        end
       end
     end
+    @grounded = false
     false
   end
 end
