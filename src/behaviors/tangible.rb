@@ -25,7 +25,7 @@ class Tangible < Spatial
                    :set_movable, :movable=, :movable?, :set_position, #:set_safe_move, :safe_move=,
                    :damping, :set_damping, :damping=, :set_speed_limit, :speed_limit=, #, :speed_limit
                    :gravity_effected=, :set_gravity_effected, :friction, :set_friction, :friction=,
-                   :get_collision_events
+                   :get_collision_events, :box_size
   
   def load
     @mass = 1
@@ -95,6 +95,10 @@ class Tangible < Spatial
   
   def height
     @body.shape.bounds.height
+  end
+  
+  def box_size
+    @body.shape.size
   end
   
   def rotation=(rotation)

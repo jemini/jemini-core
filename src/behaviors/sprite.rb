@@ -63,10 +63,18 @@ class Sprite < Drawable
     @texture_coords[1].x, @texture_coords[0].x = @texture_coords[0].x, @texture_coords[1].x
   end
   
+  def render_width
+    @image.width
+  end
+  
+  def render_height
+    @image.height
+  end
+  
   def draw(graphics)
     position = center_position
-    @image.draw(position.x, position.y, position.x + @image.width, position.y + @image.height,
-                @texture_coords[0].x * @image.width, @texture_coords[0].y * @image.height, @texture_coords[1].x * @image.width, @texture_coords[1].y * @image.height,
+    @image.draw(position.x, position.y, position.x + render_width, position.y + render_height,
+                @texture_coords[0].x * render_width, @texture_coords[0].y * render_height, @texture_coords[1].x * render_width, @texture_coords[1].y * render_height,
                 @color.native_color)
   end
 end

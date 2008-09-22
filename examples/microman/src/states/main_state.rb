@@ -15,15 +15,20 @@ class MainState < Gemini::BaseState
     load_keymap :MainGameKeymap
     
     #ground
-    create_game_object :StaticSprite, "platform.png", 640 / 2, 480 - 10, 610, 30
+    ground = create_game_object :StaticSprite, "platform.png", 640 / 2, 480 - 10, 610, 30
+    ground.tiled_to_bounds = true
     
     # left and right walls
-    create_game_object :StaticSprite, "platform.png", 0, 480 / 2, 30, 500
-    create_game_object :StaticSprite, "platform.png", 640, 480 / 2, 30, 500
+    left = create_game_object :StaticSprite, "platform.png", 0, 480 / 2, 30, 500
+    left.tiled_to_bounds = true
+    right = create_game_object :StaticSprite, "platform.png", 640, 480 / 2, 30, 500
+    right.tiled_to_bounds = true
     
     #platforms!
-    create_game_object :StaticSprite, "platform.png", (640) / 4, (480 * 3)/ 4, 250, 30
-    create_game_object :StaticSprite, "platform.png", (640) / 2, (480 / 2), 250, 30
+    platform = create_game_object :StaticSprite, "platform.png", (640) / 4, (480 * 3)/ 4, 250, 30
+    platform.tiled_to_bounds = true
+    platform = create_game_object :StaticSprite, "platform.png", (640) / 2, (480 / 2), 250, 30
+    platform.tiled_to_bounds = true
     
     microman = create_game_object :Microman
     microman.set_position(640 / 2, 450)
