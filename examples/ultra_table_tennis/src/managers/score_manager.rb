@@ -51,10 +51,6 @@ private
     add_random_behavior_to_ball ball
 
     ball.set_force(negative_or_positive_random(7) * 20000, negative_or_positive_random(4) * 20000)
-#    ball.inertia = [negative_or_positive_random(7), negative_or_positive_random(4)]
-    #ball.set_force(negative_or_positive_random(7) * 0.01, 0)
-    #ball.set_force(negative_or_positive_random(7) * 10.01, 0)
-    #ball.inertia = [0, negative_or_positive_random(7)]
   end
   
   def add_random_behavior_to_ball(ball, recursed = false)
@@ -70,9 +66,9 @@ private
       ball.add_behavior :FadingImageTrailEmittable
       ball.emit_fading_image(ball.image)
     when 2
-      ball.add_behavior :SplineStretchableSprite
-      stretch_spline = Spline.new([0,1.033], [1, 1.066], [2, 1.1], [3, 1.066], [4, 1.033], [5, 1.0], [6, 0.966], [7, 0.933], [8, 0.9], [9, 0.933], [10, 0.966])
-      ball.set_stretch_spline stretch_spline
+#      ball.add_behavior :SplineStretchableSprite
+#      stretch_spline = Spline.new([0,1.033], [1, 1.066], [2, 1.1], [3, 1.066], [4, 1.033], [5, 1.0], [6, 0.966], [7, 0.933], [8, 0.9], [9, 0.933], [10, 0.966])
+#      ball.set_stretch_spline stretch_spline
     when 3
       2.times { add_random_behavior_to_ball(ball, true) }
     end

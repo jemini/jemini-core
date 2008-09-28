@@ -3,9 +3,10 @@ require 'behaviors/drawable'
 class Sprite < Drawable
   include_class 'org.newdawn.slick.Image'
   depends_on :Spatial
-  attr_accessor :image, :color, :texture_coords
-  declared_methods :center_position, :draw, :width, :height, :image, :image=, :set_image,
-                   :image_scaling, :color, :set_color, :color=, :rotation, :rotation=, :set_rotation,
+  attr_accessor :image, :color, :texture_coords, :image_size
+  alias_method :set_image_size, :image_size=
+  declared_methods :center_position, :draw, :set_image_size, :image_size=, :image_size, :image, :image=, :set_image,
+                   :image_scaling, :color, :set_color, :color=, :image_rotation, :image_rotation=, :set_image_rotation,
                    :texture_coords, :flip_horizontally
                  
   wrap_with_callbacks :draw
@@ -15,20 +16,13 @@ class Sprite < Drawable
     @texture_coords = [Vector.new(0.0, 0.0), Vector.new(1.0, 1.0)]
   end
   
-  def width
-    @image.width
-  end
-  
-  def height
-    @image.height
-  end
-  
   def image=(sprite_name)
     if sprite_name.kind_of? Image
       @image = sprite_name
     else
       @image = Image.new("data/#{sprite_name}")
     end
+    set_image_size(Vector.new(@image.width, @image.height))
   end
   alias_method :set_image, :image=
   
@@ -39,42 +33,31 @@ class Sprite < Drawable
   
   def image_scaling(x_scale, y_scale = nil)
     y_scale = x_scale if y_scale.nil?
-    @image = @image.get_scaled_copy(x_scale.to_f * width, y_scale.to_f * height)
+    set_image @image.get_scaled_copy(x_scale.to_f * image_size.x, y_scale.to_f * image_size.y)
   end
   
-  def rotation
+  def image_rotation
     @image.rotation
   end
   
-  def rotation=(rotation)
+  def image_rotation=(rotation)
     @image.rotation = rotation
   end
-  alias_method :set_rotation, :rotation=
+  alias_method :set_image_rotation, :image_rotation=
   
   def add_rotation(rotation)
     @image.rotate rotation
-  end
-  
-  def center_position
-    Vector.new(@target.x, @target.y)
   end
   
   def flip_horizontally
     @texture_coords[1].x, @texture_coords[0].x = @texture_coords[0].x, @texture_coords[1].x
   end
   
-  def render_width
-    @image.width
-  end
-  
-  def render_height
-    @image.height
-  end
-  
   def draw(graphics)
-    position = center_position
-    @image.draw(position.x, position.y, position.x + render_width, position.y + render_height,
-                @texture_coords[0].x * render_width, @texture_coords[0].y * render_height, @texture_coords[1].x * render_width, @texture_coords[1].y * render_height,
+    half_width = image_size.x / 2
+    half_height = image_size.y / 2
+    @image.draw(@target.x - half_width, @target.y - half_height, @target.x + half_width, @target.y + half_height,
+                @texture_coords[0].x * image_size.x, @texture_coords[0].y * image_size.y, @texture_coords[1].x * image_size.x, @texture_coords[1].y * image_size.y,
                 @color.native_color)
   end
 end

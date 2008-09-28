@@ -1,6 +1,6 @@
 require 'behaviors/spatial'
 
-class Tangible < Spatial
+class Tangible < Gemini::Behavior#< Spatial
   DEGREES_TO_RADIANS_MULTIPLIER = Math::PI / 180
   RADIANS_TO_DEGREES_MULTIPLIER = 180 / Math::PI
   SQUARE_ROOT_OF_TWO = Math.sqrt(2)
@@ -15,8 +15,10 @@ class Tangible < Spatial
   
   INFINITE_MASS = Body::INFINITE_MASS
   attr_reader :mass, :name, :shape
-  wrap_with_callbacks :move
-  declared_methods :x, :y, :height, :width, :move, :mass, :mass=, :set_mass, :shape,
+  depends_on :Spatial
+  depends_on :Updates
+  #wrap_with_callbacks :move
+  declared_methods :height, :width, :mass, :mass=, :set_mass, :shape, :body_position, :body_position=, :set_body_position,
                    :set_shape, :name, :name=, :rotation, :rotation=, :set_rotation, :add_force, :force,
                    :set_force, :come_to_rest, :add_to_world, :remove_from_world, :set_tangible_debug_mode,
                    :tangible_debug_mode=, :restitution, :restitution=, :set_restitution,
@@ -34,7 +36,17 @@ class Tangible < Spatial
     @body.restitution = 0.0
     @body.user_data = @target
     @target.enable_listeners_for :collided
+    @target.on_after_move { move @target.x , @target.y}
   end
+  
+  def body_position
+    @body.position
+  end
+  
+  def body_position=(vector)
+    @body.position = vector.to_phys2d_vector
+  end
+  alias_method :set_body_position, :body_position=
   
   def x
     @body.position.x
@@ -199,9 +211,9 @@ class Tangible < Spatial
   
   def tangible_debug_mode=(mode)
     if mode
-      add_behavior :DebugTangible 
+      @target.add_behavior :DebugTangible 
     else
-      remove_behavior :DebugTangible
+      @target.remove_behavior :DebugTangible
     end
   end
   alias_method :set_tangible_debug_mode, :tangible_debug_mode=

@@ -4,7 +4,7 @@ class DebugTangible < Drawable
   SlickVector = Java::org::newdawn::slick::geom::Vector2f
   
   def load
-    listen_for(:after_render, @target.game_state.manager(:render)) do |graphics|
+    @target.game_state.manager(:render).on_after_render do |graphics|
       draw(graphics)
     end
   end

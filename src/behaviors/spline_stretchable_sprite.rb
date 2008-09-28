@@ -2,7 +2,7 @@ class SplineStretchableSprite < Gemini::Behavior
   INDEPENDENT_MODE = :independent
   MERGED_MODE = :merged
   depends_on_kind_of :Sprite
-  depends_on :UpdatesAtConsistantRate
+  depends_on :UpdatesAtConsistantRate #TODO: Make Updates coexist with this behavior
   
   declared_methods :set_stretch_spline, :set_stretch_splines
   

@@ -8,10 +8,10 @@ class AnimatedSprite < Gemini::Behavior
   def load
     @fps = 1
     @animation = Animation.new
-    game_state.manager(:update).on_before_update do |delta|
+    @target.game_state.manager(:update).on_before_update do |delta|
       unless @animation.nil?
         @animation.update(delta)
-        set_image @animation.current_frame
+        @target.set_image @animation.current_frame
       end
     end
     @mode = :normal
@@ -19,7 +19,7 @@ class AnimatedSprite < Gemini::Behavior
   
   def sprites(*sprite_names)
     sprite_names.each {|sprite_name| @animation.add_frame(Image.new("data/#{sprite_name}"), 1000)}
-    set_image @animation.current_frame
+    @target.set_image @animation.current_frame
   end
   
   def animation_fps(fps)

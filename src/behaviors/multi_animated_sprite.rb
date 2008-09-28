@@ -18,6 +18,6 @@ class MultiAnimatedSprite < Gemini::Behavior
   end
   
   def animate(animation_name)
-    self.animation = @animations[animation_name]
+    @target.animation = @animations[animation_name]
   end
 end

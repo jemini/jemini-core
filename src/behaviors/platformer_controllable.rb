@@ -16,11 +16,11 @@ class PlatformerControllable < Gemini::Behavior
   attr_accessor :player_number
   
   def load
-    set_mass 1
+    @target.set_mass 1
     #set_damping 0.1
-    set_friction 0
-    set_speed_limit(Vector.new(20, 50))
-    set_rotatable false
+    @target.set_friction 0
+    @target.set_speed_limit(Vector.new(20, 50))
+    @target.set_rotatable false
     @horizontal_speed = 100
     @jump_force = 20000
     @facing_right = true
@@ -30,11 +30,11 @@ class PlatformerControllable < Gemini::Behavior
         puts "collided with something, are we grounded? #{@grounded}"
         @check_grounded_on_next_update = false
         if @moving && grounded?
-          animate :walk
+          @target.animate :walk
         elsif !@moving && grounded?
-          animate :stand
+          @target.animate :stand
         else
-          animate :jump
+          @target.animate :jump
         end
       end
       
@@ -89,9 +89,9 @@ class PlatformerControllable < Gemini::Behavior
   def start_platform_move(message)
     @moving = true
     if grounded?
-      animate :walk
+      @target.animate :walk
     else
-      animate :jump
+      @target.animate :jump
     end
     case message.value
     #TODO: Up and down for ladders (aka PlatformerClimbables)
@@ -109,9 +109,9 @@ class PlatformerControllable < Gemini::Behavior
   def stop_platform_move(message)
     puts "stopping move for #{message.value}"
     if grounded?
-      animate :stand
+      @target.animate :stand
     else
-      animate :jump
+      @target.animate :jump
     end
     case message.value
     when :left
@@ -125,7 +125,7 @@ class PlatformerControllable < Gemini::Behavior
     detect_grounded
     if grounded?
       puts "jump!"
-      animate :jump
+      @target.animate :jump
       # This should help us get the object unstuck if it's sunk a little into another body
       # Although, this might also get us stuck too
       # TODO: Test to see if super low cielings cause PlatformerControllable to get stuck.
@@ -144,7 +144,7 @@ class PlatformerControllable < Gemini::Behavior
       # shameless rip/port from Kevin Glass's platformer example, with his comments
       # if the point of collision was below the centre of the actor
       # i.e. near the feet
-      if collision_event.point.y > (y + (height / 4))
+      if collision_event.point.y > (@target.y + (@target.height / 4))
         # check the normal to work out which body we care about
         # if the right body is involved and a collision has happened
         # below it then we're on the ground

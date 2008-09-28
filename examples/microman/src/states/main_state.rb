@@ -3,10 +3,6 @@ require 'basic_physics_manager'
 
 class MainState < Gemini::BaseState 
   def load
-    
-    #manager(:game_object).add_layer_at(:ball_effects_layer, 1)
-    #manager(:game_object).add_layer_at(:ball_layer, 2)
-    
     set_manager :physics, create_game_object(:BasicPhysicsManager)
     set_manager :tag, create_game_object(:TagManager)
     
@@ -32,13 +28,8 @@ class MainState < Gemini::BaseState
     
     microman = create_game_object :Microman
     microman.set_position(640 / 2, 450)
-    
-#    paddle = create_game_object :Paddle, 1
-#    paddle.set_position(100, 100)
-#    
-#    paddle = create_game_object :Paddle, 2
-#    paddle.set_position(500, 300)
-#    
+
+    # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject
 #    quitter.add_behavior :RecievesEvents
 #    quitter.handle_event :quit do

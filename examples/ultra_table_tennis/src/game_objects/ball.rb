@@ -1,5 +1,4 @@
 class Ball < Gemini::GameObject
-  has_behavior :UpdatesAtConsistantRate
   has_behavior :TangibleSprite
   
   def load
@@ -10,7 +9,7 @@ class Ball < Gemini::GameObject
     set_mass 1.1
     set_friction 0
     set_speed_limit 30
-    listen_for(:collided) do |message|
+    on_collided do |message|
       if message.other.respond_to?(:has_tag?) && message.other.has_tag?(:score_region)
         @game_state.manager(:score).ball_scored self
       end

@@ -1,7 +1,7 @@
 class Spatial < Gemini::Behavior
-  attr_reader :x, :y
+  attr_accessor :x, :y
   wrap_with_callbacks :move
-  declared_methods :x, :y, :move
+  declared_methods :x, :x=, :y, :y=, :move
   
   def load
     @x = 0

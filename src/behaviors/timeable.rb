@@ -11,11 +11,11 @@ class Timeable < Gemini::Behavior
   end
   
   def add_countdown(name, seconds, notify_frequency = nil)
-    @timers[name] = Timer.new(name, Timer::COUNTDOWN, seconds, notify_frequency) {|timer| notify :timer_tick, timer }
+    @timers[name] = Timer.new(name, Timer::COUNTDOWN, seconds, notify_frequency) {|timer| @target.notify :timer_tick, timer }
   end
   
   def add_countup(name, seconds, notify_frequency = nil)
-    @timers[name] = Timer.new(name, Timer::COUNTUP, seconds, notify_frequency) {|timer| notify :timer_tick, timer }
+    @timers[name] = Timer.new(name, Timer::COUNTUP, seconds, notify_frequency) {|timer| @target.notify :timer_tick, timer }
   end
   
 private
@@ -23,7 +23,7 @@ private
     @timers.each do |name, timer|
       timer.apply_delta delta
       if timer.countdown_complete?
-        notify :countdown_complete, name 
+        @target.notify :countdown_complete, name 
         @timers.delete name
       end
     end

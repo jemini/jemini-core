@@ -6,6 +6,6 @@ class Updates < Gemini::Behavior
   end
   
   def update(delta)
-    notify :update, delta
+    @target.notify :update, delta
   end
 end

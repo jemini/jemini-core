@@ -7,15 +7,15 @@ class TriangleTrailEmittable < Gemini::Behavior
   declared_methods :emit_triangle_trail_from_offset, :emit_triangle_trail_with_radius, :alpha, :alpha=, :layer=
   
   def load
-    @emitter = game_state.create_game_object :TriangleTrail
+    @emitter = @target.game_state.create_game_object :TriangleTrail
     @emitter_offset = [0,0]
     
     @target.on_update do
-      @emitter.move(@emitter_offset[0] + x, @emitter_offset[1] + y)
+      @emitter.move(@emitter_offset[0] + @target.x, @emitter_offset[1] + @target.y)
     end
     
-    listen_for(:after_remove_game_object, game_state.manager(:game_object)) do |game_object|
-      game_state.manager(:game_object).remove_game_object @emitter if game_object == @target
+    @target.game_state.manager(:game_object).on_after_remove_game_object do |game_object|
+      @target.game_state.manager(:game_object).remove_game_object @emitter if game_object == @target
     end
   end
   
@@ -36,6 +36,6 @@ class TriangleTrailEmittable < Gemini::Behavior
   end
   
   def layer=(layer_name)
-    game_state.manager(:game_object).move_game_object_to_layer(@emitter, layer_name)
+    @target.game_state.manager(:game_object).move_game_object_to_layer(@emitter, layer_name)
   end
 end

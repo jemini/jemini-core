@@ -14,7 +14,6 @@ module Gemini
       @game_state = state
       @callbacks = Hash.new {|h,k| h[k] = []}
       @behaviors = {}
-      
       behaviors.each do |behavior|
         add_behavior(behavior)
       end

@@ -9,13 +9,13 @@ class Taggable < Gemini::Behavior
   def add_tag(*tags)
     new_tags = tags - @tags
     @tags.concat new_tags
-    new_tags.each { |tag| notify :tag_added, tag }  
+    new_tags.each { |tag| @target.notify :tag_added, tag }  
   end
   
   def remove_tag(*tags)
     tags_to_remove = @tags & tags
     @tags -= tags_to_remove
-    tags_to_remove.each {|tag| notify :tag_removed, tag}
+    tags_to_remove.each {|tag| @target.notify :tag_removed, tag}
   end
   
   def has_tag?(*tags)

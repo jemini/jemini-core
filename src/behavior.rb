@@ -1,4 +1,6 @@
 module Gemini
+  class MethodExistsError < Exception; end
+  
   class Behavior
     attr_reader :reference_count, :target
 
@@ -26,8 +28,9 @@ module Gemini
     def self.method_added(method)
       if callback_methods_to_wrap.member? method
         begin
-          return if instance_method(:"wrapped_#{method}")
+          return if callback_methods_wrapped.member? method #instance_method(:"wrapped_#{method}") #&& wrapped_methods.member?(method)
         rescue NameError; end #Intentionally swallow, this section is to prevent infinite recursion
+        callback_methods_wrapped << method
         alias_method :"wrapped_#{method}", method
         arity = instance_method(:"wrapped_#{method}").arity
         if arity.abs > 0
@@ -39,10 +42,10 @@ module Gemini
           code = <<-ENDL
             def #{method}(#{args})
               callback_abort = CallbackStatus.new
-              notify :before_#{method_name}_changes, callback_abort
+              @target.notify :before_#{method_name}_changes, callback_abort
               if callback_abort.continue?              
                 self.wrapped_#{method}(#{args})
-                notify :after_#{method_name}_changes
+                @target.notify :after_#{method_name}_changes
               end
             end
           ENDL
@@ -52,10 +55,10 @@ module Gemini
           code = <<-ENDL
             def #{method}(#{(args.join(",") + ",") if args} &block)
               callback_abort = CallbackStatus.new
-              notify :before_#{method}, callback_abort
+              @target.notify :before_#{method}, callback_abort
               if callback_abort.continue?              
                 self.wrapped_#{method}(#{(args.join(",") + ",") if args} &block)
-                notify :after_#{method}
+                @target.notify :after_#{method}
               end
             end
           ENDL
@@ -87,7 +90,12 @@ module Gemini
     def self.callback_methods_to_wrap
       @@callback_methods_to_wrap[self]
     end
-
+    
+    @@callback_methods_wrapped = Hash.new {|h,k| h[k] = []}
+    def self.callback_methods_wrapped
+      @@callback_methods_wrapped[self]
+    end
+    
     @@wrapped_methods = Hash.new {|h,k| h[k] = []}
     def self.wrapped_methods
       @@wrapped_methods[self]
@@ -132,28 +140,33 @@ module Gemini
       
       self.class.dependencies.each do |dependant_behavior|
         begin
-          dependant_class = Object.const_get(dependant_behavior)
+          dependant_behavior_class = Object.const_get(dependant_behavior)
         rescue NameError
           raise "Cannot load dependant behavior '#{dependant_behavior}' in behavior '#{self.class}'"
         end
-        dependant_instance = dependant_class.add_to(@target)
-        @dependant_behaviors << dependant_instance
+        dependant_behavior_instance = dependant_behavior_class.add_to(@target) unless @target.kind_of? dependant_behavior_class
+        @dependant_behaviors << dependant_behavior_instance
       end
       
       behavior_list = target.send(:instance_variable_get, "@behaviors")
-      behavior_list[self.class.name.to_sym] = self
-      @dependant_behaviors.each do |dependant_behavior|
-        behavior_list[dependant_behavior.class.name.to_sym] = dependant_behavior
-      end
+      return unless behavior_list[self.class.name.to_sym].nil?
+      behavior_list[self.class.name.to_sym] = self 
       
+      @dependant_behaviors.each do |dependant_behavior|
+        behavior_list[dependant_behavior.class.name.to_sym] = dependant_behavior if behavior_list[dependant_behavior.class.name.to_sym].nil? 
+      end
+
 #      self.class.kind_of_dependencies.each do |dependant_behavior|
 #        dependency = dependant_behavior.constantize
 #        next if behavior_list.find {|behavior| behavior.last.kind_of?(dependency)}
 #        
 #        raise "Dependant behavior '#{dependant_behavior}' was not found on class #{self.class}" 
 #      end
-      
+
       self.class.declared_method_list.each do |method|
+        #TODO: Tell us which behavior is being overridden
+        #TODO: Allow for overriding
+        raise MethodExistsError.new("Error while adding the behavior #{self.class}. The method #{method} already exists on game object #{@target}.") if @target.respond_to? method
         if method.to_s =~ /=/
           code = <<-ENDL
           def #{method}(arg)
@@ -169,11 +182,11 @@ module Gemini
         end
         @target.send(:instance_eval, code, __FILE__, __LINE__)
       end
-      
+
       self.class.wrapped_methods.each do |method|
         @target.enable_listeners_for method
       end
-      
+
       self.load
     end
 
@@ -200,9 +213,9 @@ module Gemini
       @reference_count -= 1
     end
     
-    def method_missing(method, *args, &blk)
-      @target.send(method, *args, &blk)
-    end
+#    def method_missing(method, *args, &blk)
+#      @target.send(method, *args, &blk)
+#    end
 
     def load; end
     def unload; end

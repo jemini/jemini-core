@@ -1,5 +1,4 @@
 class Paddle < Gemini::GameObject
-  has_behavior :UpdatesAtConsistantRate
   has_behavior :RecievesEvents
   has_behavior :Taggable
   has_behavior :TangibleSprite
@@ -19,6 +18,7 @@ class Paddle < Gemini::GameObject
     set_speed_limit Vector.new(0, 60)
   end
   
+  #TODO: Use a behavior to control this axial movement.
   def move_paddle(message)
     case message.value
     when :up
