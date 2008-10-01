@@ -44,8 +44,7 @@ puts "classpath:"
 puts $CLASSPATH
 require 'gemini'
 begin
-  Gemini::Main.new("Microman", 640, 480)
-rescue => e
-  warn e
-  warn e.backtrace
+	Gemini::Main.new("Microman", 640, 480)
+rescue Exception => exception
+	puts exception.message, exception.backtrace.join("\n")
 end

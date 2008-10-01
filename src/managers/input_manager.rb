@@ -26,6 +26,8 @@ module Gemini
   # registered key bindings.
   class InputManager < Gemini::GameObject
     
+    MAX_CONTROLLERS = 6
+
     KEY_PRESSED = {:source_type => :key, :source_state => :pressed}
     KEY_RELEASED = {:source_type => :key, :source_state => :released}
     KEY_HELD = {:source_type => :key, :source_state => :held}
@@ -36,6 +38,29 @@ module Gemini
     MOUSE_BUTTON2_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_RIGHT_BUTTON}
     MOUSE_BUTTON3_PRESSED = {:source_type => :mouse, :source_state => :pressed, :source_value => Input::MOUSE_MIDDLE_BUTTON}
     MOUSE_BUTTON3_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_MIDDLE_BUTTON}
+    CONTROLLER0_PRESSED = {:source_type => :controller0, :source_state => :pressed}
+    CONTROLLER0_RELEASED = {:source_type => :controller0, :source_state => :released}
+    CONTROLLER0_HELD = {:source_type => :controller0, :source_state => :held}
+    CONTROLLER1_PRESSED = {:source_type => :controller1, :source_state => :pressed}
+    CONTROLLER1_RELEASED = {:source_type => :controller1, :source_state => :released}
+    CONTROLLER1_HELD = {:source_type => :controller1, :source_state => :held}
+    CONTROLLER2_PRESSED = {:source_type => :controller2, :source_state => :pressed}
+    CONTROLLER2_RELEASED = {:source_type => :controller2, :source_state => :released}
+    CONTROLLER2_HELD = {:source_type => :controller2, :source_state => :held}
+    CONTROLLER3_PRESSED = {:source_type => :controller3, :source_state => :pressed}
+    CONTROLLER3_RELEASED = {:source_type => :controller3, :source_state => :released}
+    CONTROLLER3_HELD = {:source_type => :controller3, :source_state => :held}
+    CONTROLLER4_PRESSED = {:source_type => :controller4, :source_state => :pressed}
+    CONTROLLER4_RELEASED = {:source_type => :controller4, :source_state => :released}
+    CONTROLLER4_HELD = {:source_type => :controller4, :source_state => :held}
+    CONTROLLER5_PRESSED = {:source_type => :controller5, :source_state => :pressed}
+    CONTROLLER5_RELEASED = {:source_type => :controller5, :source_state => :released}
+    CONTROLLER5_HELD = {:source_type => :controller5, :source_state => :held}
+
+    LEFT_BUTTON = -1
+    RIGHT_BUTTON = -2
+    UP_BUTTON = -3
+    DOWN_BUTTON = -4
     
     def load(container)
       @raw_input = container.input
@@ -53,7 +78,15 @@ module Gemini
                             :clicked => Hash.new{|h,k| h[k] = []},
                             :wheel_moved => Hash.new{|h,k| h[k] = []}}
                 }
-      @held_keys = []
+      (0..(MAX_CONTROLLERS - 1)).each do |controller_id|
+        @keymap["controller#{controller_id}".to_sym] = {
+          :pressed => Hash.new{|h,k| h[k] = []},
+          :released => Hash.new{|h,k| h[k] = []},
+          :held => Hash.new{|h,k| h[k] = []},
+        }
+      end
+
+      @held_buttons = Hash.new {|h,k| h[k] = []}
       keymap_name = "/keymaps/#{keymap.underscore}.rb"
       keymap_path = $LOAD_PATH.find do |path|
         File.exist? path + keymap_name
@@ -70,11 +103,11 @@ module Gemini
         when :keyPressed
           type = :key
           action = :pressed
-          @held_keys << value
+          @held_buttons[:key] << value
         when :keyReleased
           type = :key
           action = :released
-          @held_keys.delete value
+          @held_buttons[:key].delete value
         when :mouseMoved
           type = :mouse
           action = :moved
@@ -91,6 +124,56 @@ module Gemini
         when :mouseWheelMoved
           type = :mouse
           action = :wheel_moved
+        when :controllerLeftPressed
+          type = "controller#{value}".to_sym
+          action = :pressed
+          value = LEFT_BUTTON
+          @held_buttons[type] << value
+        when :controllerRightPressed
+          type = "controller#{value}".to_sym
+          action = :pressed
+          value = RIGHT_BUTTON
+          @held_buttons[type] << value
+        when :controllerUpPressed
+          type = "controller#{value}".to_sym
+          action = :pressed
+          value = UP_BUTTON
+          @held_buttons[type] << value
+        when :controllerDownPressed
+          type = "controller#{value}".to_sym
+          action = :pressed
+          value = DOWN_BUTTON
+          @held_buttons[type] << value
+        when :controllerLeftReleased
+          type = "controller#{value}".to_sym
+          action = :released
+          value = LEFT_BUTTON
+          @held_buttons[type].delete value
+        when :controllerRightReleased
+          type = "controller#{value}".to_sym
+          action = :released
+          value = RIGHT_BUTTON
+          @held_buttons[type].delete value
+        when :controllerUpReleased
+          type = "controller#{value}".to_sym
+          action = :released
+          value = UP_BUTTON
+          @held_buttons[type].delete value
+        when :controllerDownReleased
+          type = "controller#{value}".to_sym
+          action = :released
+          value = DOWN_BUTTON
+          @held_buttons[type].delete value
+        when :controllerButtonPressed
+          type = "controller#{value}".to_sym
+          action = :pressed
+          value = message.value[1][1]
+          @held_buttons[type] << value
+        when :controllerButtonReleased
+          type = "controller#{value}".to_sym
+          action = :released
+          value = message.value[1][1]
+          @held_buttons[type].delete value
         end
         
         next if type.nil? or action.nil?
@@ -104,8 +187,10 @@ module Gemini
       @raw_input.poll(screen_width, screen_height)
       
       # Check for any held keys
-      @held_keys.each do |key_id|
-        invoke_callbacks_for(:key, :held, key_id, nil, delta)
+      @held_buttons.each do |device, button_ids|
+        button_ids.each do |button_id|
+          invoke_callbacks_for(device, :held, button_id, nil, delta)
+        end
       end
     end
     

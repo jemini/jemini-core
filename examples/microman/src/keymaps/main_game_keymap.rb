@@ -9,3 +9,9 @@ map KEY_RELEASED, :source_value => Input::KEY_RIGHT, :destination_type => :p1_st
 
 map KEY_RELEASED, :source_value => Input::KEY_ESCAPE, :destination_type => :quit, :destination_value => :quit
 map KEY_RELEASED, :source_value => Input::KEY_D, :destination_type => :toggle_debug_mode, :destination_value => nil
+
+map CONTROLLER0_PRESSED, :source_value => InputManager::LEFT_BUTTON,  :destination_type => :p1_start_platformer_movement, :destination_value => :left
+map CONTROLLER0_PRESSED, :source_value => InputManager::RIGHT_BUTTON, :destination_type => :p1_start_platformer_movement, :destination_value => :right
+map CONTROLLER0_RELEASED, :source_value => InputManager::LEFT_BUTTON,  :destination_type => :p1_stop_platformer_movement, :destination_value => :left
+map CONTROLLER0_RELEASED, :source_value => InputManager::RIGHT_BUTTON, :destination_type => :p1_stop_platformer_movement, :destination_value => :right
+map CONTROLLER0_PRESSED, :source_value => 1, :destination_type => :p1_platformer_jump, :destination_value => :jump
