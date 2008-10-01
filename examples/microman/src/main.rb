@@ -43,9 +43,4 @@ puts $LOAD_PATH
 puts "classpath:"
 puts $CLASSPATH
 require 'gemini'
-begin
-  Gemini::Main.new("Microman", 640, 480)
-rescue => e
-  warn e
-  warn e.backtrace
-end
+Gemini::Main.new("Microman", 640, 480)
