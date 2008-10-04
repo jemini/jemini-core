@@ -11,11 +11,14 @@ class PlatformerControllable < Gemini::Behavior
   depends_on :MultiAnimatedSprite
   depends_on :TangibleSprite
   depends_on :Timeable
+#  depends_on :AxisStateful
   
-  declared_methods :set_player_number, :player_number=, :player_number, :grounded?
+  declared_methods :set_player_number, :player_number=, :player_number, :grounded?, :facing_direction
   attr_accessor :player_number
   
   def load
+#    @target.set_state_transitions_on_axis[:vertical_platform]   = [:grounded, :jumping, :falling]
+#    @target.set_state_transitions_on_axis[:horizontal_platform] = [:walking, :standing]
     @target.set_mass 1
     #set_damping 0.1
     @target.set_friction 0
@@ -25,17 +28,13 @@ class PlatformerControllable < Gemini::Behavior
     @jump_force = 20000
     @facing_right = true
     @target.on_update do
-      if @check_grounded_on_next_update
-        detect_grounded
-        puts "collided with something, are we grounded? #{@grounded}"
-        @check_grounded_on_next_update = false
-        if @moving && grounded?
-          @target.animate :walk
-        elsif !@moving && grounded?
-          @target.animate :stand
-        else
-          @target.animate :jump
-        end
+      detect_grounded
+      if @moving && grounded?
+        @target.animate :walk
+      elsif !@moving && grounded?
+        @target.animate :stand
+      else
+        @target.animate :jump
       end
       
       if @moving
@@ -58,18 +57,20 @@ class PlatformerControllable < Gemini::Behavior
         @target.add_velocity(-@target.velocity.x, 0)
       end
     end
-    @target.on_collided do |message|
-      # The collision event hasn't been resolved yet, so we can't check all of our collisions yet
-      # Queue up the collision check for the next update.
-      @check_grounded_on_next_update = true
-      #@target.gravity_effected = false
-    end
-    #TODO: Configure some basic animations (standing, jumping, falling, running)
-    
+#    @target.on_collided do |message|
+#      # The collision event hasn't been resolved yet, so we can't check all of our collisions yet
+#      # Queue up the collision check for the next update.
+#      @check_grounded_on_next_update = true
+#      #@target.gravity_effected = false
+#    end
   end
   
   def grounded?
     @grounded
+  end
+  
+  def facing_direction
+    @facing_right ? :east : :west
   end
   
   def player_number=(player_number)
@@ -107,7 +108,6 @@ class PlatformerControllable < Gemini::Behavior
   end
   
   def stop_platform_move(message)
-    puts "stopping move for #{message.value}"
     if grounded?
       @target.animate :stand
     else
@@ -134,8 +134,6 @@ class PlatformerControllable < Gemini::Behavior
       # addForce doesn't always get added. Perhaps a Phys2D bug?
       @target.add_velocity(0, -@jump_force)
       @grounded = false
-    else
-      puts "can't jump, not grounded"
     end
   end
   
@@ -151,10 +149,13 @@ class PlatformerControllable < Gemini::Behavior
         if (collision_event.normal.y <  0) && (collision_event.body_b.user_data == @target) ||
            (collision_event.normal.y >  0) && (collision_event.body_a.user_data == @target) 
            @grounded = true
+           #@target.transfer_state_on_axis :grounded, :grounded
            return true
         end
       end
     end
+#    jumping_or_falling = @target.velocity.y > 0 ? :jumping : :falling
+#    @target.transfer_state_on_axis :grounded, jumping_or_falling
     @grounded = false
     false
   end
