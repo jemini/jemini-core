@@ -117,21 +117,4 @@ module Gemini
       @@behaviors[self.class]
     end  
   end
-  
-#  class Callback
-#    attr_reader :origin
-#    
-#    def initialize(origin, block)
-#      @origin = origin
-#      @block = block
-#    end
-#    
-#    def notify(event, status = nil)
-#      if status.nil?
-#        @block.call(event)
-#      else
-#        @block.call(event, status)
-#      end
-#    end
-#  end
 end
