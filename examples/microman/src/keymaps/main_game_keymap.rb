@@ -1,6 +1,7 @@
 #map KEY_HELD, :source_value => Input::KEY_LEFT,  :destination_type => :p1_platformer_movement, :destination_value => :left
 #map KEY_HELD, :source_value => Input::KEY_RIGHT, :destination_type => :p1_platformer_movement, :destination_value => :right
 map KEY_PRESSED, :source_value => Input::KEY_SPACE, :destination_type => :p1_platformer_jump,     :destination_value => :jump
+map KEY_PRESSED, :source_value => Input::KEY_F, :destination_type => :shoot,     :destination_value => :shoot
 
 map KEY_PRESSED, :source_value => Input::KEY_LEFT,  :destination_type => :p1_start_platformer_movement, :destination_value => :left
 map KEY_PRESSED, :source_value => Input::KEY_RIGHT, :destination_type => :p1_start_platformer_movement, :destination_value => :right

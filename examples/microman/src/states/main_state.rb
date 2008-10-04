@@ -29,6 +29,7 @@ class MainState < Gemini::BaseState
     microman = create_game_object :Microman
     microman.set_position(640 / 2, 450)
 
+    manager(:render).cache_image :bullet, "bullet.png"
     # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject
 #    quitter.add_behavior :RecievesEvents
