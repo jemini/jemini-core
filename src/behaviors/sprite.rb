@@ -56,8 +56,15 @@ class Sprite < Drawable
   def draw(graphics)
     half_width = image_size.x / 2
     half_height = image_size.y / 2
-    @image.draw(@target.x - half_width, @target.y - half_height, @target.x + half_width, @target.y + half_height,
+    center_x = @target.x - half_width
+    center_y = @target.y - half_height
+    #puts "drawing with rotation: #{@image.rotation}"
+    unless 0 == @image.rotation
+      graphics.rotate @target.x, @target.y, @image.rotation
+    end
+    @image.draw(center_x, center_y, @target.x + half_width, @target.y + half_height,
                 @texture_coords[0].x * image_size.x, @texture_coords[0].y * image_size.y, @texture_coords[1].x * image_size.x, @texture_coords[1].y * image_size.y,
                 @color.native_color)
+    graphics.reset_transform
   end
 end
