@@ -5,7 +5,6 @@ class MainState < Gemini::BaseState
   def load
     set_manager :physics, create_game_object(:BasicPhysicsManager)
     set_manager :tag, create_game_object(:TagManager)
-    
     manager(:physics).gravity = 10
     
     load_keymap :MainGameKeymap
@@ -29,6 +28,7 @@ class MainState < Gemini::BaseState
     microman = create_game_object :Microman
     microman.set_position(640 / 2, 450)
 
+    set_manager :render, create_game_object(:ScrollingRenderManager, microman)
     manager(:render).cache_image :bullet, "bullet.png"
     # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject
