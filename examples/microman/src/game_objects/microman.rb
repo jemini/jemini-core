@@ -16,19 +16,19 @@ class Microman < Gemini::GameObject
     animate :stand
     
     set_emitting_game_object_name :Bullet
-    on_emit_game_object do |game_object|
+    on_emit_game_object do |bullet|
       puts "emitting bullet #{facing_direction}"
       emit_x = if :east == facing_direction
-                 x + (image_size.x / 2)
+                 x + (image_size.x / 2) + bullet.image_size.x
                else
-                 x - (image_size.x / 2)
+                 x - (image_size.x / 2) - bullet.image_size.x
                end
       emit_y = y #+ (image_size.y / 2)
-      game_object.move(emit_x, emit_y)
+      bullet.move(emit_x, emit_y)
       if :east == facing_direction
-        game_object.add_velocity(20, 0)
+        bullet.add_velocity(20, 0)
       else
-        game_object.add_velocity(-20, 0)
+        bullet.add_velocity(-20, 0)
       end
     end
     handle_event :shoot, :emit_game_object

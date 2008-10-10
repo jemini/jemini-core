@@ -18,6 +18,7 @@ class BasicGameObjectManager < Gemini::GameObject
   
   def remove_game_object(game_object)
     owning_layer = @layers.values.find {|layer| layer.include? game_object}
+    return if owning_layer.nil? #NOTE: Not sure if this is the right thing to do, but at least no exception is thrown
     notify :before_remove_game_object, game_object
     owning_layer.delete game_object
     notify :after_remove_game_object, game_object

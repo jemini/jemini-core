@@ -12,10 +12,7 @@ class BasicPhysicsManager < Gemini::GameObject
     @game_state.manager(:update).on_update {|delta| @world.step(delta * 0.01) }
     
     @game_state.manager(:game_object).on_after_add_game_object do |game_object|
-      if game_object.kind_of? Tangible
-        game_object.add_to_world(@world) 
-        game_object.set_tangible_debug_mode(true) if @debug_mode
-      end
+      add_to_world game_object if game_object.kind_of? Tangible
     end
     
     @game_state.manager(:game_object).on_after_remove_game_object do |game_object|
@@ -44,6 +41,12 @@ class BasicPhysicsManager < Gemini::GameObject
     else
       @world.set_gravity(gravity_or_x, y)
     end
+  end
+
+private
+  def add_to_world(game_object)
+    game_object.add_to_world(@world) 
+    game_object.set_tangible_debug_mode(true) if @debug_mode
   end
 #  def colliding?(body)
 #    0 < @world.get_contacts(body).size
