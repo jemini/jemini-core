@@ -6,12 +6,19 @@ class Microman < Gemini::GameObject
     set_player_number 1
     add_animation :name => :stand, :speed => 500, :sprites => ["data/microman-standing.png"]
     add_animation :name => :jump, :speed => 500, :sprites => ["data/microman-jumping.png"]
+    add_animation :name => :jump_shoot, :speed => 500, :sprites => ["data/microman-jumping-shooting.png"]
     add_animation :name => :walk,
                   :speed => 200,
                   :sprites => ["data/microman-walking0.png",
                                "data/microman-walking1.png",
                                "data/microman-walking2.png",
                                "data/microman-walking1.png"]
+    add_animation :name => :walk_shoot,
+                  :speed => 200,
+                  :sprites => ["data/microman-walking-shooting0.png",
+                               "data/microman-walking-shooting1.png",
+                               "data/microman-walking-shooting2.png",
+                               "data/microman-walking-shooting1.png"]
     # TODO: Looks like we need a post load for behaviors
     animate :stand
     
