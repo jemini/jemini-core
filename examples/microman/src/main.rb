@@ -43,4 +43,4 @@ puts $LOAD_PATH
 puts "classpath:"
 puts $CLASSPATH
 require 'gemini'
-Gemini::Main.new("Microman", 640, 480)
+Gemini::Main.start_app("Microman", 640, 480)

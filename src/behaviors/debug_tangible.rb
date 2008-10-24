@@ -1,3 +1,4 @@
+require 'behaviors/drawable'
 class DebugTangible < Drawable
   #declared_methods :draw
   PhysVector = Java::net::phys2d::math::Vector2f

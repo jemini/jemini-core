@@ -19,17 +19,44 @@ require 'basic_render_manager'
 module Gemini
   class Main < Java::org::newdawn::slick::BasicGame
     include_class 'org.newdawn.slick.AppGameContainer'
+    attr_accessor :screen_width, :screen_height
     
-    def initialize(screen_title, screen_width=640, screen_height=480, fullscreen=false)
-      super(screen_title)
-      @screen_width, @screen_height = screen_width, screen_height
-      app = AppGameContainer.new(self, screen_width, screen_height, fullscreen)
-      app.vsync = true
-      app.maximum_logic_update_interval = 60
-      @fresh_state = true
-      app.start
+    def self.start_app(screen_title, screen_width, screen_height)
+      puts "in start app"
+      main = Main.new(screen_title)
+      main.screen_width  = screen_width
+      main.screen_height = screen_height
+      container = AppGameContainer.new(main)
+      container.vsync = true
+      container.maximum_logic_update_interval = 60
+      container.smooth_deltas = true
+      #main.container = container
+      container.start
     end
-
+    
+    def self.create_canvas(screen_title, screen_width, screen_height)
+      main = Main.new screen_title
+      main.screen_width  = screen_width
+      main.screen_height = screen_height
+      puts "creating canvas"
+      $canvas = Java::org::newdawn::slick::CanvasGameContainer.new(main)
+      puts "setting size to #{screen_width}, #{screen_height}"
+      $canvas.set_size(screen_width, screen_height)
+      puts "done setting size"
+      container = $canvas.container
+      container.vsync = true
+      container.maximum_logic_update_interval = 60
+      #container.start
+      $canvas
+    end
+    
+    def initialize(screen_title=nil)
+      super(screen_title) 
+      @fresh_state = true
+    end
+    
+    
+    
     def init(container)
       @container = container
       

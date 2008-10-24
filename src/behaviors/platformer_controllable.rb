@@ -45,7 +45,7 @@ class PlatformerControllable < Gemini::Behavior
         # then kill the velocity - don't want to keep pushing during
         # this frame
         if (velocity.x > 0 && !@facing_right) || (velocity.x < 0 && @facing_right)
-          puts "pushing back"
+          #puts "pushing back"
           velocity.x = 0
         else
           velocity.x = @facing_right ? @horizontal_speed : -@horizontal_speed

@@ -38,6 +38,7 @@ module Gemini
     MOUSE_BUTTON3_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_MIDDLE_BUTTON}
     
     def load(container)
+      @held_keys = []
       @raw_input = container.input
       @input_listener = Gemini::SlickInputListener.new(@game_state)
       @raw_input.add_listener @input_listener

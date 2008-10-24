@@ -96,4 +96,4 @@ end
 #puts "classpath:"
 #puts $CLASSPATH
 require 'gemini'
-Gemini::Main.new("Ultra Table Tennis", 640, 480)
+Gemini::Main.start_app("Ultra Table Tennis", 640, 480)
