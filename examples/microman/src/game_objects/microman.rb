@@ -5,6 +5,7 @@ class Microman < Gemini::GameObject
     set_bounded_image "microman-standing.png"
     set_player_number 1
     add_animation :name => :stand, :speed => 500, :sprites => ["data/microman-standing.png"]
+    add_animation :name => :stand_shoot, :speed => 500, :sprites => ["data/microman-standing-shooting.png"]
     add_animation :name => :jump, :speed => 500, :sprites => ["data/microman-jumping.png"]
     add_animation :name => :jump_shoot, :speed => 500, :sprites => ["data/microman-jumping-shooting.png"]
     add_animation :name => :walk,
