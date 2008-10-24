@@ -9,6 +9,15 @@ class MainState < Gemini::BaseState
     
     load_keymap :MainGameKeymap
     
+    
+    microman = create_game_object :Microman
+    microman.set_position(640 / 2, 450)
+
+    set_manager :render, create_game_object(:ScrollingRenderManager, microman)
+    
+    manager(:render).cache_image :bullet, "bullet.png"
+    manager(:render).cache_image :counter_bar, "counter-bar.png"
+    
     #ground
     ground = create_game_object :StaticSprite, "platform.png", 640 / 2, 480 - 10, 610, 30
     ground.tiled_to_bounds = true
@@ -25,11 +34,12 @@ class MainState < Gemini::BaseState
     platform = create_game_object :StaticSprite, "platform.png", (640) / 2, (480 / 2), 250, 30
     platform.tiled_to_bounds = true
     
-    microman = create_game_object :Microman
-    microman.set_position(640 / 2, 450)
-
-    set_manager :render, create_game_object(:ScrollingRenderManager, microman)
-    manager(:render).cache_image :bullet, "bullet.png"
+    ammo_display = create_game_object :IconStripCounterDisplay
+    ammo_display.icon = manager(:render).get_cached_image(:counter_bar)
+    ammo_display.rows = nil
+    ammo_display.columns = 1
+    ammo_display.count = 20
+    ammo_display.move 20, 30
     # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject
 #    quitter.add_behavior :RecievesEvents

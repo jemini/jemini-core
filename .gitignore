@@ -1,5 +1,6 @@
 nbproject
 build.xml
+package
 manifest.mf
 build
 nbbuild.xml
