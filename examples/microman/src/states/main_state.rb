@@ -38,8 +38,13 @@ class MainState < Gemini::BaseState
     ammo_display.icon = manager(:render).get_cached_image(:counter_bar)
     ammo_display.rows = nil
     ammo_display.columns = 1
-    ammo_display.count = 20
-    ammo_display.move 20, 30
+    ammo_display.count = 25
+    ammo_display.layout_mode = :bottom_right_to_top_left
+    ammo_display.move 20, 140
+    
+    microman.on_emit_game_object do
+      ammo_display.decrement
+    end
     # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject
 #    quitter.add_behavior :RecievesEvents

@@ -2,7 +2,7 @@ class IconStripCounterDisplay < Gemini::GameObject
   has_behavior :Countable
   has_behavior :Spatial
   #has_behavior :CameraAnchoredDrawable
-  attr_accessor :icon, :background, :rows, :columns
+  attr_accessor :icon, :background, :rows, :columns, :layout_mode
   
   def load
     @rows = 0
@@ -10,6 +10,7 @@ class IconStripCounterDisplay < Gemini::GameObject
     @icons = []
     @old_x = 0
     @old_y = 0
+    @layout_mode = :top_left_to_bottom_right
     self.x = 0
     self.y = 0
     on_after_count_changes do
@@ -42,8 +43,13 @@ class IconStripCounterDisplay < Gemini::GameObject
   def position_sprite(offset_x, offset_y, sprite_index, sprite)
     row_number = @rows.nil? ? sprite_index : (sprite_index % @rows)
     column_number = @columns.nil? ? sprite_index : (sprite_index % @columns)
-    sprite_x = offset_x + (@icon.width * column_number)
-    sprite_y = offset_y + (@icon.height * row_number)
+    if :top_left_to_bottom_right == @mode  
+      sprite_x = offset_x + (@icon.width * column_number)
+      sprite_y = offset_y + (@icon.height * row_number)
+    elsif :bottom_right_to_top_left
+      sprite_x = offset_x - (@icon.width * column_number)
+      sprite_y = offset_y - (@icon.height * row_number)
+    end
     sprite.move(sprite_x, sprite_y)
   end
 end

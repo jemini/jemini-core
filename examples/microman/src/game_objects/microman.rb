@@ -1,7 +1,10 @@
 class Microman < Gemini::GameObject
   has_behavior :PlatformerControllable
   has_behavior :GameObjectEmittable
+  attr_accessor :ammo
+  
   def load
+    @ammo = 25
     set_bounded_image "microman-standing.png"
     set_player_number 1
     add_animation :name => :stand, :speed => 500, :sprites => ["data/microman-standing.png"]
@@ -31,6 +34,11 @@ class Microman < Gemini::GameObject
         bullet.add_velocity(-20, 0)
       end
     end
-    handle_event :shoot, :emit_game_object
+    handle_event :shoot, :shoot
+  end
+  
+  def shoot(message)
+    emit_game_object if @ammo > 0
+    @ammo -= 1
   end
 end
