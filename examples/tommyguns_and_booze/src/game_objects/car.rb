@@ -4,8 +4,9 @@ class Car < Gemini::GameObject
   has_behavior :TangibleSprite
   has_behavior :RecievesEvents
   
-  CAR_FORWARD_SPEED = 3
-  CAR_ROTATION_SPEED = 1
+  CAR_FORWARD_SPEED = 5
+  CAR_REVERSE_SPEED = -1
+  CAR_ROTATION_SPEED = 1.5
   
   def load
     set_bounded_image "car.png"
@@ -15,33 +16,22 @@ class Car < Gemini::GameObject
   
   def movement(message)
     case message.value
-    
-   #  |       /
-   #  |     /
-   #h |   /
-   #  | /
-   #  ------------- 
-   #        w
+   #      relative degrees
+   #       |   direction we want to move
+   #       v     ^
+   #   |       /
+   #   |     /
+   # h |   /
+   #   | / 
+   #   --------------------
+   #         w
     
     when :up #forward
-      relative_degrees = @facing_in_degrees % 90
-      x_delta = CAR_FORWARD_SPEED * Math.sin(degrees_to_radians(relative_degrees))
-      y_delta = -CAR_FORWARD_SPEED * Math.cos(degrees_to_radians(relative_degrees))
-      
-      if @facing_in_degrees > 90 && @facing_in_degrees <= 180
-        y_delta, x_delta = x_delta, y_delta
-        x_delta *= -1
-      elsif @facing_in_degrees > 180 && @facing_in_degrees <= 270
-        x_delta *= -1
-        y_delta *= -1
-      elsif @facing_in_degrees > 270
-        x_delta *= -1
-      end
-      
-      puts "x: #{x_delta}, y: #{y_delta}"
-      move(x + x_delta, y + y_delta)
+      x_delta, y_delta = calculate_next_movement
+      move(x + x_delta * CAR_FORWARD_SPEED, y + y_delta * CAR_FORWARD_SPEED)
     when :down #reverse
-      
+      x_delta, y_delta = calculate_next_movement
+      move(x + x_delta * CAR_REVERSE_SPEED, y + y_delta * CAR_REVERSE_SPEED)
     when :right #turn right
       @facing_in_degrees += 1
       @facing_in_degrees %= 360
@@ -53,11 +43,24 @@ class Car < Gemini::GameObject
     end
   end
   
-  def degrees_to_radians(degrees)
-    degrees * (Math::PI/180)
-  end
-  
-  def radians_to_degrees(radians)
-    radians * (180/Math::PI)
+  def calculate_next_movement
+    relative_degrees = @facing_in_degrees % 90
+    w = Math.sin(Gemini::Math.degrees_to_radians(relative_degrees))
+    h = Math.cos(Gemini::Math.degrees_to_radians(relative_degrees))
+
+    if @facing_in_degrees <= 90
+      x_delta = w
+      y_delta = -h
+    elsif @facing_in_degrees > 90 && @facing_in_degrees <= 180
+      x_delta = h
+      y_delta = w
+    elsif @facing_in_degrees > 180 && @facing_in_degrees <= 270
+      x_delta = -w
+      y_delta = h
+    elsif @facing_in_degrees > 270
+      x_delta = -h
+      y_delta = -w
+    end
+    return x_delta, y_delta
   end
 end
