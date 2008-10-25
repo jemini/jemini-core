@@ -1,4 +1,5 @@
 require 'behaviors/sprite'
+require 'behaviors/tangible'
 
 class TangibleSprite < Gemini::Behavior
   depends_on :Sprite
