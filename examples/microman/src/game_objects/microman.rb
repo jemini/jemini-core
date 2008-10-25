@@ -6,7 +6,6 @@ class Microman < Gemini::GameObject
   def load
     @ammo = 25
     set_bounded_image "microman-standing.png"
-    set_player_number 1
     add_animation :name => :stand, :speed => 500, :sprites => ["data/microman-standing.png"]
     add_animation :name => :jump, :speed => 500, :sprites => ["data/microman-jumping.png"]
     add_animation :name => :walk,
@@ -17,6 +16,11 @@ class Microman < Gemini::GameObject
                                "data/microman-walking1.png"]
     # TODO: Looks like we need a post load for behaviors
     animate :stand
+    
+    behavior_event_alias(:PlatformerControllable, 
+                         :start_move => :p1_start_platformer_movement, 
+                         :stop_move => :p1_stop_platformer_movement, 
+                         :jump => :p1_platformer_jump)
     
     set_emitting_game_object_name :Bullet
     on_emit_game_object do |bullet|

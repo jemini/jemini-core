@@ -148,7 +148,7 @@ module Gemini
         @dependant_behaviors << dependant_behavior_instance
       end
       
-      behavior_list = target.send(:instance_variable_get, "@behaviors")
+      behavior_list = target.send(:instance_variable_get, :@__behaviors)
       return unless behavior_list[self.class.name.to_sym].nil?
       behavior_list[self.class.name.to_sym] = self 
       
@@ -170,13 +170,13 @@ module Gemini
         if method.to_s =~ /=/
           code = <<-ENDL
           def #{method}(arg)
-            @behaviors[:#{self.class}].#{method}(arg)
+            @__behaviors[:#{self.class}].#{method}(arg)
           end
           ENDL
         else
           code = <<-ENDL
           def #{method}(*args, &blk)
-            @behaviors[:#{self.class}].#{method}(*args, &blk)
+            @__behaviors[:#{self.class}].#{method}(*args, &blk)
           end
           ENDL
         end
@@ -205,6 +205,14 @@ module Gemini
     
   public
     
+    def set_event_aliases(mappings)
+      mappings.each do |event, event_alias|
+        @target.handle_event(event_alias) do |message|
+          send(event, message)
+        end
+      end
+    end
+    
     def add_reference_count
       @reference_count += 1
     end
@@ -212,10 +220,6 @@ module Gemini
     def remove_reference_count
       @reference_count -= 1
     end
-    
-#    def method_missing(method, *args, &blk)
-#      @target.send(method, *args, &blk)
-#    end
 
     def load; end
     def unload; end

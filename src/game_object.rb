@@ -13,7 +13,7 @@ module Gemini
     def initialize(state, *args)
       @game_state = state
       @callbacks = Hash.new {|h,k| h[k] = []}
-      @behaviors = {}
+      @__behaviors = {}
       behaviors.each do |behavior|
         add_behavior(behavior)
       end
@@ -24,11 +24,9 @@ module Gemini
 
     def add_behavior(behavior_name)
       require "behaviors/#{behavior_name.underscore}"
-      klass = Object.const_get(behavior_name)
-#      unless @behaviors.values.find {|behavior| behavior.kind_of? klass}
-        klass.add_to(self) 
-        validate_dependant_behaviors
- #     end
+      klass = behavior_name.constantize
+      @__behaviors[behavior_name] = klass.add_to(self)
+      validate_dependant_behaviors
     rescue NameError => e
       raise "Unable to load behavior #{behavior_name}, #{e.message}\n#{e.backtrace.join("\n")}"
     rescue
@@ -39,16 +37,16 @@ module Gemini
     def unload
       #TODO: Perhaps expose this as a method on Behavior
       Gemini::Behavior.send(:class_variable_get, :@@depended_on_by).delete self
-      #@behaviors.each {|name, behavior| behavior.class.remove_from self}
+      #@__behaviors.each {|name, behavior| behavior.class.remove_from self}
     end
     
     # TODO: Refactor the removal of behaviors from @behavior to live in the
     # behavior class.  This will mirror how behaviors get added to the array
     # in Behavior#add_to
     def remove_behavior(behavior)
-      behavior_instance = @behaviors.delete(behavior)
+      behavior_instance = @__behaviors.delete(behavior)
       behavior_instance.dependant_behaviors.each do |dependant_behavior|
-        @behaviors.delete(dependant_behavior.class.name.to_sym)
+        @__behaviors.delete(dependant_behavior.class.name.to_sym)
       end
       behavior_instance.delete
     end
@@ -93,14 +91,19 @@ module Gemini
     end
     
     def kind_of?(klass)
-      super || @behaviors.values.inject(false){|result, behavior| result || behavior.class == klass}
+      super || @__behaviors.values.inject(false){|result, behavior| result || behavior.class == klass}
     end
     alias_method :is_a?, :kind_of?
     
     def load(*args); end
     
   private
-  
+    def behavior_event_alias(behavior_class, aliases)
+      if behavior = @__behaviors[behavior_class]
+        behavior.set_event_aliases(aliases)
+      end
+    end
+    
     def validate_dependant_behaviors
       behaviors.each do |behavior|
         behavior.constantize.kind_of_dependencies.each do |dependant_behavior|

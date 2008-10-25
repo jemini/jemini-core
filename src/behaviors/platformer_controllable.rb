@@ -1,5 +1,4 @@
 # Allows control of a TangibleSprite in a platformer environment.
-# Respects multiple players
 # TODO: Consider moving some of this to a general platformer behavior
 #       This behavior will know if it is on the ground
 # TODO: Make a CardinalMovable, for moving N E S W
@@ -13,8 +12,7 @@ class PlatformerControllable < Gemini::Behavior
   depends_on :Timeable
 #  depends_on :AxisStateful
   
-  declared_methods :set_player_number, :player_number=, :player_number, :grounded?, :facing_direction
-  attr_accessor :player_number
+  declared_methods :grounded?, :facing_direction
   
   def load
 #    @target.set_state_transitions_on_axis[:vertical_platform]   = [:grounded, :jumping, :falling]
@@ -72,22 +70,8 @@ class PlatformerControllable < Gemini::Behavior
   def facing_direction
     @facing_right ? :east : :west
   end
-  
-  def player_number=(player_number)
-    @player_number = player_number
-    @target.handle_event :"p#{player_number}_start_platformer_movement" do |message|
-      start_platform_move(message)
-    end
-    @target.handle_event :"p#{player_number}_stop_platformer_movement" do |message|
-      stop_platform_move(message)
-    end
-    @target.handle_event :"p#{player_number}_platformer_jump" do |message|
-      platform_jump(message)
-    end
-  end
-  alias_method :set_player_number, :player_number=
-  
-  def start_platform_move(message)
+    
+  def start_move(message)
     @moving = true
     if grounded?
       @target.animate :walk
@@ -107,7 +91,7 @@ class PlatformerControllable < Gemini::Behavior
     end
   end
   
-  def stop_platform_move(message)
+  def stop_move(message)
     if grounded?
       @target.animate :stand
     else
@@ -121,7 +105,7 @@ class PlatformerControllable < Gemini::Behavior
     end
   end
   
-  def platform_jump(message)
+  def jump(message)
     detect_grounded
     if grounded?
       puts "jump!"
