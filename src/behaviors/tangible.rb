@@ -1,9 +1,8 @@
 require 'behaviors/spatial'
 
 class Tangible < Gemini::Behavior#< Spatial
-  DEGREES_TO_RADIANS_MULTIPLIER = Math::PI / 180
-  RADIANS_TO_DEGREES_MULTIPLIER = 180 / Math::PI
   SQUARE_ROOT_OF_TWO = Math.sqrt(2)
+  INFINITE_MASS = Java::net::phys2d::raw::Body::INFINITE_MASS
   
   include_class "net.phys2d.raw.Body"
   include_class "net.phys2d.raw.shapes.Box"
@@ -13,7 +12,6 @@ class Tangible < Gemini::Behavior#< Spatial
   include_class "net.phys2d.raw.shapes.ConvexPolygon"
   include_class "net.phys2d.math.Vector2f"
   
-  INFINITE_MASS = Body::INFINITE_MASS
   attr_reader :mass, :name, :shape
   depends_on :Spatial
   depends_on :Updates
@@ -114,12 +112,12 @@ class Tangible < Gemini::Behavior#< Spatial
   end
   
   def rotation=(rotation)
-    @body.rotation = rotation * DEGREES_TO_RADIANS_MULTIPLIER
+    @body.rotation = Gemini::Math.degrees_to_radians(rotation)
   end
   alias_method :set_rotation, :rotation=
   
   def rotation
-    @body.rotation * RADIANS_TO_DEGREES_MULTIPLIER
+    Gemini::Math.radians_to_degrees(@body.rotation)
   end
   
   def rotatable?

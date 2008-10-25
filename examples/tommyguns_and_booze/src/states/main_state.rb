@@ -1,4 +1,4 @@
-require 'managers/tag_manager'
+require 'tag_manager'
 require 'basic_physics_manager'
 
 class MainState < Gemini::BaseState 
@@ -9,7 +9,7 @@ class MainState < Gemini::BaseState
     load_keymap :MainGameKeymap
     
     car = create_game_object :Car
-    car.set_position(100,100)
+    car.set_position(400,400)
     # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject
 #    quitter.add_behavior :RecievesEvents

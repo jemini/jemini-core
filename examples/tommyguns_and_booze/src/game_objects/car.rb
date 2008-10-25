@@ -16,7 +16,7 @@ class Car < Gemini::GameObject
   
   def movement(message)
     case message.value
-   #      relative degrees
+   #   relative degrees
    #       |   direction we want to move
    #       v     ^
    #   |       /
