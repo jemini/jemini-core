@@ -205,10 +205,16 @@ module Gemini
     
   public
     
-    def set_event_aliases(mappings)
-      mappings.each do |event, event_alias|
-        @target.handle_event(event_alias) do |message|
-          send(event, message)
+    def set_event_aliases(mappings, block)
+      if mappings.kind_of? Hash
+        mappings.each do |event, event_alias|
+          @target.handle_event(event_alias) do |message|
+            send(event, message)
+          end
+        end
+      else mappings.kind_of? Symbol
+        @target.handle_event(mappings) do |message|
+          send(block.call(message), message)
         end
       end
     end

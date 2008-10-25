@@ -2,11 +2,45 @@ class Car < Gemini::GameObject
   attr_accessor :facing_in_degrees
   
   has_behavior :VectoredMovement
+  has_behavior :TangibleSprite
   
   def load
-    behavior_event_alias(:VectoredMovement, :move => :p1_move)
-  end
-  
+    set_bounded_image "car.png"
+    
+    behavior_event_alias :VectoredMovement, :start_move do |message|
+      case message.value
+      when :up
+        message.value = :forward
+        :begin_acceleration
+      when :down
+        message.value = :reverse
+        :begin_acceleration
+      when :right
+        message.value = :clockwise
+        :begin_turn
+      when :left
+        message.value = :counter_clockwise
+        :begin_turn
+      end
+    end
+    
+    behavior_event_alias :VectoredMovement, :stop_move do |message|
+      case message.value
+      when :up
+        message.value = :forward
+        :end_acceleration
+      when :down
+        message.value = :reverse
+        :end_acceleration
+      when :right
+        message.value = :clockwise
+        :end_turn
+      when :left
+        message.value = :counter_clockwise
+        :end_turn
+      end
+    end
+  end  
 #  CAR_FORWARD_SPEED = 5
 #  CAR_REVERSE_SPEED = -1
 #  CAR_ROTATION_SPEED = 1.5
@@ -45,25 +79,5 @@ class Car < Gemini::GameObject
 #      set_rotation @facing_in_degrees
 #    end
 #  end
-#  
-#  def calculate_next_movement
-#    relative_degrees = @facing_in_degrees % 90
-#    w = Math.sin(Gemini::Math.degrees_to_radians(relative_degrees))
-#    h = Math.cos(Gemini::Math.degrees_to_radians(relative_degrees))
-#
-#    if @facing_in_degrees <= 90
-#      x_delta = w
-#      y_delta = -h
-#    elsif @facing_in_degrees > 90 && @facing_in_degrees <= 180
-#      x_delta = h
-#      y_delta = w
-#    elsif @facing_in_degrees > 180 && @facing_in_degrees <= 270
-#      x_delta = -w
-#      y_delta = h
-#    elsif @facing_in_degrees > 270
-#      x_delta = -h
-#      y_delta = -w
-#    end
-#    return x_delta, y_delta
-#  end
+# 
 end

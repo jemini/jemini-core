@@ -21,9 +21,11 @@ class Tangible < Gemini::Behavior#< Spatial
                    :set_force, :come_to_rest, :add_to_world, :remove_from_world, :set_tangible_debug_mode,
                    :tangible_debug_mode=, :restitution, :restitution=, :set_restitution,
                    :add_velocity, :set_velocity, :velocity=,
+                   :angular_velocity, :set_angular_velocity, :angular_velocity=,
                    :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity, :wish_move,
                    :set_movable, :movable=, :movable?, :set_position, #:set_safe_move, :safe_move=,
                    :damping, :set_damping, :damping=, :set_speed_limit, :speed_limit=, #, :speed_limit
+                   :angular_damping, :set_angular_damping, :angular_damping=,
                    :gravity_effected=, :set_gravity_effected, :friction, :set_friction, :friction=,
                    :get_collision_events, :box_size
   
@@ -145,8 +147,12 @@ class Tangible < Gemini::Behavior#< Spatial
     @body.force
   end
   
-  def add_velocity(x, y)
-    @body.adjust_velocity(Java::net::phys2d::math::Vector2f.new(x, y))
+  def add_velocity(x_or_vector, y = nil)
+    if x_or_vector.kind_of? Vector
+      @body.adjust_velocity(x_or_vector.to_phys2d_vector)
+    else
+      @body.adjust_velocity(Java::net::phys2d::math::Vector2f.new(x_or_vector, y))
+    end
   end
   
   def velocity
@@ -157,6 +163,15 @@ class Tangible < Gemini::Behavior#< Spatial
     @body.adjust_velocity(Java::net::phys2d::math::Vector2f.new(vector.x - @body.velocity.x, vector.y - @body.velocity.y))
   end
   alias_method :set_velocity, :velocity=
+  
+  def angular_velocity
+    @body.angular_velocity
+  end
+  
+  def angular_velocity=(delta)
+    @body.adjust_angular_velocity(delta)
+  end
+  alias_method :set_angular_velocity, :angular_velocity=
   
   def come_to_rest
     current_velocity = @body.velocity
@@ -233,6 +248,15 @@ class Tangible < Gemini::Behavior#< Spatial
     @body.damping = damping
   end
   alias_method :set_damping, :damping=
+  
+  def angular_damping
+    @body.rot_damping
+  end
+  
+  def angular_damping=(damping)
+    @body.rot_damping = damping
+  end
+  alias_method :set_angular_damping, :damping=
   
   def set_static_body
     @body.moveable = false

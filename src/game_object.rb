@@ -98,9 +98,9 @@ module Gemini
     def load(*args); end
     
   private
-    def behavior_event_alias(behavior_class, aliases)
+    def behavior_event_alias(behavior_class, aliases, &block)
       if behavior = @__behaviors[behavior_class]
-        behavior.set_event_aliases(aliases)
+        behavior.set_event_aliases(aliases, block)
       end
     end
     

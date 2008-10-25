@@ -27,7 +27,7 @@ module Gemini
       main = Main.new(screen_title)
       main.screen_width  = screen_width
       main.screen_height = screen_height
-      container = AppGameContainer.new(main)
+      container = AppGameContainer.new(main, screen_width, screen_height, false)
       container.vsync = true
       container.maximum_logic_update_interval = 60
       container.smooth_deltas = true
