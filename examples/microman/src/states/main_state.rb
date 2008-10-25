@@ -39,7 +39,7 @@ class MainState < Gemini::BaseState
     ammo_display.rows = nil
     ammo_display.columns = 1
     ammo_display.count = 25
-    ammo_display.layout_mode = :bottom_right_to_top_left
+    ammo_display.layout_mode = IconStripCounterDisplay::BOTTOM_RIGHT_TO_TOP_LEFT_LAYOUT_MODE
     ammo_display.move 20, 140
     
     microman.on_emit_game_object do

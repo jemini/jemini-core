@@ -1,4 +1,7 @@
 class IconStripCounterDisplay < Gemini::GameObject
+  TOP_LEFT_TO_BOTTOM_RIGHT_LAYOUT_MODE = :top_left_to_bottom_right
+  BOTTOM_RIGHT_TO_TOP_LEFT_LAYOUT_MODE = :bottom_right_to_top_left
+  
   has_behavior :Countable
   has_behavior :Spatial
   #has_behavior :CameraAnchoredDrawable
@@ -10,7 +13,7 @@ class IconStripCounterDisplay < Gemini::GameObject
     @icons = []
     @old_x = 0
     @old_y = 0
-    @layout_mode = :top_left_to_bottom_right
+    @layout_mode = TOP_LEFT_TO_BOTTOM_RIGHT_LAYOUT_MODE
     self.x = 0
     self.y = 0
     on_after_count_changes do
@@ -43,10 +46,10 @@ class IconStripCounterDisplay < Gemini::GameObject
   def position_sprite(offset_x, offset_y, sprite_index, sprite)
     row_number = @rows.nil? ? sprite_index : (sprite_index % @rows)
     column_number = @columns.nil? ? sprite_index : (sprite_index % @columns)
-    if :top_left_to_bottom_right == @mode  
+    if TOP_LEFT_TO_BOTTOM_RIGHT_LAYOUT_MODE == @layout_mode  
       sprite_x = offset_x + (@icon.width * column_number)
       sprite_y = offset_y + (@icon.height * row_number)
-    elsif :bottom_right_to_top_left
+    elsif BOTTOM_RIGHT_TO_TOP_LEFT_LAYOUT_MODE == @layout_mode
       sprite_x = offset_x - (@icon.width * column_number)
       sprite_y = offset_y - (@icon.height * row_number)
     end
