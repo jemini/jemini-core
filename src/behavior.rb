@@ -148,7 +148,7 @@ module Gemini
         @dependant_behaviors << dependant_behavior_instance
       end
       
-      behavior_list = target.send(:instance_variable_get, :@__behaviors)
+      behavior_list = @target.send(:instance_variable_get, :@__behaviors)
       return unless behavior_list[self.class.name.to_sym].nil?
       behavior_list[self.class.name.to_sym] = self 
       

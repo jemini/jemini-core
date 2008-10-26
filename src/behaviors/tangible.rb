@@ -263,7 +263,6 @@ class Tangible < Gemini::Behavior#< Spatial
   end
   
   def angular_damping=(damping)
-    puts "setting angular damping to #{damping}"
     @angular_damping = damping
   end
   alias_method :set_angular_damping, :damping=

@@ -7,7 +7,7 @@ class Sprite < Drawable
   alias_method :set_image_size, :image_size=
   declared_methods :center_position, :draw, :set_image_size, :image_size=, :image_size, :image, :image=, :set_image,
                    :image_scaling, :color, :set_color, :color=, :image_rotation, :image_rotation=, :set_image_rotation,
-                   :texture_coords, :flip_horizontally
+                   :add_rotation, :texture_coords, :flip_horizontally, :flip_vertically
                  
   wrap_with_callbacks :draw
     
@@ -51,6 +51,10 @@ class Sprite < Drawable
   
   def flip_horizontally
     @texture_coords[1].x, @texture_coords[0].x = @texture_coords[0].x, @texture_coords[1].x
+  end
+  
+  def flip_vertically
+    @texture_coords[1].y, @texture_coords[0].y = @texture_coords[0].y, @texture_coords[1].y
   end
   
   def draw(graphics)
