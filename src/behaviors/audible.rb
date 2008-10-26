@@ -1,22 +1,13 @@
 class Audible < Gemini::Behavior
 
-  depends_on :Spatial
-  declared_methods :add_sound, :emit_sound
+  declared_methods :load_sound, :emit_sound
   
-  #Wrapper for org.newdawn.slick.Sound.
-  class Sound < Java::org::newdawn::slick::Sound; end
-  
-  def load
-    @sounds = {}
+  def load_sound(reference, path)
+    @target.game_state.manager(:sound).add_sound(reference, path)
   end
   
-  def add_sound(reference, path)
-    @sounds[reference] = Sound.new(path)
-  end
-  
-  def emit_sound(reference, x = @target.x, y = @target.y, volume = nil, pitch = nil)
-    #@target.game_state.manager(:sound).get_sound(:sound_reference)
-    @sounds[reference].play_at(x, y, 0)
+  def emit_sound(reference, volume = 1.0, pitch = 1.0)
+    @target.game_state.manager(:sound).play_sound(reference, volume, pitch)
   end
   
 end

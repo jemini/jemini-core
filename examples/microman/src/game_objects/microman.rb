@@ -24,7 +24,7 @@ class Microman < Gemini::GameObject
     # TODO: Looks like we need a post load for behaviors
     animate :stand
     
-    add_sound :pew, 'data/pew.wav'
+    load_sound :pew, 'data/pew.wav'
     
     set_emitting_game_object_name :Bullet
     on_emit_game_object do |bullet|
@@ -35,7 +35,7 @@ class Microman < Gemini::GameObject
                  x - (image_size.x / 2) - bullet.image_size.x
                end
       emit_y = y #+ (image_size.y / 2)
-      emit_sound(:pew, emit_x, emit_y)
+      emit_sound(:pew)
       bullet.move(emit_x, emit_y)
       if :east == facing_direction
         bullet.add_velocity(20, 0)
