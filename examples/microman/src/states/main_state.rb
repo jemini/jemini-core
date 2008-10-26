@@ -33,7 +33,7 @@ class MainState < Gemini::BaseState
     #platforms!
     platform = create_game_object :StaticSprite, "platform.png", (640) / 4, (480 * 3)/ 4, 250, 30
     platform.tiled_to_bounds = true
-    platform = create_game_object :StaticSprite, "platform.png", (640) / 2, (480 / 2), 250, 30
+    platform = create_game_object :StaticSprite, "platform.png", (640) / 2, (480 * 0.40), 250, 30
     platform.tiled_to_bounds = true
     
     ammo_display = create_game_object :IconStripCounterDisplay
