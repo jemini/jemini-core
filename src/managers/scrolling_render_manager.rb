@@ -33,9 +33,9 @@ class ScrollingRenderManager < BasicRenderManager
     #TODO: This should go once declared method overriding is possible.
     if @tracking_game_object.kind_of? TangibleSprite
       body_position = @tracking_game_object.body_position
-      Vector.new(-(body_position.x - (640 / 2)), -(body_position.y - (480 / 2)))
+      Vector.new(-(body_position.x - (@game_state.screen_width / 2)), -(body_position.y - (@game_state.screen_height / 2)))
     else
-      Vector.new(-(body_position.x - (640 / 2)), -(body_position.y - (480 / 2)))
+      Vector.new(-(body_position.x - (@game_state.screen_width / 2)), -(body_position.y - (@game_state.screen_height / 2)))
     end
   end
 end
