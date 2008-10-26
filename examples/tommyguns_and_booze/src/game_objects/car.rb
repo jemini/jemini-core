@@ -7,6 +7,13 @@ class Car < Gemini::GameObject
   def load
     set_bounded_image "car.png"
     
+    set_forward_speed 5
+    set_reverse_speed -2
+    set_rotation_speed 0.2
+    
+    set_angular_damping 0.1
+    set_damping 0.1
+    
     behavior_event_alias :VectoredMovement, :start_move do |message|
       case message.value
       when :up
@@ -40,44 +47,5 @@ class Car < Gemini::GameObject
         :end_turn
       end
     end
-  end  
-#  CAR_FORWARD_SPEED = 5
-#  CAR_REVERSE_SPEED = -1
-#  CAR_ROTATION_SPEED = 1.5
-#  
-#  def load
-#    set_bounded_image "car.png"
-#    handle_event :move, :movement
-#    @facing_in_degrees = 0
-#  end
-#  
-#  def movement(message)
-#    case message.value
-#   #   relative degrees
-#   #       |   direction we want to move
-#   #       v     ^
-#   #   |       /
-#   #   |     /
-#   # h |   /
-#   #   | / 
-#   #   --------------------
-#   #         w
-#    
-#    when :up #forward
-#      x_delta, y_delta = calculate_next_movement
-#      move(x + x_delta * CAR_FORWARD_SPEED, y + y_delta * CAR_FORWARD_SPEED)
-#    when :down #reverse
-#      x_delta, y_delta = calculate_next_movement
-#      move(x + x_delta * CAR_REVERSE_SPEED, y + y_delta * CAR_REVERSE_SPEED)
-#    when :right #turn right
-#      @facing_in_degrees += 1
-#      @facing_in_degrees %= 360
-#      set_rotation @facing_in_degrees
-#    when :left #turn left
-#      @facing_in_degrees -= 1
-#      @facing_in_degrees %= 360
-#      set_rotation @facing_in_degrees
-#    end
-#  end
-# 
+  end
 end
