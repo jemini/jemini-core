@@ -1,6 +1,7 @@
 class Gangster < Gemini::GameObject
   has_behavior :CardinalMovable
   has_behavior :TangibleSprite
+  has_behavior :RotatesToPoint
   
   def load
     set_bounded_image "gangster.png"
