@@ -5,13 +5,16 @@ class MainState < Gemini::BaseState
   def load
     set_manager :physics, create_game_object(:BasicPhysicsManager)
     set_manager :tag, create_game_object(:TagManager)
+    manager(:game_object).add_layer_at(:character, 1)
     
     load_keymap :MainGameKeymap
     
-    car = create_game_object :Car
+    car = create_game_object_on_layer :Car, :character
     car.set_position(400,400)
     
-#    gangster = create_game_object :Gangster
+    set_manager :render, create_game_object(:ScrollingRenderManager, car)
+    
+#    gangster = create_game_object_on_layer :Gangster, :character
 #    gangster.set_position(300,300)
 #    gangster.set_rotation_target car
 
