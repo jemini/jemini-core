@@ -5,12 +5,13 @@ class VectoredMovement < Gemini::Behavior
   depends_on :RecievesEvents
   
   def load
-    @target.set_damping 0.1
-    @target.set_angular_damping 0.1
+    @target.set_damping 0.0
+    @target.set_angular_damping 0.0
     @facing_in_degrees = 0
-    
+    @velocity = 0
     @forward_speed = 3
     @reverse_speed = -1
+    @rotation_speed = 0.1
     @angular_velocity = 0
     @movement_vector = Vector.new(0,0)
     
@@ -22,26 +23,24 @@ class VectoredMovement < Gemini::Behavior
 #        @target.set_rotation @facing_in_degrees
 #        @movement_vector = Vector.from_polar_vector(@forward_speed, @facing_in_degrees)
 #      end
-      
-      @target.set_angular_velocity @angular_velocity
-      @target.add_velocity(@movement_vector)
+      @target.set_angular_velocity(@angular_velocity * @rotation_speed)
+      @target.add_velocity(Vector.from_polar_vector(@velocity, @target.rotation))
     end
   end
   
   def begin_acceleration(message)
-    speed = :forward == message.value ? @forward_speed : @reverse_speed
-    @movement_vector = Vector.from_polar_vector(speed, @facing_in_degrees)
+    @velocity = :forward == message.value ? @forward_speed : @reverse_speed
   end
   
   def end_acceleration(message)
-    @movement_vector = Vector.new(0,0)
+    @velocity = 0
   end
   
   def begin_turn(message)
     if :clockwise == message.value
-      @angular_velocity = 0.01
+      @angular_velocity = 1
     else
-      @angular_velocity = -0.01
+      @angular_velocity = -1
     end
   end
   

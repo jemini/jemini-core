@@ -35,8 +35,10 @@ class Tangible < Gemini::Behavior#< Spatial
     setup_body
     @body.restitution = 0.0
     @body.user_data = @target
+    @angular_damping = 0.0
     @target.enable_listeners_for :collided
     @target.on_after_move { move @target.x , @target.y}
+    @target.on_update {|delta| set_angular_velocity(angular_velocity - (angular_velocity * (@angular_damping * (1.0/mass) ))) }
   end
   
   def body_position
@@ -169,13 +171,14 @@ class Tangible < Gemini::Behavior#< Spatial
   end
   
   def angular_velocity=(delta)
-    @body.adjust_angular_velocity(delta)
+    @body.adjust_angular_velocity(delta - angular_velocity)
   end
   alias_method :set_angular_velocity, :angular_velocity=
   
   def come_to_rest
     current_velocity = @body.velocity
     add_velocity(-current_velocity.x, -current_velocity.y)
+    set_angular_velocity(0)
     @body.is_resting = true
   end
   
@@ -250,11 +253,12 @@ class Tangible < Gemini::Behavior#< Spatial
   alias_method :set_damping, :damping=
   
   def angular_damping
-    @body.rot_damping
+    @angular_damping
   end
   
   def angular_damping=(damping)
-    @body.rot_damping = damping
+    puts "setting angular damping to #{damping}"
+    @angular_damping = damping
   end
   alias_method :set_angular_damping, :damping=
   
