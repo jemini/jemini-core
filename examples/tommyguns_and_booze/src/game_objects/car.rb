@@ -6,7 +6,11 @@ class Car < Gemini::GameObject
   
   def load
     set_bounded_image "car.png"
-    set_angular_velocity 0.3
+    
+    set_forward_speed 5
+    set_reverse_speed -2
+    set_rotation_speed 0.2
+    
     set_angular_damping 0.1
     set_damping 0.1
     
