@@ -101,6 +101,8 @@ module Gemini
     def behavior_event_alias(behavior_class, aliases, &block)
       if behavior = @__behaviors[behavior_class]
         behavior.set_event_aliases(aliases, block)
+      else
+        raise "No behavior #{behavior_class} for game object #{self}"
       end
     end
     
