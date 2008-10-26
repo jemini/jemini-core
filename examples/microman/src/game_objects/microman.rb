@@ -1,6 +1,7 @@
 class Microman < Gemini::GameObject
   has_behavior :PlatformerControllable
   has_behavior :GameObjectEmittable
+  has_behavior :Audible
   def load
     set_bounded_image "microman-standing.png"
     set_player_number 1
@@ -23,6 +24,8 @@ class Microman < Gemini::GameObject
     # TODO: Looks like we need a post load for behaviors
     animate :stand
     
+    add_sound :pew, 'data/pew.wav'
+    
     set_emitting_game_object_name :Bullet
     on_emit_game_object do |bullet|
       puts "emitting bullet #{facing_direction}"
@@ -32,6 +35,7 @@ class Microman < Gemini::GameObject
                  x - (image_size.x / 2) - bullet.image_size.x
                end
       emit_y = y #+ (image_size.y / 2)
+      emit_sound(:pew, emit_x, emit_y)
       bullet.move(emit_x, emit_y)
       if :east == facing_direction
         bullet.add_velocity(20, 0)
