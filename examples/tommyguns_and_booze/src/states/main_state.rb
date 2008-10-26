@@ -19,7 +19,12 @@ class MainState < Gemini::BaseState
     map_data = File.readlines('data/test_map.txt')
     map_data.reject! {|line| line =~ /^\s*#/ || line.strip.empty?}
     
-    map_data.each{|line| puts line}
+    map_data.each do |line| 
+      next if line =~ /^layer/ #skip for now
+      parts = line.split('_')
+      p parts
+    end
+    
     # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject
 #    quitter.add_behavior :RecievesEvents
