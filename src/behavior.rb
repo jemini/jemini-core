@@ -214,6 +214,7 @@ module Gemini
         end
       else mappings.kind_of? Symbol
         @target.handle_event(mappings) do |message|
+          message = message.dup
           send(block.call(message), message)
         end
       end

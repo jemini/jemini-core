@@ -10,6 +10,9 @@ class MainState < Gemini::BaseState
     
     car = create_game_object :Car
     car.set_position(400,400)
+    
+    ganster = create_game_object :Gangster
+    ganster.set_position(300,300)
     # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject
 #    quitter.add_behavior :RecievesEvents

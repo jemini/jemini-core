@@ -16,7 +16,7 @@ class DebugTangible < Drawable
   
   def draw(graphics)
     #TODO: Support joints and composite bodies(?)
-    body = @target.instance_variable_get(:@behaviors)[:Tangible].instance_variable_get(:@body)
+    body = @target.instance_variable_get(:@__behaviors)[:Tangible].instance_variable_get(:@body)
     physics_shape = body.shape
     graphics_shape = if physics_shape.kind_of?(Java::net::phys2d::raw::shapes::Box)
                        Java::org.newdawn.slick.geom.Polygon.new(physics_shape.get_points(body.position, body.rotation).map{|point| [point.x, point.y]}.flatten.to_java(:float))
