@@ -4,7 +4,7 @@ class Gangster < Gemini::GameObject
   
   def load
     set_bounded_image "gangster.png"
-    set_damping 0.8
+    set_damping 0.6
     
     behavior_event_alias :CardinalMovable, :start_move do |message|
       case message.value

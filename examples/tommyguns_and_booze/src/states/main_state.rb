@@ -8,8 +8,8 @@ class MainState < Gemini::BaseState
     
     load_keymap :MainGameKeymap
     
-#    car = create_game_object :Car
-#    car.set_position(400,400)
+    car = create_game_object :Car
+    car.set_position(400,400)
     
     ganster = create_game_object :Gangster
     ganster.set_position(300,300)
