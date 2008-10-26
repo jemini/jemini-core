@@ -202,12 +202,18 @@ class Tangible < Gemini::Behavior#< Spatial
   alias_method :set_restitution, :restitution=
   
   def set_shape(shape, *params)
+    # Save off data that is destroyed when @body.set is called
+    saved_damping = damping
+    saved_angular_damping = angular_damping
+    
     if shape.respond_to?(:to_str) || shape.kind_of?(Symbol)
       @shape = ("Tangible::" + shape.to_s).constantize.new(*params)
     else
       @shape = shape
     end
     @body.set(@shape, @mass)
+    self.damping = saved_damping
+    self.angular_damping = saved_angular_damping 
   end
   
   def name=(name)

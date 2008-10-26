@@ -1,7 +1,7 @@
 class Car < Gemini::GameObject
   attr_accessor :facing_in_degrees
   
-  has_behavior :VectoredMovement
+  has_behavior :TopDownVehicle
   has_behavior :TangibleSprite
   
   def load
@@ -10,11 +10,8 @@ class Car < Gemini::GameObject
     set_forward_speed 5
     set_reverse_speed -2
     set_rotation_speed 0.2
-    
-    set_angular_damping 0.1
-    set_damping 0.1
-    
-    behavior_event_alias :VectoredMovement, :start_move do |message|
+        
+    behavior_event_alias :TopDownVehicle, :start_move do |message|
       case message.value
       when :up
         message.value = :forward
@@ -31,7 +28,7 @@ class Car < Gemini::GameObject
       end
     end
     
-    behavior_event_alias :VectoredMovement, :stop_move do |message|
+    behavior_event_alias :TopDownVehicle, :stop_move do |message|
       case message.value
       when :up
         message.value = :forward
