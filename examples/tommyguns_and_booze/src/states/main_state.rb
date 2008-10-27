@@ -10,7 +10,7 @@ class MainState < Gemini::BaseState
     load_keymap :MainGameKeymap
     
     car = create_game_object_on_layer :Car, :character
-    car.set_position(400,400)
+    car.set_position(0,0)
     car.image_rotation = 180
     
     set_manager :render, create_game_object(:ScrollingRenderManager, car)
@@ -43,21 +43,21 @@ class MainState < Gemini::BaseState
     map9.move(4096-640,4096-64)
     
     # Load map data
-    map_data = File.readlines('data/small_map.txt')
-    map_data.reject! {|line| line =~ /^\s*#/ || line.strip.empty?}
-    puts "#{map_data.size} tiles to load"
-    map_tiles = []
-    
+#    map_data = File.readlines('data/small_map.txt')
+#    map_data.reject! {|line| line =~ /^\s*#/ || line.strip.empty?}
+
+#    map_tiles = []
+    map_data = File.readlines('data/collision_export.txt')
+    puts "#{map_data.size} buildings to load"
     map_data.each_with_index do |line, index|
-      puts "Loading tile #{index}"
-      next if line =~ /^layer/ #skip for now
+      puts "Loading building #{index}"
       parts = line.chomp.split('_')
-      name, tangible, rotation, flipping, x, y = parts
-      rotation, x, y = rotation.to_i, x.to_i, y.to_i
-      tangible = "true" == tangible ? true : false
+      x, y, width, height = parts
+      x, y, width, height = x.to_i, y.to_i, width.to_i, height.to_i
+
 #      puts "name: #{name}, tangible: #{tangible}, rotation: #{rotation}, flipping: #{flipping}, x: #{x}, y: #{y}"
-      if tangible
-#        create_game_object(:StaticSprite, "transparent.png", x+32, y+32, 64, 64)
+
+      create_game_object(:StaticSprite, "transparent.png", x - 570, y - 830, width, height)
 #        tile.rotation = rotation
 #        puts "creating tile at #{x+32}, #{y+32}"
 #        tile = create_game_object(:GameObject)
@@ -75,7 +75,6 @@ class MainState < Gemini::BaseState
 #        tile.image = "#{name}.png"
 #        tile.move(x+32, y+32)
 #        tile.image_rotation = rotation
-      end
       
 #      if "horizontal" == flipping
 #        tile.flip_horizontally
