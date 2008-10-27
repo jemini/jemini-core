@@ -1,10 +1,12 @@
 require 'managers/tag_manager'
+require 'managers/sound_manager'
 require 'basic_physics_manager'
 
 class MainState < Gemini::BaseState 
   def load
     set_manager :physics, create_game_object(:BasicPhysicsManager)
     set_manager :tag, create_game_object(:TagManager)
+    set_manager :sound, create_game_object(:SoundManager)
     manager(:physics).gravity = 10
     
     load_keymap :MainGameKeymap
