@@ -15,8 +15,6 @@ class MainState < Gemini::BaseState
     
     set_manager :render, create_game_object(:ScrollingRenderManager, car)
     
-    
-    
 #    gangster = create_game_object_on_layer :Gangster, :character
 #    gangster.set_position(300,300)
 #    gangster.set_rotation_target car
@@ -24,23 +22,23 @@ class MainState < Gemini::BaseState
     # Load map image
 #    map = create_game_object(:Background, 'large_map.png')
     map1 = create_game_object(:Background, 'map_tile_0_0.png')
-    map1.move(0,0)
+    map1.move_by_top_left(0,0)
     map2 = create_game_object(:Background, 'map_tile_1_0.png')
-    map2.move(2048,0)
+    map2.move_by_top_left(2048,0)
     map3 = create_game_object(:Background, 'map_tile_2_0.png')
-    map3.move(4096-640,0)
+    map3.move_by_top_left(4096,0)
     map4 = create_game_object(:Background, 'map_tile_0_1.png')
-    map4.move(0,2048)
+    map4.move_by_top_left(0,2048)
     map5 = create_game_object(:Background, 'map_tile_1_1.png')
-    map5.move(2048,2048)
+    map5.move_by_top_left(2048,2048)
     map6 = create_game_object(:Background, 'map_tile_2_1.png')
-    map6.move(4096-640,2048)
+    map6.move_by_top_left(4096,2048)
     map7 = create_game_object(:Background, 'map_tile_0_2.png')
-    map7.move(0,4096-64)
+    map7.move_by_top_left(0,4096)
     map8 = create_game_object(:Background, 'map_tile_1_2.png')
-    map8.move(2048,4096-64)
+    map8.move_by_top_left(2048,4096)
     map9 = create_game_object(:Background, 'map_tile_2_2.png')
-    map9.move(4096-640,4096-64)
+    map9.move_by_top_left(4096,4096)
     
     # Load map data
 #    map_data = File.readlines('data/small_map.txt')
@@ -57,7 +55,11 @@ class MainState < Gemini::BaseState
 
 #      puts "name: #{name}, tangible: #{tangible}, rotation: #{rotation}, flipping: #{flipping}, x: #{x}, y: #{y}"
 
-      create_game_object(:StaticSprite, "transparent.png", x - 570, y - 830, width, height)
+      bounding_box = create_game_object(:StaticSprite, "transparent.png") #, x, y, width, height)
+      bounding_box.set_shape :Box, width, height
+      #move_by_top_left doesn't work here, since the image isn't the size of the bounds.
+      bounding_box.move(x + (width / 2), y + (height / 2))
+      
 #        tile.rotation = rotation
 #        puts "creating tile at #{x+32}, #{y+32}"
 #        tile = create_game_object(:GameObject)
@@ -65,7 +67,7 @@ class MainState < Gemini::BaseState
 #        
 #        tile.set_shape :Box, 64, 64
 #        tile.set_mass Tangible::INFINITE_MASS
-#        tile.move(x+32, y+32)
+#        tile.move_by_top_left(x+32, y+32)
 #        tile.set_static_body
 #        tile.set_restitution 1.0
 #        tile.set_friction 0.0
@@ -73,7 +75,7 @@ class MainState < Gemini::BaseState
 #        tile = create_game_object :GameObject
 #        tile.add_behavior :Sprite
 #        tile.image = "#{name}.png"
-#        tile.move(x+32, y+32)
+#        tile.move_by_top_left(x+32, y+32)
 #        tile.image_rotation = rotation
       
 #      if "horizontal" == flipping

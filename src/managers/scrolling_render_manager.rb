@@ -3,12 +3,15 @@ require 'managers/basic_render_manager'
 class ScrollingRenderManager < BasicRenderManager
   attr_accessor :camera_position, :tracking_game_object
   alias_method :set_camera_position, :camera_position=
+  alias_method :set_tracking_game_object, :tracking_game_object=
   
-  def load(camera_position_or_tracking_game_object)
-    if camera_position_or_tracking_game_object.kind_of? Vector
-      @camera_position = camera_position_or_tracking_game_object
-    else
-      @tracking_game_object = camera_position_or_tracking_game_object
+  def load(camera_position_or_tracking_game_object=nil)
+    unless camera_position_or_tracking_game_object.nil?
+      if camera_position_or_tracking_game_object.kind_of? Vector
+        @camera_position = camera_position_or_tracking_game_object
+      else
+        @tracking_game_object = camera_position_or_tracking_game_object
+      end
     end
     @gl = Java::org::newdawn::slick::opengl::renderer::Renderer.get
     super()

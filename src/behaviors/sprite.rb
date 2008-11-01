@@ -58,12 +58,12 @@ class Sprite < Drawable
   end
   
   def move_by_top_left(move_x_or_vector, move_y = nil)
-    half_width = @target.image_size.x / 2
-    half_height = @target.image_size.y / 2
+    half_width = image_size.x / 2
+    half_height = image_size.y / 2
     if move_y.nil?
-      @target.move(move_x_or_vector.x - half_width, move_x_or_vector.y - half_height)
+      @target.move(move_x_or_vector.x + half_width, move_x_or_vector.y + half_height)
     else
-      @target.move(move_x_or_vector - half_width, move_y - half_height)
+      @target.move(move_x_or_vector + half_width, move_y + half_height)
     end
   end
   

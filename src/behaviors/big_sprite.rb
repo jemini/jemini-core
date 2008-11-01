@@ -4,7 +4,9 @@ class BigSprite < Drawable
   include_class 'org.newdawn.slick.BigImage'
   attr_accessor :image
   depends_on :Spatial
-  declared_methods :draw, :image, :set_image, :image=
+  attr_accessor :image, :color, :texture_coords, :image_size
+  alias_method :set_image_size, :image_size=
+  declared_methods :draw, :image, :set_image, :image=, :move_by_top_left, :image_size, :set_image_size, :image_size=
   
   def load
     @color = Color.new(1.0, 1.0, 1.0, 1.0)
@@ -26,6 +28,16 @@ class BigSprite < Drawable
     graphics.reset_transform
   end
   
+  def move_by_top_left(move_x_or_vector, move_y = nil)
+    half_width = @target.image_size.x / 2
+    half_height = @target.image_size.y / 2
+    if move_y.nil?
+      @target.move(move_x_or_vector.x + half_width, move_x_or_vector.y + half_height)
+    else
+      @target.move(move_x_or_vector + half_width, move_y + half_height)
+    end
+  end
+  
   def image=(sprite_name)
     if sprite_name.kind_of? BigImage
       @image = sprite_name
@@ -34,7 +46,7 @@ class BigSprite < Drawable
       puts @image.width
       puts @image.height
     end
-#    set_image_size(Vector.new(@image.width, @image.height))
+    set_image_size(Vector.new(@image.width, @image.height))
   end
   alias_method :set_image, :image=
 end
