@@ -41,50 +41,36 @@ class MainState < Gemini::BaseState
     map9.move_by_top_left(4096,4096)
     
     # Load map data
-#    map_data = File.readlines('data/small_map.txt')
-#    map_data.reject! {|line| line =~ /^\s*#/ || line.strip.empty?}
-
-#    map_tiles = []
-    map_data = File.readlines('data/collision_export.txt')
+    map_data = File.readlines('data/small_map.txt')
+    #map_data = File.readlines('data/test_map.txt')
+    #map_data = File.readlines('data/collision_export.txt')
+    map_data.reject! {|line| line =~ /^\s*#/ || line.strip.empty?}
+    map_tiles = []
     puts "#{map_data.size} buildings to load"
     map_data.each_with_index do |line, index|
       puts "Loading building #{index}"
       parts = line.chomp.split('_')
-      x, y, width, height = parts
-      x, y, width, height = x.to_i, y.to_i, width.to_i, height.to_i
+      image_name, tangible, rotation, flipping, x, y = parts
+      image_name, tangible, rotation, flipping, x, y = image_name,"true" == tangible, rotation.to_i, flipping, x.to_i, y.to_i
 
-#      puts "name: #{name}, tangible: #{tangible}, rotation: #{rotation}, flipping: #{flipping}, x: #{x}, y: #{y}"
-
-      bounding_box = create_game_object(:StaticSprite, "transparent.png") #, x, y, width, height)
-      bounding_box.set_shape :Box, width, height
-      #move_by_top_left doesn't work here, since the image isn't the size of the bounds.
-      bounding_box.move(x + (width / 2), y + (height / 2))
+      if tangible
+        tile = create_game_object(:StaticSprite, "#{image_name}.png")
+        tile.rotation = rotation
+        #tile.set_shape :Box, 64, 64
+      else
+        tile = create_game_object :GameObject
+        tile.add_behavior :Sprite
+        tile.image = "#{image_name}.png"
+        tile.image_rotation = rotation
+      end
+      tile.move_by_top_left(x, y)
+      if "horizontal" == flipping
+        tile.flip_horizontally
+      elsif "vertical" == flipping
+        tile.flip_vertically
+      end
       
-#        tile.rotation = rotation
-#        puts "creating tile at #{x+32}, #{y+32}"
-#        tile = create_game_object(:GameObject)
-#        tile.add_behavior :Tangible
-#        
-#        tile.set_shape :Box, 64, 64
-#        tile.set_mass Tangible::INFINITE_MASS
-#        tile.move_by_top_left(x+32, y+32)
-#        tile.set_static_body
-#        tile.set_restitution 1.0
-#        tile.set_friction 0.0
-#      else
-#        tile = create_game_object :GameObject
-#        tile.add_behavior :Sprite
-#        tile.image = "#{name}.png"
-#        tile.move_by_top_left(x+32, y+32)
-#        tile.image_rotation = rotation
-      
-#      if "horizontal" == flipping
-#        tile.flip_horizontally
-#      elsif "vertical" == flipping
-#        tile.flip_vertically
-#      end
-      
-#      map_tiles << tile
+      map_tiles << tile
     end
     
     # uncomment to enable profiler (needs keymap too)
