@@ -1,6 +1,6 @@
 class StaticSprite < Gemini::GameObject
   has_behavior :TangibleSprite
-  def load(sprite_name_or_image, x=nil, y=nil, width=nil, height=nil, *tags)
+  def load(sprite_name_or_image, x, y, width, height, *tags)
     set_image sprite_name_or_image
     if width.nil? || height.nil?
       set_shape :Box, image_size.x, image_size.y
