@@ -31,13 +31,14 @@ class MainState < Gemini::BaseState
       tangible = "true" == tangible ? true : false
       puts "name: #{name}, tangible: #{tangible}, rotation: #{rotation}, flipping: #{flipping}, x: #{x}, y: #{y}"
       if tangible
-        tile = create_game_object(:StaticSprite, "#{name}.png", x+32, y+32, 64, 64)
+        tile = create_game_object(:StaticSprite, "#{name}.png")
+        tile.move_by_top_left(x, y)
         tile.rotation = rotation
       else
         tile = create_game_object :GameObject
         tile.add_behavior :Sprite
         tile.image = "#{name}.png"
-        tile.move(x+32, y+32)
+        tile.move_by_top_left(x, y)
         tile.image_rotation = rotation
       end
       
