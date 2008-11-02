@@ -31,6 +31,14 @@ module Gemini
       message_manager.start_processing
     end
     
+    def screen_width
+      @game.screen_width
+    end
+    
+    def screen_height
+      @game.screen_height
+    end
+    
     def create_game_object_on_layer(type, layer_name, *params)
       game_object_type = begin
                            type.constantize
