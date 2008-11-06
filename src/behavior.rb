@@ -1,29 +1,11 @@
+require 'listenable_mixin'
+
 module Gemini
   class MethodExistsError < Exception; end
   
   class Behavior
+    include ListenableMixin
     attr_reader :reference_count, :target
-
-    @@depended_on_by = Hash.new{|h,k| h[k] = []}
-    def self.add_to(target)
-      unless instance = @@depended_on_by[target].find {|behavior| behavior.class == self}
-        instance = self.new(target)
-        @@depended_on_by[target] << instance
-      end
-      instance.add_reference_count
-      instance
-    end
-    
-    def self.remove_from(target)
-      if instance = @@depended_on_by[target.class].find {|behavior| behavior.class == self}
-        instance.remove_reference_count
-        if 0 == instance.reference_count
-          @@depended_on_by[target.class].delete_if {|behavior| behavior.class == self}
-          instance.send(:delete)
-          #@@depended_on_by.delete target if @@depended_on_by[target].empty?
-        end
-      end
-    end
     
     def self.method_added(method)
       if callback_methods_to_wrap.member? method
@@ -144,17 +126,15 @@ module Gemini
         rescue NameError
           raise "Cannot load dependant behavior '#{dependant_behavior}' in behavior '#{self.class}'"
         end
-        dependant_behavior_instance = dependant_behavior_class.add_to(@target) unless @target.kind_of? dependant_behavior_class
-        @dependant_behaviors << dependant_behavior_instance
+        unless @target.kind_of? dependant_behavior_class
+          @target.add_behavior dependant_behavior_class.to_s 
+          @dependant_behaviors << dependant_behavior
+        end
       end
       
       behavior_list = @target.send(:instance_variable_get, :@__behaviors)
       return unless behavior_list[self.class.name.to_sym].nil?
       behavior_list[self.class.name.to_sym] = self 
-      
-      @dependant_behaviors.each do |dependant_behavior|
-        behavior_list[dependant_behavior.class.name.to_sym] = dependant_behavior if behavior_list[dependant_behavior.class.name.to_sym].nil? 
-      end
 
 #      self.class.kind_of_dependencies.each do |dependant_behavior|
 #        dependency = dependant_behavior.constantize
@@ -191,16 +171,24 @@ module Gemini
     end
 
     def delete
+      return if @deleted
       unload
-      @dependant_behaviors.each {|dependant| dependant.class.remove_from(@target)}
-      self.class.declared_method_list.each do |method|
+      __remove_listeners
+      self.class.declared_method_list.each do |method_name|
         begin
           target_class = class <<@target; self; end
-          target_class.send(:remove_method, method)
-        rescue NameError
+          target_class.send(:remove_method, method_name) if target_class.respond_to? method_name
+        rescue NameError => e
+          puts "error with deleting behavior #{self}.\n#{e}\n#{e.backtrace.join("\n")}"
           # just continue if this method isn't there anymore
         end
       end
+      #TODO: Make sure we don't delete dependent behaviors that still have depending behaviors
+      @dependant_behaviors.each do |dependant| 
+        #dependant.class.remove_from(@target)
+        @target.remove_behavior dependant
+      end
+      @deleted = true
     end
     
   public

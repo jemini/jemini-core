@@ -1,5 +1,5 @@
 require 'behaviors/drawable'
-class DebugTangible < Drawable
+class DebugTangible < Gemini::Behavior #Drawable
   #declared_methods :draw
   PhysVector = Java::net::phys2d::math::Vector2f
   SlickVector = Java::org::newdawn::slick::geom::Vector2f

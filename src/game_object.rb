@@ -1,7 +1,9 @@
 require 'behavior'
+require 'listenable_mixin'
 
 module Gemini
   class GameObject
+    include ListenableMixin
     attr_reader :game_state
     
     @@behaviors = Hash.new{|h,k| h[k] = []}
@@ -17,38 +19,35 @@ module Gemini
       behaviors.each do |behavior|
         add_behavior(behavior)
       end
-      
       validate_dependant_behaviors
       load(*args)
     end
 
     def add_behavior(behavior_name)
-      require "behaviors/#{behavior_name.underscore}"
-      klass = behavior_name.constantize
-      @__behaviors[behavior_name] = klass.add_to(self)
-      validate_dependant_behaviors
+        require "behaviors/#{behavior_name.underscore}"
+        klass = behavior_name.constantize
+        @__behaviors[behavior_name] = klass.new(self) if @__behaviors[behavior_name].nil?
+        validate_dependant_behaviors
     rescue NameError => e
       raise "Unable to load behavior #{behavior_name}, #{e.message}\n#{e.backtrace.join("\n")}"
-    rescue
-      klass.remove_from(self)
-      raise
     end
     
     def unload
       #TODO: Perhaps expose this as a method on Behavior
-      Gemini::Behavior.send(:class_variable_get, :@@depended_on_by).delete self
-      #@__behaviors.each {|name, behavior| behavior.class.remove_from self}
+      #Gemini::Behavior.send(:class_variable_get, :@@depended_on_by).delete self
+      __remove_listeners
+      @__behaviors.each do |name, behavior|
+        #the list is being modified as we go through it, so check before use.
+        next if behavior.nil?
+        behavior.send(:delete)
+      end
     end
     
     # TODO: Refactor the removal of behaviors from @behavior to live in the
     # behavior class.  This will mirror how behaviors get added to the array
     # in Behavior#add_to
     def remove_behavior(behavior)
-      behavior_instance = @__behaviors.delete(behavior)
-      behavior_instance.dependant_behaviors.each do |dependant_behavior|
-        @__behaviors.delete(dependant_behavior.class.name.to_sym)
-      end
-      behavior_instance.delete
+      @__behaviors.delete(behavior).send(:delete) unless @__behaviors[behavior].nil?
     end
     
     # Takes a method and adds a corresponding listener registration method. Given
@@ -59,11 +58,15 @@ module Gemini
       methods.each do |method|
         code = <<-ENDL
           def on_#{method}(&callback)
+            origin = callback.source
+            origin.extend Gemini::ListenableMixin unless origin.kind_of? Gemini::ListenableMixin
+            origin.__added_listener_for(self, "#{method}", callback)
             @callbacks[:#{method}] << callback
           end
 
-          def remove_#{method}(object)
-            @callbacks[:#{method}].delete {|callback| callback.origin == object }
+          def remove_#{method}(object, callback)
+            # @callbacks[:#{method}].delete_if {|callback| callback.source == object }
+            @callbacks[:#{method}].delete callback
           end
         ENDL
 
