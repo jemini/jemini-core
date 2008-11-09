@@ -47,31 +47,38 @@ class MainState < Gemini::BaseState
     map_data.reject! {|line| line =~ /^\s*#/ || line.strip.empty?}
     map_tiles = []
     puts "#{map_data.size} buildings to load"
-    map_data.each_with_index do |line, index|
-      puts "Loading building #{index}"
-      parts = line.chomp.split('_')
-      image_name, tangible, rotation, flipping, x, y = parts
-      image_name, tangible, rotation, flipping, x, y = image_name,"true" == tangible, rotation.to_i, flipping, x.to_i, y.to_i
-
-      if tangible
-        tile = create_game_object(:StaticSprite, "#{image_name}.png")
-        tile.rotation = rotation
-        #tile.set_shape :Box, 64, 64
-      else
-        tile = create_game_object :GameObject
-        tile.add_behavior :Sprite
-        tile.image = "#{image_name}.png"
-        tile.image_rotation = rotation
-      end
-      tile.move_by_top_left(x, y)
-      if "horizontal" == flipping
-        tile.flip_horizontally
-      elsif "vertical" == flipping
-        tile.flip_vertically
-      end
-      
-      map_tiles << tile
-    end
+#    map_data.each_with_index do |line, index|
+#      puts "Loading building #{index}"
+#      parts = line.chomp.split('_')
+#      image_name, tangible, rotation, flipping, x, y = parts
+#      image_name, tangible, rotation, flipping, x, y = image_name,"true" == tangible, rotation.to_i, flipping, x.to_i, y.to_i
+#
+#      if tangible
+#        tile = create_game_object(:StaticSprite, "#{image_name}.png")
+#        tile.rotation = rotation
+#        #tile.set_shape :Box, 64, 64
+#      else
+#        tile = create_game_object :GameObject
+#        tile.add_behavior :Sprite
+#        tile.image = "#{image_name}.png"
+#        tile.image_rotation = rotation
+#      end
+#      tile.move_by_top_left(x, y)
+#      if "horizontal" == flipping
+#        tile.flip_horizontally
+#      elsif "vertical" == flipping
+#        tile.flip_vertically
+#      end
+#      
+#      map_tiles << tile
+#    end
+    
+    region = create_game_object :TangibleObject
+#    region.set_shape :Box, 200, 200
+#    region.move(500,500)
+#    region.set_static_body
+#    #region.set_mass 0.0000000001
+#    region.set_mass Tangible::INFINITE_MASS
     
     # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject

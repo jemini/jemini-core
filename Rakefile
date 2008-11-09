@@ -1,4 +1,5 @@
 require 'rawr'
+require 'rawr'
 require 'rake'
 require 'spec/rake/spectask'
 

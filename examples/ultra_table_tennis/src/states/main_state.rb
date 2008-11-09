@@ -1,5 +1,6 @@
-require 'managers/tag_manager'
-require 'managers/score_manager'
+require 'tag_manager'
+require 'score_manager'
+require 'basic_physics_manager'
 require 'ball'
 
 class MainState < Gemini::BaseState 

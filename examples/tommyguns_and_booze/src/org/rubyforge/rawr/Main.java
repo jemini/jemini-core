@@ -12,72 +12,56 @@ import org.jruby.Ruby;
 import org.jruby.RubyInstanceConfig;
 import org.jruby.javasupport.JavaEmbedUtils;
 
-
 public class Main
 {
   public static void main(String[] args) throws Exception
   {   
     RubyInstanceConfig config = new RubyInstanceConfig();
     config.setArgv(args);
-    Ruby runtime = JavaEmbedUtils.initialize(new ArrayList(0));
-    
-    String config_yaml = "";
+    Ruby runtime = JavaEmbedUtils.initialize(new ArrayList(0), config);
+    String mainRubyFile = "main";
+   
+    ArrayList<String> config_data = new ArrayList<String>();
     try{
       java.io.InputStream ins = Main.class.getClassLoader().getResourceAsStream("run_configuration");
       if (ins == null ) {
         System.err.println("Did not find configuration file 'run_configuration', using defaults.");
-      }
-      else {
-        config_yaml = getConfigFileContents(ins);
+      } else {
+        config_data = getConfigFileContents(ins);
       }
     }
     catch(IOException ioe)
     {
       System.err.println("Error loading run configuration file 'run_configuration', using defaults: " + ioe);
-      config_yaml = "";
     }
     catch(java.lang.NullPointerException npe)
     {
       System.err.println("Error loading run configuration file 'run_configuration', using defaults: " + npe );
-      config_yaml = "";
     }
 
-    String bootRuby = "require 'java'\n" + 
-      "require 'yaml'\n" + 
-      "config_yaml = '" + config_yaml + "'\n" +
-      "if config_yaml.strip.empty?\n" +
-      "  main_file = 'src/main'\n" +
-      "else\n" +
-      "  config_hash = YAML.load( \"" + config_yaml + "\" )\n" + 
-      "  $LOAD_PATH.unshift(config_hash['ruby_source_dir'])\n" + 
-      "  main_file = config_hash['main_ruby_file']\n" + 
-      "end\n\n" +
-      
-      "begin\n" + 
-      "  require main_file\n" + 
-      "rescue LoadError => e\n" + 
-      "  warn 'Error starting the application'\n" + 
-      "  warn \"#{e}\\n#{e.backtrace.join(\"\\n\")}\"\n" + 
-      "end\n";
-    runtime.evalScriptlet(bootRuby);
+    for(String line : config_data) {
+        String[] parts = line.split(":");
+        if("main_ruby_file".equals(parts[0].replaceAll(" ", ""))) {
+            mainRubyFile = parts[1].replaceAll(" ", "");
+        }
+    }
+
+    runtime.evalScriptlet("require '" + mainRubyFile + "'");
   }
 
   public static URL getResource(String path) {
-    return Main.class.getClassLoader().getResource(path);
+      return Main.class.getClassLoader().getResource(path);
   }
 
-  private static String getConfigFileContents(InputStream input) 
-  throws IOException, java.lang.NullPointerException {
-
-    InputStreamReader isr = new InputStreamReader(input);
-    BufferedReader reader = new BufferedReader(isr);
+  private static ArrayList<String> getConfigFileContents(InputStream input) throws IOException, java.lang.NullPointerException {
+    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
     String line;
-    String buf;
-    buf = "";
+    ArrayList<String> contents = new ArrayList<String>();
+
     while ((line = reader.readLine()) != null) {
-      buf += line + "\n";
+      contents.add(line);
     }
     reader.close();
-    return(buf);
+    return(contents);
   }
 }
