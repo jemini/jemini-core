@@ -1,6 +1,7 @@
-require 'managers/tag_manager'
-require 'managers/sound_manager'
+require 'tag_manager'
+require 'sound_manager'
 require 'basic_physics_manager'
+require 'scrolling_render_manager'
 
 class MainState < Gemini::BaseState 
   def load
@@ -47,6 +48,19 @@ class MainState < Gemini::BaseState
     microman.on_emit_game_object do
       ammo_display.decrement
     end
+    
+    region = create_game_object :GameObject, :Regional
+    region.dimensions = Vector.new(100, 100)
+    region.move(475, 300)
+    #region.move(175, 75)
+    region.on_entered_region do |message|
+      puts "#{message.spatial} entered region"
+    end
+    
+    region.on_exited_region do |message|
+      puts "#{message.spatial} exited region"
+    end
+    region.toggle_debug_mode
     # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject
 #    quitter.add_behavior :RecievesEvents

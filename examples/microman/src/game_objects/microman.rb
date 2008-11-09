@@ -24,7 +24,7 @@ class Microman < Gemini::GameObject
     # TODO: Looks like we need a post load for behaviors
     animate :stand
     
-    load_sound :pew, 'data/pew.wav'
+    load_sound :pew, 'pew.wav'
     behavior_event_alias(:PlatformerControllable, 
                          :start_move => :p1_start_platformer_movement, 
                          :stop_move => :p1_stop_platformer_movement, 
