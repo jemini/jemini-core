@@ -3,14 +3,15 @@ include_class "java.awt.Font"
 require 'behaviors/drawable'
 
 class Text < Gemini::GameObject
+  has_behavior :Spatial
   PLAIN = Font::PLAIN
   ITALIC = Font::ITALIC
   BOLD = Font::BOLD
   
   attr_accessor :text, :size, :style, :font_name
   
-  def load(x, y, text = "")
-    @x, @y = x, y
+  def load(x = 0, y = 0, text = "")
+    move(x, y)
     @font_name = "Arial"
     @size = 12
     @text = text
@@ -19,7 +20,7 @@ class Text < Gemini::GameObject
   end
   
   def draw(graphics)
-    @font.draw_string(@x, @y, @text)
+    @font.draw_string(x, y, @text)
   end
 
   def font_name=(name)

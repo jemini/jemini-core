@@ -66,6 +66,8 @@ module Gemini
     end
     
     def update(container, delta)
+      BaseState.active_state.manager(:game_object).__process_pending_game_objects
+      
       #don't tell the new state that it now has to update load time worth of a delta
       if @fresh_state
         delta = 0

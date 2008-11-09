@@ -1,6 +1,7 @@
 require 'behaviors/spatial'
 
-class Tangible < Gemini::Behavior#< Spatial
+class Tangible < Gemini::Behavior
+  # TODO: Move to Math?
   SQUARE_ROOT_OF_TWO = Math.sqrt(2)
   INFINITE_MASS = Java::net::phys2d::raw::Body::INFINITE_MASS
   
@@ -27,7 +28,9 @@ class Tangible < Gemini::Behavior#< Spatial
                    :damping, :set_damping, :damping=, :set_speed_limit, :speed_limit=, #, :speed_limit
                    :angular_damping, :set_angular_damping, :angular_damping=,
                    :gravity_effected=, :set_gravity_effected, :friction, :set_friction, :friction=,
-                   :get_collision_events, :box_size
+                   :get_collision_events, :box_size, :physics_bitmask, :physics_bitmask=, :set_physics_bitmask,
+                   :add_excluded_physical, :rotate
+  wrap_with_callbacks :mass=
   
   def load
     @mass = 1
@@ -40,6 +43,20 @@ class Tangible < Gemini::Behavior#< Spatial
     @target.on_after_move { move @target.x , @target.y}
     @target.on_update {|delta| set_angular_velocity(angular_velocity - (angular_velocity * (@angular_damping * (1.0/mass) ))) }
   end
+  
+  def add_excluded_physical(physical_game_object)
+    @body.add_excluded_body physical_game_object.instance_variable_get(:@__behaviors)[:Tangible].instance_variable_get(:@body)
+  end
+  
+  def physics_bitmask
+    @body.bitmask
+  end
+  
+  def physics_bitmask=(bitmask)
+    @body.bitmask = bitmask
+  end
+  alias_method :set_physics_bitmask, :physics_bitmask=
+  
   
   def body_position
     @body.position
@@ -99,8 +116,12 @@ class Tangible < Gemini::Behavior#< Spatial
     #@body.set_position(@last_x, @last_y) if @target.game_state.manager(:physics).colliding? @body
   end
   
-  def move(x, y)
-    @body.move(x, y)
+  def move(x_or_vector, y)
+    if x_or_vector.kind_of? Numeric
+      @body.move(x_or_vector, y)
+    else
+      @body.move(x_or_vector.x, x_or_vector.y)
+    end
   end
   
   def width
@@ -120,6 +141,10 @@ class Tangible < Gemini::Behavior#< Spatial
   end
   alias_method :set_rotation, :rotation=
   
+  def rotate(degrees)
+    @body.adjust_rotation Gemini::Math.degrees_to_radians(degrees)
+  end
+  
   def rotation
     Gemini::Math.radians_to_degrees(@body.rotation)
   end
@@ -133,11 +158,11 @@ class Tangible < Gemini::Behavior#< Spatial
   end
   alias_method :set_rotatable, :rotatable=
   
-  def add_force(x, y = nil)
+  def add_force(x_or_vector, y = nil)
     if y.nil?
-      @body.add_force(x)
+      @body.add_force(x_or_vector.to_phys2d_vector)
     else
-      @body.add_force(Vector2f.new(x, y))
+      @body.add_force(Vector2f.new(x_or_vector, y))
     end
   end
   

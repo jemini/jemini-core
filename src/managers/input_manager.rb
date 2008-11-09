@@ -2,6 +2,15 @@ include_class 'org.newdawn.slick.Input'
 include_class 'org.newdawn.slick.InputListener'
 require 'message_queue'
 
+class MouseEvent
+  PRESSED = :pressed
+  RELEASED = :released
+  attr_accessor :state, :location
+  def initialize(state, location)
+    @state, @location = state, location
+  end
+end
+
 module Gemini
   class SlickInputListener
     include InputListener

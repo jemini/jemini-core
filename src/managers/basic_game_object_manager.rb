@@ -8,6 +8,16 @@ class BasicGameObjectManager < Gemini::GameObject
     #@layers = Hash.new{|h,k| h[k] = []}
     @layer_order = [:default]
     @layers = {:default => []}
+    @game_objects_to_remove = []
+    @game_objects_to_add = []
+  end
+  
+  def __process_pending_game_objects
+    @game_objects_to_remove.pop.unload until @game_objects_to_remove.empty?
+    until @game_objects_to_add.empty?
+      layer, game_object = @game_objects_to_add.pop 
+      @layers[layer] << game_object
+    end
   end
   
   def add_game_object(game_object)
@@ -22,12 +32,14 @@ class BasicGameObjectManager < Gemini::GameObject
     notify :before_remove_game_object, game_object
     owning_layer.delete game_object
     notify :after_remove_game_object, game_object
-    game_object.unload
+    @game_objects_to_remove.push game_object
+    #game_object.unload
   end
   
   def add_game_object_to_layer(game_object, layer)
     notify :before_add_game_object, game_object, layer
     @layers[layer] << game_object
+    #@game_objects_to_add.push [layer, game_object]
     notify :after_add_game_object, game_object
   end
   

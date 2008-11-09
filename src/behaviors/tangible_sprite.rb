@@ -11,7 +11,7 @@ class TangibleSprite < Gemini::Behavior
   def load
     #TODO: This should call a method that does the same thing for performance
     @target.on_before_draw do
-      @target.image_rotation = @target.rotation
+      @target.image_rotation = @target.rotation unless @target.image.nil?
       #TODO: Only execute this if the shape is bound to the image.
       #TODO: Call raw_move instead of x= and y=
       position = @target.body_position

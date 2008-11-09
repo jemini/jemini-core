@@ -16,6 +16,7 @@ module Gemini
       @game_state = state
       @callbacks = Hash.new {|h,k| h[k] = []}
       @__behaviors = {}
+      enable_listeners_for :before_unload, :after_unload
       behaviors.each do |behavior|
         add_behavior(behavior)
       end
@@ -33,6 +34,7 @@ module Gemini
     end
     
     def unload
+      notify :before_unload, self
       #TODO: Perhaps expose this as a method on Behavior
       #Gemini::Behavior.send(:class_variable_get, :@@depended_on_by).delete self
       __remove_listeners
@@ -41,6 +43,7 @@ module Gemini
         next if behavior.nil?
         behavior.send(:delete)
       end
+      notify :after_unload, self
     end
     
     # TODO: Refactor the removal of behaviors from @behavior to live in the
@@ -64,9 +67,12 @@ module Gemini
             @callbacks[:#{method}] << callback
           end
 
-          def remove_#{method}(object, callback)
-            # @callbacks[:#{method}].delete_if {|callback| callback.source == object }
-            @callbacks[:#{method}].delete callback
+          def remove_#{method}(object, callback=nil)
+            if callback.nil?
+              @callbacks[:#{method}].delete_if {|callback| callback.source == object }
+            else
+              @callbacks[:#{method}].delete callback
+            end
           end
         ENDL
 
@@ -98,7 +104,11 @@ module Gemini
     end
     alias_method :is_a?, :kind_of?
     
-    def load(*args); end
+    def load(*args)
+      args.each do |behavior_name|
+        add_behavior behavior_name
+      end
+    end
     
   private
     def behavior_event_alias(behavior_class, aliases, &block)
