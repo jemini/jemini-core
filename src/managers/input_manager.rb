@@ -71,6 +71,11 @@ module Gemini
     UP_BUTTON = -3
     DOWN_BUTTON = -4
     
+    @@loading_input_manager = nil
+    def self.loading_input_manager
+      @@loading_input_manager
+    end
+    
     def load(container)
       @held_keys = []
       @raw_input = container.input
@@ -97,16 +102,30 @@ module Gemini
       end
 
       @held_buttons = Hash.new {|h,k| h[k] = []}
-      keymap_name = "/keymaps/#{keymap.underscore}.rb"
+      keymap_name = "/keymaps/#{keymap.underscore}"
+#      puts $LOAD_PATH
       keymap_path = $LOAD_PATH.find do |path|
-        File.exist? path + keymap_name
+        puts "trying path for .rb/.class: #{File.expand_path(path + keymap_name)}"
+        File.exist?(File.expand_path(path + keymap_name + '.rb')) || File.exist?(File.expand_path(path + keymap_name + '.class'))
       end
-
-      raise "Could not find keymap: #{keymap_name} on load path" if keymap_path.nil?
-      keymap_contents = IO.read(keymap_path + keymap_name)
-
-      instance_eval(keymap_contents)
-      
+      puts "keymap found: #{keymap_path.inspect}"
+#
+#      raise "Could not find keymap: #{keymap_name} on load path" if keymap_path.nil?
+#      keymap_contents = begin
+#                          IO.read(keymap_path + keymap_name + '.rb')
+#                        rescue
+#                          IO.read(keymap_path + keymap_name + '.class')
+#                        end
+#      instance_eval(keymap_contents)
+      @@loading_input_manager = self
+      begin
+        # the method 'load' already exists on this scope
+        Kernel.load "#{keymap_path}/#{keymap_name.sub('/', '')}.class"
+      rescue LoadError
+        # the method 'load' already exists on this scope
+        Kernel.load "#{keymap_path}/#{keymap_name.sub('/', '')}.rb"
+      end
+      @@loading_input_manager = nil
       @game_state.manager(:message_queue).add_listener(:slick_input, self) do |message|
         value = message.value[1][0]
         case message.value[0]
