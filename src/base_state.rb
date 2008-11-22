@@ -44,7 +44,7 @@ module Gemini
                            type.constantize
                          rescue NameError
                            begin
-                             require "game_objects/#{type.underscore}"
+                             require type.underscore
                              begin
                                type.constantize
                              rescue NameError

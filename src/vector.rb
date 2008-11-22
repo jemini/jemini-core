@@ -54,4 +54,8 @@ class Java::net::phys2d::math::Vector2f
   def to_vector
     Vector.new(x, y)
   end
+  
+  def to_phys2d_vector
+    self
+  end
 end

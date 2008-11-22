@@ -1,6 +1,3 @@
-require 'tag_manager'
-require 'basic_physics_manager'
-
 class MainState < Gemini::BaseState 
   def load
     set_manager :physics, create_game_object(:BasicPhysicsManager)
@@ -10,7 +7,7 @@ class MainState < Gemini::BaseState
     load_keymap :MainGameKeymap
     
     car = create_game_object_on_layer :Car, :character
-    car.set_position(0,0)
+    car.set_position(Vector.new(0,0))
     car.image_rotation = 180
     
     set_manager :render, create_game_object(:ScrollingRenderManager, car)

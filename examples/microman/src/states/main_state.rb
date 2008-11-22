@@ -1,8 +1,3 @@
-require 'tag_manager'
-require 'sound_manager'
-require 'basic_physics_manager'
-require 'scrolling_render_manager'
-
 class MainState < Gemini::BaseState 
   def load
     set_manager :physics, create_game_object(:BasicPhysicsManager)
@@ -14,7 +9,7 @@ class MainState < Gemini::BaseState
     
     
     microman = create_game_object :Microman
-    microman.set_position(640 / 2, 450)
+    microman.set_position(Vector.new(640 / 2, 450))
 
     set_manager :render, create_game_object(:ScrollingRenderManager, microman)
     

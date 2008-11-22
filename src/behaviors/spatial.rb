@@ -1,7 +1,8 @@
 class Spatial < Gemini::Behavior
   attr_accessor :position
+  alias_method :set_position, :position=
   wrap_with_callbacks :move
-  declared_methods :x, :x=, :y, :y=, :move, :position
+  declared_methods :x, :x=, :y, :y=, :move, :position, :position=, :set_position
   
   def load
     @position = Vector.new(0,0)

@@ -24,12 +24,12 @@ class Tangible < Gemini::Behavior
                    :add_velocity, :set_velocity, :velocity=,
                    :angular_velocity, :set_angular_velocity, :angular_velocity=,
                    :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity, :wish_move,
-                   :set_movable, :movable=, :movable?, :set_position, #:set_safe_move, :safe_move=,
+                   :set_movable, :movable=, :movable?, #:set_safe_move, :safe_move=,
                    :damping, :set_damping, :damping=, :set_speed_limit, :speed_limit=, #, :speed_limit
                    :angular_damping, :set_angular_damping, :angular_damping=,
                    :gravity_effected=, :set_gravity_effected, :friction, :set_friction, :friction=,
                    :get_collision_events, :box_size, :physics_bitmask, :physics_bitmask=, :set_physics_bitmask,
-                   :add_excluded_physical, :rotate
+                   :add_excluded_physical, :rotate, :radius
   wrap_with_callbacks :mass=
   
   def load
@@ -63,7 +63,8 @@ class Tangible < Gemini::Behavior
   end
   
   def body_position=(vector)
-    @body.position = vector.to_phys2d_vector
+    # set_position doesn't take a vector, only x/y
+    @body.set_position(vector.x, vector.y)
   end
   alias_method :set_body_position, :body_position=
   
@@ -116,7 +117,7 @@ class Tangible < Gemini::Behavior
     #@body.set_position(@last_x, @last_y) if @target.game_state.manager(:physics).colliding? @body
   end
   
-  def move(x_or_vector, y)
+  def move(x_or_vector, y=nil)
     if x_or_vector.kind_of? Numeric
       @body.move(x_or_vector, y)
     else
@@ -130,6 +131,10 @@ class Tangible < Gemini::Behavior
   
   def height
     @body.shape.bounds.height
+  end
+  
+  def radius
+    @body.shape.radius
   end
   
   def box_size
@@ -230,13 +235,18 @@ class Tangible < Gemini::Behavior
     # Save off data that is destroyed when @body.set is called
     saved_damping = damping
     saved_angular_damping = angular_damping
-    
+    saved_body_position = body_position
+    saved_position = @target.position
+    saved_x, saved_y = @target.x, @target.y
     if shape.respond_to?(:to_str) || shape.kind_of?(Symbol)
       @shape = ("Tangible::" + shape.to_s).constantize.new(*params)
     else
       @shape = shape
     end
     @body.set(@shape, @mass)
+    set_body_position saved_body_position
+    @target.set_position saved_position
+    @target.move(saved_x, saved_y)
     self.damping = saved_damping
     self.angular_damping = saved_angular_damping 
   end

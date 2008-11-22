@@ -2,6 +2,40 @@ include_class 'org.newdawn.slick.Input'
 include_class 'org.newdawn.slick.InputListener'
 require 'message_queue'
 
+KEY_PRESSED = {:source_type => :key, :source_state => :pressed}
+KEY_RELEASED = {:source_type => :key, :source_state => :released}
+KEY_HELD = {:source_type => :key, :source_state => :held}
+MOUSE_MOVED = {:source_type => :mouse, :source_state => :moved, :source_value => :any}
+MOUSE_BUTTON1_PRESSED = {:source_type => :mouse, :source_state => :pressed, :source_value => Input::MOUSE_LEFT_BUTTON }
+MOUSE_BUTTON1_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_LEFT_BUTTON}
+MOUSE_BUTTON2_PRESSED = {:source_type => :mouse, :source_state => :pressed, :source_value => Input::MOUSE_RIGHT_BUTTON}
+MOUSE_BUTTON2_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_RIGHT_BUTTON}
+MOUSE_BUTTON3_PRESSED = {:source_type => :mouse, :source_state => :pressed, :source_value => Input::MOUSE_MIDDLE_BUTTON}
+MOUSE_BUTTON3_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_MIDDLE_BUTTON}
+CONTROLLER0_PRESSED = {:source_type => :controller0, :source_state => :pressed}
+CONTROLLER0_RELEASED = {:source_type => :controller0, :source_state => :released}
+CONTROLLER0_HELD = {:source_type => :controller0, :source_state => :held}
+CONTROLLER1_PRESSED = {:source_type => :controller1, :source_state => :pressed}
+CONTROLLER1_RELEASED = {:source_type => :controller1, :source_state => :released}
+CONTROLLER1_HELD = {:source_type => :controller1, :source_state => :held}
+CONTROLLER2_PRESSED = {:source_type => :controller2, :source_state => :pressed}
+CONTROLLER2_RELEASED = {:source_type => :controller2, :source_state => :released}
+CONTROLLER2_HELD = {:source_type => :controller2, :source_state => :held}
+CONTROLLER3_PRESSED = {:source_type => :controller3, :source_state => :pressed}
+CONTROLLER3_RELEASED = {:source_type => :controller3, :source_state => :released}
+CONTROLLER3_HELD = {:source_type => :controller3, :source_state => :held}
+CONTROLLER4_PRESSED = {:source_type => :controller4, :source_state => :pressed}
+CONTROLLER4_RELEASED = {:source_type => :controller4, :source_state => :released}
+CONTROLLER4_HELD = {:source_type => :controller4, :source_state => :held}
+CONTROLLER5_PRESSED = {:source_type => :controller5, :source_state => :pressed}
+CONTROLLER5_RELEASED = {:source_type => :controller5, :source_state => :released}
+CONTROLLER5_HELD = {:source_type => :controller5, :source_state => :held}
+
+LEFT_BUTTON = -1
+RIGHT_BUTTON = -2
+UP_BUTTON = -3
+DOWN_BUTTON = -4
+
 class MouseEvent
   PRESSED = :pressed
   RELEASED = :released
@@ -36,46 +70,17 @@ module Gemini
   class InputManager < Gemini::GameObject
     
     MAX_CONTROLLERS = 6
-
-    KEY_PRESSED = {:source_type => :key, :source_state => :pressed}
-    KEY_RELEASED = {:source_type => :key, :source_state => :released}
-    KEY_HELD = {:source_type => :key, :source_state => :held}
-    MOUSE_MOVED = {:source_type => :mouse, :source_state => :moved, :source_value => :any}
-    MOUSE_BUTTON1_PRESSED = {:source_type => :mouse, :source_state => :pressed, :source_value => Input::MOUSE_LEFT_BUTTON }
-    MOUSE_BUTTON1_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_LEFT_BUTTON}
-    MOUSE_BUTTON2_PRESSED = {:source_type => :mouse, :source_state => :pressed, :source_value => Input::MOUSE_RIGHT_BUTTON}
-    MOUSE_BUTTON2_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_RIGHT_BUTTON}
-    MOUSE_BUTTON3_PRESSED = {:source_type => :mouse, :source_state => :pressed, :source_value => Input::MOUSE_MIDDLE_BUTTON}
-    MOUSE_BUTTON3_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_MIDDLE_BUTTON}
-    CONTROLLER0_PRESSED = {:source_type => :controller0, :source_state => :pressed}
-    CONTROLLER0_RELEASED = {:source_type => :controller0, :source_state => :released}
-    CONTROLLER0_HELD = {:source_type => :controller0, :source_state => :held}
-    CONTROLLER1_PRESSED = {:source_type => :controller1, :source_state => :pressed}
-    CONTROLLER1_RELEASED = {:source_type => :controller1, :source_state => :released}
-    CONTROLLER1_HELD = {:source_type => :controller1, :source_state => :held}
-    CONTROLLER2_PRESSED = {:source_type => :controller2, :source_state => :pressed}
-    CONTROLLER2_RELEASED = {:source_type => :controller2, :source_state => :released}
-    CONTROLLER2_HELD = {:source_type => :controller2, :source_state => :held}
-    CONTROLLER3_PRESSED = {:source_type => :controller3, :source_state => :pressed}
-    CONTROLLER3_RELEASED = {:source_type => :controller3, :source_state => :released}
-    CONTROLLER3_HELD = {:source_type => :controller3, :source_state => :held}
-    CONTROLLER4_PRESSED = {:source_type => :controller4, :source_state => :pressed}
-    CONTROLLER4_RELEASED = {:source_type => :controller4, :source_state => :released}
-    CONTROLLER4_HELD = {:source_type => :controller4, :source_state => :held}
-    CONTROLLER5_PRESSED = {:source_type => :controller5, :source_state => :pressed}
-    CONTROLLER5_RELEASED = {:source_type => :controller5, :source_state => :released}
-    CONTROLLER5_HELD = {:source_type => :controller5, :source_state => :held}
-
-    LEFT_BUTTON = -1
-    RIGHT_BUTTON = -2
-    UP_BUTTON = -3
-    DOWN_BUTTON = -4
     
     @@loading_input_manager = nil
     def self.loading_input_manager
       @@loading_input_manager
     end
-    
+
+
+    def self.define_keymap
+      yield loading_input_manager
+    end
+
     def load(container)
       @held_keys = []
       @raw_input = container.input
@@ -118,12 +123,13 @@ module Gemini
 #                        end
 #      instance_eval(keymap_contents)
       @@loading_input_manager = self
+      keymap_path << '/' unless keymap_path.nil?
       begin
         # the method 'load' already exists on this scope
-        Kernel.load "#{keymap_path}/#{keymap_name.sub('/', '')}.class"
+        Kernel.load "#{keymap_path}#{keymap_name.sub('/', '')}.class"
       rescue LoadError
         # the method 'load' already exists on this scope
-        Kernel.load "#{keymap_path}/#{keymap_name.sub('/', '')}.rb"
+        Kernel.load "#{keymap_path}#{keymap_name.sub('/', '')}.rb"
       end
       @@loading_input_manager = nil
       @game_state.manager(:message_queue).add_listener(:slick_input, self) do |message|

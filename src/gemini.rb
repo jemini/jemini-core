@@ -6,6 +6,11 @@ $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/managers')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/game_objects')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/states')
 
+# Because Windows isn't friendly with JRuby
+$LOAD_PATH << 'managers'
+$LOAD_PATH << 'game_objects'
+$LOAD_PATH << 'states'
+
 require 'math'
 require 'proc_enhancement'
 require 'game_object'
@@ -22,12 +27,12 @@ module Gemini
     include_class 'org.newdawn.slick.AppGameContainer'
     attr_accessor :screen_width, :screen_height
     
-    def self.start_app(screen_title, screen_width, screen_height)
+    def self.start_app(screen_title, screen_width, screen_height, fullscreen=false)
       puts "in start app"
       main = Main.new(screen_title)
       main.screen_width  = screen_width
       main.screen_height = screen_height
-      container = AppGameContainer.new(main, screen_width, screen_height, false)
+      container = AppGameContainer.new(main, screen_width, screen_height, fullscreen)
       container.vsync = true
       container.maximum_logic_update_interval = 60
       container.smooth_deltas = true

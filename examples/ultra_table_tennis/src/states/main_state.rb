@@ -20,10 +20,10 @@ class MainState < Gemini::BaseState
     create_game_object :Wall, 640 / 2, 480 - 10, 650, 30, :bottom
     
     paddle = create_game_object :Paddle, 1
-    paddle.set_position(100, 100)
+    paddle.set_body_position Vector.new(100, 100)
     
     paddle = create_game_object :Paddle, 2
-    paddle.set_position(500, 300)
+    paddle.set_body_position Vector.new(500, 300)
     
     quitter = create_game_object :GameObject
     quitter.add_behavior :RecievesEvents

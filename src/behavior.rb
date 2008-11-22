@@ -3,6 +3,14 @@ require 'listenable_mixin'
 module Gemini
   class MethodExistsError < Exception; end
   
+  class ValueChangedEvent
+    attr_accessor :previous_value, :desired_value
+    
+    def initialize(previous_value, desired_value)
+      @previous_value, @desired_value = previous_value, desired_value
+    end
+  end
+  
   class Behavior
     include ListenableMixin
     attr_reader :reference_count, :target
@@ -23,11 +31,12 @@ module Gemini
           method_name = match[1]
           code = <<-ENDL
             def #{method}(#{args})
+              event = ValueChangedEvent.new(@target.#{method_name}, #{args})
               callback_abort = CallbackStatus.new
-              @target.notify :before_#{method_name}_changes, callback_abort
+              @target.notify :before_#{method_name}_changes, event
               if callback_abort.continue?              
                 self.wrapped_#{method}(#{args})
-                @target.notify :after_#{method_name}_changes
+                @target.notify :after_#{method_name}_changes, event
               end
             end
           ENDL

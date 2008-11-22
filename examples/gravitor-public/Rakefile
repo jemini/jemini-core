@@ -1,1 +1,6 @@
 require 'rawr'
+
+task :import_gemini do
+  FileUtils.rm_rf 'lib'
+  FileUtils.cp_r('../gemini/package/jar', 'lib')
+end

@@ -3,7 +3,6 @@ require 'sound_manager'
 require 'basic_physics_manager'
 require 'scrolling_render_manager'
 
-# this is just the menu
 class PlayState < Gemini::BaseState
   GRAVITY_WELL_MASS = 100
   SINGULARITY_THRESHOLD = GRAVITY_WELL_MASS * 5.0
@@ -20,7 +19,7 @@ class PlayState < Gemini::BaseState
     manager(:render).cache_image :vortex, "clockwise_vortex_large.png"
     manager(:sound).add_sound :gobble, "gravity_gobble.wav"
     manager(:sound).add_sound :fire_gravitor, "fire_gravitor_cannon.wav"
-    manager(:sound).add_sound :gasp, "singularity_birth.ogg"
+    manager(:sound).add_sound :gasp, "singularity_birth.wav"
     
     key_handler = create_game_object :GameObject, :RecievesEvents
     key_handler.handle_event :toggle_pretty_mode do
@@ -54,16 +53,16 @@ class PlayState < Gemini::BaseState
       @emitting_gravity_at = message.value.location
       gravity_well = create_game_object :GameObject, :AnimatedSprite, :GravitySource, :TangibleSprite, :Timeable
       
-      gravity_well.set_bounded_image manager(:render).get_cached_image(:gravity_cloud1)
+      gravity_well.set_bounded_image manager(:render).get_cached_image(:gravity_cloud5)
 
       gravity_well.set_shape :Circle, 32
       gravity_well.gravity = GRAVITY_WELL_MASS
       gravity_well.set_mass 40
       gravity_well.add_excluded_physical ship
-      images = (1..5).map {|number| manager(:render).get_cached_image("gravity_cloud#{number}".to_sym)}
-      gravity_well.sprites(*images)
-      gravity_well.animation_fps(30)
-      gravity_well.animation_mode :ping_pong
+#      images = (1..5).map {|number| manager(:render).get_cached_image("gravity_cloud#{number}".to_sym)}
+#      gravity_well.sprites(*images)
+#      gravity_well.animation_fps(30)
+#      gravity_well.animation_mode :ping_pong
       gravity_well.move message.value.location
       gravity_well.color.alpha = gravity_well.gravity.to_f / SINGULARITY_THRESHOLD
       
@@ -97,10 +96,16 @@ class PlayState < Gemini::BaseState
         manager(:sound).play_sound :gobble
       end
       
-      gravity_well.on_after_mass_changes do
+      gravity_well.on_after_mass_changes do |event|
+        growth_factor = (gravity_well.mass.to_f / event.previous_value.to_f)
+        gravity_well.image_scaling(growth_factor)
+        gravity_well.set_shape :Circle, gravity_well.radius * (growth_factor)
         gravity_well.gravity = gravity_well.mass
-        gravity_well.color.alpha = gravity_well.gravity.to_f / SINGULARITY_THRESHOLD
+        #gravity_well.color.alpha = gravity_well.gravity.to_f / SINGULARITY_THRESHOLD
         next if gravity_well.gravity < SINGULARITY_THRESHOLD
+        
+        
+        
         vortex = create_game_object :GameObject, :Sprite, :Updates
         vortex.set_image manager(:render).get_cached_image(:vortex)
 
@@ -114,6 +119,9 @@ class PlayState < Gemini::BaseState
         singularity.move(gravity_well.position)
         singularity.on_collided do |message|
           singularity.mass += message.other.mass
+          growth_factor = (singularity.mass.to_f / message.other.mass.to_f)
+          #singularity.image_scaling(growth_factor)
+          #singularity.set_shape :Circle, singularity.radius * (growth_factor)
           remove_game_object message.other # NOM NOM NOM
         end
 
@@ -186,7 +194,8 @@ class PlayState < Gemini::BaseState
     black_hole_feeder.on_timer_tick do
       next if @food_count > 100 || !@emitting_gravity_at
       @food_count +=1
-      black_hole_food = create_game_object :GameObject, :TangibleSprite, :AnimatedSprite
+      black_hole_food = create_game_object :GameObject, :TangibleSprite, :AnimatedSprite #, :GravitySource
+      #black_hole_food.gravity = 400
       black_hole_food.set_bounded_image "singularity_button_background.png"
       food_radius = 8
       black_hole_food.set_shape :Circle, food_radius

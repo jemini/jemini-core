@@ -1,5 +1,6 @@
 module Gemini
   class Math
+    SQUARE_ROOT_OF_TWO = ::Math::sqrt(2.0)
     def self.degrees_to_radians(degrees)
       degrees * (::Math::PI/180)
     end
