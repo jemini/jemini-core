@@ -86,6 +86,7 @@ module Gemini
       @raw_input = container.input
       @input_listener = Gemini::SlickInputListener.new(@game_state)
       @raw_input.add_listener @input_listener
+      @held_buttons = {}
     end
     
     def load_keymap(keymap)
