@@ -124,7 +124,7 @@ module Gemini
 #                        end
 #      instance_eval(keymap_contents)
       @@loading_input_manager = self
-      keymap_path << '/' unless keymap_path.nil?
+      keymap_path += '/' unless keymap_path.nil? # was using <<, but that alters the load path in a bad way.
       begin
         # the method 'load' already exists on this scope
         Kernel.load "#{keymap_path}#{keymap_name.sub('/', '')}.class"

@@ -9,6 +9,7 @@ configuration do |c|
   c.source_dirs = ['src']
   c.source_exclude_filter = []
 
+  c.jruby_jar = 'lib/jruby-complete.jar'
   c.compile_ruby_files = true
   #c.java_lib_files = []  
   c.java_lib_dirs = ['lib']
