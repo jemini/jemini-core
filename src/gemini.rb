@@ -81,7 +81,7 @@ module Gemini
       # Workaround for image loading with Slick.
       # Must be done in game init or game loop (instead of immediately in the event).
       if @queued_state
-        @queued_state.load
+        @queued_state.load(*@state_args)
         BaseState.active_state = @queued_state
         @queued_state = nil
         @fresh_state = true
@@ -95,8 +95,9 @@ module Gemini
       BaseState.active_state.manager(:render).render(graphics)
     end
     
-    def load_state(state_name)
+    def load_state(state_name, *args)
       require "states/#{state_name.underscore}" unless Object.const_defined? state_name.camelize
+      @state_args = args
       state_name.camelize.constantize.new @container, self
     end
     

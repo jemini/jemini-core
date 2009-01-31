@@ -1,7 +1,7 @@
 # This behavior rotates to face the tracking point or game object
 class RotatesToPoint < Gemini::Behavior
   #TODO: Add offset rotation
-  depends_on :Tangible
+  depends_on :Physical
   attr_accessor :rotation_target
   alias_method :set_rotation_target, :rotation_target=
   declared_methods :set_rotation_target, :rotation_target=, :rotation_target

@@ -1,4 +1,4 @@
-require 'behaviors/tangible'
+require 'behaviors/physical'
 
 class BasicPhysicsManager < Gemini::GameObject
   include_class 'net.phys2d.math.Vector2f'
@@ -14,11 +14,11 @@ class BasicPhysicsManager < Gemini::GameObject
     end
     
     @game_state.manager(:game_object).on_after_add_game_object do |game_object|
-      add_to_world game_object if game_object.kind_of? Tangible
+      add_to_world game_object if game_object.kind_of? Physical
     end
     
     @game_state.manager(:game_object).on_after_remove_game_object do |game_object|
-      game_object.remove_from_world(@world) if game_object.kind_of? Tangible
+      game_object.remove_from_world(@world) if game_object.kind_of? Physical
     end
     
     handle_event :toggle_debug_mode, :toggle_debug_mode
@@ -33,7 +33,7 @@ class BasicPhysicsManager < Gemini::GameObject
   def toggle_debug_mode(message)
     @debug_mode = !@debug_mode
     @game_state.manager(:game_object).game_objects.each do |game_object|
-      game_object.set_tangible_debug_mode(@debug_mode) if game_object.kind_of? Tangible
+      game_object.set_physical_debug_mode(@debug_mode) if game_object.kind_of? Physical
     end
   end
   
@@ -48,7 +48,7 @@ class BasicPhysicsManager < Gemini::GameObject
 private
   def add_to_world(game_object)
     game_object.add_to_world(@world) 
-    game_object.set_tangible_debug_mode(true) if @debug_mode
+    game_object.set_physical_debug_mode(true) if @debug_mode
   end
 #  def colliding?(body)
 #    0 < @world.get_contacts(body).size

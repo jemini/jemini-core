@@ -1,6 +1,6 @@
-# Enables game objects to attract other Tangible game objects towards it
+# Enables game objects to attract other Physical game objects towards it
 class GravitySource < Gemini::Behavior
-  depends_on :Tangible
+  depends_on :Physical
   
   attr_accessor :gravity
   alias_method :set_gravity, :gravity=
@@ -9,13 +9,13 @@ class GravitySource < Gemini::Behavior
   def load
     @gravity = 0
     @target.on_update do |delta|
-      tangibles = @target.game_state.manager(:game_object).game_objects.select {|game_object| game_object.kind_of? Tangible}.compact
-      tangibles.each do |tangible|
-        next if @target == tangible
-        distance = @target.position.distance_from tangible
-        force = delta * @gravity / (distance * Tangible::SQUARE_ROOT_OF_TWO)
-        gravitation = Vector.from_polar_vector(force, @target.position.angle_from(tangible))
-        tangible.add_force gravitation
+      physicals = @target.game_state.manager(:game_object).game_objects.select {|game_object| game_object.kind_of? Physical}.compact
+      physicals.each do |physical|
+        next if @target == physical
+        distance = @target.position.distance_from physical
+        force = delta * @gravity / (distance * Gemini::Math::SQUARE_ROOT_OF_TWO)
+        gravitation = Vector.from_polar_vector(force, @target.position.angle_from(physical))
+        physical.add_force gravitation
       end
     end
   end

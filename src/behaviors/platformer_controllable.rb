@@ -1,4 +1,4 @@
-# Allows control of a TangibleSprite in a platformer environment.
+# Allows control of a PhysicalSprite in a platformer environment.
 # TODO: Consider moving some of this to a general platformer behavior
 #       This behavior will know if it is on the ground
 # TODO: Make a CardinalMovable, for moving N E S W
@@ -8,7 +8,7 @@
 class PlatformerControllable < Gemini::Behavior
   depends_on :RecievesEvents
   depends_on :MultiAnimatedSprite
-  depends_on :TangibleSprite
+  depends_on :PhysicalSprite
   depends_on :Timeable
 #  depends_on :AxisStateful
   

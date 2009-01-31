@@ -1,5 +1,9 @@
 class Vector
   attr_reader :native_vector
+
+  def dup
+    self.new(x, y)
+  end
   
   def self.from_polar_vector(magnitude, angle)
     w = Math.sin(Gemini::Math.degrees_to_radians(angle))
