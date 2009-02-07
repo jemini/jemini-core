@@ -42,12 +42,14 @@ class Tangible < Gemini::Behavior
 
   def tangibly_collides_with?(other_tangible)
     #TODO: top_left isn't on spatial...
-    other_shape = other_tangible.instance_variable_get(:@__behaviors)[:Tangible].instance_variable_get(:@tangible_shape)
+    other_shape = other_tangible.tangible_shape
 #    puts(@target.x < other_tangible.x)
 #    puts((@target.x + @tangible_shape.size.x) > other_tangible.x)
 #    puts '--------'
     #puts((@target.x < other_tangible.x) && (@tangible_shape.size.x > other_tangible.x))
-    (@target.x < other_tangible.x && (@target.x + @tangible_shape.size.x) > other_tangible.x) &&
-    (@target.y < other_tangible.y && (@target.y + @tangible_shape.size.y) > other_tangible.y)
+    ((@target.x <= other_tangible.x && (@target.x + @tangible_shape.size.x) >= other_tangible.x) ||
+    (@target.x >= other_tangible.x && @target.x <= (other_tangible.x + other_shape.size.x))) &&
+    ((@target.y <= other_tangible.y && (@target.y + @tangible_shape.size.y) >= other_tangible.y) ||
+    (@target.y >= other_tangible.y && @target.y <= (other_tangible.y + other_shape.size.y)))
   end
 end
