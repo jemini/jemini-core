@@ -10,8 +10,7 @@ class PlayState < Gemini::BaseState
     load_keymap :PlayKeymap
 
     @robots = []
-    #, :green, :yellow
-    [:red, :blue].map {|c| Color.new(c)}.each_with_index do |color, index|
+    [:red, :blue, :green, :yellow].map {|c| Color.new(c)}.each_with_index do |color, index|
       robot = create_game_object :GameObject, :Sprite, :Tangible
       robot_eye = create_game_object :GameObject, :AnimatedSprite
       robot.set_image "robot-standing.png"
@@ -26,30 +25,41 @@ class PlayState < Gemini::BaseState
       end
 
       robot.on_tangible_collision do
-        puts "robot collided!"
+        robot.remove_after_move self
+        remove_game_object robot_eye
+        robot.remove_tangible_collision self
       end
 
       robot.move(100 * (index + 1), 200)
       @robots << robot
     end
 
-    controlled_robot = @robots.first
-    controlled_robot.add_behavior :RecievesEvents
-    controlled_robot.handle_event :move do |message|
+    player = create_game_object :GameObject, :Sprite, :Tangible
+    player.set_image "commando-standing.png"
+    player.set_tangible_shape :Box, player.image_size
+    player.move(150, 300)
+    player.add_behavior :RecievesEvents
+    player.handle_event :move do |message|
       vector = Vector.new(*case message.value
-                          when :up
-                            [0, -1]
-                          when :down
-                            [0, 1]
-                          when :left
-                            [-1, 0]
-                          when :right
-                            [1, 0]
-                          end
-                         )
-      vector.x += controlled_robot.x
-      vector.y += controlled_robot.y
-      controlled_robot.move vector
+                        when :up
+                          [0, -1]
+                        when :down
+                          [0, 1]
+                        when :left
+                          [-1, 0]
+                        when :right
+                          [1, 0]
+                        end
+                       )
+      vector.x += player.x
+      vector.y += player.y
+      player.move vector
+    end
+    
+    manager(:tangible).on_update do
+      @robots.each do |robot|
+        robot.move(robot.x + (rand(3) - 1), robot.y + (rand(3) - 1))
+      end
     end
     puts "set up robots"
 

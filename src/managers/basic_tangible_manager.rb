@@ -13,7 +13,6 @@ class BasicTangibleManager < Gemini::GameObject
           next unless other_game_object.kind_of? Tangible
           next if game_object == other_game_object
           if game_object.tangibly_collides_with?(other_game_object)
-            puts "collision!"
             game_object.notify :tangible_collision
             other_game_object.notify :tangible_collision
           end
