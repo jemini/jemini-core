@@ -12,6 +12,7 @@ MOUSE_BUTTON2_PRESSED = {:source_type => :mouse, :source_state => :pressed, :sou
 MOUSE_BUTTON2_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_RIGHT_BUTTON}
 MOUSE_BUTTON3_PRESSED = {:source_type => :mouse, :source_state => :pressed, :source_value => Input::MOUSE_MIDDLE_BUTTON}
 MOUSE_BUTTON3_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_MIDDLE_BUTTON}
+CONTROLLER0_AXIS_MOVE = {:source_type => :controller0, :source_state => :pressed}
 CONTROLLER0_PRESSED = {:source_type => :controller0, :source_state => :pressed}
 CONTROLLER0_RELEASED = {:source_type => :controller0, :source_state => :released}
 CONTROLLER0_HELD = {:source_type => :controller0, :source_state => :held}
@@ -37,6 +38,15 @@ UP_BUTTON = -3
 DOWN_BUTTON = -4
 
 class MouseEvent
+  PRESSED = :pressed
+  RELEASED = :released
+  attr_accessor :state, :location
+  def initialize(state, location)
+    @state, @location = state, location
+  end
+end
+
+class JoystickEvent
   PRESSED = :pressed
   RELEASED = :released
   attr_accessor :state, :location
@@ -210,6 +220,7 @@ module Gemini
           action = :released
           value = message.value[1][1]
           @held_buttons[type].delete value
+        
         end
         
         next if type.nil? or action.nil?
@@ -221,11 +232,22 @@ module Gemini
     def poll(screen_width, screen_height, delta)
       @input_listener.delta = delta
       @raw_input.poll(screen_width, screen_height)
-      
+
+      invoke_controller_callbacks
       # Check for any held keys
       @held_buttons.each do |device, button_ids|
         button_ids.each do |button_id|
           invoke_callbacks_for(device, :held, button_id, nil, delta)
+        end
+      end
+    end
+
+    def invoke_controller_callbacks
+      @raw_input.controller_count.times do |controller_id|
+        @raw_input.get_axis_count(controller_id).times do |axis_id|
+          axis_name =  @raw_input.get_axis_name(controller_id, axis_id)
+          axis_value = @raw_input.get_axis_value(controller_id, axis_id)
+          #TODO: Invoke callback for axis changing (it doesn't really change...)
         end
       end
     end

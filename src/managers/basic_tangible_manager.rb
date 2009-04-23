@@ -1,4 +1,4 @@
-require 'behaviors/physical'
+require 'behaviors/tangible'
 
 class BasicTangibleManager < Gemini::GameObject
   has_behavior :RecievesEvents

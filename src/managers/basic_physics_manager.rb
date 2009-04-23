@@ -37,11 +37,12 @@ class BasicPhysicsManager < Gemini::GameObject
     end
   end
   
-  def gravity=(gravity_or_x, y=nil)
-    if y.nil?
+  def gravity=(gravity_or_x)
+    if gravity_or_x.kind_of? Numeric
       @world.set_gravity(0, gravity_or_x)
     else
-      @world.set_gravity(gravity_or_x, y)
+      raise "Not implemented yet"
+#      @world.set_gravity(gravity_or_x)
     end
   end
 

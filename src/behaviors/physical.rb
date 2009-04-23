@@ -239,6 +239,7 @@ class Physical < Gemini::Behavior
     saved_position = @target.position
     saved_x, saved_y = @target.x, @target.y
     if shape.respond_to?(:to_str) || shape.kind_of?(Symbol)
+      params = [params.map {|vector| vector.to_phys2d_vector }.to_java(Vector2f)] if "Polygon" == shape.to_s
       @shape = ("Physical::" + shape.to_s).constantize.new(*params)
     else
       @shape = shape
