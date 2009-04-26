@@ -3,8 +3,8 @@ class Tank < Gemini::GameObject
   has_behavior :RecievesEvents
 
   def load
-    handle_event :adjust_angle do |angle_delta|
-      puts "adjusting angle by: #{angle_delta}"
+    handle_event :adjust_angle do |message|
+      puts "adjusting angle by: #{message.value}"
     end
 
     handle_event :adjust_power do |power_delta|

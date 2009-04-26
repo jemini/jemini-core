@@ -1,15 +1,18 @@
 require 'color'
 require 'vector'
 require 'spline'
+require 'inflector'
 
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/managers')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/game_objects')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/states')
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/input_helpers')
 
 # Because Windows isn't friendly with JRuby
 $LOAD_PATH << 'managers'
 $LOAD_PATH << 'game_objects'
 $LOAD_PATH << 'states'
+$LOAD_PATH << 'input_helpers'
 
 require 'math'
 require 'proc_enhancement'

@@ -1,7 +1,7 @@
 # This code is a modified version of the Inflector class
 # from the Ruby on Rails project (http://www.rubyonrails.com)
 
-module Gemini
+module Monkeybars
   module Inflector
     # The reverse of +camelize+. Makes an underscored form from the expression in the string.
     #
@@ -54,9 +54,15 @@ module Gemini
 end
 
 class String
-  include Gemini::Inflector
+  include Monkeybars::Inflector
 end
 
 class Symbol
-  include Gemini::Inflector
+  include Monkeybars::Inflector
+end
+
+class Class
+  def constantize
+    self
+  end
 end

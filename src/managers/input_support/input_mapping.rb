@@ -1,9 +1,9 @@
 module Gemini
   class InputMapping
-    attr_accessor :device, :input_type, :input_button_or_axis, :joystick_id, :destination_type, :destination_value, :game_value_callback
+    attr_accessor :device, :input_type, :input_button_or_axis, :joystick_id, :destination_type, :destination_value, :input_callback
 
     def self.create(device, options, &callback)
-      options[:game_value_callback] = callback
+      options[:input_callback] = callback
       new(device, options)
     end
 
@@ -22,7 +22,7 @@ module Gemini
                     end
 
       @joystick_id = options.delete(:joystick_id)
-      @game_value_callback = options.delete(:game_value_callback)
+      @input_callback = options.delete(:input_callback)
       # after all the deletes, the game message and value should be only what's left
       @game_message = options.keys.first
       @game_value   = options.values.first
@@ -83,19 +83,12 @@ module Gemini
     def key
       "#{@device}_#{@input_type}_#{@input_button_or_axis}_#{@joystick_id}"
     end
-
-    # eventually, raw_input will need to be wrapped
-    def get_game_value(raw_input)
-      if @game_value_callback.nil?
-        @game_value
-      else
-        @game_value_callback.call(raw_input)
-      end
-    end
     
     # eventually, raw_input will need to be wrapped
     def to_game_message(raw_input)
-      Message.new @game_message, get_game_value(raw_input)
+      game_message = Message.new(@game_message, @game_value)
+      @input_callback.call(game_message, raw_input) unless @input_callback.nil?
+      game_message
     end
   end
 end
