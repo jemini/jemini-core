@@ -1,0 +1,9 @@
+As a player I should be able to shoot shells at other players.
+As a player I should be able to adjust my angle with a joystick's x axis
+As a player I should be able to adjust my power with a joystick's y axis
+As a player I should be able to see my tank on the terrian
+As a player I should be able to die when I take too much damage.
+As a player I should be able to win by being the last tank standing.
+As a player I should be able to play multiple rounds.
+As a player I should be able to see explosions from shells.
+As a player I should be able to select how many other players will be joining.
