@@ -7,19 +7,19 @@ class PlayState < Gemini::BaseState
     
     manager(:game_object).add_layer_at :gui_text, 5
     manager(:physics).gravity = 10
-
+    manager(:render).cache_image :tank_body, "tank-body.png"
+    manager(:render).cache_image :ground, "ground.png"
+    
     load_keymap :PlayKeymap
 
     ground = create_game_object :Ground
-    ground.fill_dimensions(screen_width, screen_height)
+    ground.fill_dimensions(0, screen_height / 2, screen_width, screen_height)
 
     spawner = create_game_object :GameObject, :RecievesEvents
     spawner.handle_event :spawn_thing do
-      thing = create_game_object :GameObject, :Physical
-      thing.set_shape :Box, 50, 30
-      thing.body_position = Vector.new(rand(screen_width), 0)
+      tank = create_game_object :Tank
+#      thing.set_shape :Box, 50, 30
+      tank.body_position = Vector.new(rand(screen_width), 0)
     end
-
-    tank = create_game_object :Tank
   end
 end
