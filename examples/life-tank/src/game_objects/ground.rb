@@ -1,9 +1,12 @@
 class Ground < Gemini::GameObject
   has_behavior :Taggable
   has_behavior :Physical
-
+  has_behavior :DrawableShape
+  
   def load
     set_static_body
+    set_friction 0.9
+    set_image @game_state.manager(:render).get_cached_image(:ground)
   end
   
   def fill_dimensions(x1, y1, x2, y2)

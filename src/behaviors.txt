@@ -1,0 +1,4 @@
+Behaviors can't inherit from other behaviors (Drawable, Sprite, DrawableShape)
+Behavior should provide an override ability for other behaviors (how else to handle draw, perhaps it needs to be smarter?)
+Behaviors shouldn't use declared_methods. Instead they should use public methods.
+Fix method collision (DrawableShape#set_shape, Physical#set_shape)
