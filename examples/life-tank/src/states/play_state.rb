@@ -9,9 +9,9 @@ class PlayState < Gemini::BaseState
     manager(:physics).gravity = 10
 
     load_keymap :PlayKeymap
-
+    
     ground = create_game_object :Ground
-    ground.fill_dimensions(screen_width, screen_height)
+    ground.fill_dimensions(0, screen_height / 2, screen_width, screen_height)
 
     spawner = create_game_object :GameObject, :RecievesEvents
     spawner.handle_event :spawn_thing do
