@@ -18,7 +18,6 @@ class PlayState < Gemini::BaseState
     spawner = create_game_object :GameObject, :RecievesEvents
     spawner.handle_event :spawn_thing do
       tank = create_game_object :Tank
-#      thing.set_shape :Box, 50, 30
       tank.body_position = Vector.new(rand(screen_width), 0)
     end
   end
