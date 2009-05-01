@@ -9,6 +9,7 @@ class PlayState < Gemini::BaseState
     manager(:physics).gravity = 10
     manager(:render).cache_image :tank_body, "tank-body.png"
     manager(:render).cache_image :ground, "ground.png"
+    manager(:render).cache_image :tank_barrel, "tank-barrel.png"
     
     load_keymap :PlayKeymap
 

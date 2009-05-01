@@ -10,7 +10,13 @@ class Tank < Gemini::GameObject
     set_friction 0.9
     @angle = 90.0
     @power = 50.0
-    
+
+    @barrel_offset = Vector.new(0, image.height.to_f / 2.0)
+
+    @barrel = @game_state.create_game_object(:Turret)
+    #on_update { @barrel.body_position = (@barrel_offset + body_position).pivot_around(body_position, body_rotation) }
+    join_to_physical @barrel, :joint => :basic, :anchor => Vector.new(0.0, 0.0)
+
     handle_event :adjust_angle do |message|
       new_power = @angle + (message.value * ANGLE_ADJUSTMENT_FACTOR)
       @angle = new_power if new_power < 180.0 && new_power > 0.0
@@ -25,5 +31,7 @@ class Tank < Gemini::GameObject
     handle_event :fire do
       puts "FIRE!"
     end
+
+
   end
 end

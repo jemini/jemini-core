@@ -12,6 +12,8 @@ class Physical < Gemini::Behavior
   include_class "net.phys2d.raw.shapes.Polygon"
   include_class "net.phys2d.raw.shapes.ConvexPolygon"
   include_class "net.phys2d.math.Vector2f"
+  include_class 'net.phys2d.raw.AngleJoint'
+  include_class 'net.phys2d.raw.BasicJoint'
   
   attr_reader :mass, :name, :shape
   depends_on :Spatial
@@ -29,7 +31,7 @@ class Physical < Gemini::Behavior
                    :angular_damping, :set_angular_damping, :angular_damping=,
                    :gravity_effected=, :set_gravity_effected, :friction, :set_friction, :friction=,
                    :get_collision_events, :box_size, :physics_bitmask, :physics_bitmask=, :set_physics_bitmask,
-                   :add_excluded_physical, :rotate, :radius
+                   :add_excluded_physical, :rotate, :radius, :join_to_physical
   wrap_with_callbacks :mass=
   
   def load
@@ -41,6 +43,7 @@ class Physical < Gemini::Behavior
     @angular_damping = 0.0
     @target.enable_listeners_for :collided
     @target.on_after_move { move @target.x , @target.y}
+    # Manual angular damping. New Phys2D may support this? If not, file a bug.
     @target.on_update {|delta| set_angular_velocity(angular_velocity - (angular_velocity * (@angular_damping * (1.0/mass) ))) }
   end
   
@@ -79,7 +82,23 @@ class Physical < Gemini::Behavior
   def set_position(x, y)
     @body.set_position(x, y)
   end
-  
+
+  # See about Phys2D joints here: http://www.cokeandcode.com/phys2d/source/javadoc/net/phys2d/raw/Joint.html
+  # what do we do with the joint? Just let it die when the objects die? Makes sense to me.
+  # Both physicals might want to own the joint
+  # This seems to need more work
+  def join_to_physical(physical_game_object, options={})
+    other_body = physical_game_object.instance_variable_get(:@__behaviors)[:Physical].instance_variable_get(:@body)
+    case options[:joint]
+    when :angle
+      AngleJoint.new(@body, other_body, options[:self_body_point].to_phys2d_vector, options[:other_body_point].to_phys2d_vector, options[:self_body_angle], options[:other_body_angle])
+    when :basic
+      BasicJoint.new(@body, other_body, options[:anchor].to_phys2d_vector)
+    else
+      raise "Joint type #{options[:joint].inspect} not supported."
+    end
+  end
+
   def speed_limit=(vector_or_shared_value)
     if vector_or_shared_value.kind_of? Numeric
       axis_limit_x = axis_limit_y = vector_or_shared_value / SQUARE_ROOT_OF_TWO
