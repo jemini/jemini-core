@@ -8,14 +8,23 @@ class Tank < Gemini::GameObject
   def load
     set_bounded_image @game_state.manager(:render).get_cached_image(:tank_body)
     set_friction 0.9
-    @angle = 90.0
+    @angle = 45.0
     @power = 50.0
 
-    @barrel_offset = Vector.new(0, image.height.to_f / 2.0)
-
     @barrel = @game_state.create_game_object(:Turret)
-    #on_update { @barrel.body_position = (@barrel_offset + body_position).pivot_around(body_position, body_rotation) }
-    join_to_physical @barrel, :joint => :basic, :anchor => Vector.new(0.0, 0.0)
+    @barrel_anchor = Vector.new(0.0, (-(image.height.to_f + @barrel.image.height.to_f) / 2.0))
+    @zero = Vector.new(0.0, 0.0)
+    on_update do
+      offset_above_tank = @barrel_anchor.pivot_around_degrees(@zero, physical_rotation)
+      barrel_position = offset_above_tank.pivot_around_degrees(@zero, @angle)
+      @barrel.position = barrel_position + body_position
+      @game_state.manager(:render).debug(:point, :red, :position => (body_position))
+      @game_state.manager(:render).debug(:point, :green, :position => (barrel_position + body_position))
+      @game_state.manager(:render).debug(:point, :yellow, :position =>  (@barrel_anchor + body_position))
+      @barrel.image_rotation = @angle + physical_rotation - 90.0
+    end
+    
+#    join_to_physical @barrel, :joint => :basic, :anchor => Vector.new(0.0, 0.0)
 
     handle_event :adjust_angle do |message|
       new_power = @angle + (message.value * ANGLE_ADJUSTMENT_FACTOR)
@@ -25,13 +34,12 @@ class Tank < Gemini::GameObject
     handle_event :adjust_power do |message|
       new_power = @power + (message.value * POWER_ADJUSTMENT_FACTOR)
       @power = new_power if new_power < 100.0 && new_power > 10.0
+      rotate_physical message.value
       puts "power: #{@power}"
     end
 
     handle_event :fire do
       puts "FIRE!"
     end
-
-
   end
 end

@@ -6,7 +6,7 @@ class PlayState < Gemini::BaseState
     set_manager :tangible, create_game_object(:BasicTangibleManager)
     
     manager(:game_object).add_layer_at :gui_text, 5
-    manager(:physics).gravity = 10
+    #manager(:physics).gravity = 10
     manager(:render).cache_image :tank_body, "tank-body.png"
     manager(:render).cache_image :ground, "ground.png"
     manager(:render).cache_image :tank_barrel, "tank-barrel.png"
@@ -20,7 +20,8 @@ class PlayState < Gemini::BaseState
     spawner.handle_event :spawn_thing do
       tank = create_game_object :Tank
 #      thing.set_shape :Box, 50, 30
-      tank.body_position = Vector.new(rand(screen_width), 0)
+      #tank.body_position = Vector.new(rand(screen_width), 0)
+      tank.body_position = Vector.new(screen_width / 2, screen_height / 2)
     end
   end
 end

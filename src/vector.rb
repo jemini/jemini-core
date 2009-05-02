@@ -64,13 +64,19 @@ class Vector
   def pivot_around(other_vector, rotation)
     diff_x = x - other_vector.x
     diff_y = y - other_vector.y
-    rotated_x = Math.sin(rotation) * diff_x
-    rotated_y = Math.sin(rotation) * diff_y
+    sine  = Math.sin(rotation)
+    cosine = Math.cos(rotation)
+    rotated_x = (cosine * diff_x) - (sine * diff_y)
+    rotated_y = (sine * diff_x) + (cosine * diff_y)
     self.class.new rotated_x, rotated_y
   end
 end
 
 class Java::net::phys2d::math::Vector2f
+  def +(other_vector)
+    Vector.new(x + other_vector.x, y + other_vector.y)
+  end
+
   def to_vector
     Vector.new(x, y)
   end

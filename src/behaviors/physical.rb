@@ -20,18 +20,18 @@ class Physical < Gemini::Behavior
   depends_on :Updates
   #wrap_with_callbacks :move
   declared_methods :height, :width, :mass, :mass=, :set_mass, :shape, :body_position, :body_position=, :set_body_position,
-                   :set_shape, :name, :name=, :rotation, :rotation=, :set_rotation, :add_force, :force,
+                   :set_shape, :name, :name=, :physical_rotation, :physical_rotation=, :set_physical_rotation, :add_force, :force,
                    :set_force, :come_to_rest, :add_to_world, :remove_from_world, :set_physical_debug_mode,
                    :physical_debug_mode=, :restitution, :restitution=, :set_restitution,
                    :add_velocity, :set_velocity, :velocity=,
                    :angular_velocity, :set_angular_velocity, :angular_velocity=,
-                   :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity, :wish_move,
+                   :set_static_body, :physical_rotatable=, :set_physical_rotatable, :physical_rotatable?, :velocity, :wish_move,
                    :set_movable, :movable=, :movable?, #:set_safe_move, :safe_move=,
                    :damping, :set_damping, :damping=, :set_speed_limit, :speed_limit=, #, :speed_limit
                    :angular_damping, :set_angular_damping, :angular_damping=,
                    :gravity_effected=, :set_gravity_effected, :friction, :set_friction, :friction=,
                    :get_collision_events, :box_size, :physics_bitmask, :physics_bitmask=, :set_physics_bitmask,
-                   :add_excluded_physical, :rotate, :radius, :join_to_physical
+                   :add_excluded_physical, :rotate_physical, :radius, :join_to_physical
   wrap_with_callbacks :mass=
   
   def load
@@ -160,27 +160,27 @@ class Physical < Gemini::Behavior
     @body.shape.size
   end
   
-  def rotation=(rotation)
+  def physical_rotation=(rotation)
     @body.rotation = Gemini::Math.degrees_to_radians(rotation)
   end
-  alias_method :set_rotation, :rotation=
+  alias_method :set_physical_rotation, :physical_rotation=
   
-  def rotate(degrees)
+  def rotate_physical(degrees)
     @body.adjust_rotation Gemini::Math.degrees_to_radians(degrees)
   end
   
-  def rotation
+  def physical_rotation
     Gemini::Math.radians_to_degrees(@body.rotation)
   end
   
-  def rotatable?
+  def physical_rotatable?
     @body.rotatable?
   end
   
-  def rotatable=(rotatable)
+  def physical_rotatable=(rotatable)
     @body.rotatable = rotatable
   end
-  alias_method :set_rotatable, :rotatable=
+  alias_method :set_physical_rotatable, :physical_rotatable=
   
   def add_force(x_or_vector, y = nil)
     if y.nil?
