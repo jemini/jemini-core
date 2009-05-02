@@ -6,7 +6,7 @@ class PlayState < Gemini::BaseState
     set_manager :tangible, create_game_object(:BasicTangibleManager)
     
     manager(:game_object).add_layer_at :gui_text, 5
-    #manager(:physics).gravity = 10
+    manager(:physics).gravity = 5
     manager(:render).cache_image :tank_body, "tank-body.png"
     manager(:render).cache_image :ground, "ground.png"
     manager(:render).cache_image :tank_barrel, "tank-barrel.png"

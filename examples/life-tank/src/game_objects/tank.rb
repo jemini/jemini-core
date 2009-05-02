@@ -12,7 +12,7 @@ class Tank < Gemini::GameObject
     @power = 50.0
 
     @barrel = @game_state.create_game_object(:Turret)
-    @barrel_anchor = Vector.new(0.0, (-(image.height.to_f + @barrel.image.height.to_f) / 2.0))
+    @barrel_anchor = Vector.new 0.0, -((image.height.to_f * 3.0 / 4.0) + (@barrel.image.height.to_f / 2.0))
     @zero = Vector.new(0.0, 0.0)
     on_update do
       offset_above_tank = @barrel_anchor.pivot_around_degrees(@zero, physical_rotation)
@@ -28,14 +28,13 @@ class Tank < Gemini::GameObject
 
     handle_event :adjust_angle do |message|
       new_power = @angle + (message.value * ANGLE_ADJUSTMENT_FACTOR)
-      @angle = new_power if new_power < 180.0 && new_power > 0.0
+      @angle = new_power if new_power < 90.0 && new_power > -90.0
     end
 
     handle_event :adjust_power do |message|
       new_power = @power + (message.value * POWER_ADJUSTMENT_FACTOR)
       @power = new_power if new_power < 100.0 && new_power > 10.0
-      rotate_physical message.value
-      puts "power: #{@power}"
+#      rotate_physical message.value
     end
 
     handle_event :fire do
