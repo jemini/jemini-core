@@ -2,12 +2,20 @@ As a player I should be able to shoot shells at other players.
     Create a shell game object
     Create a image for the shell (heart or something love-y dove-y)
     Give the shell a small mass
-As a player I should be able to see a turret on my tank
-    Attach a turret to a tank.
-    The turret rotates and moves with the tank
-As a player I should be able to adjust my angle with a joystick's x axis
+    Give a cooldown/warmup to prevent firing shots very rapidly
+(Done) As a player I should be able to see a turret on my tank
+    (Done) Attach a turret to a tank.
+    (Done) The turret rotates and moves with the tank
+As a player I should be able to see an arrow that indicates the power of my next shot
+    Rotate the arrow to follow the barrel
+    Stretch the arrow to show power for tank
+As a player I should be able to know when I can fire a shot
+    Color the power arrow black when the player can't shoot
+    Shift the power arrow's color to white as the next shot is closer to being fired.
+    Color the power arrow yellow when the player can shoot
+(Done) As a player I should be able to adjust my angle with a joystick's x axis
     (Done) Ensure the angle cannot exceed 0 and 180 degrees relative to the tank base
-    Rotate the turret to match the angle relative to the tank's angle
+    (Done) Rotate the turret to match the angle relative to the tank's angle
 As a player I should be able to adjust my power with a joystick's y axis
     (Done) Ensure the power is limited between 10 and 100
 (Done) As a player I should be able to see my tank on the terrian

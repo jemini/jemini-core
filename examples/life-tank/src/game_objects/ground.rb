@@ -42,10 +42,20 @@ class Ground < Gemini::GameObject
      current_height = constrain(current_height, y1, y2 - 20)
      y_direction = 0 if current_height <= y1 or current_height >= y2 - 20
      puts("x1: #{x1}, y1: #{y1}, x2: #{x2}, y2: #{y2}, current_height: #{current_height}, y_direction: #{y_direction}")
-     points << Vector.new(point_width * 30, current_height)
+     vector = Vector.new(point_width * 30, current_height)
+     points << vector
    end
    set_shape :Polygon, *points
    set_visual_shape :Polygon, *points
+   @points = points
+ end
+
+ def spawn_along(times, offset)
+   raise "spawn_along needs a block" unless block_given?
+   times.times do
+     physical = yield
+     physical.body_position = @points[rand(@points.size)] + offset
+   end
  end
 
  private
