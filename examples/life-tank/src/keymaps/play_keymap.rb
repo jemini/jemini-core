@@ -11,4 +11,11 @@ Gemini::InputManager.define_keymap do |i|
     # y is inverted
     message.value = -i.filter_dead_zone(0.2, message.value)
   end
+  i.map_joystick :joystick_id => 0, :held => XBOX_360_A, :fire => nil
+
+#  25.times do |button_number|
+#    i.map_joystick :joystick_id => 0, :pressed => button_number, :fire => nil do |message, raw_input|
+#      message.value = raw_input
+#    end
+#  end
 end

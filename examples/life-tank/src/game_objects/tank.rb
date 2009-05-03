@@ -60,7 +60,7 @@ class Tank < Gemini::GameObject
       end
     end
 
-    handle_event :fire do
+    handle_event :fire do |message|
       puts "FIRE!"
     end
   end

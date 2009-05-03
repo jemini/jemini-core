@@ -34,10 +34,28 @@ CONTROLLER_BUTTON_PRESSED = {:source_type => :controller, :source_state => :pres
 CONTROLLER_BUTTON_RELEASED = {:source_type => :controller, :source_state => :released}
 CONTROLLER_BUTTON_HELD = {:source_type => :controller, :source_state => :held}
 
-LEFT_BUTTON = -1
-RIGHT_BUTTON = -2
-UP_BUTTON = -3
-DOWN_BUTTON = -4
+XBOX_360_DPAD_UP            =  0
+XBOX_360_DPAD_DOWN          =  1
+XBOX_360_DPAD_LEFT          =  2
+XBOX_360_DPAD_RIGHT         =  3
+XBOX_360_START              =  4
+XBOX_360_BACK               =  5
+XBOX_360_LEFT_STICK         =  6
+XBOX_360_RIGHT_STICK        =  7
+XBOX_360_LEFT_BUMPER        =  8
+XBOX_360_RIGHT_BUMPER       =  9
+XBOX_360_GUIDE_BUTTON       = 10
+XBOX_360_A                  = 11
+XBOX_360_B                  = 12
+XBOX_360_X                  = 13
+XBOX_360_Y                  = 14
+
+# LWJGL can't poll for buttons in the negative range yet. Possible bug to report?
+# 360 controller provides button presses for analog inputs for convienence
+XBOX_360_LEFT_STICK_LEFT = -1
+XBOX_360_LEFT_STICK_RIGHT = -2
+XBOX_360_LEFT_STICK_UP = -3
+XBOX_360_LEFT_STICK_DOWN = -4
 
 class MouseEvent
   PRESSED = :pressed
@@ -113,7 +131,7 @@ module Gemini
       @keymap.values.map {|keymap_array| keymap_array.map{|keymap| keymap.poll(@raw_input)} }.flatten.compact.each do |game_message|
         @game_state.manager(:message_queue).post_message game_message
       end
-#      poll_joystick
+      
       # Check for any held keys
 #      @held_buttons.each do |device, button_ids|
 #        button_ids.each do |button_id|
@@ -122,14 +140,17 @@ module Gemini
 #      end
     end
 
+    # probably needs deletion
     def poll_keyboard
       
     end
 
+    # probably needs deletion
     def poll_mouse
 
     end
-    
+
+    # probably needs deletion
     def poll_joystick
       @raw_input.controller_count.times do |controller_id|
         @raw_input.get_axis_count(controller_id).times do |axis_id|

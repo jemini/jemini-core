@@ -3,6 +3,7 @@ As a player I should be able to shoot shells at other players.
     Create a image for the shell (heart or something love-y dove-y)
     Give the shell a small mass
     Give a cooldown/warmup to prevent firing shots very rapidly
+    Fire when the player presses the 'A' button on the controller
 (Done) As a player I should be able to see a turret on my tank
     (Done) Attach a turret to a tank.
     (Done) The turret rotates and moves with the tank
@@ -32,3 +33,5 @@ As a player I should be able to select how many other players will be joining.
     Show as many buttons (numbered) as there are connected controllers.
 As a player I should lose life as time progresses.
     Decrease life as the game progresses
+As a player I should be able to see a background.
+    Add a pretty background
