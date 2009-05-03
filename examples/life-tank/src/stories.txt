@@ -7,8 +7,8 @@ As a player I should be able to shoot shells at other players.
     (Done) Attach a turret to a tank.
     (Done) The turret rotates and moves with the tank
 As a player I should be able to see an arrow that indicates the power of my next shot
-    Rotate the arrow to follow the barrel
-    Stretch the arrow to show power for tank
+    (Done) Rotate the arrow to follow the barrel
+    (Done) Stretch the arrow to show power for tank
 As a player I should be able to know when I can fire a shot
     Color the power arrow black when the player can't shoot
     Shift the power arrow's color to white as the next shot is closer to being fired.
