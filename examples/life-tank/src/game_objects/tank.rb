@@ -7,7 +7,8 @@ class Tank < Gemini::GameObject
   POWER_ADJUSTMENT_FACTOR = 1.0
   TOTAL_POWER = 100.0
   POWER_FACTOR = 3.0
-  
+  RELOAD_UPDATES_PER_SECOND = 1.0 / 3.0
+
   def load
     set_bounded_image @game_state.manager(:render).get_cached_image(:tank_body)
     set_friction 0.9
@@ -74,15 +75,22 @@ class Tank < Gemini::GameObject
     end
 
     on_countdown_complete do |name|
-      puts "ready to fire!"
-      @ready_to_fire = true if name == :shot
+      if name == :shot
+        @ready_to_fire = true
+      end
     end
+
+    on_timer_tick do |timer|
+      percent = timer.percent_complete
+      @power_arrow_head.color = @power_arrow_neck.color = Color.new(percent, percent, percent)
+    end
+
     reload_shot
   end
 
 private
   def reload_shot
     @ready_to_fire = false
-    add_countdown :shot, 10
+    add_countdown :shot, 10, RELOAD_UPDATES_PER_SECOND
   end
 end
