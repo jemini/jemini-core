@@ -1,10 +1,12 @@
 class Tank < Gemini::GameObject
   has_behavior :PhysicalSprite
   has_behavior :RecievesEvents
-
+  has_behavior :Timeable
+  
   ANGLE_ADJUSTMENT_FACTOR = 1.5
   POWER_ADJUSTMENT_FACTOR = 1.0
   TOTAL_POWER = 100.0
+  POWER_FACTOR = 3.0
   
   def load
     set_bounded_image @game_state.manager(:render).get_cached_image(:tank_body)
@@ -32,13 +34,13 @@ class Tank < Gemini::GameObject
         @power_arrow_neck.scale_image_from_original width_factor, 1.0
       end
       
-      power_arrow_neck_anchor = @barrel_anchor + Vector.new(0.0, -(@power_arrow_neck.image.width + @barrel.image.width) / 2.0)
-      neck_position = power_arrow_neck_anchor.pivot_around_degrees(@zero, physical_rotation + @angle)
+      shell_offset = @barrel_anchor + Vector.new(0.0, -(@power_arrow_neck.image.width + @barrel.image.width) / 2.0)
+      neck_position = shell_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
       @game_state.manager(:render).debug(:point, :red, :position => (neck_position + body_position))
       @power_arrow_neck.position = neck_position + body_position
       @power_arrow_neck.image_rotation = @angle + physical_rotation - 90.0
 
-      power_arrow_head_anchor = power_arrow_neck_anchor + Vector.new(0.0, 7.0 - ((@power_arrow_neck.image.width) / 2.0))
+      power_arrow_head_anchor = shell_offset + Vector.new(0.0, 7.0 - ((@power_arrow_neck.image.width) / 2.0))
       head_position = power_arrow_head_anchor.pivot_around_degrees(@zero, physical_rotation + @angle)
       @game_state.manager(:render).debug(:point, :blue, :position => (head_position + body_position))
       @power_arrow_head.position = head_position + body_position
@@ -61,7 +63,26 @@ class Tank < Gemini::GameObject
     end
 
     handle_event :fire do |message|
-      puts "FIRE!"
+      next unless @ready_to_fire
+      reload_shot
+      shell = @game_state.create_game_object :Shell
+      shell_offset = @barrel_anchor + Vector.new(0.0, -(@barrel.image.width) / 2.0)
+      shell_position = shell_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
+      shell.body_position = body_position + shell_position
+      shell.physical_rotation = physical_rotation + @angle
+      shell.add_force Vector.from_polar_vector(@power * POWER_FACTOR, @angle + physical_rotation)
     end
+
+    on_countdown_complete do |name|
+      puts "ready to fire!"
+      @ready_to_fire = true if name == :shot
+    end
+    reload_shot
+  end
+
+private
+  def reload_shot
+    @ready_to_fire = false
+    add_countdown :shot, 10
   end
 end

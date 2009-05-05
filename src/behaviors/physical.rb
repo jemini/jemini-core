@@ -41,7 +41,7 @@ class Physical < Gemini::Behavior
     @body.restitution = 0.0
     @body.user_data = @target
     @angular_damping = 0.0
-    @target.enable_listeners_for :collided
+    @target.enable_listeners_for :physical_collided
     @target.on_after_move { move @target.x , @target.y}
     # Manual angular damping. New Phys2D may support this? If not, file a bug.
     @target.on_update {|delta| set_angular_velocity(angular_velocity - (angular_velocity * (@angular_damping * (1.0/mass) ))) }

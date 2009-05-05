@@ -12,6 +12,7 @@ class PlayState < Gemini::BaseState
     manager(:render).cache_image :tank_barrel, "tank-barrel.png"
     manager(:render).cache_image :power_arrow_head, "power-arrow-head.png"
     manager(:render).cache_image :power_arrow_neck, "power-arrow-neck.png"
+    manager(:render).cache_image :shell, "shell.png"
 
     load_keymap :PlayKeymap
 
@@ -24,7 +25,7 @@ class PlayState < Gemini::BaseState
       @tanks << tank
       tank
     end
-
+    
     left_wall = create_game_object :GameObject, :Physical
     left_wall.set_shape :Box, 40, screen_height
     left_wall.set_static_body

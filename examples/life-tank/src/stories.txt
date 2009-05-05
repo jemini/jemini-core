@@ -1,9 +1,9 @@
 As a player I should be able to shoot shells at other players.
-    Create a shell game object
-    Create a image for the shell (heart or something love-y dove-y)
-    Give the shell a small mass
-    Give a cooldown/warmup to prevent firing shots very rapidly
-    Fire when the player presses the 'A' button on the controller
+    (Done) Create a shell game object
+    (Done) Create a image for the shell (heart or something love-y dove-y)
+    (Done) Give the shell a small mass
+    (Done) Give a cooldown/warmup to prevent firing shots very rapidly
+    (Done) Fire when the player presses the 'A' button on the controller
 (Done) As a player I should be able to see a turret on my tank
     (Done) Attach a turret to a tank.
     (Done) The turret rotates and moves with the tank
