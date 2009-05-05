@@ -54,7 +54,8 @@ private
 #  def colliding?(body)
 #    0 < @world.get_contacts(body).size
 #  end
-  
+
+  #TODO: Make subclass of Message
   class PhysicsMessage
     attr_reader :other, :event
     

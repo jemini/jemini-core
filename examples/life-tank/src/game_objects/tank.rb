@@ -2,19 +2,23 @@ class Tank < Gemini::GameObject
   has_behavior :PhysicalSprite
   has_behavior :RecievesEvents
   has_behavior :Timeable
+  has_behavior :Taggable
   
   ANGLE_ADJUSTMENT_FACTOR = 1.5
   POWER_ADJUSTMENT_FACTOR = 1.0
   TOTAL_POWER = 100.0
   POWER_FACTOR = 3.0
   RELOAD_UPDATES_PER_SECOND = 1.0 / 3.0
-
+  RELOAD_WARMPUP_IN_SECONDS = 10
+  INITIAL_LIFE = 100.0
+  
   def load
     set_bounded_image @game_state.manager(:render).get_cached_image(:tank_body)
     set_friction 0.9
     @angle = 45.0
     @power = 50.0
-
+    @life = INITIAL_LIFE
+    
     @zero = Vector.new(0.0, 0.0)
 
     @barrel = @game_state.create_game_object(:Turret)
@@ -37,15 +41,17 @@ class Tank < Gemini::GameObject
       
       shell_offset = @barrel_anchor + Vector.new(0.0, -(@power_arrow_neck.image.width + @barrel.image.width) / 2.0)
       neck_position = shell_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
-      @game_state.manager(:render).debug(:point, :red, :position => (neck_position + body_position))
       @power_arrow_neck.position = neck_position + body_position
       @power_arrow_neck.image_rotation = @angle + physical_rotation - 90.0
 
       power_arrow_head_anchor = shell_offset + Vector.new(0.0, 7.0 - ((@power_arrow_neck.image.width) / 2.0))
       head_position = power_arrow_head_anchor.pivot_around_degrees(@zero, physical_rotation + @angle)
-      @game_state.manager(:render).debug(:point, :blue, :position => (head_position + body_position))
       @power_arrow_head.position = head_position + body_position
       @power_arrow_head.image_rotation = @angle + physical_rotation - 90.0
+
+#      @game_state.manager(:render).debug(:point, :blue, :position => (head_position + body_position))
+      life_percent = @life / INITIAL_LIFE
+      self.color = @barrel.color = Color.new(1.0, life_percent, life_percent)
     end
     
 #    join_to_physical @barrel, :joint => :basic, :anchor => Vector.new(0.0, 0.0)
@@ -67,7 +73,7 @@ class Tank < Gemini::GameObject
       next unless @ready_to_fire
       reload_shot
       shell = @game_state.create_game_object :Shell
-      shell_offset = @barrel_anchor + Vector.new(0.0, -(@barrel.image.width) / 2.0)
+      shell_offset = @barrel_anchor + Vector.new(0.0, -5.0 - (@barrel.image.width / 2.0))
       shell_position = shell_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
       shell.body_position = body_position + shell_position
       shell.physical_rotation = physical_rotation + @angle
@@ -77,6 +83,7 @@ class Tank < Gemini::GameObject
     on_countdown_complete do |name|
       if name == :shot
         @ready_to_fire = true
+        @power_arrow_head.color = @power_arrow_neck.color = Color.new(:yellow)
       end
     end
 
@@ -85,12 +92,24 @@ class Tank < Gemini::GameObject
       @power_arrow_head.color = @power_arrow_neck.color = Color.new(percent, percent, percent)
     end
 
+    on_physical_collided do |other_physical|
+      next unless other_physical.other.has_tag? :damage
+      @life -= other_physical.other.damage
+      @game_state.remove_game_object self if @life < 1
+    end
+
     reload_shot
+  end
+
+  def unload
+    @game_state.remove_game_object @power_arrow_head
+    @game_state.remove_game_object @power_arrow_neck
+    @game_state.remove_game_object @barrel
   end
 
 private
   def reload_shot
     @ready_to_fire = false
-    add_countdown :shot, 10, RELOAD_UPDATES_PER_SECOND
+    add_countdown :shot, RELOAD_WARMPUP_IN_SECONDS, RELOAD_UPDATES_PER_SECOND
   end
 end

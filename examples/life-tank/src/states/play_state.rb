@@ -20,23 +20,23 @@ class PlayState < Gemini::BaseState
     ground.fill_dimensions(0, screen_height / 2, screen_width, screen_height)
 
     @tanks = []
-    ground.spawn_along 4, Vector.new(0.0, -10.0) do
+    ground.spawn_along 2, Vector.new(0.0, -10.0) do
       tank = create_game_object :Tank
       @tanks << tank
       tank
     end
     
-    left_wall = create_game_object :GameObject, :Physical
+    left_wall = create_game_object :GameObject, :Physical, :Taggable
     left_wall.set_shape :Box, 40, screen_height
     left_wall.set_static_body
     left_wall.body_position = Vector.new(-20, screen_height / 2)
     
-    right_wall = create_game_object :GameObject, :Physical
+    right_wall = create_game_object :GameObject, :Physical, :Taggable
     right_wall.set_shape :Box, 40, screen_height
     right_wall.set_static_body
     right_wall.body_position = Vector.new(screen_width + 20, screen_height / 2)
 
-    floor = create_game_object :GameObject, :Physical
+    floor = create_game_object :GameObject, :Physical, :Taggable
     floor.set_shape :Box, screen_width, 40
     floor.set_static_body
     floor.body_position = Vector.new(screen_width / 2, screen_height + 20)
