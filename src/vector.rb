@@ -70,6 +70,14 @@ class Vector
     rotated_y = (sine * diff_x) + (cosine * diff_y)
     self.class.new rotated_x, rotated_y
   end
+
+  def polar_angle
+    Math.atan2(y, x)
+  end
+
+  def polar_angle_degrees
+    Gemini::Math.radians_to_degrees polar_angle
+  end
 end
 
 class Java::net::phys2d::math::Vector2f

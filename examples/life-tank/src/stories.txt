@@ -21,8 +21,8 @@
     (Done) Ensure the power is limited between 10 and 100
 (Done) As a player I should be able to see my tank on the terrian
     (Done) Skin the terrain against the points
-As a player I should be able to die when I take too much damage.
-    Remove a tank when its life reaches zero.
+(Done) As a player I should be able to die when I take too much damage.
+    (Done) Remove a tank when its life reaches zero.
 As a player I should be able to win by being the last tank standing.
     Display "<playername> wins!" for 5 seconds, where playername is the winner
 As a player I should be able to play multiple rounds.

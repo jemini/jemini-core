@@ -12,5 +12,9 @@ class Shell < Gemini::GameObject
     on_physical_collided do
       @game_state.remove_game_object self
     end
+
+    on_update do
+      self.physical_rotation = velocity.polar_angle_degrees
+    end
   end
 end
