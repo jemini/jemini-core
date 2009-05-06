@@ -125,9 +125,9 @@ module Gemini
     end
     
     def poll(screen_width, screen_height, delta)
+      return if @keymap.nil?
       @input_listener.delta = delta
       @raw_input.poll(screen_width, screen_height)
-
       @keymap.values.map {|keymap_array| keymap_array.map{|keymap| keymap.poll(@raw_input)} }.flatten.compact.each do |game_message|
         @game_state.manager(:message_queue).post_message game_message
       end

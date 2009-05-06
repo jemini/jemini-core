@@ -5,7 +5,7 @@ class Ground < Gemini::GameObject
   
   def load
     set_static_body
-    set_friction 0.9
+    set_friction 1.0
     set_image @game_state.manager(:render).get_cached_image(:ground)
   end
   
@@ -52,8 +52,8 @@ class Ground < Gemini::GameObject
 
  def spawn_along(times, offset)
    raise "spawn_along needs a block" unless block_given?
-   times.times do
-     physical = yield
+   times.times do |index|
+     physical = yield index
      physical.body_position = @points[rand(@points.size)] + offset
    end
  end

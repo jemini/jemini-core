@@ -16,7 +16,7 @@ module Gemini
       @game_state = state
       @callbacks = Hash.new {|h,k| h[k] = []}
       @__behaviors = {}
-      enable_listeners_for :before_unload, :after_unload
+      enable_listeners_for :before_remove, :after_remove
       behaviors.each do |behavior|
         add_behavior(behavior)
       end
@@ -32,9 +32,9 @@ module Gemini
     rescue NameError => e
       raise "Unable to load behavior #{behavior_name}, #{e.message}\n#{e.backtrace.join("\n")}"
     end
-    
-    def unload
-      notify :before_unload, self
+
+    def __destroy
+      notify :before_remove, self
       #TODO: Perhaps expose this as a method on Behavior
       #Gemini::Behavior.send(:class_variable_get, :@@depended_on_by).delete self
       __remove_listeners
@@ -43,8 +43,10 @@ module Gemini
         next if behavior.nil?
         behavior.send(:delete)
       end
-      notify :after_unload, self
+      notify :after_remove, self
     end
+
+    def unload; end
     
     # TODO: Refactor the removal of behaviors from @behavior to live in the
     # behavior class.  This will mirror how behaviors get added to the array

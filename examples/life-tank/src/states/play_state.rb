@@ -20,9 +20,13 @@ class PlayState < Gemini::BaseState
     ground.fill_dimensions(0, screen_height / 2, screen_width, screen_height)
 
     @tanks = []
-    ground.spawn_along 2, Vector.new(0.0, -10.0) do
+    ground.spawn_along 2, Vector.new(0.0, -10.0) do |index|
       tank = create_game_object :Tank
+      tank.player = index + 1
       @tanks << tank
+      tank.on_before_remove do |unloading_tank|
+        @tanks.delete unloading_tank
+      end
       tank
     end
     
@@ -40,5 +44,17 @@ class PlayState < Gemini::BaseState
     floor.set_shape :Box, screen_width, 40
     floor.set_static_body
     floor.body_position = Vector.new(screen_width / 2, screen_height + 20)
+
+    game_end_checker = create_game_object :GameObject, :Updates
+    game_end_checker.on_update do
+      next if @tanks.size > 1 || @switching_state
+      @switching_state = true
+      end_game_text = create_game_object :Text, screen_width / 2, screen_height / 2, "Player #{@tanks.first.player} wins!"
+      end_game_text.add_behavior :Timeable
+      end_game_text.add_countdown :end_game, 5
+      end_game_text.on_countdown_complete do
+        switch_state :MenuState
+      end
+    end
   end
 end

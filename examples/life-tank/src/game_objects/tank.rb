@@ -3,18 +3,20 @@ class Tank < Gemini::GameObject
   has_behavior :RecievesEvents
   has_behavior :Timeable
   has_behavior :Taggable
+
+  attr_accessor :player
   
   ANGLE_ADJUSTMENT_FACTOR = 1.5
   POWER_ADJUSTMENT_FACTOR = 1.0
   TOTAL_POWER = 100.0
   POWER_FACTOR = 3.0
-  RELOAD_UPDATES_PER_SECOND = 1.0 / 3.0
-  RELOAD_WARMPUP_IN_SECONDS = 10
+  RELOAD_UPDATES_PER_SECOND = 1.0 / 30.0
+  RELOAD_WARMPUP_IN_SECONDS = 5
   INITIAL_LIFE = 100.0
   
   def load
     set_bounded_image @game_state.manager(:render).get_cached_image(:tank_body)
-    set_friction 0.9
+    set_friction 1.0
     @angle = 45.0
     @power = 50.0
     @life = INITIAL_LIFE
@@ -84,6 +86,8 @@ class Tank < Gemini::GameObject
       if name == :shot
         @ready_to_fire = true
         @power_arrow_head.color = @power_arrow_neck.color = Color.new(:yellow)
+      else
+        raise "countdown #{name.inspect} not supported!"
       end
     end
 
@@ -95,7 +99,10 @@ class Tank < Gemini::GameObject
     on_physical_collided do |other_physical|
       next unless other_physical.other.has_tag? :damage
       @life -= other_physical.other.damage
-      @game_state.remove_game_object self if @life < 1
+      if @life < 1
+        puts "removing tank!!!!!"
+        @game_state.remove_game_object self
+      end
     end
 
     reload_shot
