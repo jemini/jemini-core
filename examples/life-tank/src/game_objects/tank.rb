@@ -9,9 +9,9 @@ class Tank < Gemini::GameObject
   ANGLE_ADJUSTMENT_FACTOR = 1.5
   POWER_ADJUSTMENT_FACTOR = 1.0
   TOTAL_POWER = 100.0
-  POWER_FACTOR = 3.0
+  POWER_FACTOR = 6.0
   RELOAD_UPDATES_PER_SECOND = 1.0 / 30.0
-  RELOAD_WARMPUP_IN_SECONDS = 5
+  RELOAD_WARMPUP_IN_SECONDS = 0.25
   INITIAL_LIFE = 100.0
   
   def load
@@ -73,13 +73,13 @@ class Tank < Gemini::GameObject
 
     handle_event :fire do |message|
       next unless @ready_to_fire
-      reload_shot
       shell = @game_state.create_game_object :Shell
       shell_offset = @barrel_anchor + Vector.new(0.0, -5.0 - (@barrel.image.width / 2.0))
       shell_position = shell_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
       shell.body_position = body_position + shell_position
-      shell.physical_rotation = physical_rotation + @angle
+      shell.physical_rotation = physical_rotation + @angle + 90.0
       shell.add_force Vector.from_polar_vector(@power * POWER_FACTOR, @angle + physical_rotation)
+      reload_shot
     end
 
     on_countdown_complete do |name|

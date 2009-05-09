@@ -16,6 +16,8 @@ class PlayState < Gemini::BaseState
 
     load_keymap :PlayKeymap
 
+    create_game_object :Background, "hazy-horizon.png"
+    
     ground = create_game_object :Ground
     ground.fill_dimensions(0, screen_height / 2, screen_width, screen_height)
 

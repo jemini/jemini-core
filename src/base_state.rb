@@ -27,8 +27,6 @@ module Gemini
                   }
       
       @paused = false
-      
-      message_manager.start_processing
     end
     
     def screen_width

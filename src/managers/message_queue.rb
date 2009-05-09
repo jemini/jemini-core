@@ -3,44 +3,35 @@ module Gemini
   
   # Message object that is posted to the MessageQueue.
   class Message
-    attr_accessor :name, :value
-    def initialize(name, value)
+    attr_accessor :name, :value, :delta
+    def initialize(name, value, delta=nil)
       @name = name
       @value = value
+      @delta = delta
     end
   end
   
   class MessageQueue < Gemini::GameObject
-
     def load
       @listeners = Hash.new {|h,k| h[k] = []}
       @messages = Queue.new
-      @listener_hash_in_use = Mutex.new
-      @continue_processing = false
     end
 
-    def start_processing
-      @continue_processing = true
-      Thread.new do
-        while @continue_processing
-          sleep 0.001 if @messages.empty?
-
-          message = @messages.shift
-
-          @listeners[message.name].each do |listener|
-            begin
-              listener[1].call(message)
-            rescue Exception => e
-              # Replace this with a logger
-              $stderr << "Error in callback #{listener[1]} for key: #{listener[0]}\n#{e.class} - #{e.message}\n#{e.backtrace.join("\n")}"
-            end
+    def process_messages(delta)
+      until @messages.empty?
+        message = @messages.shift
+        message.delta = delta
+        
+        @listeners[message.name].each do |listener|
+          begin
+            listener[1].call(message)
+          rescue Exception => e
+            # Replace this with a logger
+            $stderr << "Error in callback #{listener[1]} for key: #{listener[0]}\n#{e.class} - #{e.message}\n#{e.backtrace.join("\n")}"
+            java.lang.System.exit(1)
           end
         end
       end
-    end
-
-    def stop_processing
-      @continue_processing = false
     end
 
     def post_message(message)
@@ -53,15 +44,11 @@ module Gemini
     # which must be a proc.  Alternatively, the second parameter may be omitted and a
     # block passed in its place.
     def add_listener(type, key, callback=nil, &block)
-      @listener_hash_in_use.synchronize do
-        @listeners[type.to_sym] << [key, callback || block]
-      end
+      @listeners[type.to_sym] << [key, callback || block]
     end
 
     def remove_listener(type, key)
-      @listener_hash_in_use.synchronize do
-        @listeners[type.to_sym].delete_if {|listener| listener.first == key}
-      end
+      @listeners[type.to_sym].delete_if {|listener| listener.first == key}
     end
   end
 end

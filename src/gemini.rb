@@ -74,8 +74,6 @@ module Gemini
     end
     
     def update(container, delta)
-      BaseState.active_state.manager(:game_object).__process_pending_game_objects
-      
       #don't tell the new state that it now has to update load time worth of a delta
       if @fresh_state
         delta = 0
@@ -91,7 +89,9 @@ module Gemini
         return
       end
       BaseState.active_state.manager(:input).poll(@screen_width, @screen_height, delta)
+      BaseState.active_state.manager(:message_queue).process_messages(delta)
       BaseState.active_state.manager(:update).update(delta)
+      BaseState.active_state.manager(:game_object).__process_pending_game_objects
     end
 
     def render(container, graphics)
