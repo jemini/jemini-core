@@ -11,7 +11,7 @@ class Tank < Gemini::GameObject
   TOTAL_POWER = 100.0
   POWER_FACTOR = 6.0
   RELOAD_UPDATES_PER_SECOND = 1.0 / 30.0
-  RELOAD_WARMPUP_IN_SECONDS = 0.25
+  RELOAD_WARMPUP_IN_SECONDS = 5
   INITIAL_LIFE = 100.0
   
   def load
@@ -23,11 +23,11 @@ class Tank < Gemini::GameObject
     
     @zero = Vector.new(0.0, 0.0)
 
-    @barrel = @game_state.create_game_object(:Turret)
+    @barrel = @game_state.create :Turret
     @barrel_anchor = Vector.new 0.0, -((image.height.to_f * 3.0 / 4.0))
 
-    @power_arrow_neck = @game_state.create_game_object(:PowerArrowNeck)
-    @power_arrow_head = @game_state.create_game_object(:PowerArrowHead)
+    @power_arrow_neck = @game_state.create :PowerArrowNeck
+    @power_arrow_head = @game_state.create :PowerArrowHead
 
     @power_changed = true # to set the proper scale on the first update, flag as true
     
@@ -73,7 +73,7 @@ class Tank < Gemini::GameObject
 
     handle_event :fire do |message|
       next unless @ready_to_fire
-      shell = @game_state.create_game_object :Shell
+      shell = @game_state.create :Shell
       shell_offset = @barrel_anchor + Vector.new(0.0, -5.0 - (@barrel.image.width / 2.0))
       shell_position = shell_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
       shell.body_position = body_position + shell_position
@@ -99,19 +99,16 @@ class Tank < Gemini::GameObject
     on_physical_collided do |other_physical|
       next unless other_physical.other.has_tag? :damage
       @life -= other_physical.other.damage
-      if @life < 1
-        puts "removing tank!!!!!"
-        @game_state.remove_game_object self
-      end
+      @game_state.remove self if @life < 1
     end
 
     reload_shot
   end
 
   def unload
-    @game_state.remove_game_object @power_arrow_head
-    @game_state.remove_game_object @power_arrow_neck
-    @game_state.remove_game_object @barrel
+    @game_state.remove @power_arrow_head
+    @game_state.remove @power_arrow_neck
+    @game_state.remove @barrel
   end
 
 private
