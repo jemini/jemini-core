@@ -79,6 +79,7 @@ class Tank < Gemini::GameObject
       shell.body_position = body_position + shell_position
       shell.physical_rotation = physical_rotation + @angle + 90.0
       shell.add_force Vector.from_polar_vector(@power * POWER_FACTOR, @angle + physical_rotation)
+      @game_state.manager(:sound).play_sound :fire_cannon
       reload_shot
     end
 

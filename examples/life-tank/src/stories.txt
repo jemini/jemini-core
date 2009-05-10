@@ -35,5 +35,5 @@ As a player I should be able to select how many other players will be joining.
     Show as many buttons (numbered) as there are connected controllers.
 As a player I should lose life as time progresses.
     Decrease life as the game progresses
-As a player I should be able to see a background.
-    Add a pretty background
+(Done) As a player I should be able to see a background.
+    (Done) Add a pretty background

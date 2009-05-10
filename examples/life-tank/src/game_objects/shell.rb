@@ -10,6 +10,7 @@ class Shell < Gemini::GameObject
     set_bounded_image @game_state.manager(:render).get_cached_image(:shell)
     set_mass 1
     on_physical_collided do
+      @game_state.manager(:sound).play_sound :shell_explosion
       @game_state.remove self
     end
 

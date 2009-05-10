@@ -7,12 +7,16 @@ class PlayState < Gemini::BaseState
     
     manager(:game_object).add_layer_at :gui_text, 5
     manager(:physics).gravity = 5
+
     manager(:render).cache_image :tank_body, "tank-body.png"
     manager(:render).cache_image :ground, "ground.png"
     manager(:render).cache_image :tank_barrel, "tank-barrel.png"
     manager(:render).cache_image :power_arrow_head, "power-arrow-head.png"
     manager(:render).cache_image :power_arrow_neck, "power-arrow-neck.png"
     manager(:render).cache_image :shell, "shell.png"
+
+    manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
+    manager(:sound).add_sound :shell_explosion, "shell-explosion-int.wav"
 
     load_keymap :PlayKeymap
 
@@ -58,5 +62,7 @@ class PlayState < Gemini::BaseState
         switch_state :MenuState
       end
     end
+
+    manager(:sound).loop_song "mortor-maddness.ogg", :volume => 0.5
   end
 end
