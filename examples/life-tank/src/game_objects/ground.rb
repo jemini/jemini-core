@@ -54,7 +54,10 @@ class Ground < Gemini::GameObject
    raise "spawn_along needs a block" unless block_given?
    times.times do |index|
      physical = yield index
-     physical.body_position = @points[rand(@points.size)] + offset
+     point_along_ground = @points[0...-2][rand(@points.size - 2)]
+     point_along_ground.x -= physical.width if point_along_ground.x + physical.width > @game_state.screen_width
+     point_along_ground.x += physical.width if point_along_ground.x - physical.width < 0
+     physical.body_position = point_along_ground + offset
    end
  end
 

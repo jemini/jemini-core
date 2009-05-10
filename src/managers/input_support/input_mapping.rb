@@ -1,3 +1,5 @@
+require 'managers/input_support/input_message'
+
 module Gemini
   class InputMapping
     attr_accessor :device, :input_type, :input_button_or_axis, :joystick_id, :destination_type, :destination_value, :input_callback
@@ -104,7 +106,7 @@ module Gemini
     
     # eventually, raw_input will need to be wrapped
     def to_game_message(raw_input)
-      game_message = Message.new(@game_message, @game_value)
+      game_message = InputMessage.new(@game_message, @game_value)
       @input_callback.call(game_message, raw_input) unless @input_callback.nil?
       game_message
     end

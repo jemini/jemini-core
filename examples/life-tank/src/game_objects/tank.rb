@@ -14,7 +14,8 @@ class Tank < Gemini::GameObject
   RELOAD_WARMPUP_IN_SECONDS = 5
   INITIAL_LIFE = 100.0
   
-  def load
+  def load(player_index)
+    @player_id = player_index
     set_bounded_image @game_state.manager(:render).get_cached_image(:tank_body)
     set_friction 1.0
     @angle = 45.0
@@ -59,11 +60,13 @@ class Tank < Gemini::GameObject
 #    join_to_physical @barrel, :joint => :basic, :anchor => Vector.new(0.0, 0.0)
 
     handle_event :adjust_angle do |message|
+      next unless message.player == @player_id
       new_power = @angle + (message.value * ANGLE_ADJUSTMENT_FACTOR)
       @angle = new_power if new_power < 90.0 && new_power > -90.0
     end
 
     handle_event :adjust_power do |message|
+      next unless message.player == @player_id
       new_power = @power + (message.value * POWER_ADJUSTMENT_FACTOR)
       if new_power < TOTAL_POWER && new_power > 10.0
         @power_changed = true if new_power != @power # @power_changed is used during update
@@ -72,6 +75,7 @@ class Tank < Gemini::GameObject
     end
 
     handle_event :fire do |message|
+      next unless message.player == @player_id
       next unless @ready_to_fire
       shell = @game_state.create :Shell
       shell_offset = @barrel_anchor + Vector.new(0.0, -5.0 - (@barrel.image.width / 2.0))
