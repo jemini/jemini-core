@@ -65,6 +65,11 @@ module Gemini
     end
 
     def poll_joystick(raw_input)
+      if @joystick_id >= raw_input.controller_count
+        cancel_post!
+        return
+      end
+      
       case @input_type
       when :axis_update
         @axis_id ||= find_axis_id_by_axis_name(raw_input, @input_button_or_axis)
