@@ -31,7 +31,7 @@ As a player I should be able to see explosions from shells.
     (Done) If a shell touches anything, destroy the shell
     If a shell touches anything, replace it with an explosion image (like sprinkles).
 As a player I should be able to select how many other players will be joining.
-    Show large buttons with numbers on the menu state.
+    (Done) Show large buttons with numbers on the menu state.
     Show as many buttons (numbered) as there are connected controllers.
 As a player I should lose life as time progresses.
     Decrease life as the game progresses

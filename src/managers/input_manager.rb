@@ -164,6 +164,10 @@ module Gemini
       end
     end
 
+    def connected_controller_size
+      @raw_input.controller_count
+    end
+
     def map_key(options, &block)
       map :key, options, &block
     end

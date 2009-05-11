@@ -25,6 +25,7 @@ module Gemini
 
       @joystick_id = options.delete(:joystick_id)
       @input_callback = options.delete(:input_callback)
+      @player = options.delete :player
       # after all the deletes, the game message and value should be only what's left
       @game_message = options.keys.first
       @game_value   = options.values.first
@@ -107,6 +108,7 @@ module Gemini
     # eventually, raw_input will need to be wrapped
     def to_game_message(raw_input)
       game_message = InputMessage.new(@game_message, @game_value)
+      game_message.player = @player
       @input_callback.call(game_message, raw_input) unless @input_callback.nil?
       game_message
     end

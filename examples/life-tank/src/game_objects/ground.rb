@@ -5,6 +5,8 @@ class Ground < Gemini::GameObject
   
   def load
     set_static_body
+#    set_mass 200
+    set_restitution 0.0
     set_friction 1.0
     set_image @game_state.manager(:render).get_cached_image(:ground)
   end
@@ -52,9 +54,12 @@ class Ground < Gemini::GameObject
 
  def spawn_along(times, offset)
    raise "spawn_along needs a block" unless block_given?
+   puts @points.size
    times.times do |index|
      physical = yield index
-     point_along_ground = @points[0...-2][rand(@points.size - 2)]
+     spawn_point_index = rand(@points.size - 2)
+     puts "using point #{spawn_point_index}"
+     point_along_ground = @points[2...-1][spawn_point_index]
      point_along_ground.x -= physical.width if point_along_ground.x + physical.width > @game_state.screen_width
      point_along_ground.x += physical.width if point_along_ground.x - physical.width < 0
      physical.body_position = point_along_ground + offset

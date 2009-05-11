@@ -9,7 +9,7 @@ class Tank < Gemini::GameObject
   ANGLE_ADJUSTMENT_FACTOR = 1.5
   POWER_ADJUSTMENT_FACTOR = 1.0
   TOTAL_POWER = 100.0
-  POWER_FACTOR = 6.0
+  POWER_FACTOR = 4.0
   RELOAD_UPDATES_PER_SECOND = 1.0 / 30.0
   RELOAD_WARMPUP_IN_SECONDS = 5
   INITIAL_LIFE = 100.0
@@ -18,6 +18,7 @@ class Tank < Gemini::GameObject
     @player_id = player_index
     set_bounded_image @game_state.manager(:render).get_cached_image(:tank_body)
     set_friction 1.0
+    set_mass 5
     @angle = 45.0
     @power = 50.0
     @life = INITIAL_LIFE
@@ -82,8 +83,10 @@ class Tank < Gemini::GameObject
       shell_position = shell_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
       shell.body_position = body_position + shell_position
       shell.physical_rotation = physical_rotation + @angle + 90.0
-      shell.add_force Vector.from_polar_vector(@power * POWER_FACTOR, @angle + physical_rotation)
+      shell_vector = Vector.from_polar_vector(@power * POWER_FACTOR, @angle + physical_rotation)
+      shell.add_force shell_vector
       @game_state.manager(:sound).play_sound :fire_cannon
+      add_force shell_vector.negate
       reload_shot
     end
 

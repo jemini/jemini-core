@@ -78,6 +78,10 @@ class Vector
   def polar_angle_degrees
     Gemini::Math.radians_to_degrees polar_angle
   end
+
+  def negate
+    self.class.new(-x, -y)
+  end
 end
 
 class Java::net::phys2d::math::Vector2f
