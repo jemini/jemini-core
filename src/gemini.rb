@@ -3,6 +3,8 @@ require 'vector'
 require 'spline'
 require 'inflector'
 
+puts "gemini path: #{File.expand_path(File.dirname(__FILE__))}"
+puts "gemini manager path: #{File.expand_path(File.dirname(__FILE__) + '/managers')}"
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/managers')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/game_objects')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/states')

@@ -17,16 +17,18 @@ class Tank < Gemini::GameObject
   def load(player_index)
     @player_id = player_index
     set_bounded_image @game_state.manager(:render).get_cached_image(:tank_body)
-    set_friction 1.0
+    set_friction 100.0
     set_mass 5
     @angle = 45.0
     @power = 50.0
     @life = INITIAL_LIFE
     
     @zero = Vector.new(0.0, 0.0)
-
+    @barrel_offset = Vector.new 0.0, 10.0
     @barrel = @game_state.create :Turret
-    @barrel_anchor = Vector.new 0.0, -((image.height.to_f * 3.0 / 4.0))
+#    @barrel_anchor = Vector.new 0.0, -((image.height.to_f * 3.0 / 4.0))
+#    @barrel_anchor = Vector.new 0.0, -(image.height * 0.75)
+    @barrel_anchor = Vector.new 0.0, -(@barrel.image.width / 2)
 
     @power_arrow_neck = @game_state.create :PowerArrowNeck
     @power_arrow_head = @game_state.create :PowerArrowHead
@@ -34,7 +36,7 @@ class Tank < Gemini::GameObject
     @power_changed = true # to set the proper scale on the first update, flag as true
     
     on_update do
-      barrel_position = @barrel_anchor.pivot_around_degrees(@zero, physical_rotation + @angle)
+      barrel_position = @barrel_anchor.pivot_around_degrees(@barrel_offset, physical_rotation + @angle)
       @barrel.position = barrel_position + body_position
       @barrel.image_rotation = @angle + physical_rotation - 90.0
 

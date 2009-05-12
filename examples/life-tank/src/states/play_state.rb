@@ -26,7 +26,7 @@ class PlayState < Gemini::BaseState
     ground.fill_dimensions(0, screen_height / 2, screen_width, screen_height)
 
     @tanks = []
-    ground.spawn_along 2, Vector.new(0.0, -20.0) do |index|
+    ground.spawn_along 5, Vector.new(0.0, -20.0) do |index|
       tank = create :Tank, index
       tank.player = index + 1
       @tanks << tank

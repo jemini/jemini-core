@@ -72,7 +72,6 @@ module Gemini
   class InputManager < Gemini::GameObject
     
     $LOAD_PATH.each do |path|
-      puts File.basename(path)
       if File.basename(path) == "input_helpers"
         Dir.glob(File.join(File.expand_path(path), "*.rb")).each do |input_helper_path|
           require input_helper_path

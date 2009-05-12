@@ -43,7 +43,7 @@ class Ground < Gemini::GameObject
      current_height += y_direction
      current_height = constrain(current_height, y1, y2 - 20)
      y_direction = 0 if current_height <= y1 or current_height >= y2 - 20
-     puts("x1: #{x1}, y1: #{y1}, x2: #{x2}, y2: #{y2}, current_height: #{current_height}, y_direction: #{y_direction}")
+#     puts("x1: #{x1}, y1: #{y1}, x2: #{x2}, y2: #{y2}, current_height: #{current_height}, y_direction: #{y_direction}")
      vector = Vector.new(point_width * 30, current_height)
      points << vector
    end
@@ -53,13 +53,12 @@ class Ground < Gemini::GameObject
  end
 
  def spawn_along(times, offset)
+   spawn_points = @points[2...-1]
    raise "spawn_along needs a block" unless block_given?
-   puts @points.size
    times.times do |index|
      physical = yield index
-     spawn_point_index = rand(@points.size - 2)
-     puts "using point #{spawn_point_index}"
-     point_along_ground = @points[2...-1][spawn_point_index]
+     spawn_point_index = rand(spawn_points.size)
+     point_along_ground = spawn_points.delete_at spawn_point_index
      point_along_ground.x -= physical.width if point_along_ground.x + physical.width > @game_state.screen_width
      point_along_ground.x += physical.width if point_along_ground.x - physical.width < 0
      physical.body_position = point_along_ground + offset
