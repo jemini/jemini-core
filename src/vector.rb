@@ -14,6 +14,10 @@ class Vector
   def initialize(x = 0.0, y = 0.0, z = nil)
     @native_vector = Java::org::newdawn::slick::geom::Vector2f.new(x, y)
   end
+
+  def +(other_vector)
+    Vector.new(x + other_vector.x, y + other_vector.y)
+  end
   
   def x
     @native_vector.x
@@ -52,9 +56,39 @@ class Vector
     # Although it's good for perpendicular angles, which we'll need a method for.
     Gemini::Math.radians_to_degrees(Math.atan2(y - other_vector.y, x - other_vector.x)) + 90.0
   end
+
+  def pivot_around_degrees(other_vector, rotation)
+    pivot_around(other_vector, Gemini::Math.degrees_to_radians(rotation))
+  end
+  
+  def pivot_around(other_vector, rotation)
+    diff_x = x - other_vector.x
+    diff_y = y - other_vector.y
+    sine  = Math.sin(rotation)
+    cosine = Math.cos(rotation)
+    rotated_x = (cosine * diff_x) - (sine * diff_y)
+    rotated_y = (sine * diff_x) + (cosine * diff_y)
+    self.class.new rotated_x, rotated_y
+  end
+
+  def polar_angle
+    Math.atan2(y, x)
+  end
+
+  def polar_angle_degrees
+    Gemini::Math.radians_to_degrees polar_angle
+  end
+
+  def negate
+    self.class.new(-x, -y)
+  end
 end
 
 class Java::net::phys2d::math::Vector2f
+  def +(other_vector)
+    Vector.new(x + other_vector.x, y + other_vector.y)
+  end
+
   def to_vector
     Vector.new(x, y)
   end

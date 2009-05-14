@@ -7,7 +7,8 @@ class Sprite < Drawable
   alias_method :set_image_size, :image_size=
   declared_methods :draw, :set_image_size, :image_size=, :image_size, :image, :image=, :set_image,
                    :image_scaling, :color, :set_color, :color=, :image_rotation, :image_rotation=, :set_image_rotation,
-                   :add_rotation, :texture_coords, :flip_horizontally, :flip_vertically, :move_by_top_left, :top_left_position
+                   :add_rotation, :texture_coords, :flip_horizontally, :flip_vertically, :move_by_top_left, :top_left_position,
+                   :scale_image_from_original
                  
   wrap_with_callbacks :draw
     
@@ -30,10 +31,18 @@ class Sprite < Drawable
     @color = color
   end
   alias_method :set_color, :color=
-  
+
+  #TODO: Take vectors for first args as well
   def image_scaling(x_scale, y_scale = nil)
     y_scale = x_scale if y_scale.nil?
     set_image @image.get_scaled_copy(x_scale.to_f * image_size.x, y_scale.to_f * image_size.y)
+  end
+
+  #TODO: Take vectors for first args as well
+  def scale_image_from_original(x_scale, y_scale = nil)
+    y_scale = x_scale if y_scale.nil?
+    @original_image = @image.copy if @original_image.nil?
+    set_image @original_image.get_scaled_copy(x_scale.to_f * @original_image.width, y_scale.to_f * @original_image.height)
   end
   
   def image_rotation

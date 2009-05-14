@@ -13,7 +13,7 @@ class BasicGameObjectManager < Gemini::GameObject
   end
   
   def __process_pending_game_objects
-    @game_objects_to_remove.pop.unload until @game_objects_to_remove.empty?
+    @game_objects_to_remove.pop.__destroy until @game_objects_to_remove.empty?
     until @game_objects_to_add.empty?
       layer, game_object = @game_objects_to_add.pop 
       @layers[layer] << game_object
@@ -31,6 +31,7 @@ class BasicGameObjectManager < Gemini::GameObject
     return if owning_layer.nil? #NOTE: Not sure if this is the right thing to do, but at least no exception is thrown
     notify :before_remove_game_object, game_object
     owning_layer.delete game_object
+    game_object.unload
     notify :after_remove_game_object, game_object
     @game_objects_to_remove.push game_object
     #game_object.unload

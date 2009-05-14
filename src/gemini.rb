@@ -3,6 +3,8 @@ require 'vector'
 require 'spline'
 require 'inflector'
 
+puts "gemini path: #{File.expand_path(File.dirname(__FILE__))}"
+puts "gemini manager path: #{File.expand_path(File.dirname(__FILE__) + '/managers')}"
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/managers')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/game_objects')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/states')
@@ -28,23 +30,23 @@ require 'basic_render_manager'
 module Gemini
   class Main < Java::org::newdawn::slick::BasicGame
     include_class 'org.newdawn.slick.AppGameContainer'
-    attr_accessor :screen_width, :screen_height
+    attr_accessor :screen_width, :screen_height, :initial_state
     
-    def self.start_app(screen_title, screen_width, screen_height, fullscreen=false)
+    def self.start_app(screen_title, screen_width, screen_height, initial_state, fullscreen=false)
       puts "in start app"
-      main = Main.new(screen_title)
+      main = Main.new(screen_title, initial_state)
       main.screen_width  = screen_width
       main.screen_height = screen_height
       container = AppGameContainer.new(main, screen_width, screen_height, fullscreen)
-      container.vsync = true
+      container.vsync = false
       container.maximum_logic_update_interval = 60
       container.smooth_deltas = true
       #main.container = container
       container.start
     end
     
-    def self.create_canvas(screen_title, screen_width, screen_height)
-      main = Main.new screen_title
+    def self.create_canvas(screen_title, screen_width, screen_height, initial_state)
+      main = Main.new screen_title, initial_state
       main.screen_width  = screen_width
       main.screen_height = screen_height
       puts "creating canvas"
@@ -59,23 +61,19 @@ module Gemini
       $canvas
     end
     
-    def initialize(screen_title=nil)
-      super(screen_title) 
+    def initialize(screen_title=nil, initial_state=:MainState)
+      super(screen_title)
+      @initial_state = initial_state
       @fresh_state = true
     end
     
-    
-    
     def init(container)
       @container = container
-      
-      BaseState.active_state = load_state(:MainState)
+      BaseState.active_state = load_state(@initial_state)
       BaseState.active_state.load
     end
     
     def update(container, delta)
-      BaseState.active_state.manager(:game_object).__process_pending_game_objects
-      
       #don't tell the new state that it now has to update load time worth of a delta
       if @fresh_state
         delta = 0
@@ -91,7 +89,9 @@ module Gemini
         return
       end
       BaseState.active_state.manager(:input).poll(@screen_width, @screen_height, delta)
+      BaseState.active_state.manager(:message_queue).process_messages(delta)
       BaseState.active_state.manager(:update).update(delta)
+      BaseState.active_state.manager(:game_object).__process_pending_game_objects
     end
 
     def render(container, graphics)

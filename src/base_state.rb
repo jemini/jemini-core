@@ -27,8 +27,6 @@ module Gemini
                   }
       
       @paused = false
-      
-      message_manager.start_processing
     end
     
     def screen_width
@@ -39,7 +37,7 @@ module Gemini
       @game.screen_height
     end
     
-    def create_game_object_on_layer(type, layer_name, *params)
+    def create_on_layer(type, layer_name, *params)
       game_object_type = begin
                            type.constantize
                          rescue NameError
@@ -59,8 +57,13 @@ module Gemini
       game_object
     end
     
+    def create(type, *params)
+      create_on_layer(type, :default, *params)
+    end
+
     def create_game_object(type, *params)
-      create_game_object_on_layer(type, :default, *params)
+      warn "create_game_object is deprecated, use create instead"
+      create(type, *params)
     end
     
     def manager(type)
@@ -75,8 +78,13 @@ module Gemini
       @managers[:game_object].add_game_object_to_layer game_object, layer_name
     end
     
-    def remove_game_object(game_object)
+    def remove(game_object)
       @managers[:game_object].remove_game_object(game_object)
+    end
+
+    def remove_game_object(game_object)
+      warn "remove_game_object is deprecated, use remove instead"
+      remove(game_object)
     end
     
     def switch_state(state_name)

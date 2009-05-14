@@ -26,8 +26,8 @@ class BasicPhysicsManager < Gemini::GameObject
   
   # there's a typo in the API, I swears it.
   def collision_occured(event)
-    event.body_a.user_data.notify :collided, PhysicsMessage.new(event, event.body_b.user_data)
-    event.body_b.user_data.notify :collided, PhysicsMessage.new(event, event.body_a.user_data)
+    event.body_a.user_data.notify :physical_collided, PhysicsMessage.new(event, event.body_b.user_data)
+    event.body_b.user_data.notify :physical_collided, PhysicsMessage.new(event, event.body_a.user_data)
   end
   
   def toggle_debug_mode(message)
@@ -54,7 +54,8 @@ private
 #  def colliding?(body)
 #    0 < @world.get_contacts(body).size
 #  end
-  
+
+  #TODO: Make subclass of Message
   class PhysicsMessage
     attr_reader :other, :event
     

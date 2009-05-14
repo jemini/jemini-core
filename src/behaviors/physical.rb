@@ -12,24 +12,26 @@ class Physical < Gemini::Behavior
   include_class "net.phys2d.raw.shapes.Polygon"
   include_class "net.phys2d.raw.shapes.ConvexPolygon"
   include_class "net.phys2d.math.Vector2f"
+  include_class 'net.phys2d.raw.AngleJoint'
+  include_class 'net.phys2d.raw.BasicJoint'
   
   attr_reader :mass, :name, :shape
   depends_on :Spatial
   depends_on :Updates
   #wrap_with_callbacks :move
   declared_methods :height, :width, :mass, :mass=, :set_mass, :shape, :body_position, :body_position=, :set_body_position,
-                   :set_shape, :name, :name=, :rotation, :rotation=, :set_rotation, :add_force, :force,
+                   :set_shape, :name, :name=, :physical_rotation, :physical_rotation=, :set_physical_rotation, :add_force, :force,
                    :set_force, :come_to_rest, :add_to_world, :remove_from_world, :set_physical_debug_mode,
                    :physical_debug_mode=, :restitution, :restitution=, :set_restitution,
                    :add_velocity, :set_velocity, :velocity=,
                    :angular_velocity, :set_angular_velocity, :angular_velocity=,
-                   :set_static_body, :rotatable=, :set_rotatable, :rotatable?, :velocity, :wish_move,
+                   :set_static_body, :physical_rotatable=, :set_physical_rotatable, :physical_rotatable?, :velocity, :wish_move,
                    :set_movable, :movable=, :movable?, #:set_safe_move, :safe_move=,
                    :damping, :set_damping, :damping=, :set_speed_limit, :speed_limit=, #, :speed_limit
                    :angular_damping, :set_angular_damping, :angular_damping=,
                    :gravity_effected=, :set_gravity_effected, :friction, :set_friction, :friction=,
                    :get_collision_events, :box_size, :physics_bitmask, :physics_bitmask=, :set_physics_bitmask,
-                   :add_excluded_physical, :rotate, :radius
+                   :add_excluded_physical, :rotate_physical, :radius, :join_to_physical
   wrap_with_callbacks :mass=
   
   def load
@@ -39,8 +41,9 @@ class Physical < Gemini::Behavior
     @body.restitution = 0.0
     @body.user_data = @target
     @angular_damping = 0.0
-    @target.enable_listeners_for :collided
+    @target.enable_listeners_for :physical_collided
     @target.on_after_move { move @target.x , @target.y}
+    # Manual angular damping. New Phys2D may support this? If not, file a bug.
     @target.on_update {|delta| set_angular_velocity(angular_velocity - (angular_velocity * (@angular_damping * (1.0/mass) ))) }
   end
   
@@ -79,7 +82,23 @@ class Physical < Gemini::Behavior
   def set_position(x, y)
     @body.set_position(x, y)
   end
-  
+
+  # See about Phys2D joints here: http://www.cokeandcode.com/phys2d/source/javadoc/net/phys2d/raw/Joint.html
+  # what do we do with the joint? Just let it die when the objects die? Makes sense to me.
+  # Both physicals might want to own the joint
+  # This seems to need more work
+  def join_to_physical(physical_game_object, options={})
+    other_body = physical_game_object.instance_variable_get(:@__behaviors)[:Physical].instance_variable_get(:@body)
+    case options[:joint]
+    when :angle
+      AngleJoint.new(@body, other_body, options[:self_body_point].to_phys2d_vector, options[:other_body_point].to_phys2d_vector, options[:self_body_angle], options[:other_body_angle])
+    when :basic
+      BasicJoint.new(@body, other_body, options[:anchor].to_phys2d_vector)
+    else
+      raise "Joint type #{options[:joint].inspect} not supported."
+    end
+  end
+
   def speed_limit=(vector_or_shared_value)
     if vector_or_shared_value.kind_of? Numeric
       axis_limit_x = axis_limit_y = vector_or_shared_value / SQUARE_ROOT_OF_TWO
@@ -141,27 +160,27 @@ class Physical < Gemini::Behavior
     @body.shape.size
   end
   
-  def rotation=(rotation)
+  def physical_rotation=(rotation)
     @body.rotation = Gemini::Math.degrees_to_radians(rotation)
   end
-  alias_method :set_rotation, :rotation=
+  alias_method :set_physical_rotation, :physical_rotation=
   
-  def rotate(degrees)
+  def rotate_physical(degrees)
     @body.adjust_rotation Gemini::Math.degrees_to_radians(degrees)
   end
   
-  def rotation
+  def physical_rotation
     Gemini::Math.radians_to_degrees(@body.rotation)
   end
   
-  def rotatable?
+  def physical_rotatable?
     @body.rotatable?
   end
   
-  def rotatable=(rotatable)
+  def physical_rotatable=(rotatable)
     @body.rotatable = rotatable
   end
-  alias_method :set_rotatable, :rotatable=
+  alias_method :set_physical_rotatable, :physical_rotatable=
   
   def add_force(x_or_vector, y = nil)
     if y.nil?

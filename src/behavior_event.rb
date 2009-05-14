@@ -1,3 +1,5 @@
+#TODO: This appears to be un-used. Use it or drop it.
+
 module Gemini
   class BehaviorEvent
     def initialize(*args)
