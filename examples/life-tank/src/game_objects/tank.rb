@@ -6,10 +6,10 @@ class Tank < Gemini::GameObject
 
   attr_accessor :player
   
-  ANGLE_ADJUSTMENT_FACTOR = 1.5
-  POWER_ADJUSTMENT_FACTOR = 1.0
+  ANGLE_ADJUSTMENT_FACTOR = 1.5 / 20.0
+  POWER_ADJUSTMENT_FACTOR = 1.0 / 20.0
   TOTAL_POWER = 100.0
-  POWER_FACTOR = 4.0
+  POWER_FACTOR = 20.0
   RELOAD_UPDATES_PER_SECOND = 1.0 / 30.0
   RELOAD_WARMPUP_IN_SECONDS = 5
   INITIAL_LIFE = 100.0
@@ -64,13 +64,13 @@ class Tank < Gemini::GameObject
 
     handle_event :adjust_angle do |message|
       next unless message.player == @player_id
-      new_angle = @angle + (message.value * ANGLE_ADJUSTMENT_FACTOR)
+      new_angle = @angle + (message.value * ANGLE_ADJUSTMENT_FACTOR * message.delta)
       @angle = new_angle if new_angle < 90.0 && new_angle > -90.0
     end
 
     handle_event :adjust_power do |message|
       next unless message.player == @player_id
-      new_angle = @power + (message.value * POWER_ADJUSTMENT_FACTOR)
+      new_angle = @power + (message.value * POWER_ADJUSTMENT_FACTOR * message.delta)
       if new_angle < TOTAL_POWER && new_angle > 10.0
         @power_changed = true if new_angle != @power # @power_changed is used during update
         @power = new_angle
