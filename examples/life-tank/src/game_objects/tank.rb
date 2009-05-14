@@ -64,16 +64,16 @@ class Tank < Gemini::GameObject
 
     handle_event :adjust_angle do |message|
       next unless message.player == @player_id
-      new_power = @angle + (message.value * ANGLE_ADJUSTMENT_FACTOR)
-      @angle = new_power if new_power < 90.0 && new_power > -90.0
+      new_angle = @angle + (message.value * ANGLE_ADJUSTMENT_FACTOR)
+      @angle = new_angle if new_angle < 90.0 && new_angle > -90.0
     end
 
     handle_event :adjust_power do |message|
       next unless message.player == @player_id
-      new_power = @power + (message.value * POWER_ADJUSTMENT_FACTOR)
-      if new_power < TOTAL_POWER && new_power > 10.0
-        @power_changed = true if new_power != @power # @power_changed is used during update
-        @power = new_power
+      new_angle = @power + (message.value * POWER_ADJUSTMENT_FACTOR)
+      if new_angle < TOTAL_POWER && new_angle > 10.0
+        @power_changed = true if new_angle != @power # @power_changed is used during update
+        @power = new_angle
       end
     end
 

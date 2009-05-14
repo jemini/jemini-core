@@ -1,71 +1,53 @@
-require 'message_queue'
+require 'spec_helper'
+require 'managers/message_queue'
 
 describe Gemini::MessageQueue do
+  it_should_behave_like "initial mock state"
+  
   before :each do
-    Gemini::MessageQueue.instance.stop_processing
-    Gemini::MessageQueue.instance.send(:initialize)
+    @message_queue = Gemini::MessageQueue.new(@state)
   end
   
   after :each do
     
   end
   
-  it "is a Singleton" do
-    Gemini::MessageQueue.ancestors.member?(Singleton).should be_true
-  end
-  
   it "allows messages to be added to the queue" do
-    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type, "A test message"))
-    Gemini::MessageQueue.instance.instance_variable_get("@messages").size.should == 1
-    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type2, "Another test message"))
-    Gemini::MessageQueue.instance.instance_variable_get("@messages").size.should == 2
+    @message_queue.post_message(Gemini::Message.new(:test_type, "A test message"))
+    @message_queue.instance_variable_get("@messages").should have(1).messages
+    @message_queue.post_message(Gemini::Message.new(:test_type2, "Another test message"))
+    @message_queue.instance_variable_get("@messages").should have(2).messages
   end
   
   it "allows listeners to be added and removed" do
-    Gemini::MessageQueue.instance.add_listener(:test_type, self, lambda{})
-    Gemini::MessageQueue.instance.instance_variable_get("@listeners")[:test_type].size.should == 1
-    Gemini::MessageQueue.instance.remove_listener(:test_type, self)
-    Gemini::MessageQueue.instance.instance_variable_get("@listeners")[:test_type].size.should == 0
+    @message_queue.add_listener(:test_type, self, lambda{})
+    @message_queue.instance_variable_get("@listeners")[:test_type].should have(1).listener
+    @message_queue.remove_listener(:test_type, self)
+    @message_queue.instance_variable_get("@listeners")[:test_type].should have(0).listeners
   end
   
   it "allows listener callbacks to be defined as a block" do
-    Gemini::MessageQueue.instance.add_listener(:test_type, self) do
+    @message_queue.add_listener(:test_type, self) do
       #empty block
     end
-    Gemini::MessageQueue.instance.instance_variable_get("@listeners")[:test_type].size.should == 1
+    @message_queue.instance_variable_get("@listeners")[:test_type].size.should == 1
   end
   
   it "notifies listener objects when a new message arrives" do
-    
     callback_was_called = false
-    Gemini::MessageQueue.instance.start_processing
-    Gemini::MessageQueue.instance.add_listener(:test_type, self) { callback_was_called = true }
-    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type, "Some test message"))
-    sleep 0.01
+    @message_queue.add_listener(:test_type, self) { callback_was_called = true }
+    @message_queue.post_message(Gemini::Message.new(:test_type, "Some test message"))
+    @message_queue.process_messages(1)
     callback_was_called.should be_true
   end
   
   it "allows new messages to be posted to the queue, even if messages are being processed" do
-    callback_started = false
-    blocking = true
-    Gemini::MessageQueue.instance.add_listener(:test_type, self) do
-      #Block until all the messages have been added
-      callback_started = true
-      while blocking
-        sleep 0.001
-      end
-    end
-    Gemini::MessageQueue.instance.start_processing
-    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type, "Some test message"))
-    sleep 0.01
-    callback_started.should be_true #First message has been consumed and is being proccessed
-    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type, "Some test message"))
-    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type, "Some test message"))
-    Gemini::MessageQueue.instance.post_message(Gemini::Message.new(:test_type, "Some test message"))
-    sleep 0.01 #Show that sufficient time has elapsed to process these messages if the callback wasn't blocking
-    Gemini::MessageQueue.instance.instance_variable_get("@messages").size.should == 3
-    blocking = false
-    sleep 0.01
-    Gemini::MessageQueue.instance.instance_variable_get("@messages").size.should == 0
+    @message_queue.post_message(Gemini::Message.new(:chain_message, "Will kick off a message"))
+    @message_queue.add_listener(:chain_message, self) { @message_queue.post_message(Gemini::Message.new(:chained_message, "Will be added while processing"))}
+    chained_message_sent = chain_message_sent = false
+    @message_queue.add_listener(:chain_message, self) { chain_message_sent = true }
+    @message_queue.add_listener(:chained_message, self) { chained_message_sent = true }
+    @message_queue.process_messages(1)
+    (chain_message_sent && chained_message_sent).should be_true
   end
 end

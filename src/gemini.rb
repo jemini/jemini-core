@@ -30,11 +30,11 @@ require 'basic_render_manager'
 module Gemini
   class Main < Java::org::newdawn::slick::BasicGame
     include_class 'org.newdawn.slick.AppGameContainer'
-    attr_accessor :screen_width, :screen_height
+    attr_accessor :screen_width, :screen_height, :initial_state
     
-    def self.start_app(screen_title, screen_width, screen_height, fullscreen=false)
+    def self.start_app(screen_title, screen_width, screen_height, initial_state, fullscreen=false)
       puts "in start app"
-      main = Main.new(screen_title)
+      main = Main.new(screen_title, initial_state)
       main.screen_width  = screen_width
       main.screen_height = screen_height
       container = AppGameContainer.new(main, screen_width, screen_height, fullscreen)
@@ -45,8 +45,8 @@ module Gemini
       container.start
     end
     
-    def self.create_canvas(screen_title, screen_width, screen_height)
-      main = Main.new screen_title
+    def self.create_canvas(screen_title, screen_width, screen_height, initial_state)
+      main = Main.new screen_title, initial_state
       main.screen_width  = screen_width
       main.screen_height = screen_height
       puts "creating canvas"
@@ -61,17 +61,15 @@ module Gemini
       $canvas
     end
     
-    def initialize(screen_title=nil)
-      super(screen_title) 
+    def initialize(screen_title=nil, initial_state=:MainState)
+      super(screen_title)
+      @initial_state = initial_state
       @fresh_state = true
     end
     
-    
-    
     def init(container)
       @container = container
-      
-      BaseState.active_state = load_state(:MainState)
+      BaseState.active_state = load_state(@initial_state)
       BaseState.active_state.load
     end
     
