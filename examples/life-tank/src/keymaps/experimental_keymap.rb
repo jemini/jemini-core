@@ -1,15 +1,18 @@
-players :all do
-  map :fire do
-    key_held :x
-    joystick_button_held :xbox_button_a
-    joystick_button_held 12
-  end
+# players :all do is implicit
+map :fire do
+  key_held :x
+  joystick_button_held :xbox_button_a
+  joystick_button_held 12
+end
 
-  map :adjust_angle do
-    key_held :left, :value => ANGLE_RATE
-    joystick_axis_update :xbox_left_stick_x do |message, raw_input|
-      message.value = filter_dead_zone(0.2, message.value)
-    end
+map :quit do
+  key_held :esc, :for => 3
+end
+
+map :adjust_angle do
+  key_held :left, :value => ANGLE_RATE
+  joystick_axis_update :xbox_left_stick_x do |message, raw_input|
+    message.value = filter_dead_zone(0.2, message.value)
   end
 end
 
