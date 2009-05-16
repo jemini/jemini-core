@@ -1,7 +1,7 @@
 class Shell < Gemini::GameObject
   has_behavior :PhysicalSprite
   has_behavior :Taggable
-
+  
   attr_accessor :damage
 
   def load
