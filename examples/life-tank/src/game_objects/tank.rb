@@ -19,6 +19,7 @@ class Tank < Gemini::GameObject
     set_bounded_image @game_state.manager(:render).get_cached_image(:tank_body)
     set_friction 100.0
     set_mass 5
+    set_restitution 0.5
     @angle = 45.0
     @power = 50.0
     @life = INITIAL_LIFE
@@ -63,6 +64,8 @@ class Tank < Gemini::GameObject
 #    join_to_physical @barrel, :joint => :basic, :anchor => Vector.new(0.0, 0.0)
 
     handle_event :adjust_angle do |message|
+      #TODO: Remove this movement
+      add_force Vector.new(message.value * 30, 0)
       next unless message.player == @player_id
       new_angle = @angle + (message.value * ANGLE_ADJUSTMENT_FACTOR * message.delta)
       @angle = new_angle if new_angle < 90.0 && new_angle > -90.0

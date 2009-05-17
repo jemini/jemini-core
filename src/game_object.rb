@@ -29,8 +29,16 @@ module Gemini
     end
 
     def add_behavior(behavior_name)
-      require "behaviors/#{behavior_name.underscore}" unless defined? behavior_name.camelize.constantize
-      klass = behavior_name.constantize
+      klass = nil
+      retried = false
+      begin
+        klass = behavior_name.camelize.constantize
+      rescue NameError
+        raise if retried
+        require "behaviors/#{behavior_name.underscore}"
+        retried = true
+        retry
+      end
       @__behaviors[behavior_name] = klass.new(self) if @__behaviors[behavior_name].nil?
       validate_dependant_behaviors
     rescue NameError => e

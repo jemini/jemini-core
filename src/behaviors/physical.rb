@@ -230,10 +230,12 @@ class Physical < Gemini::Behavior
     set_angular_velocity(0)
     @body.is_resting = true
   end
-  
+
+  # numbers or :infinite
   def mass=(mass)
     @mass = mass
     x, y = @target.x, @target.y
+    @mass = @mass.kind_of?(Symbol) ? INFINITE_MASS : @mass
     @body.set(@shape, @mass)
     # TODO: Consider moving to set_shape
     # A body's position is lost when it moves, reset the position to where it was
@@ -258,11 +260,15 @@ class Physical < Gemini::Behavior
     saved_position = @target.position
     saved_x, saved_y = @target.x, @target.y
     if shape.respond_to?(:to_str) || shape.kind_of?(Symbol)
-      params = [params.map {|vector| vector.to_phys2d_vector }.to_java(Vector2f)] if "Polygon" == shape.to_s
+      case shape.to_s
+      when 'Polygon', 'ConvexPolygon'
+        params = [params.map {|vector| vector.to_phys2d_vector }.to_java(Vector2f)]
+      end
       @shape = ("Physical::" + shape.to_s).constantize.new(*params)
     else
       @shape = shape
     end
+
     @body.set(@shape, @mass)
     set_body_position saved_body_position
     @target.set_position saved_position
@@ -350,6 +356,7 @@ class Physical < Gemini::Behavior
   def get_collision_events
     @world.get_contacts(@body)
   end
+  
 private
   def setup_body
     if @name

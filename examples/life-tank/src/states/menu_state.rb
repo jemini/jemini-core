@@ -11,8 +11,12 @@ class MenuState < Gemini::BaseState
     
     ground = create :Ground
     ground.fill_dimensions(0, screen_height / 2, screen_width, screen_height)
-    
-    create :Text, screen_width / 2, screen_height / 2, "Life-Tank"
+#    ground.fill_dimensions(screen_width * 0.25, screen_height / 2, screen_width * 0.75, screen_height * 0.75)
+#    ground_debug = create :GameObject, :Updates
+#    ground_debug.on_update do
+#      ground.points.each {|p| manager(:render).debug(:point, :yellow, :position => p)}
+#    end
+    create :Text, screen_width / 2, screen_height * 0.33, "Life-Tank"
     create :Text, screen_width * 0.25, screen_height * 0.25, "Press 1 or A: Start a game with two tanks"
 
     menu_handler = create :GameObject, :ReceivesEvents
