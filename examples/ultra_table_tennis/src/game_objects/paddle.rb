@@ -1,5 +1,5 @@
 class Paddle < Gemini::GameObject
-  has_behavior :RecievesEvents
+  has_behavior :ReceivesEvents
   has_behavior :Taggable
   has_behavior :TangibleSprite
   has_behavior :AnimatedSprite

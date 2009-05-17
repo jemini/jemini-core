@@ -4,7 +4,7 @@ class BasicPhysicsManager < Gemini::GameObject
   include_class 'net.phys2d.math.Vector2f'
   include_class 'net.phys2d.raw.World'
   include_class 'net.phys2d.raw.strategies.QuadSpaceStrategy'
-  has_behavior :RecievesEvents
+  has_behavior :ReceivesEvents
   
   def load
     @world = World.new(Vector2f.new(0, 0), 10, QuadSpaceStrategy.new(20, 5))

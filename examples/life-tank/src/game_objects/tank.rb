@@ -1,6 +1,6 @@
 class Tank < Gemini::GameObject
   has_behavior :PhysicalSprite
-  has_behavior :RecievesEvents
+  has_behavior :ReceivesEvents
   has_behavior :Timeable
   has_behavior :Taggable
 

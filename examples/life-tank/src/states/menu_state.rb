@@ -15,7 +15,7 @@ class MenuState < Gemini::BaseState
     create :Text, screen_width / 2, screen_height / 2, "Life-Tank"
     create :Text, screen_width * 0.25, screen_height * 0.25, "Press 1 or A: Start a game with two tanks"
 
-    menu_handler = create :GameObject, :RecievesEvents
+    menu_handler = create :GameObject, :ReceivesEvents
     menu_handler.handle_event :quit do
       quit_game
     end

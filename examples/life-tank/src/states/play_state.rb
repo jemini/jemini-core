@@ -51,7 +51,10 @@ class PlayState < Gemini::BaseState
     floor.set_static_body
     floor.body_position = Vector.new(screen_width / 2, screen_height + 20)
 
-    game_end_checker = create :GameObject, :Updates
+    game_end_checker = create :GameObject, :Updates, :ReceivesEvents
+    game_end_checker.handle_event :quit do
+      switch_state :MenuState
+    end
     game_end_checker.on_update do
       next if @tanks.size > 1 || @switching_state
       @switching_state = true

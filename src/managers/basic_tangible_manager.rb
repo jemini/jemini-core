@@ -1,7 +1,7 @@
 require 'behaviors/tangible'
 
 class BasicTangibleManager < Gemini::GameObject
-  has_behavior :RecievesEvents
+  has_behavior :ReceivesEvents
   has_behavior :Updates
   
   def load

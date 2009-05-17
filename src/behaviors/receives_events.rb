@@ -1,6 +1,4 @@
-require 'message_queue'
-
-class RecievesEvents < Gemini::Behavior
+class ReceivesEvents < Gemini::Behavior
   declared_methods :handle_event
   
   def handle_event(type, method_name=nil, &block)
