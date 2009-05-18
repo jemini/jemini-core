@@ -43,7 +43,7 @@ class PlayState < Gemini::BaseState
     manager(:sound).loop_song "mortor-maddness.ogg", :volume => 0.5
 
     after_warmup = create :GameObject, :Timeable
-    after_warmup.add_countdown(:warmup, 4)
+    after_warmup.add_countdown(:warmup, 3)
     after_warmup.on_countdown_complete do
       @tanks = []
       ground.spawn_along 4, Vector.new(0.0, -30.0) do |index|

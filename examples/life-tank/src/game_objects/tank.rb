@@ -64,8 +64,6 @@ class Tank < Gemini::GameObject
 #    join_to_physical @barrel, :joint => :basic, :anchor => Vector.new(0.0, 0.0)
 
     handle_event :adjust_angle do |message|
-      #TODO: Remove this movement
-      add_force Vector.new(message.value * 30, 0)
       next unless message.player == @player_id
       new_angle = @angle + (message.value * ANGLE_ADJUSTMENT_FACTOR * message.delta)
       @angle = new_angle if new_angle < 90.0 && new_angle > -90.0

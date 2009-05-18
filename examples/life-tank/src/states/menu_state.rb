@@ -2,8 +2,13 @@ class MenuState < Gemini::BaseState
   def load
     set_manager :physics, create(:BasicPhysicsManager)
     set_manager :tag, create(:TagManager)
+    set_manager :sound, create(:SoundManager)
     
     manager(:render).cache_image :ground, "ground.png"
+    manager(:sound).loop_song "just-aimin.ogg", :volume => 0.5
+
+    manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
+    manager(:sound).add_sound :shell_explosion, "shell-explosion-int.wav"
 
     load_keymap :GameStartKeymap
     
