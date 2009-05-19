@@ -19,7 +19,7 @@ class Taggable < Gemini::Behavior
   end
   
   def has_tag?(*tags)
-    tags.inject(true) { |current, tag| current && @tags.member?(tag) }
+    tags.any? {|tag| @tags.member?(tag) }
   end
   
   def tags

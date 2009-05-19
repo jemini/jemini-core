@@ -19,7 +19,7 @@ class CardinalMovable < Gemini::Behavior
   DIRECTION_TRANSLATION_IN_DEGREES = []
 
   depends_on :Tangible
-  depends_on :RecievesEvents
+  depends_on :ReceivesEvents
   attr_accessor :facing_direction
   #TODO: Rename to cardinal facing direction
   declared_methods :facing_direction, :facing_direction=, :set_facing_direction, :constrain_direction

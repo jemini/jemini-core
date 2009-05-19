@@ -24,17 +24,6 @@ class PlayState < Gemini::BaseState
     
     ground = create :Ground
     ground.fill_dimensions(0, screen_height / 2, screen_width, screen_height)
-
-    @tanks = []
-    ground.spawn_along 4, Vector.new(0.0, -20.0) do |index|
-      tank = create :Tank, index
-      tank.player = index + 1
-      @tanks << tank
-      tank.on_before_remove do |unloading_tank|
-        @tanks.delete unloading_tank
-      end
-      tank
-    end
     
     left_wall = create :GameObject, :Physical, :Taggable
     left_wall.set_shape :Box, 40, screen_height
@@ -51,18 +40,36 @@ class PlayState < Gemini::BaseState
     floor.set_static_body
     floor.body_position = Vector.new(screen_width / 2, screen_height + 20)
 
-    game_end_checker = create :GameObject, :Updates
-    game_end_checker.on_update do
-      next if @tanks.size > 1 || @switching_state
-      @switching_state = true
-      end_game_text = create :Text, screen_width / 2, screen_height / 2, "Player #{@tanks.first.player} wins!"
-      end_game_text.add_behavior :Timeable
-      end_game_text.add_countdown :end_game, 5
-      end_game_text.on_countdown_complete do
+    manager(:sound).loop_song "mortor-maddness.ogg", :volume => 0.5
+
+    after_warmup = create :GameObject, :Timeable
+    after_warmup.add_countdown(:warmup, 3)
+    after_warmup.on_countdown_complete do
+      @tanks = []
+      ground.spawn_along 4, Vector.new(0.0, -30.0) do |index|
+        tank = create :Tank, index
+        tank.player = index + 1
+        @tanks << tank
+        tank.on_before_remove do |unloading_tank|
+          @tanks.delete unloading_tank
+        end
+        tank
+      end
+
+      game_end_checker = create :GameObject, :Updates, :ReceivesEvents
+      game_end_checker.handle_event :quit do
         switch_state :MenuState
       end
+      game_end_checker.on_update do
+        next if @tanks.size > 1 || @switching_state
+        @switching_state = true
+        end_game_text = create :Text, screen_width / 2, screen_height / 2, "Player #{@tanks.first.player} wins!"
+        end_game_text.add_behavior :Timeable
+        end_game_text.add_countdown :end_game, 5
+        end_game_text.on_countdown_complete do
+          switch_state :MenuState
+        end
+      end
     end
-
-    manager(:sound).loop_song "mortor-maddness.ogg", :volume => 0.5
   end
 end

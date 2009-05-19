@@ -5,7 +5,7 @@ class VectoredMovement < Gemini::Behavior
   alias_method :set_rotation_speed, :rotation_speed=
   
   depends_on :Physical
-  depends_on :RecievesEvents
+  depends_on :ReceivesEvents
   
   declared_methods :forward_speed, :set_forward_speed, :forward_speed=,
                    :reverse_speed, :set_reverse_speed, :reverse_speed=,

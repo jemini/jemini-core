@@ -2,11 +2,13 @@ class Ground < Gemini::GameObject
   has_behavior :Taggable
   has_behavior :Physical
   has_behavior :DrawableShape
+
+  attr_reader :points
   
   def load
     set_static_body
-#    set_mass 200
-    set_restitution 0.0
+    set_mass :infinite
+    set_restitution 0.5
     set_friction 1.0
     set_image @game_state.manager(:render).get_cached_image(:ground)
   end
@@ -30,23 +32,24 @@ class Ground < Gemini::GameObject
 #    end
 #    set_shape :Polygon, *points
 #  end
- def fill_dimensions(x1, y1, x2, y2)
-   width = x2 - x1
-   height = y2 - y1
-   current_height = rand(height.to_f * 0.6) + (height.to_f * 0.2) + y1
-   points = [Vector.new(x2, y2), Vector.new(x1, y2)] # these are the start points
+ def fill_dimensions(left, top, right, bottom)
+   width = right - left
+   height = bottom - top
+   current_height = rand(height.to_f * 0.6) + (height.to_f * 0.2) + top
+   points = [Vector.new(right, bottom), Vector.new(left, bottom)] # these are the start points
    variance = height.to_f * 0.1
    y_direction = 0
    (0..(width / 30 + 1)).each do |point_width|
      y_direction += (rand(variance) * 2 - variance)
      y_direction = constrain(y_direction, -50, 50)
      current_height += y_direction
-     current_height = constrain(current_height, y1, y2 - 20)
-     y_direction = 0 if current_height <= y1 or current_height >= y2 - 20
+     current_height = constrain(current_height, top, bottom - 20)
+     y_direction = 0 if current_height <= top or current_height >= bottom - 20
 #     puts("x1: #{x1}, y1: #{y1}, x2: #{x2}, y2: #{y2}, current_height: #{current_height}, y_direction: #{y_direction}")
-     vector = Vector.new(point_width * 30, current_height)
+     vector = Vector.new((point_width * 30) + left, current_height)
      points << vector
    end
+   points << Vector.new(points.last.x, points.first.y)
    set_shape :Polygon, *points
    set_visual_shape :Polygon, *points
    @points = points

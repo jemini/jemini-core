@@ -6,7 +6,7 @@
 # TODO: Jump-platform exclusion list
 # TODO: Stateful behavior to know when we're jumping, walking, jumping + shooting, walking + shooting, etc
 class PlatformerControllable < Gemini::Behavior
-  depends_on :RecievesEvents
+  depends_on :ReceivesEvents
   depends_on :MultiAnimatedSprite
   depends_on :PhysicalSprite
   depends_on :Timeable

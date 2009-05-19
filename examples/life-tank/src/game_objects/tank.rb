@@ -1,6 +1,6 @@
 class Tank < Gemini::GameObject
   has_behavior :PhysicalSprite
-  has_behavior :RecievesEvents
+  has_behavior :ReceivesEvents
   has_behavior :Timeable
   has_behavior :Taggable
 
@@ -19,6 +19,7 @@ class Tank < Gemini::GameObject
     set_bounded_image @game_state.manager(:render).get_cached_image(:tank_body)
     set_friction 100.0
     set_mass 5
+    set_restitution 0.5
     @angle = 45.0
     @power = 50.0
     @life = INITIAL_LIFE

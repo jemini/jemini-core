@@ -3,7 +3,7 @@ class Pointer < Gemini::Behavior
 #  depends_on :Movable2d
 #  depends_on :CollisionPoolAlgorithmTaggable
 #  depends_on :WorldCollidable
-  depends_on :RecievesEvents
+  depends_on :ReceivesEvents
   
   declared_methods :mouse_movement, :start_click, :stop_click
   
