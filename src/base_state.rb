@@ -87,8 +87,8 @@ module Gemini
       remove(game_object)
     end
     
-    def switch_state(state_name)
-      state = @game.load_state state_name
+    def switch_state(state_name, *args)
+      state = @game.load_state state_name, args
       @game.queue_state state
       #self.class.active_state = state
       #state.load

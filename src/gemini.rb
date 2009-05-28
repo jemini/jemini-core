@@ -98,7 +98,7 @@ module Gemini
       BaseState.active_state.manager(:render).render(graphics)
     end
     
-    def load_state(state_name, *args)
+    def load_state(state_name, args = [])
       require "states/#{state_name.underscore}" unless Object.const_defined? state_name.camelize
       @state_args = args
       state_name.camelize.constantize.new @container, self

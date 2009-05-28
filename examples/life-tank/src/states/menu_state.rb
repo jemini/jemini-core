@@ -23,7 +23,7 @@ class MenuState < Gemini::BaseState
     @player_count_text = create(:Text,
       screen_width * 0.25,
       screen_height * 0.25, 
-      "Press 1 or A: Start a game with two tanks"
+      "Press 1 or A: Start a game with #{@player_count} tanks"
     )
     create :Text, screen_width * 0.25, screen_height * 0.30, "Up/Down to change player count"
 
@@ -33,14 +33,14 @@ class MenuState < Gemini::BaseState
       @player_count_text.text = "Press 1 or A: Start a game with #{@player_count} tanks"
     end
     menu_handler.handle_event :decrease_player_count do
-      @player_count -= 1 unless @player_count <= 1
+      @player_count -= 1 unless @player_count <= 2
       @player_count_text.text = "Press 1 or A: Start a game with #{@player_count} tanks"
     end
     menu_handler.handle_event :quit do
       quit_game
     end
     menu_handler.handle_event :start do
-      switch_state :PlayState
+      switch_state :PlayState, @player_count
     end
 
   end
