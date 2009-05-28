@@ -14,6 +14,7 @@ class PlayState < Gemini::BaseState
     manager(:render).cache_image :power_arrow_head, "power-arrow-head.png"
     manager(:render).cache_image :power_arrow_neck, "power-arrow-neck.png"
     manager(:render).cache_image :shell, "shell.png"
+    manager(:render).cache_image :smoke, "smoke.png"
 
     manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
     manager(:sound).add_sound :shell_explosion, "shell-explosion-int.wav"
@@ -75,5 +76,11 @@ class PlayState < Gemini::BaseState
     after_warmup.on_countdown_complete do
       
     end
+  end
+  
+  def create_smoke_at(position)
+    smoke = create(:FadingImage, manager(:render).get_cached_image(:smoke), Color.new(:white), 1.0)
+    smoke.set_position position
+    smoke.on_update {|delta| smoke.x += delta * 0.01}
   end
 end
