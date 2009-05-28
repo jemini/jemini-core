@@ -2,3 +2,4 @@ package
 build
 .DS_Store
 dist
+Info.plist

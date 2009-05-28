@@ -2,6 +2,7 @@ require 'listenable_mixin'
 
 module Gemini
   class MethodExistsError < Exception; end
+  class InvalidWrapWithCallbacksError < Exception; end
   
   class ValueChangedEvent
     attr_accessor :previous_value, :desired_value
@@ -31,6 +32,7 @@ module Gemini
           method_name = match[1]
           code = <<-ENDL
             def #{method}(#{args})
+              raise Gemini::InvalidWrapWithCallbacksError.new("Cannot wrap #{method} with callbacks without \\"#{method_name}\\"") unless respond_to?(:#{method_name})
               event = ValueChangedEvent.new(@target.#{method_name}, #{args})
               callback_abort = CallbackStatus.new
               @target.notify :before_#{method_name}_changes, event
@@ -140,7 +142,8 @@ module Gemini
           @dependant_behaviors << dependant_behavior
         end
       end
-      
+
+      #TODO: Move this to GameObject
       behavior_list = @target.send(:instance_variable_get, :@__behaviors)
       return unless behavior_list[self.class.name.to_sym].nil?
       behavior_list[self.class.name.to_sym] = self 
@@ -184,17 +187,11 @@ module Gemini
       unload
       __remove_listeners
       self.class.declared_method_list.each do |method_name|
-        begin
-          target_class = class <<@target; self; end
-          target_class.send(:remove_method, method_name) if target_class.respond_to? method_name
-        rescue NameError => e
-          puts "error with deleting behavior #{self}.\n#{e}\n#{e.backtrace.join("\n")}"
-          # just continue if this method isn't there anymore
-        end
+        target_class = class <<@target; self; end
+        target_class.send(:remove_method, method_name)
       end
       #TODO: Make sure we don't delete dependent behaviors that still have depending behaviors
       @dependant_behaviors.each do |dependant| 
-        #dependant.class.remove_from(@target)
         @target.remove_behavior dependant
       end
       @deleted = true

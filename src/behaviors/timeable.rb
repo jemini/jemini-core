@@ -23,10 +23,11 @@ private
     @timers.each do |name, timer|
       timer.apply_delta delta
       if timer.countdown_complete?
-        @target.notify :countdown_complete, name 
-        @timers.delete name
+        @target.notify :countdown_complete, name
       end
     end
+    # in order to keep from mutating the array while we iterate, handle separately.
+    @timers.delete_if {|name, timer| timer.countdown_complete? }
   end
 end
 

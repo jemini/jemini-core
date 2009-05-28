@@ -1,5 +1,5 @@
 class Clickable < Gemini::Behavior
-  depends_on :RecievesEvents
+  depends_on :ReceivesEvents
   depends_on :Regional
   wrap_with_callbacks :pressed, :released
   

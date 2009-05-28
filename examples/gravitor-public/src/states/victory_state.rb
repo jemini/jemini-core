@@ -8,7 +8,7 @@ class VictoryState < Gemini::BaseState
     
     load_keymap :MouseKeymap
     
-    exiter = create_game_object :GameObject, :RecievesEvents
+    exiter = create_game_object :GameObject, :ReceivesEvents
     exiter.handle_event :mouse_button1_released do
       switch_state :MenuState
     end

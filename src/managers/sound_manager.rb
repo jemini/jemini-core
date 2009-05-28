@@ -25,10 +25,12 @@ class SoundManager < Gemini::GameObject
     @sounds.each_value {|s| s.stop if s.playing}
   end
   
-  def loop_song(music_file_name)
+  def loop_song(music_file_name, options={})
     @music.stop if @music
     @music = Java::org::newdawn::slick::Music.new("data/#{music_file_name}", true)
     @music.loop
+    # volume MUST be set after loop is called
+    @music.volume = options[:volume] if options.has_key? :volume
   end
   
   def play_song(music_file_name)

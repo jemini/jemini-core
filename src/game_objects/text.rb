@@ -20,7 +20,9 @@ class Text < Gemini::GameObject
   end
   
   def draw(graphics)
-    @font.draw_string(x, y, @text)
+    half_width  = @font.get_width(@text) / 2
+    half_height = @font.get_height(@text) / 2
+    @font.draw_string(x - half_width , y - half_height, @text)
   end
 
   def font_name=(name)

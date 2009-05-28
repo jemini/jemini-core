@@ -21,7 +21,7 @@ class PlayState < Gemini::BaseState
     manager(:sound).add_sound :fire_gravitor, "fire_gravitor_cannon.wav"
     manager(:sound).add_sound :gasp, "singularity_birth.wav"
     
-    key_handler = create_game_object :GameObject, :RecievesEvents
+    key_handler = create_game_object :GameObject, :ReceivesEvents
     key_handler.handle_event :toggle_pretty_mode do
       puts "toggling pretty mode"
       @pretty_mode = !@pretty_mode

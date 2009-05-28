@@ -8,7 +8,7 @@ describe TagManager do
   
   before(:each) do
     #@manager = TagManager.new(mock_spec)
-    @game_object = TagGameObject.new
+#    @game_object = TagGameObject.new
   end
   
   it "can find all GameObjects that have all of one or more specified tags" #do

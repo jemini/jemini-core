@@ -3,7 +3,7 @@ class Background < Gemini::GameObject
   
   def load(file)
     set_image file
-    move 0, 0
+    move @game_state.screen_width / 2, @game_state.screen_height / 2
   end
 end
 

@@ -4,7 +4,7 @@ class BasicUpdateManager < Gemini::GameObject
   end
   
   def update(delta)
-    delta = 20.0
+#    delta = 20.0
     return if paused?
     
     notify :before_update, delta

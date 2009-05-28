@@ -6,35 +6,47 @@ module Gemini
     include ListenableMixin
     attr_reader :game_state
     
-    @@behaviors = Hash.new{|h,k| h[k] = []}
+    @@declared_behaviors = Hash.new{|h,k| h[k] = []}
     def self.has_behavior(behavior)
       require "behaviors/#{behavior.underscore}"
-      @@behaviors[self] << behavior
+      @@declared_behaviors[self] << behavior
     end
 
     def initialize(state, *args)
       @game_state = state
       @callbacks = Hash.new {|h,k| h[k] = []}
       @__behaviors = {}
-      enable_listeners_for :before_unload, :after_unload
-      behaviors.each do |behavior|
+      enable_listeners_for :before_remove, :after_remove
+      declared_behaviors.each do |behavior|
         add_behavior(behavior)
       end
       validate_dependant_behaviors
       load(*args)
     end
 
+    def has_behavior?(behavior_name)
+      @__behaviors.has_key? behavior_name
+    end
+
     def add_behavior(behavior_name)
+      klass = nil
+      retried = false
+      begin
+        klass = behavior_name.camelize.constantize
+      rescue NameError
+        raise if retried
         require "behaviors/#{behavior_name.underscore}"
-        klass = behavior_name.constantize
-        @__behaviors[behavior_name] = klass.new(self) if @__behaviors[behavior_name].nil?
-        validate_dependant_behaviors
+        retried = true
+        retry
+      end
+      @__behaviors[behavior_name] = klass.new(self) if @__behaviors[behavior_name].nil?
+      validate_dependant_behaviors
     rescue NameError => e
       raise "Unable to load behavior #{behavior_name}, #{e.message}\n#{e.backtrace.join("\n")}"
     end
-    
-    def unload
-      notify :before_unload, self
+
+    def __destroy
+      notify :before_remove, self
       #TODO: Perhaps expose this as a method on Behavior
       #Gemini::Behavior.send(:class_variable_get, :@@depended_on_by).delete self
       __remove_listeners
@@ -43,12 +55,11 @@ module Gemini
         next if behavior.nil?
         behavior.send(:delete)
       end
-      notify :after_unload, self
+      notify :after_remove, self
     end
+
+    def unload; end
     
-    # TODO: Refactor the removal of behaviors from @behavior to live in the
-    # behavior class.  This will mirror how behaviors get added to the array
-    # in Behavior#add_to
     def remove_behavior(behavior)
       @__behaviors.delete(behavior).send(:delete) unless @__behaviors[behavior].nil?
     end
@@ -120,7 +131,7 @@ module Gemini
     end
     
     def validate_dependant_behaviors
-      behaviors.each do |behavior|
+      declared_behaviors.each do |behavior|
         behavior.constantize.kind_of_dependencies.each do |dependant_behavior|
           dependency = dependant_behavior.constantize
           #TODO: This code cannot work until the game object has a list of behavior objects (behaviors returns names)
@@ -131,8 +142,8 @@ module Gemini
       end
     end
     
-    def behaviors
-      @@behaviors[self.class]
+    def declared_behaviors
+      @@declared_behaviors[self.class]
     end  
   end
 end

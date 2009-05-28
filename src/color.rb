@@ -1,7 +1,7 @@
 class Color
   attr_reader :native_color
   
-  def initialize(red_or_other, blue = 0.0, green = 0.0, alpha = 0.0)
+  def initialize(red_or_other, blue = 0.0, green = 0.0, alpha = 1.0)
     if red_or_other.kind_of? Numeric
       @native_color = new_native_color(red_or_other, blue, green, alpha)
     else

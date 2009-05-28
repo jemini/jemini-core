@@ -1,4 +1,5 @@
 # Simplistic implementation of a big image to be used as a background image
+require 'behaviors/drawable'
 
 class BigSprite < Drawable
   include_class 'org.newdawn.slick.BigImage'
