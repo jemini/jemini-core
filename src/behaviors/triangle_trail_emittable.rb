@@ -7,7 +7,7 @@ class TriangleTrailEmittable < Gemini::Behavior
   declared_methods :emit_triangle_trail_from_offset, :emit_triangle_trail_with_radius, :alpha, :alpha=, :layer=
   
   def load
-    @emitter = @target.game_state.create_game_object :TriangleTrail
+    @emitter = @target.game_state.create :TriangleTrail
     @emitter_offset = [0,0]
     
     @target.on_update do
