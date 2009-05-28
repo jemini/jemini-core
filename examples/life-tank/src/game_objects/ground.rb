@@ -1,4 +1,6 @@
 class Ground < Gemini::GameObject
+  POINT_SPACING = 50
+
   has_behavior :Taggable
   has_behavior :Physical
   has_behavior :DrawableShape
@@ -39,14 +41,14 @@ class Ground < Gemini::GameObject
    points = [Vector.new(right, bottom), Vector.new(left, bottom)] # these are the start points
    variance = height.to_f * 0.1
    y_direction = 0
-   (0..(width / 30 + 1)).each do |point_width|
+   (0..(width / POINT_SPACING + 1)).each do |point_width|
      y_direction += (rand(variance) * 2 - variance)
      y_direction = constrain(y_direction, -50, 50)
      current_height += y_direction
      current_height = constrain(current_height, top, bottom - 20)
      y_direction = 0 if current_height <= top or current_height >= bottom - 20
 #     puts("x1: #{x1}, y1: #{y1}, x2: #{x2}, y2: #{y2}, current_height: #{current_height}, y_direction: #{y_direction}")
-     vector = Vector.new((point_width * 30) + left, current_height)
+     vector = Vector.new((point_width * POINT_SPACING) + left, current_height)
      points << vector
    end
    points << Vector.new(points.last.x, points.first.y)

@@ -1,16 +1,20 @@
 require 'behaviors/physical'
 
 class BasicPhysicsManager < Gemini::GameObject
+  INTERPOLATION_THESHOLD = 6.0
+  DELTA_FACTOR = 0.01
   include_class 'net.phys2d.math.Vector2f'
   include_class 'net.phys2d.raw.World'
   include_class 'net.phys2d.raw.strategies.QuadSpaceStrategy'
+  include_class 'net.phys2d.raw.strategies.BruteCollisionStrategy'
   has_behavior :ReceivesEvents
   
   def load
     @world = World.new(Vector2f.new(0, 0), 10, QuadSpaceStrategy.new(20, 5))
+#    @world = World.new(Vector2f.new(0, 0), 10, BruteCollisionStrategy.new)
     @world.add_listener self
     @game_state.manager(:update).on_update do |delta|
-      @world.step(delta * 0.01)
+      update delta
     end
     
     @game_state.manager(:game_object).on_after_add_game_object do |game_object|
@@ -22,6 +26,27 @@ class BasicPhysicsManager < Gemini::GameObject
     end
     
     handle_event :toggle_debug_mode, :toggle_debug_mode
+  end
+
+  def update(delta)
+#    puts "delta: #{delta}"
+    if delta < INTERPOLATION_THESHOLD
+      @world.step(delta * DELTA_FACTOR)
+    else
+#      div_delta = (delta / INTERPOLATION_THESHOLD)
+      temp_delta = delta
+      until temp_delta <= 0
+        new_delta = temp_delta > INTERPOLATION_THESHOLD ? INTERPOLATION_THESHOLD : temp_delta
+#        puts "slice: #{new_delta}"
+        @world.step(new_delta * DELTA_FACTOR)
+        temp_delta -= new_delta
+      end
+      # don't forget the remainder
+#      puts "remainder: #{delta % INTERPOLATION_THESHOLD}"
+      #@world.step((delta % INTERPOLATION_THESHOLD) * DELTA_FACTOR)
+      # remainder should also be interpolated
+#      update((delta % INTERPOLATION_THESHOLD) * DELTA_FACTOR)
+    end
   end
   
   # there's a typo in the API, I swears it.
