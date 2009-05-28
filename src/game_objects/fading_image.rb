@@ -9,7 +9,7 @@ class FadingImage < Gemini::GameObject
     add_countdown :fade_timer, seconds_to_fade_away, 1.0 / 30.0 
     
     on_countdown_complete do
-      game_state.remove_game_object self
+      game_state.remove self
     end
     
     on_timer_tick do |timer|

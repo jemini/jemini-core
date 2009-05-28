@@ -1,5 +1,5 @@
 class PlayState < Gemini::BaseState
-  def load
+  def load(player_count)
     set_manager :physics, create(:BasicPhysicsManager)
     set_manager :tag, create(:TagManager)
     set_manager :sound, create(:SoundManager)
@@ -14,6 +14,7 @@ class PlayState < Gemini::BaseState
     manager(:render).cache_image :power_arrow_head, "power-arrow-head.png"
     manager(:render).cache_image :power_arrow_neck, "power-arrow-neck.png"
     manager(:render).cache_image :shell, "shell.png"
+    manager(:render).cache_image :smoke, "smoke.png"
 
     manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
     manager(:sound).add_sound :shell_explosion, "shell-explosion-int.wav"
@@ -45,7 +46,7 @@ class PlayState < Gemini::BaseState
     manager(:sound).loop_song "mortor-maddness.ogg", :volume => 0.5
 
     @tanks = []
-    ground.spawn_along 4, Vector.new(0.0, -30.0) do |index|
+    ground.spawn_along player_count, Vector.new(0.0, -30.0) do |index|
       tank = create :Tank, index
       tank.player = index + 1
       @tanks << tank
@@ -75,5 +76,11 @@ class PlayState < Gemini::BaseState
     after_warmup.on_countdown_complete do
       
     end
+  end
+  
+  def create_smoke_at(position)
+    smoke = create(:FadingImage, manager(:render).get_cached_image(:smoke), Color.new(:white), 1.0)
+    smoke.set_position position
+    smoke.on_update {|delta| smoke.x += delta * 0.01}
   end
 end
