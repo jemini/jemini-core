@@ -2,6 +2,7 @@ require 'behaviors/physical'
 
 class BasicPhysicsManager < Gemini::GameObject
   INTERPOLATION_THESHOLD = 6.0
+  MILLISECONDS_PER_UPDATE = 6 # 6000/ 1000
   DELTA_FACTOR = 0.01
   include_class 'net.phys2d.math.Vector2f'
   include_class 'net.phys2d.raw.World'
@@ -10,7 +11,8 @@ class BasicPhysicsManager < Gemini::GameObject
   has_behavior :ReceivesEvents
   
   def load
-    @world = World.new(Vector2f.new(0, 0), 10, QuadSpaceStrategy.new(20, 5))
+    @delta_debt = 0
+    @world = World.new(Vector2f.new(0, 0), 5, QuadSpaceStrategy.new(20, 5))
 #    @world = World.new(Vector2f.new(0, 0), 10, BruteCollisionStrategy.new)
     @world.add_listener self
     @game_state.manager(:update).on_update do |delta|
@@ -29,23 +31,22 @@ class BasicPhysicsManager < Gemini::GameObject
   end
 
   def update(delta)
-#    puts "delta: #{delta}"
-    if delta < INTERPOLATION_THESHOLD
-      @world.step(delta * DELTA_FACTOR)
+    delta += @delta_debt
+    @delta_debt = 0
+    if delta == MILLISECONDS_PER_UPDATE
+      step
     else
-#      div_delta = (delta / INTERPOLATION_THESHOLD)
       temp_delta = delta
       until temp_delta <= 0
-        new_delta = temp_delta > INTERPOLATION_THESHOLD ? INTERPOLATION_THESHOLD : temp_delta
-#        puts "slice: #{new_delta}"
-        @world.step(new_delta * DELTA_FACTOR)
-        temp_delta -= new_delta
+        new_delta = temp_delta > MILLISECONDS_PER_UPDATE ? MILLISECONDS_PER_UPDATE : temp_delta
+        if new_delta < MILLISECONDS_PER_UPDATE
+          @delta_debt = new_delta
+          return #don't step, we'll try again next update
+        else
+          step
+          temp_delta -= new_delta
+        end
       end
-      # don't forget the remainder
-#      puts "remainder: #{delta % INTERPOLATION_THESHOLD}"
-      #@world.step((delta % INTERPOLATION_THESHOLD) * DELTA_FACTOR)
-      # remainder should also be interpolated
-#      update((delta % INTERPOLATION_THESHOLD) * DELTA_FACTOR)
     end
   end
   
@@ -72,6 +73,10 @@ class BasicPhysicsManager < Gemini::GameObject
   end
 
 private
+  def step
+    @world.step # must step at fixed rate (1/60f) or results are unpredictable
+  end
+
   def add_to_world(game_object)
     game_object.add_to_world(@world) 
     game_object.set_physical_debug_mode(true) if @debug_mode

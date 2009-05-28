@@ -71,22 +71,26 @@ module Gemini
     def enable_listeners_for(*methods)
       methods.each do |method|
         code = <<-ENDL
-          def on_#{method}(&callback)
-            origin = callback.source
-            origin.extend Gemini::ListenableMixin unless origin.kind_of? Gemini::ListenableMixin
-            origin.__added_listener_for(self, "#{method}", callback)
-            @callbacks[:#{method}] << callback
+          def on_#{method}(method_name = nil, &callback)
+            if method_name
+              __added_listener_for(self, "#{method}", method_name)
+              @callbacks[:#{method}] << method_name
+            else
+              origin = callback.source
+              origin.extend Gemini::ListenableMixin unless origin.kind_of? Gemini::ListenableMixin
+              origin.__added_listener_for(self, "#{method}", callback)
+              @callbacks[:#{method}] << callback
+            end
           end
 
           def remove_#{method}(object, callback=nil)
-            if callback.nil?
+            if callback.nil? || callback.kind_of?(Symbol)
               @callbacks[:#{method}].delete_if {|callback| callback.source == object }
             else
               @callbacks[:#{method}].delete callback
             end
           end
         ENDL
-
         self.instance_eval code, __FILE__, __LINE__
       end
     end
