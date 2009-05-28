@@ -14,7 +14,6 @@ class Shell < Gemini::GameObject
     emit_triangle_trail_with_radius(image.height / 2)
     
     on_physical_collided do |event|
-      
       @game_state.manager(:sound).play_sound :shell_explosion
       @game_state.create_smoke_at body_position
       @game_state.remove self

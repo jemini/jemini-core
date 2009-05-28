@@ -11,7 +11,12 @@ class Gemini::TriangleTrail < Gemini::GameObject
     @alpha = 0.5
     @flip = false
     #TODO: Remove message when the callback stuff is checked in
+    @first_move = true
     listen_for(:after_move) do |message|
+      if @first_move
+        @first_move = false
+        next
+      end
       @trail.pop if @trail.size >= @trail_size
       @trail.unshift([x, y])
     end

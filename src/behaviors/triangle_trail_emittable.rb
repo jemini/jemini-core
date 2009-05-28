@@ -9,14 +9,15 @@ class TriangleTrailEmittable < Gemini::Behavior
   def load
     @emitter = @target.game_state.create :TriangleTrail
     @emitter_offset = [0,0]
+
     
     @target.on_update do
       @emitter.move(@emitter_offset[0] + @target.x, @emitter_offset[1] + @target.y)
     end
-    
-    @target.game_state.manager(:game_object).on_after_remove_game_object do |game_object|
-      @target.game_state.manager(:game_object).remove_game_object @emitter if game_object == @target
-    end
+  end
+
+  def unload
+    @target.game_state.remove @emitter
   end
   
   def alpha
