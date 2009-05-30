@@ -34,6 +34,7 @@ CONTROLLER_BUTTON_PRESSED = {:source_type => :controller, :source_state => :pres
 CONTROLLER_BUTTON_RELEASED = {:source_type => :controller, :source_state => :released}
 CONTROLLER_BUTTON_HELD = {:source_type => :controller, :source_state => :held}
 
+#TODO: Discover Windows mappings
 XBOX_360_DPAD_UP            =  0
 XBOX_360_DPAD_DOWN          =  1
 XBOX_360_DPAD_LEFT          =  2
@@ -163,7 +164,7 @@ module Gemini
       end
     end
 
-    def connected_controller_size
+    def connected_joystick_size
       @raw_input.controller_count
     end
 

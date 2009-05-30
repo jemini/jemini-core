@@ -18,6 +18,14 @@ class Text < Gemini::GameObject
     @style = PLAIN
     load_font
   end
+
+  def text_width
+    @font.get_width(@text)
+  end
+
+  def text_height
+    @font.get_height(@text)
+  end
   
   def draw(graphics)
     half_width  = @font.get_width(@text) / 2

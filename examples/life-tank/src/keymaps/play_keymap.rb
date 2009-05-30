@@ -29,7 +29,7 @@ Gemini::InputManager.define_keymap do |i|
   # KEY_TAB doesn't work unless alt+tab. Mac only?
   i.map_key :held => Input::KEY_LSHIFT, :fire => nil, :player => 0
 
-  0.upto i.connected_controller_size - 1 do |j|
+  0.upto i.connected_joystick_size - 1 do |j|
     i.map_joystick :joystick_id => j, :axis_update => 'x', :adjust_angle => nil, :player => j do |message, raw_input|
       message.value = i.filter_dead_zone(0.2, message.value)
     end
