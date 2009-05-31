@@ -3,10 +3,10 @@ require 'vector'
 require 'spline'
 require 'inflector'
 
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/managers')
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/game_objects')
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/managers').gsub('%20', ' ')
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/game_objects').gsub('%20', ' ')
 #$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/states')
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/input_helpers')
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/input_helpers').gsub('%20', ' ')
 
 # Because Windows isn't friendly with JRuby
 $LOAD_PATH << 'managers'
@@ -14,6 +14,7 @@ $LOAD_PATH << 'game_objects'
 #$LOAD_PATH << 'states'
 $LOAD_PATH << 'input_helpers'
 
+require 'platform'
 require 'math'
 require 'proc_enhancement'
 require 'game_object'

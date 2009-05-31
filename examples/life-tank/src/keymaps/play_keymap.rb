@@ -30,11 +30,11 @@ Gemini::InputManager.define_keymap do |i|
   i.map_key :held => Input::KEY_LSHIFT, :fire => nil, :player => 0
 
   0.upto i.connected_joystick_size - 1 do |j|
-    i.map_joystick :joystick_id => j, :axis_update => 'x', :adjust_angle => nil, :player => j do |message, raw_input|
+    i.map_joystick :joystick_id => j, :axis_update => XBOX_360_LEFT_X_AXIS, :adjust_angle => nil, :player => j do |message, raw_input|
       message.value = i.filter_dead_zone(0.2, message.value)
     end
 
-    i.map_joystick :joystick_id => j, :axis_update => 'y', :adjust_power => nil, :player => j do |message, raw_input|
+    i.map_joystick :joystick_id => j, :axis_update => XBOX_360_LEFT_Y_AXIS, :adjust_power => nil, :player => j do |message, raw_input|
       # y is inverted
       message.value = -i.filter_dead_zone(0.2, message.value)
     end

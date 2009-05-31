@@ -35,21 +35,49 @@ CONTROLLER_BUTTON_RELEASED = {:source_type => :controller, :source_state => :rel
 CONTROLLER_BUTTON_HELD = {:source_type => :controller, :source_state => :held}
 
 #TODO: Discover Windows mappings
-XBOX_360_DPAD_UP            =  0
-XBOX_360_DPAD_DOWN          =  1
-XBOX_360_DPAD_LEFT          =  2
-XBOX_360_DPAD_RIGHT         =  3
-XBOX_360_START              =  4
-XBOX_360_BACK               =  5
-XBOX_360_LEFT_STICK         =  6
-XBOX_360_RIGHT_STICK        =  7
-XBOX_360_LEFT_BUMPER        =  8
-XBOX_360_RIGHT_BUMPER       =  9
-XBOX_360_GUIDE_BUTTON       = 10
-XBOX_360_A                  = 11
-XBOX_360_B                  = 12
-XBOX_360_X                  = 13
-XBOX_360_Y                  = 14
+if Platform.using_osx?
+  # buttons
+  XBOX_360_DPAD_UP            =  0 # No Windows "buttons" for the dpad - it's unusable
+  XBOX_360_DPAD_DOWN          =  1
+  XBOX_360_DPAD_LEFT          =  2
+  XBOX_360_DPAD_RIGHT         =  3
+  XBOX_360_START              =  4
+  XBOX_360_BACK               =  5
+  XBOX_360_LEFT_STICK         =  6
+  XBOX_360_RIGHT_STICK        =  7
+  XBOX_360_LEFT_BUMPER        =  8
+  XBOX_360_RIGHT_BUMPER       =  9
+  XBOX_360_GUIDE_BUTTON       = 10
+  XBOX_360_A                  = 11
+  XBOX_360_B                  = 12
+  XBOX_360_X                  = 13
+  XBOX_360_Y                  = 14
+  # axes
+  XBOX_360_LEFT_X_AXIS        = 'x'
+  XBOX_360_LEFT_Y_AXIS        = 'y'
+  XBOX_360_LEFT_TRIGGER_AXIS  = 'z'  # On Windows, both triggers serve as one axis
+  XBOX_360_RIGHT_X_AXIS       = 'rx'
+  XBOX_360_RIGHT_Y_AXIS       = 'ry'
+  XBOX_360_RIGHT_TRIGGER_AXIS = 'rz' # On Windows, both triggers serve as one axis
+elsif Platform.using_windows?
+  # buttons
+  XBOX_360_A                  =  0
+  XBOX_360_B                  =  1
+  XBOX_360_X                  =  2
+  XBOX_360_Y                  =  3
+  XBOX_360_LEFT_BUMPER        =  4
+  XBOX_360_RIGHT_BUMPER       =  5
+  XBOX_360_BACK               =  6
+  XBOX_360_START              =  7
+  XBOX_360_LEFT_STICK         =  8
+  XBOX_360_RIGHT_STICK        =  9
+  #axes
+  XBOX_360_LEFT_X_AXIS        = 'X Axis'
+  XBOX_360_LEFT_Y_AXIS        = 'Y Axis'
+  XBOX_360_TRIGGER_AXIS       = 'Z Axis'  # On OSX, both triggers serve as individual axes
+  XBOX_360_RIGHT_X_AXIS       = 'X Rotation'
+  XBOX_360_RIGHT_Y_AXIS       = 'Y Rotation'
+end
 
 # LWJGL can't poll for buttons in the negative range yet. Possible bug to report?
 # 360 controller provides button presses for analog inputs for convienence
@@ -71,12 +99,14 @@ module Gemini
   # Consumes raw slick_input events and output events based on 
   # registered key bindings.
   class InputManager < Gemini::GameObject
-    
+
     $LOAD_PATH.each do |path|
+      puts path
       if File.basename(path) == "input_helpers"
-        Dir.glob(File.join(File.expand_path(path), "*.rb")).each do |input_helper_path|
-          require input_helper_path
-          include File.basename(input_helper_path, '.rb').camelize.constantize
+        # could be .class or .rb, we'll just search for *.* and hope nobody is silly (:
+        Dir.glob(File.join(File.expand_path(path), "*.*").gsub('%20', ' ')).each do |input_helper_path|
+          require input_helper_path.sub('.class', '') # .class can't be required directly
+          include File.basename(input_helper_path, '.rb').sub('.class', '').camelize.constantize
         end
       end
     end
@@ -87,7 +117,6 @@ module Gemini
     def self.loading_input_manager
       @@loading_input_manager
     end
-
 
     def self.define_keymap
       yield loading_input_manager
