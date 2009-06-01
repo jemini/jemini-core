@@ -12,6 +12,7 @@ class Tank < Gemini::GameObject
   POWER_FACTOR = 40.0
   RELOAD_UPDATES_PER_SECOND = 1.0 / 30.0
   RELOAD_WARMPUP_IN_SECONDS = 5
+  MOVEMENT_FACTOR = 25.0
 #  RELOAD_WARMPUP_IN_SECONDS = 1.5
   INITIAL_LIFE = 100.0
   
@@ -19,7 +20,7 @@ class Tank < Gemini::GameObject
     @player_id = player_index
     set_bounded_image @game_state.manager(:render).get_cached_image(:tank_body)
     set_friction 1.0
-    set_damping 0.25
+    set_damping 0.06
     set_mass 5
     set_restitution 0.5
     @angle = 45.0
@@ -37,10 +38,13 @@ class Tank < Gemini::GameObject
     @power_arrow_head = @game_state.create :PowerArrowHead
 
     @power_changed = true # to set the proper scale on the first update, flag as true
-    
+    @movement = 0.0
 #    on_update :tank_update
 
-    on_update do
+    on_update do |delta|
+      add_force @movement * MOVEMENT_FACTOR * delta, 0.0
+      @movement = 0.0
+      
       barrel_position = @barrel_anchor.pivot_around_degrees(@barrel_offset, physical_rotation + @angle)
       @barrel.position = barrel_position + body_position
       @barrel.image_rotation = @angle + physical_rotation - 90.0
@@ -82,6 +86,8 @@ class Tank < Gemini::GameObject
       end
     end
 
+    handle_event :move, :move_tank
+
     handle_event :fire, :fire_shell
 
     on_countdown_complete do |name|
@@ -114,6 +120,13 @@ class Tank < Gemini::GameObject
   end
 
 private
+
+  def move_tank(message)
+    return unless message.player == @player_id
+    return if message.value.nil?
+#    puts "moving tank: #{message.value}" if @player_id == 0
+    @movement = message.value
+  end
 
   def update_tank
     barrel_position = @barrel_anchor.pivot_around_degrees(@barrel_offset, physical_rotation + @angle)
