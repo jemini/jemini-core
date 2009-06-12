@@ -1,6 +1,7 @@
 class MenuState < Gemini::BaseState
   
-  def load
+  def load(player_count = 2)
+    @player_count = player_count
     set_manager :physics, create(:BasicPhysicsManager)
     set_manager :tag, create(:TagManager)
     set_manager :sound, create(:SoundManager)
@@ -19,7 +20,6 @@ class MenuState < Gemini::BaseState
     ground.fill_dimensions(0, screen_height / 2, screen_width, screen_height)
     create :Text, screen_width / 2, screen_height * 0.33, "Life-Tank"
     
-    @player_count = 2
     @player_count_text = create(:Text,
       screen_width * 0.25,
       screen_height * 0.25, 

@@ -58,7 +58,7 @@ class PlayState < Gemini::BaseState
 
     game_end_checker = create :GameObject, :Updates, :ReceivesEvents
     game_end_checker.handle_event :quit do
-      switch_state :MenuState
+      switch_state :MenuState, player_count
     end
     game_end_checker.on_update do
       next if @tanks.size > 1 || @switching_state
@@ -67,7 +67,7 @@ class PlayState < Gemini::BaseState
       end_game_text.add_behavior :Timeable
       end_game_text.add_countdown :end_game, 5
       end_game_text.on_countdown_complete do
-        switch_state :MenuState
+        switch_state :MenuState, player_count
       end
     end
 

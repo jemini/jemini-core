@@ -14,7 +14,7 @@ class SoundManager < Gemini::GameObject
   end
   
   def add_sound(reference, path)
-    @sounds[reference] = Sound.new("data/#{path}")
+    @sounds[reference] = load_sound path
   end
   
   def play_sound(reference, volume = 1.0, pitch = 1.0)
@@ -27,15 +27,34 @@ class SoundManager < Gemini::GameObject
   
   def loop_song(music_file_name, options={})
     @music.stop if @music
-    @music = Java::org::newdawn::slick::Music.new("data/#{music_file_name}", true)
-    @music.loop
+    begin
+      @music = Java::org::newdawn::slick::Music.new("data/#{music_file_name}", true)
+      @music.loop
+    rescue java.lang.RuntimeException
+      @music = Java::org::newdawn::slick::Music.new("../data/#{music_file_name}", true)
+      @music.loop
+    end
     # volume MUST be set after loop is called
     @music.volume = options[:volume] if options.has_key? :volume
   end
   
   def play_song(music_file_name)
     @music.stop if @music
-    @music = Java::org::newdawn::slick::Music.new("data/#{music_file_name}", true)
-    @music.play
+    begin
+      @music = Java::org::newdawn::slick::Music.new("data/#{music_file_name}", true)
+      @music.play
+    rescue java.lang.RuntimeException
+      @music = Java::org::newdawn::slick::Music.new("../data/#{music_file_name}", true)
+      @music.play
+    end
+  end
+private
+
+  def load_sound(sound_file_name)
+    begin
+      Sound.new("data/#{sound_file_name}")
+    rescue #java.lang.RuntimeException
+      Sound.new("../data/#{sound_file_name}")
+    end
   end
 end

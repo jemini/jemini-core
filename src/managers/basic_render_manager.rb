@@ -34,7 +34,12 @@ class BasicRenderManager < Gemini::GameObject
   end
   
   def cache_image(cache_name, image_name)
-    @image_cache[cache_name] = Java::org::newdawn::slick::Image.new "data/#{image_name}"
+    image_resource = begin
+                       Java::org::newdawn::slick::Image.new "data/#{image_name}"
+                     rescue java.lang.RuntimeException
+                       Java::org::newdawn::slick::Image.new "../data/#{image_name}"
+                     end
+    @image_cache[cache_name] = image_resource
   end
   
   def get_cached_image(cache_name)
