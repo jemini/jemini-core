@@ -39,11 +39,18 @@ class Tank < Gemini::GameObject
 
     @power_changed = true # to set the proper scale on the first update, flag as true
     @movement = 0.0
+    @twist = 0.0
 #    on_update :tank_update
 
     on_update do |delta|
       add_force @movement * MOVEMENT_FACTOR * delta, 0.0
       @movement = 0.0
+
+#      puts "applying lift"
+#      add_force 0.0, -@lift
+#      puts "done applying lift"
+      rotate_physical @twist
+      @twist = 0.0
       
       barrel_position = @barrel_anchor.pivot_around_degrees(@barrel_offset, physical_rotation + @angle)
       @barrel.position = barrel_position + body_position
@@ -87,7 +94,7 @@ class Tank < Gemini::GameObject
     end
 
     handle_event :move, :move_tank
-
+    handle_event :twist, :twist_tank
     handle_event :fire, :fire_shell
 
     on_countdown_complete do |name|
@@ -120,6 +127,12 @@ class Tank < Gemini::GameObject
   end
 
 private
+
+  def twist_tank(message)
+    return unless message.player == @player_id
+    return if message.value.nil?
+    @twist = 1.25
+  end
 
   def move_tank(message)
     return unless message.player == @player_id
