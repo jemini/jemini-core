@@ -13,8 +13,8 @@ require 'gemini'
 puts $LOAD_PATH
 begin
   Gemini::Main.start_app("Life Tank", 800, 600, :MenuState, false)
+#  Gemini::Main.start_app("Life Tank", 800, 600, :InputDiagnosticState, false)
 rescue => e
   warn e
   warn e.backtrace
 end
-#Gemini::Main.start_app("Life Tank", 800, 600, :InputDiagnosticState, false)

@@ -78,8 +78,18 @@ module Gemini
         @axis_id ||= find_axis_id_by_axis_name(raw_input, @input_button_or_axis)
         axis_value = raw_input.get_axis_value(@joystick_id, @axis_id)
         axis_value
+      when :pressed
+        result = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
+        cancel_post! unless result
+        result
       when :held
         result = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
+        cancel_post! unless result
+        result
+      when :released
+        button_down = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
+        result = (@key_down_on_last_poll && !button_down) ? true : false
+        @key_down_on_last_poll = button_down
         cancel_post! unless result
         result
       else

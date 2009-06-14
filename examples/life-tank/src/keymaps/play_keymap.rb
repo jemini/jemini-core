@@ -60,6 +60,8 @@ Gemini::InputManager.define_keymap do |i|
     end
     i.map_joystick :joystick_id => j, :held => XBOX_360_A, :fire => nil, :player => j
     i.map_joystick :joystick_id => j, :held => XBOX_360_Y, :twist => nil, :player => j
+    i.map_joystick :joystick_id => j, :pressed  => XBOX_360_B, :charge_jump => nil, :player => j
+    i.map_joystick :joystick_id => j, :released => XBOX_360_B, :jump => nil, :player => j
   end
 #  25.times do |button_number|
 #    i.map_joystick :joystick_id => 0, :pressed => button_number, :fire => nil do |message, raw_input|

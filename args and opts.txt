@@ -1,0 +1,4 @@
+
+                        RubyException.TRACE_TYPE = RubyException.RAW;
+
+-Djava.library.path=../../lib/native_files -XX:+UseConcMarkSweepGC -server -Xms256m -Xmx512m -Djruby.compile.mode=FORCE -Djruby.compile.fastest=true -Djruby.compile.fastcase=true -Djruby.compile.fastsend=true

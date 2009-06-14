@@ -161,6 +161,30 @@ describe Gemini::Behavior do
   end
 end
 
+describe Gemini::Behavior, "callback registration" do
+  it_should_behave_like "initial mock state"
+
+  before :each do
+    @game_object = Gemini::GameObject.new(@state)
+  end
+
+  it "can register on_foo callbacks with blocks" do
+    @game_object.add_behavior :Updates
+    @callback_invoked_with_block = false
+    @game_object.on_update { @callback_invoked_with_block = true }
+    @callback_invoked_with_block.should be_false
+    @game_object.update(0)
+    @callback_invoked_with_block.should be_true
+  end
+
+  it "can register on_foo callbacks with a method name" do
+    @game_object.add_behavior :Updates
+    @game_object.on_update :handle_update
+    @game_object.should_recieve :handle_update
+    @game_object.update(0)
+  end
+end
+
 describe Gemini::Behavior, ".wrap_with_callbacks" do
   it_should_behave_like "initial mock state"
   

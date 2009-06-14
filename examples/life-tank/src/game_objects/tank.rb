@@ -40,11 +40,17 @@ class Tank < Gemini::GameObject
     @power_changed = true # to set the proper scale on the first update, flag as true
     @movement = 0.0
     @twist = 0.0
+    @jump_charge = 0.0
 #    on_update :tank_update
 
     on_update do |delta|
       add_force @movement * MOVEMENT_FACTOR * delta, 0.0
       @movement = 0.0
+
+#      puts "charging - #{@charging_jump}"
+      if @charging_jump
+        @jump_charge += delta * 10.0 unless @jump_charge >= 100000.0
+      end
 
 #      puts "applying lift"
 #      add_force 0.0, -@lift
@@ -93,10 +99,12 @@ class Tank < Gemini::GameObject
       end
     end
 
-    handle_event :move, :move_tank
-    handle_event :twist, :twist_tank
-    handle_event :fire, :fire_shell
-
+    handle_event :move,        :move_tank
+    handle_event :twist,       :twist_tank
+    handle_event :fire,        :fire_shell
+    handle_event :charge_jump, :charge_jump
+    handle_event :jump,        :jump_tank
+    
     on_countdown_complete do |name|
       if name == :shot
         @ready_to_fire = true
@@ -128,10 +136,26 @@ class Tank < Gemini::GameObject
 
 private
 
+  def charge_jump(message)
+    return unless message.player == @player_id
+#    return if message.value.nil?
+    @charging_jump = true
+  end
+
+  def jump_tank(message)
+    return unless message.player == @player_id
+#    return if message.value.nil?
+    @charging_jump = false
+    # TODO: Check to see if tank is touching anything else
+    jump_vector = Vector.from_polar_vector(@jump_charge, physical_rotation)
+    add_force jump_vector
+    @jump_charge = 0.0
+  end
+
   def twist_tank(message)
     return unless message.player == @player_id
     return if message.value.nil?
-    @twist = 1.25
+    @twist = 1.125
   end
 
   def move_tank(message)
@@ -139,31 +163,6 @@ private
     return if message.value.nil?
 #    puts "moving tank: #{message.value}" if @player_id == 0
     @movement = message.value
-  end
-
-  def update_tank
-    barrel_position = @barrel_anchor.pivot_around_degrees(@barrel_offset, physical_rotation + @angle)
-    @barrel.position = barrel_position + body_position
-    @barrel.image_rotation = @angle + physical_rotation - 90.0
-
-    if @power_changed
-      width_factor = 2 * @power / 100.0
-      @power_arrow_neck.scale_image_from_original width_factor, 1.0
-    end
-
-    shell_offset = @barrel_anchor + Vector.new(0.0, -(@power_arrow_neck.image.width + @barrel.image.width) / 2.0)
-    neck_position = shell_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
-    @power_arrow_neck.position = neck_position + body_position
-    @power_arrow_neck.image_rotation = @angle + physical_rotation - 90.0
-
-    power_arrow_head_anchor = shell_offset + Vector.new(0.0, 7.0 - ((@power_arrow_neck.image.width) / 2.0))
-    head_position = power_arrow_head_anchor.pivot_around_degrees(@zero, physical_rotation + @angle)
-    @power_arrow_head.position = head_position + body_position
-    @power_arrow_head.image_rotation = @angle + physical_rotation - 90.0
-
-#      @game_state.manager(:render).debug(:point, :blue, :position => (head_position + body_position))
-    life_percent = @life / INITIAL_LIFE
-    self.color = @barrel.color = Color.new(1.0, life_percent, life_percent)
   end
 
   def fire_shell(message)
