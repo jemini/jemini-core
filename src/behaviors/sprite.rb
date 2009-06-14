@@ -1,5 +1,8 @@
 require 'behaviors/drawable'
 
+# WARNING: Using Slick's image for rotation can cause some odd quirks with it
+# not quite rotating correctly (especially noticable around 180 degress).
+# @rotation stands alone for this reason, instead of using Slick's rotation
 class Sprite < Drawable
   include_class 'org.newdawn.slick.Image'
   depends_on :Spatial
@@ -15,6 +18,7 @@ class Sprite < Drawable
   def load
     @color = Color.new(1.0, 1.0, 1.0, 1.0)
     @texture_coords = [Vector.new(0.0, 0.0), Vector.new(1.0, 1.0)]
+    @rotation = 0.0
   end
   
   def image=(sprite_name)
@@ -46,18 +50,18 @@ class Sprite < Drawable
   end
   
   def image_rotation
-    @image.rotation
+    @rotation
   end
   
   def image_rotation=(rotation)
-    @image.rotation = rotation
+    @rotation = rotation
   rescue => e
     puts "rotation error for: #{@target}"
   end
   alias_method :set_image_rotation, :image_rotation=
   
   def add_rotation(rotation)
-    @image.rotate rotation
+    @rotation += rotation
   end
   
   def flip_horizontally
@@ -89,9 +93,8 @@ class Sprite < Drawable
     half_height = image_size.y / 2.0
     center_x = @target.x - half_width
     center_y = @target.y - half_height
-    #puts "drawing with rotation: #{@image.rotation}"
-    unless 0 == @image.rotation
-      graphics.rotate @target.x, @target.y, @image.rotation
+    unless 0 == @rotation
+      graphics.rotate @target.x, @target.y, @rotation
     end
     @image.draw(center_x, center_y, @target.x + half_width, @target.y + half_height,
                 @texture_coords[0].x * image_size.x, @texture_coords[0].y * image_size.y, @texture_coords[1].x * image_size.x, @texture_coords[1].y * image_size.y,

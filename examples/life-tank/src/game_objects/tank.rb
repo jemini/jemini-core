@@ -57,7 +57,7 @@ class Tank < Gemini::GameObject
 #      puts "done applying lift"
       rotate_physical @twist
       @twist = 0.0
-      
+
       barrel_position = @barrel_anchor.pivot_around_degrees(@barrel_offset, physical_rotation + @angle)
       @barrel.position = barrel_position + body_position
       @barrel.image_rotation = @angle + physical_rotation - 90.0
@@ -67,17 +67,22 @@ class Tank < Gemini::GameObject
         @power_arrow_neck.scale_image_from_original width_factor, 1.0
       end
 
-      shell_offset = @barrel_anchor + Vector.new(0.0, -(@power_arrow_neck.image.width + @barrel.image.width) / 2.0)
-      neck_position = shell_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
+#      -@barrel.image.height / 2.0
+      neck_offset = @barrel_anchor + Vector.new(0.0, -7.0 - (@power_arrow_neck.image.width + @barrel.image.width) / 2.0)
+      neck_position = neck_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
       @power_arrow_neck.position = neck_position + body_position
       @power_arrow_neck.image_rotation = @angle + physical_rotation - 90.0
 
-      power_arrow_head_anchor = shell_offset + Vector.new(0.0, 7.0 - ((@power_arrow_neck.image.width) / 2.0))
+#      -@power_arrow_neck.image.height / 2.0
+      power_arrow_head_anchor = neck_offset + Vector.new(0.0, (7.0 - (@power_arrow_neck.image.width) / 2.0))
       head_position = power_arrow_head_anchor.pivot_around_degrees(@zero, physical_rotation + @angle)
       @power_arrow_head.position = head_position + body_position
       @power_arrow_head.image_rotation = @angle + physical_rotation - 90.0
 
-  #      @game_state.manager(:render).debug(:point, :blue, :position => (head_position + body_position))
+#      @game_state.manager(:render).debug(:point, :red,   :position => (barrel_position + body_position))
+#      @game_state.manager(:render).debug(:point, :green, :position => (neck_position + body_position))
+#      @game_state.manager(:render).debug(:point, :blue,  :position => (head_position + body_position))
+
       life_percent = @life / INITIAL_LIFE
       self.color = @barrel.color = Color.new(1.0, life_percent, life_percent)
     end
@@ -92,10 +97,10 @@ class Tank < Gemini::GameObject
 
     handle_event :adjust_power do |message|
       next unless message.player == @player_id
-      new_angle = @power + (message.value * POWER_ADJUSTMENT_FACTOR * message.delta)
-      if new_angle < TOTAL_POWER && new_angle > 10.0
-        @power_changed = true if new_angle != @power # @power_changed is used during update
-        @power = new_angle
+      new_power = @power + (message.value * POWER_ADJUSTMENT_FACTOR * message.delta)
+      if new_power < TOTAL_POWER && new_power > 10.0
+        @power_changed = true if new_power != @power # @power_changed is used during update
+        @power = new_power
       end
     end
 

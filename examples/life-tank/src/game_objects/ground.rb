@@ -44,6 +44,7 @@ class Ground < Gemini::GameObject
    (0..(width / POINT_SPACING + 1)).each do |point_width|
      y_direction += (rand(variance) * 2 - variance)
      y_direction = constrain(y_direction, -50, 50)
+     #TODO: Put this line back
      current_height += y_direction
      current_height = constrain(current_height, top, bottom - 20)
      y_direction = 0 if current_height <= top or current_height >= bottom - 20
