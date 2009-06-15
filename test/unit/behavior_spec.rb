@@ -1,6 +1,8 @@
 require 'spec_helper'
 require 'behavior'
 
+GEMINI_VERSION = "1.0.0"
+
 describe Gemini::Behavior do
   it_should_behave_like "initial mock state"
 
@@ -97,6 +99,7 @@ describe Gemini::Behavior do
   end
   
   it "doesn't remove dependent behaviors when it is removed" do
+    pending GEMINI_VERSION == "1.1.0"
     class ShouldNotRemoveBehavior < Gemini::Behavior
       declared_methods :should_exist, :should_also_exist
     end
@@ -180,8 +183,45 @@ describe Gemini::Behavior, "callback registration" do
   it "can register on_foo callbacks with a method name" do
     @game_object.add_behavior :Updates
     @game_object.on_update :handle_update
-    @game_object.should_recieve :handle_update
+    @game_object.should_receive :handle_update
     @game_object.update(0)
+  end
+
+  it "can register before_foo callbacks with a method name" do
+    class BeforeFooCallbackBehavior < Gemini::Behavior
+      wrap_with_callbacks :foo
+      declared_methods :foo
+      def foo;end
+    end
+    @game_object.add_behavior :BeforeFooCallbackBehavior
+    @game_object.on_before_foo :handle_before_foo
+    @game_object.should_receive :handle_before_foo
+    @game_object.foo
+  end
+
+  it "can register after_foo callbacks with a method name" do
+    class AfterFooCallbackBehavior < Gemini::Behavior
+      wrap_with_callbacks :foo
+      declared_methods :foo
+      def foo;end
+    end
+    @game_object.add_behavior :AfterFooCallbackBehavior
+    @game_object.on_after_foo :handle_before_foo
+    @game_object.should_receive :handle_before_foo
+    @game_object.foo
+  end
+
+  it "can register on_before_foo_changes callbacks with a method name" do
+    class BeforeFooChangesCallbackBehavior < Gemini::Behavior
+      wrap_with_callbacks :foo=
+      declared_methods :foo=, :foo
+      def foo=(not_used);end
+      def foo; end
+    end
+    @game_object.add_behavior :BeforeFooChangesCallbackBehavior
+    @game_object.on_before_foo_changes :handle_before_foo
+    @game_object.should_receive :handle_before_foo
+    @game_object.foo = "bar"
   end
 end
 

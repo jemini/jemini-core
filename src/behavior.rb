@@ -179,7 +179,7 @@ module Gemini
         @target.enable_listeners_for method
       end
 
-      self.load
+      load
     end
 
     def delete

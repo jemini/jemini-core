@@ -71,27 +71,36 @@ module Gemini
     def enable_listeners_for(*methods)
       methods.each do |method|
         code = <<-ENDL
-          def on_#{method}(method_name = nil, &callback)
-            if method_name
-              __added_listener_for(self, "#{method}", method_name)
-              @callbacks[:#{method}] << method_name
-            else
-              origin = callback.source
-              origin.extend Gemini::ListenableMixin unless origin.kind_of? Gemini::ListenableMixin
-              origin.__added_listener_for(self, "#{method}", callback)
-              @callbacks[:#{method}] << callback
-            end
+          def on_#{method}(callback_method_name = nil, &callback)
+            register_listener(:#{method} , callback_method_name, callback)
           end
 
-          def remove_#{method}(object, callback=nil)
-            if callback.nil? || callback.kind_of?(Symbol)
-              @callbacks[:#{method}].delete_if {|callback| callback.source == object }
-            else
-              @callbacks[:#{method}].delete callback
-            end
+          def remove_#{method}(object, callback_or_callback_method=nil)
+            remove_registered_listener(:#{method}, object, callback_or_callback_method)
           end
         ENDL
+
         self.instance_eval code, __FILE__, __LINE__
+      end
+    end
+
+    def register_listener(listener_method_name, callback_method_name, callback)
+      if callback_method_name
+        __added_listener_for(self, listener_method_name, callback_method_name)
+        @callbacks[listener_method_name] << callback_method_name
+      else
+        origin = callback.source
+        origin.extend Gemini::ListenableMixin unless origin.kind_of? Gemini::ListenableMixin
+        origin.__added_listener_for(self, "#{listener_method_name}", callback)
+        @callbacks[listener_method_name] << callback
+      end
+    end
+
+    def remove_registered_listener(listener_method_name, object, callback_or_callback_method)
+      if callback_or_callback_method.nil? || callback_or_callback_method.kind_of?(Symbol)
+        @callbacks[listener_method_name].delete callback_or_callback_method
+      else
+        @callbacks[listener_method_name].delete_if {|callback| callback.source == object }
       end
     end
     
@@ -99,13 +108,25 @@ module Gemini
       @callbacks[event_name.to_sym].each do |callback|
         if event
           if callback_status
-            callback.call(event, callback_status)
+            if callback.kind_of? Symbol
+              send(callback, event, callback_status)
+            else
+              callback.call(event, callback_status)
+            end
             break unless callback_status.nil? or callback_status.continue?
           else
-            callback.call(event)
+            if callback.kind_of? Symbol
+              send(callback, event)
+            else
+              callback.call(event)
+            end
           end
         else
-          callback.call
+          if callback.kind_of? Symbol
+            send(callback)
+          else
+            callback.call
+          end
         end
       end
     end
