@@ -47,14 +47,10 @@ class Tank < Gemini::GameObject
       add_force @movement * MOVEMENT_FACTOR * delta, 0.0
       @movement = 0.0
 
-#      puts "charging - #{@charging_jump}"
       if @charging_jump
         @jump_charge += delta * 10.0 unless @jump_charge >= 100000.0
       end
 
-#      puts "applying lift"
-#      add_force 0.0, -@lift
-#      puts "done applying lift"
       rotate_physical @twist
       @twist = 0.0
 
@@ -67,13 +63,11 @@ class Tank < Gemini::GameObject
         @power_arrow_neck.scale_image_from_original width_factor, 1.0
       end
 
-#      -@barrel.image.height / 2.0
       neck_offset = @barrel_anchor + Vector.new(0.0, -7.0 - (@power_arrow_neck.image.width + @barrel.image.width) / 2.0)
       neck_position = neck_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
       @power_arrow_neck.position = neck_position + body_position
       @power_arrow_neck.image_rotation = @angle + physical_rotation - 90.0
 
-#      -@power_arrow_neck.image.height / 2.0
       power_arrow_head_anchor = neck_offset + Vector.new(0.0, (7.0 - (@power_arrow_neck.image.width) / 2.0))
       head_position = power_arrow_head_anchor.pivot_around_degrees(@zero, physical_rotation + @angle)
       @power_arrow_head.position = head_position + body_position
