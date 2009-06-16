@@ -7,7 +7,7 @@ class AxisStateful < Gemini::Behavior
       @after_state = after_state
     end
   end
-  declared_methods :default_state_on_axis, :set_state_transitions_on_axis
+
   attr_accessor :default_state_on_axis, :current_state_on_axis
   wrap_with_callbacks :transfer_state_on_axis
   

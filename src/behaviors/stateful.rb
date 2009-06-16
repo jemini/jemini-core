@@ -10,7 +10,6 @@ class Stateful < Gemini::Behavior
       @after_state = after_state
     end
   end
-  declared_methods :default_state, :state_transitions
   attr_accessor :default_state, :current_state
   wrap_with_callbacks :transfer_state
   

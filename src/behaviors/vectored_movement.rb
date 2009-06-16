@@ -7,9 +7,6 @@ class VectoredMovement < Gemini::Behavior
   depends_on :Physical
   depends_on :ReceivesEvents
   
-  declared_methods :forward_speed, :set_forward_speed, :forward_speed=,
-                   :reverse_speed, :set_reverse_speed, :reverse_speed=,
-                   :rotation_speed, :set_rotation_speed, :rotation_speed=
   def load
     @target.set_damping 0.0
     @target.set_angular_damping 0.0

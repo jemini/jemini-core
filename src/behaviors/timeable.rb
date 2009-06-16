@@ -1,6 +1,5 @@
 class Timeable < Gemini::Behavior
   depends_on :Updates
-  declared_methods :notify_each, :add_countdown, :add_countup
   
   def load
     @target.enable_listeners_for :timer_tick, :countdown_complete

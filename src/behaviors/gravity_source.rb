@@ -4,7 +4,6 @@ class GravitySource < Gemini::Behavior
   
   attr_accessor :gravity
   alias_method :set_gravity, :gravity=
-  declared_methods :gravity=, :set_gravity, :gravity
 
   def load
     @gravity = 0

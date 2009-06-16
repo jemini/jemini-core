@@ -4,7 +4,6 @@ class RotatesToPoint < Gemini::Behavior
   depends_on :Physical
   attr_accessor :rotation_target
   alias_method :set_rotation_target, :rotation_target=
-  declared_methods :set_rotation_target, :rotation_target=, :rotation_target
   
   def load
     @target.on_update do

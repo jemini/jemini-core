@@ -12,7 +12,6 @@ end
 class Tangible < Gemini::Behavior
   depends_on :Spatial
   attr_reader :tangible_shape
-  declared_methods :set_tangible_shape, :tangible_shape, :tangible_debug_mode=, :set_tangible_debug_mode, :tangibly_collides_with?
 
   def load
     @target.enable_listeners_for :tangible_collision

@@ -4,8 +4,6 @@ include_class 'org.newdawn.slick.geom.Rectangle'
 class BoundingBoxCollidable < Gemini::Behavior
   depends_on :Spatial2d
   
-  declared_methods :collision_check
-  
   def load
     @target.enable_listeners_for :collided
   end

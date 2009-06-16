@@ -12,8 +12,6 @@ class PlatformerControllable < Gemini::Behavior
   depends_on :Timeable
 #  depends_on :AxisStateful
   
-  declared_methods :grounded?, :facing_direction
-  
   def load
 #    @target.set_state_transitions_on_axis[:vertical_platform]   = [:grounded, :jumping, :falling]
 #    @target.set_state_transitions_on_axis[:horizontal_platform] = [:walking, :standing]

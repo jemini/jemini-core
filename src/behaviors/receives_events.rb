@@ -1,5 +1,4 @@
 class ReceivesEvents < Gemini::Behavior
-  declared_methods :handle_event
 
   def load
     @handled_events = []

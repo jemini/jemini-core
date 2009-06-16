@@ -22,7 +22,6 @@ class CardinalMovable < Gemini::Behavior
   depends_on :ReceivesEvents
   attr_accessor :facing_direction
   #TODO: Rename to cardinal facing direction
-  declared_methods :facing_direction, :facing_direction=, :set_facing_direction, :constrain_direction
   wrap_with_callbacks :facing_direction=, :set_facing_drection
 
   def load

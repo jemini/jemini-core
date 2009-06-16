@@ -13,7 +13,6 @@ class Regional < Gemini::Behavior
   attr_accessor :dimensions, :region_shape
   alias_method :set_dimensions, :dimensions=
   alias_method :set_region_shape, :region_shape=
-  declared_methods :region_shape, :region_shape=, :set_region_shape, :dimensions, :dimensions=, :set_dimensions, :toggle_debug_mode, :within_region?
   
   # This is bad. We need a real collision system
   def load

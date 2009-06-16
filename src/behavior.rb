@@ -100,12 +100,8 @@ module Gemini
       super
     end
     
-    @@method_list = Hash.new{|h,k| h[k] = []}
-    def self.declared_methods(*methods)
-      @@method_list[self] = methods
-    end
     def self.declared_method_list
-      @@method_list[self]
+      public_instance_methods - Behavior.public_instance_methods
     end
 
     @@behavior_dependencies = Hash.new{|h,k| h[k] = []}

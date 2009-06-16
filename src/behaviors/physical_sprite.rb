@@ -1,7 +1,6 @@
 class PhysicalSprite < Gemini::Behavior
   depends_on :Sprite
   depends_on :Physical
-  declared_methods :bounded_image=, :set_bounded_image, :tiled_to_bounds=, :set_tiled_to_bounds
   attr_accessor :tiled_to_bounds
   alias_method :set_tiled_to_bounds, :tiled_to_bounds=
   

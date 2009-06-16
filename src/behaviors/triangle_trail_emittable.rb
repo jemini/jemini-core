@@ -4,7 +4,6 @@ class TriangleTrailEmittable < Gemini::Behavior
   #depends_on :Movable2d
   depends_on :Updates
   depends_on_kind_of :Spatial
-  declared_methods :emit_triangle_trail_from_offset, :emit_triangle_trail_with_radius, :alpha, :alpha=, :layer=
   
   def load
     @emitter = @target.game_state.create :TriangleTrail

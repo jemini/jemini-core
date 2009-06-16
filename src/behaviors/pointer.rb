@@ -5,7 +5,6 @@ class Pointer < Gemini::Behavior
 #  depends_on :WorldCollidable
   depends_on :ReceivesEvents
   
-  declared_methods :mouse_movement, :start_click, :stop_click
   
   def load
 #    add_tag :ui, :gui, :pointer

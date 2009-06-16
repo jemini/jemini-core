@@ -1,6 +1,5 @@
 class Countable < Gemini::Behavior
   attr_accessor :count
-  declared_methods :count, :count=, :decrement, :increment
   wrap_with_callbacks :count=
   
   def load

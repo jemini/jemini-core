@@ -1,5 +1,4 @@
 class FadingImageTrailEmittable < Gemini::Behavior
-  declared_methods :emit_fading_image_trail_from_offset, :emit_fading_image
   depends_on :Updates
   
   def load

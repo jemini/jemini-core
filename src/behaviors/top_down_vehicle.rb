@@ -3,7 +3,6 @@ class TopDownVehicle < Gemini::Behavior
   alias_method :set_minimum_speed_to_turn, :minimum_speed_to_turn=
   
   depends_on :VectoredMovement
-  declared_methods :minimum_speed_to_turn, :set_minimum_speed_to_turn, :minimum_speed_to_turn=
   
   def load
     @vm_behavior = @target.send(:instance_variable_get, :@__behaviors)[:VectoredMovement]

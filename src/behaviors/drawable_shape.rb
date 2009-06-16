@@ -6,8 +6,6 @@ class DrawableShape < Drawable
   depends_on :Spatial
   attr_accessor :color, :image
   attr_reader :visual_shape
-  
-  declared_methods :draw, :set_visual_shape, :visual_shape, :color, :set_color, :color=, :set_image, :image=, :image
 
   def load
     $u = 0.0

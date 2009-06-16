@@ -7,7 +7,6 @@ class BigSprite < Drawable
   depends_on :Spatial
   attr_accessor :image, :color, :texture_coords, :image_size
   alias_method :set_image_size, :image_size=
-  declared_methods :draw, :image, :set_image, :image=, :move_by_top_left, :image_size, :set_image_size, :image_size=
   
   def load
     @color = Color.new(1.0, 1.0, 1.0, 1.0)

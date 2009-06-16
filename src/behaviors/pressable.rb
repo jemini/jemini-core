@@ -1,7 +1,6 @@
 class Pressable < Gemini::Behavior
   depends_on :Sprite
   depends_on :Clickable
-  declared_methods :images=
   
   def load
     add_tag :button, :gui, :ui

@@ -18,20 +18,6 @@ class Physical < Gemini::Behavior
   attr_reader :mass, :name, :shape
   depends_on :Spatial
   depends_on :Updates
-  #wrap_with_callbacks :move
-  declared_methods :height, :width, :mass, :mass=, :set_mass, :shape, :body_position, :body_position=, :set_body_position,
-                   :set_shape, :name, :name=, :physical_rotation, :physical_rotation=, :set_physical_rotation, :add_force, :force,
-                   :set_force, :come_to_rest, :add_to_world, :remove_from_world, :set_physical_debug_mode,
-                   :physical_debug_mode=, :restitution, :restitution=, :set_restitution,
-                   :add_velocity, :set_velocity, :velocity=,
-                   :angular_velocity, :set_angular_velocity, :angular_velocity=,
-                   :set_static_body, :physical_rotatable=, :set_physical_rotatable, :physical_rotatable?, :velocity, :wish_move,
-                   :set_movable, :movable=, :movable?, #:set_safe_move, :safe_move=,
-                   :damping, :set_damping, :damping=, :set_speed_limit, :speed_limit=, #, :speed_limit
-                   :angular_damping, :set_angular_damping, :angular_damping=,
-                   :gravity_effected=, :set_gravity_effected, :friction, :set_friction, :friction=,
-                   :get_collision_events, :box_size, :physics_bitmask, :physics_bitmask=, :set_physics_bitmask,
-                   :add_excluded_physical, :rotate_physical, :radius, :join_to_physical
   wrap_with_callbacks :mass=
   
   def load
@@ -70,18 +56,6 @@ class Physical < Gemini::Behavior
     @body.set_position(vector.x, vector.y)
   end
   alias_method :set_body_position, :body_position=
-  
-  def x
-    @body.position.x
-  end
-  
-  def y
-    @body.position.y
-  end
-  
-  def set_position(x, y)
-    @body.set_position(x, y)
-  end
 
   # See about Phys2D joints here: http://www.cokeandcode.com/phys2d/source/javadoc/net/phys2d/raw/Joint.html
   # what do we do with the joint? Just let it die when the objects die? Makes sense to me.
@@ -134,14 +108,6 @@ class Physical < Gemini::Behavior
     @last_y = @target.y
     @body.move(x, y)
     #@body.set_position(@last_x, @last_y) if @target.game_state.manager(:physics).colliding? @body
-  end
-  
-  def move(x_or_vector, y=nil)
-    if x_or_vector.kind_of? Numeric
-      @body.move(x_or_vector, y)
-    else
-      @body.move(x_or_vector.x, x_or_vector.y)
-    end
   end
   
   def width
@@ -370,5 +336,13 @@ private
 
     @body.set(@shape, @mass)
     @body.move(x, y)
+  end
+
+  def move(x_or_vector, y=nil)
+    if x_or_vector.kind_of? Numeric
+      @body.move(x_or_vector, y)
+    else
+      @body.move(x_or_vector.x, x_or_vector.y)
+    end
   end
 end

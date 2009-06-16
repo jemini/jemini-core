@@ -25,7 +25,6 @@ describe Gemini::Behavior do
   
   it "calls load upon instantiation" do
     class CallsLoad < Gemini::Behavior
-      declared_methods :has_called_load?
       def has_called_load?
         @has_called_load
       end
@@ -41,7 +40,6 @@ describe Gemini::Behavior do
   
   it "calls unload upon deletion" do
     class CallsUnload < Gemini::Behavior
-      declared_methods :calls_unload_behavior
 
       def calls_unload_behavior
         self
@@ -55,7 +53,6 @@ describe Gemini::Behavior do
   
   it "loads its dependant behaviors when initializing" do
     class Dependency1 < Gemini::Behavior
-      declared_methods :has_loaded_dep1?
       def has_loaded_dep1?
         @was_called
       end
@@ -65,7 +62,6 @@ describe Gemini::Behavior do
     end
     
     class Dependency2 < Gemini::Behavior
-      declared_methods :has_loaded_dep2?
       def has_loaded_dep2?
         @was_called
       end
@@ -101,13 +97,11 @@ describe Gemini::Behavior do
   it "doesn't remove dependent behaviors when it is removed" do
     pending GEMINI_VERSION == "1.1.0"
     class ShouldNotRemoveBehavior < Gemini::Behavior
-      declared_methods :should_exist, :should_also_exist
     end
     
     class ParentOfShouldNotRemoveBehavior < Gemini::Behavior
       def self.require(not_used); end
       depends_on :ShouldNotRemoveBehavior
-      declared_methods :should_be_removed, :should_also_be_removed
     end
 
     @game_object.add_behavior :ParentOfShouldNotRemoveBehavior
@@ -116,36 +110,66 @@ describe Gemini::Behavior do
     @game_object.remove_behavior :ParentOfShouldNotRemoveBehavior
     @game_object.should have_behavior(:ShouldNotRemoveBehavior)
   end
-  
-  it "adds its declared methods into the GameObject it is attached to when added" do
-    class AddTestBehavior < Gemini::Behavior
-      declared_methods :foo, :bar, :bazz
+
+  it "adds its public instance methods to the game object it is attached to when added" do
+    class AddPublicTestBehavior < Gemini::Behavior
+      def foo; end
+      def bar; end
+      def bazz; end
+    end
+    @game_object.add_behavior :AddPublicTestBehavior
+
+    @game_object.should respond_to(:foo)
+    @game_object.should respond_to(:bar)
+    @game_object.should respond_to(:bazz)
+  end
+
+  it "private methods are not added to the game object" do
+    class DoNotAddPrivateTestBehavior < Gemini::Behavior
+      private
       def foo; end
       def bar; end
       def bazz; end
     end
 
-    @game_object.add_behavior :AddTestBehavior
-    
-    @game_object.should respond_to(:foo)
-    @game_object.should respond_to(:bar)
-    @game_object.should respond_to(:bazz)
-  end
-  
-  it "removes its declared methods when removed from a game object" do
-    class RemoveTestBehavior < Gemini::Behavior
-      declared_methods :foo, :bar, :bazz
-    end
-    @game_object.add_behavior :RemoveTestBehavior
-    @game_object.remove_behavior :RemoveTestBehavior
+    @game_object.add_behavior :DoNotAddPrivateTestBehavior
+
     @game_object.should_not respond_to(:foo)
     @game_object.should_not respond_to(:bar)
     @game_object.should_not respond_to(:bazz)
   end
+
+  it "removes its public instance methods from the game object it is attached to when removed" do
+    class RemovePublicsTestBehavior < Gemini::Behavior
+      def foo; end
+      def bar; end
+      def bazz; end
+    end
+
+    @game_object.add_behavior :RemovePublicsTestBehavior
+
+    @game_object.should respond_to(:foo)
+    @game_object.should respond_to(:bar)
+    @game_object.should respond_to(:bazz)
+
+    @game_object.remove_behavior :RemovePublicsTestBehavior
+
+    @game_object.should_not respond_to(:foo)
+    @game_object.should_not respond_to(:bar)
+    @game_object.should_not respond_to(:bazz)
+  end
+
+  it "doesn't attach load and unload methods to the game object" do
+    class SpecialMethodsTestBehavior < Gemini::Behavior
+      def load; end
+      def unload; end
+    end
+
+    lambda { @game_object.add_behavior :SpecialMethodsTestBehavior }.should_not raise_error(Gemini::MethodExistsError)
+  end
   
-  it "forwards any unhandled method invocations to the GameObject it is attached to" do
+  it "has a reference of the game object (@target)" do
     class ForwardTestBehavior < Gemini::Behavior
-      declared_methods :foo, :bar, :bazz
 
       def load
         @target.oneword
@@ -190,7 +214,6 @@ describe Gemini::Behavior, "callback registration" do
   it "can register before_foo callbacks with a method name" do
     class BeforeFooCallbackBehavior < Gemini::Behavior
       wrap_with_callbacks :foo
-      declared_methods :foo
       def foo;end
     end
     @game_object.add_behavior :BeforeFooCallbackBehavior
@@ -202,7 +225,6 @@ describe Gemini::Behavior, "callback registration" do
   it "can register after_foo callbacks with a method name" do
     class AfterFooCallbackBehavior < Gemini::Behavior
       wrap_with_callbacks :foo
-      declared_methods :foo
       def foo;end
     end
     @game_object.add_behavior :AfterFooCallbackBehavior
@@ -214,7 +236,6 @@ describe Gemini::Behavior, "callback registration" do
   it "can register on_before_foo_changes callbacks with a method name" do
     class BeforeFooChangesCallbackBehavior < Gemini::Behavior
       wrap_with_callbacks :foo=
-      declared_methods :foo=, :foo
       def foo=(not_used);end
       def foo; end
     end
@@ -260,7 +281,6 @@ describe Gemini::Behavior, ".wrap_with_callbacks" do
   it "creates a wrapper method that calls the wrapped method" do
     class ForwardToWrappedMethodBehavior < Gemini::Behavior
       wrap_with_callbacks :foo, :bar, :baz, :baz=
-      declared_methods :foo, :bar, :baz, :baz=
       def foo; end
       def bar; end
       def baz; end
@@ -280,7 +300,6 @@ describe Gemini::Behavior, ".wrap_with_callbacks" do
   it "raises an error when <method>= is wrapped with no matching <method> on wrap_with_callbacks" do
     class RaisesWrapperErrorBehavior < Gemini::Behavior
       wrap_with_callbacks :baz=
-      declared_methods :baz=
       
       def baz=(value); end
     end
@@ -291,7 +310,6 @@ describe Gemini::Behavior, ".wrap_with_callbacks" do
   it "passes a block from the wrapper method through to the wrapped method" do
     class ForwardBlockToWrappedMethodsBehavior < Gemini::Behavior
       wrap_with_callbacks :method_that_takes_a_block
-      declared_methods :method_that_takes_a_block
       
       def method_that_takes_a_block(&block)
         block.call(10)
@@ -324,7 +342,6 @@ describe Gemini::Behavior, ".wrap_with_callbacks" do
   it "adds a wrapper method that invokes callbacks before and after the wrapped method" do
     class CallbackInvokedByWrapperMethodBehavior < Gemini::Behavior
       wrap_with_callbacks :foo
-      declared_methods :foo
       
       def foo; end
     end

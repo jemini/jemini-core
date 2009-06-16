@@ -1,6 +1,5 @@
 class MultiAnimatedSprite < Gemini::Behavior
   depends_on :AnimatedSprite
-  declared_methods :add_animation, :animate
   
   def load
     @animations = {}

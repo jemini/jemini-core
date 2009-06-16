@@ -1,6 +1,5 @@
 class Inertial < Gemini::Behavior
   depends_on :UpdatesAtConsistantRate
-  declared_methods :inertia=, :inertia
   attr_accessor :inertia
   
   def load

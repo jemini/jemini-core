@@ -7,12 +7,7 @@ class Sprite < Drawable
   include_class 'org.newdawn.slick.Image'
   depends_on :Spatial
   attr_accessor :image, :color, :texture_coords, :image_size
-  alias_method :set_image_size, :image_size=
-  declared_methods :draw, :set_image_size, :image_size=, :image_size, :image, :image=, :set_image,
-                   :image_scaling, :color, :set_color, :color=, :image_rotation, :image_rotation=, :set_image_rotation,
-                   :add_rotation, :texture_coords, :flip_horizontally, :flip_vertically, :move_by_top_left, :top_left_position,
-                   :scale_image_from_original
-                 
+  alias_method :set_image_size, :image_size=               
   wrap_with_callbacks :draw
     
   def load

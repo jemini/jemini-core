@@ -4,8 +4,6 @@ class SplineStretchableSprite < Gemini::Behavior
   depends_on_kind_of :Sprite
   depends_on :UpdatesAtConsistantRate #TODO: Make Updates coexist with this behavior
   
-  declared_methods :set_stretch_spline, :set_stretch_splines
-  
   def load
     @original_image = @target.image
     @target.on_update do

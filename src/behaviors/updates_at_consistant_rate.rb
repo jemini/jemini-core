@@ -1,5 +1,4 @@
 class UpdatesAtConsistantRate < Gemini::Behavior
-  declared_methods :update, :updates_per_second, :updates_per_second=
   attr_accessor :updates_per_second
   
   def load

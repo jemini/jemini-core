@@ -1,5 +1,4 @@
 class Taggable < Gemini::Behavior
-  declared_methods :add_tag, :remove_tag, :has_tag?, :tags
 
   def load
     @tags = []

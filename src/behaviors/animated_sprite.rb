@@ -2,7 +2,6 @@ class AnimatedSprite < Gemini::Behavior
   include_class 'org.newdawn.slick.Image'
   include_class 'org.newdawn.slick.Animation'
   depends_on :Sprite
-  declared_methods :sprites, :set_sprites, :animation_fps, :animation_mode, :animation, :animation=
   attr_accessor :animation
   
   def load
