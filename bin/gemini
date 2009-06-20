@@ -1,0 +1,6 @@
+#!/usr/bin/env jruby
+$LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), '..', 'src'))
+require 'gemini_generator'
+
+generator = Gemini::Generator.new(:project_dir => ARGV[0])
+generator.generate_project
