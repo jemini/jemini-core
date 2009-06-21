@@ -1,1 +1,1 @@
-Gemini 0.0.1
+Gemini 1.0.0
