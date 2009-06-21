@@ -84,7 +84,7 @@ namespace :gem do
 #    rf.login
     rf = RubyForge.new
     rf.configure
-    rf.autoconfig.merge! 'package_ids' => {'rawr' => 6057}, 'group_ids' => {'rawr' => 4854}
+    rf.autoconfig.merge! 'package_ids' => {'gemini' => 11646}, 'group_ids' => {'gemini' => 8626}
     puts 'Logging in'
     rf.login
 
