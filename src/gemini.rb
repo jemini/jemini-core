@@ -1,8 +1,3 @@
-require 'color'
-require 'vector'
-require 'spline'
-require 'inflector'
-
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/managers').gsub('%20', ' ')
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/game_objects').gsub('%20', ' ')
 #$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/states')
@@ -15,6 +10,11 @@ $LOAD_PATH << 'game_objects'
 $LOAD_PATH << 'input_helpers'
 
 require 'platform'
+require 'color'
+require 'vector'
+require 'spline'
+require 'inflector'
+
 require 'math'
 require 'proc_enhancement'
 require 'game_object'

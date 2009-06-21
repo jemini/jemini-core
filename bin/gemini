@@ -1,6 +1,18 @@
 #!/usr/bin/env jruby
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), '..', 'src'))
-require 'gemini_generator'
+require 'project_generator'
 
-generator = Gemini::Generator.new(:project_dir => ARGV[0])
+rawr_install_args = ''
+project_dir = nil
+until ARGV.empty?
+  arg = ARGV.shift
+  case arg
+  when /-RI(.+)/
+    rawr_install_args << $1 + ' '
+  else
+    project_dir = arg
+  end
+end
+raise "No project dir provided" if project_dir.nil?
+generator = Gemini::ProjectGenerator.new(:project_dir => project_dir, :rawr_install => rawr_install_args)
 generator.generate_project

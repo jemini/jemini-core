@@ -5,6 +5,7 @@
         <data xmlns="http://www.netbeans.org/ns/ruby-project/1">
             <name>Gemini Engine</name>
             <source-roots>
+                <root id="src.tasks.dir"/>
                 <root id="src.skeleton.dir"/>
                 <root id="src.dir" name="src"/>
                 <root id="bin.dir"/>
