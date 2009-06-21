@@ -27,6 +27,19 @@ PROJ.summary ||= PROJ.description.split('.').first
 
 PROJ.gem.files ||=
   if test(?f, PROJ.manifest_file)
+    # added refresh of manifest
+    File.delete 'Manifest.txt'
+    File.open('Manifest.txt', 'w') do |manifest|
+      (PROJ.libs + ['bin']).each do |dir|
+        Dir.glob(File.join(dir, '**', '*')).each do |entry|
+          manifest << "#{entry}\n"
+        end
+      end
+      manifest << "build_configuration.rb\n"
+      manifest << File.join('package', 'jar', 'gemini.jar') + "\n"
+    end
+    # done with refresh
+    
     files = File.readlines(PROJ.manifest_file).map {|fn| fn.chomp.strip}
     files.delete ''
     files

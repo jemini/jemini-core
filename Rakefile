@@ -32,6 +32,8 @@ PROJ.ruby_opts = []
 PROJ.libs << 'src'
 PROJ.gem.dependencies << "rawr"
 PROJ.gem.platform = "java"
+PROJ.rdoc.exclude << /lib/
+PROJ.rdoc.exclude << /gemini\.jar/
 
 task :update_version_readme do
   readme = IO.readlines( 'README.txt')
@@ -43,17 +45,4 @@ task :update_version_readme do
 end
 
 # TODO: There's a task that runs before gem:package that sucks in the manifest data, hook before that task instead
-task 'gem:package' => [:update_version_readme, :auto_generate_manifest]
-
-task :auto_generate_manifest do
-  File.delete 'Manifest.txt'
-  File.open('Manifest.txt', 'w') do |manifest|
-    (PROJ.libs + ['bin']).each do |dir|
-      Dir.glob(File.join(dir, '**', '*')).each do |entry|
-        manifest << "#{entry}\n"
-      end
-    end
-    manifest << "build_configuration.rb\n"
-#    manifest << File.join('package', 'jar', 'gemini.jar')
-  end
-end
+task 'gem:package' => [:update_version_readme]

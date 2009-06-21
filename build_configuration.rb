@@ -10,7 +10,7 @@ configuration do |c|
   c.source_exclude_filter = []
 
   c.jruby_jar = 'lib/jruby-complete.jar'
-  c.compile_ruby_files = true
+  c.compile_ruby_files = false
   #c.java_lib_files = []  
   c.java_lib_dirs = ['lib']
   #c.files_to_copy = Dir.glob('lib/native_files/*')

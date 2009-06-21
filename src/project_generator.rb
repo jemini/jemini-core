@@ -33,16 +33,18 @@ $LOAD_PATH.clear
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
 
 # only when running in non-standalone
-jar_glob = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'java', '*.jar'))
-Dir.glob(jar_glob).each do |jar|
-  $CLASSPATH << jar
+if File.exist? File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'java'))
+  jar_glob = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'java', '*.jar'))
+  Dir.glob(jar_glob).each do |jar|
+    $CLASSPATH << jar
+  end
 end
 
 require 'gemini'
 
 begin
   # Change :HelloState to point to the initial state of your game
-  Gemini::Main.start_app("", 800, 600, :HelloState, false)
+  Gemini::Main.start_app("", 800, 600, :HelloWorldState, false)
 rescue => e
   warn e
   warn e.backtrace
@@ -87,15 +89,23 @@ ENDL
       path = File.expand_path(File.join(@project_dir, 'src', 'states', 'hello_world_state.rb'))
       File.open(path, "w") do |f|
         f << <<-ENDL
-        class HelloWorldState < Gemini::BaseState
-        end
+class HelloWorldState < Gemini::BaseState
+end
 ENDL
       end
     end
 
     def rawr_install
       mkdir_p @project_dir
+      # TODO: Replace with equivalent of Rake's FileUtils.sh method
       puts `rawr install #{@rawr_install_args} #{@project_dir}`
+      build_config_path = File.join(@project_dir, 'build_configuration.rb')
+      build_config = File.read build_config_path
+      build_config.sub!('#c.java_library_path = "lib/java/native"', 'c.java_library_path = "lib/java/native_files"')
+      build_config.sub!('#c.jvm_arguments = "-server"', 'c.jvm_arguments = "-XX:+UseConcMarkSweepGC -Djruby.compile.mode=FORCE -Xms256m -Xmx512m"')
+      build_config.sub!(%Q{#c.jars[:data] = { :directory => 'data/images', :location_in_jar => 'images', :exclude => /bak/}}, %Q{c.jars[:data] = { :directory => 'data', :location_in_jar => 'data', :exclude => /bak/}})
+      build_config.sub!(%Q{#c.files_to_copy = Dir['other_files/dir/**/*']}, %Q{c.files_to_copy = Dir['lib/java/native_files/**/*']})
+      File.open(build_config_path, 'w') {|f| f << build_config}
     end
 
     def copy_libs
