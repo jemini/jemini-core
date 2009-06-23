@@ -1,0 +1,9 @@
+Scenario: As a player I should be able to start the game.
+Scenario: As X I should be able to draw an X in the center square.
+Scenario: As O I should be able to draw an O in the center square.
+Scenario: As a player I should be able to draw a mark in any square.
+Scenario: As a player I should be able to block my opponent.
+Scenario: As a player I should be able to win a game.
+Scenario: As a player I should be able to see my score.
+Scenario: As a player I should be able to win a match.
+# Scenario: As a player I should be able to set the points to win a match.
