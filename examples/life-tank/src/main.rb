@@ -6,14 +6,31 @@ if $profiling
   end)
 end
 
+require 'java'
+
 $LOAD_PATH.clear
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/../../../src')
+
+# only when running in non-standalone
+if File.exist? File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib'))
+  jar_glob = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib', '*.jar'))
+  Dir.glob(jar_glob).each do |jar|
+    $CLASSPATH << jar
+  end
+end
+if File.exist? File.join(File.dirname(__FILE__), '..', '..', '..', 'src')
+  $LOAD_PATH << File.join(File.dirname(__FILE__), '..', '..', '..', 'src')
+end
+%w{behaviors game_objects keymaps managers states}.each do |dir|
+  $LOAD_PATH << "src/#{dir}"
+end
+
 require 'gemini'
-puts $LOAD_PATH
+
 begin
+  # Change :HelloState to point to the initial state of your game
+  # Gemini::Main.start_app("", 800, 600, :HelloWorldState, false)
   Gemini::Main.start_app("Life Tank", 800, 600, :MenuState, false)
-#  Gemini::Main.start_app("Life Tank", 800, 600, :InputDiagnosticState, false)
 rescue => e
   warn e
   warn e.backtrace
