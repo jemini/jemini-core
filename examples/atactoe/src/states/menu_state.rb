@@ -4,6 +4,7 @@ class MenuState < Gemini::BaseState
     @target_score = target_score
     set_manager :sound, create(:SoundManager)
     manager(:sound).loop_song "j-hop.ogg", :volume => 0.6
+    manager(:sound).add_sound :no, "no.wav"
     
     manager(:render).cache_image :grid, "grid.png"
 
@@ -23,6 +24,10 @@ class MenuState < Gemini::BaseState
     menu_handler = create :GameObject, :ReceivesEvents
     menu_handler.handle_event :change_target_score do |message|
       @target_score += message.value
+      if @target_score < 1
+        @target_score = 1
+        manager(:sound).play_sound :no
+      end
       @target_score_text.text = target_score_string
     end
     menu_handler.handle_event :quit do
