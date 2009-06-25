@@ -1,5 +1,11 @@
 class PlayState < Gemini::BaseState
-  def load(player_count)
+  
+  attr_accessor :grid
+  
+  def load(target_score)
+    
+    @grid = Hash.new{|h,k| h[k] = Hash.new}
+    
     set_manager :sound, create(:SoundManager)
 
     manager(:game_object).add_layer_at :gui_text, 5
@@ -18,34 +24,52 @@ class PlayState < Gemini::BaseState
 
     create :Background, "grid.png"
     
-    # x = create :GameObject
-
-    # manager(:sound).loop_song "mortor-maddness.ogg", :volume => 0.5
+    [0, 1].each do |player_id|
+      create :Cursor, player_id
+    end
+    
+    manager(:sound).loop_song "j-hop.ogg", :volume => 0.6
 
     game_end_checker = create :GameObject, :Updates, :ReceivesEvents
-    # game_end_checker.handle_event :quit do
-    #   switch_state :MenuState, player_count
-    # end
+    game_end_checker.handle_event :quit do
+      switch_state :MenuState, target_score
+    end
     game_end_checker.on_update do
-      # next if @tanks.size > 1 || @switching_state
+      next if @switching_state
+      winning_mark = winner
+      next unless winning_mark
       @switching_state = true
-      end_game_text = create :Text, screen_width / 2, screen_height / 2, "X/O wins!"
+      end_game_text = create :Text, screen_width / 2, screen_height / 2, "#{winning_mark.to_s.capitalize} wins!"
       end_game_text.add_behavior :Timeable
-      end_game_text.add_countdown :end_game, 5
+      end_game_text.add_countdown :end_game, 1
       end_game_text.on_countdown_complete do
-        # switch_state :MenuState, player_count
+        switch_state :MenuState, target_score
       end
     end
 
     after_warmup = create :GameObject, :Timeable
     after_warmup.add_countdown(:warmup, 1)
     after_warmup.on_countdown_complete do
-    
+      #TODO
     end
   end
   
-  def draw_shape(shape, position)
-    shape = create(:Image, manager(:render).get_cached_image(shape), Color.new(:black), 1.0)
-    shape.set_position position
-  end
+  private
+  
+    def winner
+      puts @grid.inspect
+      #Compare columns.
+      return @grid[-1][-1] if @grid[-1][-1] == @grid[-1][ 0] and @grid[-1][-1] == @grid[-1][ 1]
+      return @grid[ 0][-1] if @grid[ 0][-1] == @grid[ 0][ 0] and @grid[ 0][-1] == @grid[ 0][ 1]
+      return @grid[ 1][-1] if @grid[ 1][-1] == @grid[ 1][ 0] and @grid[ 1][-1] == @grid[ 1][ 1]
+      #Compare rows.
+      return @grid[-1][-1] if @grid[-1][-1] == @grid[ 0][-1] and @grid[-1][-1] == @grid[ 1][-1]
+      return @grid[-1][ 0] if @grid[-1][ 0] == @grid[ 0][ 0] and @grid[-1][ 0] == @grid[ 1][ 0]
+      return @grid[-1][ 1] if @grid[-1][ 1] == @grid[ 0][ 1] and @grid[-1][ 1] == @grid[ 1][ 1]
+      #Compare diagonals.
+      return @grid[-1][-1] if @grid[-1][-1] == @grid[ 0][ 0] and @grid[-1][-1] == @grid[ 1][ 1]
+      return @grid[-1][ 1] if @grid[-1][ 1] == @grid[ 0][ 0] and @grid[-1][ 1] == @grid[ 1][-1]
+      return nil
+    end
+  
 end

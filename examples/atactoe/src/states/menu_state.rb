@@ -21,12 +21,8 @@ class MenuState < Gemini::BaseState
     create :Text, screen_width * 0.25, screen_height * 0.30, "Up/Down to change player count"
 
     menu_handler = create :GameObject, :ReceivesEvents
-    menu_handler.handle_event :increase_target_score do
-      @target_score += 1
-      @target_score_text.text = target_score_string
-    end
-    menu_handler.handle_event :decrease_target_score do
-      @target_score -= 1 unless @target_score <= 1
+    menu_handler.handle_event :change_target_score do |message|
+      @target_score += message.value
       @target_score_text.text = target_score_string
     end
     menu_handler.handle_event :quit do
