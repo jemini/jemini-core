@@ -11,6 +11,9 @@ class Cursor < Gemini::GameObject
     set_image game_state.manager(:render).get_cached_image(mark == :x ? :x_cursor : :o_cursor)
     @grid_x = @grid_y = 0
     
+    @screen_center_x = game_state.screen_width / 2
+    @screen_center_y = game_state.screen_height / 2
+    
     handle_event :change_y, :change_y
     handle_event :change_x, :change_x
     handle_event :draw_mark, :draw_mark
@@ -21,10 +24,6 @@ class Cursor < Gemini::GameObject
     
   end
 
-  def unload
-    # game_state.remove @power_arrow_head
-  end
-
 private
 
   def change_y(message)
@@ -32,14 +31,15 @@ private
     @grid_y = message.value
     update_image
   end
+
   def change_x(message)
     return unless player_id == message.player
     @grid_x = message.value
     update_image
   end
+
   def draw_mark(message)
     return unless player_id == message.player
-    puts @grid_x, @grid_y
     if game_state.grid[@grid_x][@grid_y].nil?
       new_mark = game_state.create :Mark, mark
       new_mark.move(self.x, self.y)
@@ -51,7 +51,7 @@ private
   end
   
   def update_image
-    move(512 + (@grid_x * 250), 384 + (@grid_y * 300))
+    move(@screen_center_x + (@grid_x * 250), @screen_center_y + (@grid_y * 300))
   end
   
   def mark

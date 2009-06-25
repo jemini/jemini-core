@@ -3,6 +3,7 @@ class MenuState < Gemini::BaseState
   def load(target_score = 10)
     @target_score = target_score
     set_manager :sound, create(:SoundManager)
+    manager(:sound).loop_song "j-hop.ogg", :volume => 0.6
     
     manager(:render).cache_image :grid, "grid.png"
     # manager(:sound).loop_song "just-aimin.ogg", :volume => 0.5
@@ -18,7 +19,7 @@ class MenuState < Gemini::BaseState
       screen_height * 0.25, 
       target_score_string
     )
-    create :Text, screen_width * 0.25, screen_height * 0.30, "Up/Down to change player count"
+    create :Text, screen_width * 0.25, screen_height * 0.30, "Up/Down to change target score"
 
     menu_handler = create :GameObject, :ReceivesEvents
     menu_handler.handle_event :change_target_score do |message|
@@ -29,7 +30,7 @@ class MenuState < Gemini::BaseState
       quit_game
     end
     menu_handler.handle_event :start do
-      switch_state :PlayState, @target_score
+      switch_state :PlayState, @target_score, 0, 0
     end
 
   end

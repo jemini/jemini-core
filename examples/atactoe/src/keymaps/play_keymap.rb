@@ -7,7 +7,7 @@ LEFT_VALUE = -1
 RIGHT_VALUE = 1
 
 Gemini::InputManager.define_keymap do |i|
-  # i.map_key :pressed => Input::KEY_F1, :toggle_debug_mode => nil
+
   i.map_key :pressed => Input::KEY_ESCAPE, :quit => nil
 
   0.upto i.connected_joystick_size - 1 do |j|
@@ -58,23 +58,31 @@ Gemini::InputManager.define_keymap do |i|
   # ########################################
   # # Keys for player 2
   # ########################################
-  # i.map_key :held => Input::KEY_LEFT, :adjust_angle => nil, :player => 1 do |message, raw_input|
-  #   message.value = -KEYBOARD_ANGLE_ADJUST_RATE
-  # end
-  # 
-  # i.map_key :held => Input::KEY_RIGHT, :adjust_angle => nil, :player => 1 do |message, raw_input|
-  #   message.value = KEYBOARD_ANGLE_ADJUST_RATE
-  # end
-  # 
-  # i.map_key :held => Input::KEY_UP, :adjust_power => nil, :player => 1 do |message, raw_input|
-  #   message.value = KEYBOARD_POWER_ADJUST_RATE
-  # end
-  # 
-  # i.map_key :held => Input::KEY_DOWN, :adjust_power => nil, :player => 1 do |message, raw_input|
-  #   message.value = -KEYBOARD_POWER_ADJUST_RATE
-  # end
-  # 
-  # i.map_key :held => Input::KEY_SPACE, :fire => nil, :player => 1
+  i.map_key :pressed => Input::KEY_SPACE, :draw_mark => nil, :player => 1
+  i.map_key :held => Input::KEY_I, :change_y => nil, :player => 1 do |message, raw_input|
+    message.value = -1
+  end
+  i.map_key :released => Input::KEY_I, :change_y => nil, :player => 1 do |message, raw_input|
+    message.value = 0
+  end
+  i.map_key :held => Input::KEY_K, :change_y => nil, :player => 1 do |message, raw_input|
+    message.value = 1
+  end
+  i.map_key :released => Input::KEY_K, :change_y => nil, :player => 1 do |message, raw_input|
+    message.value = 0
+  end
+  i.map_key :held => Input::KEY_J, :change_x => nil, :player => 1 do |message, raw_input|
+    message.value = -1
+  end
+  i.map_key :released => Input::KEY_J, :change_x => nil, :player => 1 do |message, raw_input|
+    message.value = 0
+  end
+  i.map_key :held => Input::KEY_L, :change_x => nil, :player => 1 do |message, raw_input|
+    message.value = 1
+  end
+  i.map_key :released => Input::KEY_L, :change_x => nil, :player => 1 do |message, raw_input|
+    message.value = 0
+  end
 
 
 end
