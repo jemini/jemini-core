@@ -6,7 +6,6 @@ class MenuState < Gemini::BaseState
     manager(:sound).loop_song "j-hop.ogg", :volume => 0.6
     
     manager(:render).cache_image :grid, "grid.png"
-    # manager(:sound).loop_song "just-aimin.ogg", :volume => 0.5
 
     load_keymap :GameStartKeymap
     
