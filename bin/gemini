@@ -2,17 +2,25 @@
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), '..', 'src'))
 require 'project_generator'
 
-rawr_install_args = ''
-project_dir = nil
-until ARGV.empty?
-  arg = ARGV.shift
-  case arg
-  when /-RI(.+)/
-    rawr_install_args << $1 + ' '
-  else
-    project_dir = arg
+begin
+  rawr_install_args = ''
+  project_dir = nil
+  until ARGV.empty?
+    arg = ARGV.shift
+    case arg
+    when /-RI(.+)/
+      rawr_install_args << $1 + ' '
+    else
+      project_dir = arg
+    end
   end
+  raise "No project dir provided" if project_dir.nil?
+  generator = Gemini::ProjectGenerator.new(:project_dir => project_dir, :rawr_install => rawr_install_args)
+  generator.generate_project
+rescue => exception
+	abort [
+	  "Usage: gemini [-RI--no-download] <dir_name>",
+	  "Error: #{exception.message}",
+	  exception.backtrace
+	].join("\n")
 end
-raise "No project dir provided" if project_dir.nil?
-generator = Gemini::ProjectGenerator.new(:project_dir => project_dir, :rawr_install => rawr_install_args)
-generator.generate_project
