@@ -18,9 +18,9 @@ begin
   generator = Gemini::ProjectGenerator.new(:project_dir => project_dir, :rawr_install => rawr_install_args)
   generator.generate_project
 rescue => exception
-	abort [
-	  "Usage: gemini [-RI--no-download] <dir_name>",
-	  "Error: #{exception.message}",
-	  exception.backtrace
-	].join("\n")
+  abort [
+    "Usage: gemini [-RI--no-download] <dir_name>",
+    "Error: #{exception.message}",
+    exception.backtrace
+  ].join("\n")
 end
