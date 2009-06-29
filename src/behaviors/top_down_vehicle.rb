@@ -1,3 +1,4 @@
+#Allows an object to accelerate and turn within a 2D plane.
 class TopDownVehicle < Gemini::Behavior
   attr_accessor :minimum_speed_to_turn
   alias_method :set_minimum_speed_to_turn, :minimum_speed_to_turn=

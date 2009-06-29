@@ -1,3 +1,4 @@
+#Makes an object clickable with the mouse.
 class Clickable < Gemini::Behavior
   depends_on :ReceivesEvents
   depends_on :Regional

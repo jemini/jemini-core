@@ -1,3 +1,4 @@
+#Enables an object to respond to events.
 class ReceivesEvents < Gemini::Behavior
 
   def load

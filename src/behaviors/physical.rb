@@ -1,5 +1,6 @@
 require 'behaviors/spatial'
 
+#Makes an object interact with the physics engine.
 class Physical < Gemini::Behavior
   # TODO: Move to Math?
   SQUARE_ROOT_OF_TWO = Math.sqrt(2)

@@ -1,5 +1,6 @@
 require 'behaviors/drawable'
 
+#Makes an object draw a shrinking trail behind itself as it moves.
 class TriangleTrailEmittable < Gemini::Behavior
   #depends_on :Movable2d
   depends_on :Updates

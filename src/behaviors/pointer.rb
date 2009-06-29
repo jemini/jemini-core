@@ -1,3 +1,4 @@
+#Makes an object move with the mouse.
 class Pointer < Gemini::Behavior
   depends_on :Sprite
 #  depends_on :Movable2d

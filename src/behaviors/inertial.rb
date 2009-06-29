@@ -1,3 +1,4 @@
+#Makes an object resist changes in velocity.
 class Inertial < Gemini::Behavior
   depends_on :UpdatesAtConsistantRate
   attr_accessor :inertia

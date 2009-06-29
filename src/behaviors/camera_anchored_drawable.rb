@@ -1,4 +1,4 @@
-# These are sprites that deliberately ignore the scrolling of the render manager.
+#These are sprites that deliberately ignore the scrolling of the render manager.
 class CameraAnchoredDrawable < Gemini::Behavior
   #TODO: Change this to Drawable when the engine supports overriding declared methods (such as draw)
   depends_on :Sprite

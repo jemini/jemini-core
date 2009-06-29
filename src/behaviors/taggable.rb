@@ -1,3 +1,4 @@
+#Allows an object to be categorized.
 class Taggable < Gemini::Behavior
 
   def load

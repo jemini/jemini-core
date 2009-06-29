@@ -1,5 +1,6 @@
 require 'behaviors/drawable'
 
+#Makes an object draw itself on the screen as a polygon.
 class DrawableShape < Drawable
   include_class 'org.newdawn.slick.geom.Vector2f'
   include_class 'org.newdawn.slick.geom.Polygon'

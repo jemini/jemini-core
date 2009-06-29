@@ -1,3 +1,4 @@
+#A 2D sprite with mutltiple frames of animation.
 class AnimatedSprite < Gemini::Behavior
   include_class 'org.newdawn.slick.Image'
   include_class 'org.newdawn.slick.Animation'
@@ -17,7 +18,8 @@ class AnimatedSprite < Gemini::Behavior
     end
     @mode = :normal
   end
-  
+
+  #Takes one or more Images or names of files in the data directory to add to the animation.
   def sprites(*sprite_names)
     sprite_names.each do |sprite_name|
       if sprite_name.kind_of? Image
@@ -29,12 +31,14 @@ class AnimatedSprite < Gemini::Behavior
     @target.set_image @animation.current_frame
   end
   alias_method :set_sprites, :sprites
-  
+
+  #Sets frames per second for the animation.
   def animation_fps(fps)
     @fps = fps
     (0...@animation.frame_count).each {|i| @animation.set_duration(i, 1000.0/@fps)}
   end
   
+  #Sets animation mode.  Possible values are :normal, :looping, or :ping_pong.
   def animation_mode(mode)
     case mode
     when :normal

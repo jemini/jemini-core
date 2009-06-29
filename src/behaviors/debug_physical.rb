@@ -1,3 +1,4 @@
+#Makes an object draw its interactions with the physics engine on the screen.
 class DebugPhysical < Gemini::Behavior
 
   PhysVector   = Java::net::phys2d::math::Vector2f

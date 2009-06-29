@@ -1,3 +1,4 @@
+#Makes an object leave a trail of images behind it that fade over time.
 class FadingImageTrailEmittable < Gemini::Behavior
   depends_on :Updates
   

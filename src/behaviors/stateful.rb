@@ -1,3 +1,5 @@
+
+# Makes an object transition between states.
 # Notes from Logan:
 # I started on this behavior, and realized what I needed was multiple axises of states for my behavior
 # that I wanted to use Stateful in. This behavior is simple, and seems like it would be useful for some cases.

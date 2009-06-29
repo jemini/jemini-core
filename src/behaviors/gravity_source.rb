@@ -1,4 +1,4 @@
-# Enables game objects to attract other Physical game objects towards it
+#Makes an object attract other Physical game objects towards it.
 class GravitySource < Gemini::Behavior
   depends_on :Physical
   

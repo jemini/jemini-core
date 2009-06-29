@@ -1,7 +1,6 @@
 # A CardinalMovable can move north, east, south and west.
 # Movement along certain axis can be constrained, for example, pong has horizonal (north/east)
-# movement constrained
-# TODO: Allow disabling of diaganol easily
+# TODO: Allow disabling of diagonal easily
 # TODO: Allow disabling of directions
 # TODO: Allow speed limit per axis
 # TODO: Allow speed limit per direction

@@ -1,5 +1,6 @@
 require 'set'
 
+#Indicates that the receiver has entered/exited an area.
 class RegionalTransitionEvent
   attr_accessor :region, :spatial
   def initialize(region, spatial)
@@ -8,6 +9,7 @@ class RegionalTransitionEvent
   end
 end
 
+#Makes an object receive a RegionalTransitionEvent whenever it enters/exits a given area.
 class Regional < Gemini::Behavior
   depends_on :Spatial
   attr_accessor :dimensions, :region_shape

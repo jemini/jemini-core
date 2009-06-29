@@ -1,3 +1,4 @@
+#Makes an object draw its collisions on the screen.
 class DebugTangible < Gemini::Behavior #Drawable
   #declared_methods :draw
   PhysVector = Java::net::phys2d::math::Vector2f

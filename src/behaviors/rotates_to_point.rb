@@ -1,4 +1,4 @@
-# This behavior rotates to face the tracking point or game object
+# This behavior rotates to face the tracking point or game object.
 class RotatesToPoint < Gemini::Behavior
   #TODO: Add offset rotation
   depends_on :Physical

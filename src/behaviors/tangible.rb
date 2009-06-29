@@ -1,3 +1,4 @@
+#A shape used to determine if one object collides with another.
 class TangibleBox
   attr_accessor :size
   def get_points(top_left_position, rotation)
@@ -9,6 +10,7 @@ class TangibleBox
   end
 end
 
+#Allows an object to indicate when it collides with another.
 class Tangible < Gemini::Behavior
   depends_on :Spatial
   attr_reader :tangible_shape

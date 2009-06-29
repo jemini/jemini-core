@@ -1,3 +1,4 @@
+#Makes an object transition between several states in succession.
 class AxisStateful < Gemini::Behavior
   class AxialStateTransferEvent
     attr_accessor :before_state, :after_state, :axis

@@ -1,3 +1,4 @@
+#Gives an object a bitmap that responds appropriately to the physics engine.
 class PhysicalSprite < Gemini::Behavior
   depends_on :Sprite
   depends_on :Physical

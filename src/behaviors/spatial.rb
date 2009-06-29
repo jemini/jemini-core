@@ -1,3 +1,4 @@
+#Gives an object x/y coordinates.
 class Spatial < Gemini::Behavior
   attr_accessor :position
   alias_method :set_position, :position=

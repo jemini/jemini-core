@@ -1,3 +1,4 @@
+#Makes an object change appearance when clicked.
 class Pressable < Gemini::Behavior
   depends_on :Sprite
   depends_on :Clickable
