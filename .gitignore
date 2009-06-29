@@ -1,7 +1,8 @@
-package
-build
 .DS_Store
-dist
 Info.plist
-pkg
 Manifest.txt
+build
+dist
+doc
+package
+pkg
