@@ -1,4 +1,4 @@
-class Gemini::TriangleTrail < Gemini::GameObject
+class TriangleTrail < Gemini::GameObject
   #has_behavior :Movable2d
   has_behavior :Spatial
   attr_accessor :radius, :alpha

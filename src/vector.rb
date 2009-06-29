@@ -57,6 +57,10 @@ class Vector
     Gemini::Math.radians_to_degrees(Math.atan2(y - other_vector.y, x - other_vector.x)) + 90.0
   end
 
+  def midpoint_of(other_vector)
+    Vector.new((x + other_vector.x) / 2.0, (y + other_vector.y) / 2.0)
+  end
+
   def pivot_around_degrees(other_vector, rotation)
     pivot_around(other_vector, Gemini::Math.degrees_to_radians(rotation))
   end
@@ -81,6 +85,10 @@ class Vector
 
   def negate
     self.class.new(-x, -y)
+  end
+
+  def to_s
+    "<#{self.class} - X: #{x} Y: #{y}>"
   end
 end
 

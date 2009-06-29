@@ -34,11 +34,13 @@ class ScrollingRenderManager < BasicRenderManager
   
   def calculate_object_position
     #TODO: This should go once declared method overriding is possible.
-    if @tracking_game_object.kind_of? TangibleSprite
-      body_position = @tracking_game_object.body_position
-      Vector.new(-(body_position.x - (@game_state.screen_width / 2)), -(body_position.y - (@game_state.screen_height / 2)))
-    else
-      Vector.new(-(body_position.x - (@game_state.screen_width / 2)), -(body_position.y - (@game_state.screen_height / 2)))
-    end
+    position = @tracking_game_object.position
+    Vector.new(-(position.x - (@game_state.screen_width / 2)), -(position.y - (@game_state.screen_height / 2)))
+#    if @tracking_game_object.kind_of? TangibleSprite
+#      body_position = @tracking_game_object.body_position
+#      Vector.new(-(body_position.x - (@game_state.screen_width / 2)), -(body_position.y - (@game_state.screen_height / 2)))
+#    else
+#      Vector.new(-(body_position.x - (@game_state.screen_width / 2)), -(body_position.y - (@game_state.screen_height / 2)))
+#    end
   end
 end
