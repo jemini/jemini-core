@@ -6,7 +6,7 @@ class GameWonState < Gemini::BaseState
     manager(:sound).play_sound :win
     end_game_text = create :Text, screen_width / 2, screen_height / 2, "#{winner.to_s.capitalize} wins!"
     end_game_text.add_behavior :Timeable
-    end_game_text.add_countdown :end_game, 0.5
+    end_game_text.add_countdown :end_game, 0.1
     end_game_text.on_countdown_complete do
       if score_x < target_score and score_o < target_score
         switch_state :PlayState, target_score, score_x, score_o
