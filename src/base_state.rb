@@ -38,19 +38,27 @@ module Gemini
     end
     
     def create_on_layer(type, layer_name, *params)
-      game_object_type = begin
+#      game_object_type = begin
+#                           type.constantize
+#                         rescue NameError
+#                           begin
+#                             require File.join("game_objects", type.underscore)
+#                             begin
+#                               type.constantize
+#                             rescue NameError
+#                               "Gemini::#{type}".constantize
+#                             end
+#                           rescue LoadError
+#                             "Gemini::#{type}".constantize
+#                           end
+#                         end
+      game_object_type = if :game_object == type.to_sym || :GameObject == type.to_sym
+                           Gemini::GameObject
+                         elsif Module.const_defined?(type.camelize.to_sym)
                            type.constantize
-                         rescue NameError
-                           begin
-                             require type.underscore
-                             begin
-                               type.constantize
-                             rescue NameError
-                               "Gemini::#{type}".constantize
-                             end
-                           rescue LoadError
-                             "Gemini::#{type}".constantize
-                           end
+                         else
+                           require type.underscore
+                           type.camelize.constantize
                          end
       game_object = game_object_type.new(self, *params)
       add_game_object_to_layer game_object, layer_name

@@ -32,13 +32,13 @@ module Gemini
     end
 
     def poll(raw_input)
-      @game_value = case @device
-                    when :key
-                      poll_key(raw_input)
-                    when :mouse
-                    when :joystick
-                      poll_joystick(raw_input)
-                    end
+      @poll_result = case @device
+                     when :key
+                       poll_key(raw_input)
+                     when :mouse
+                     when :joystick
+                       poll_joystick(raw_input)
+                     end
       if post_canceled?
         nil
       else
