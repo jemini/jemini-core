@@ -1,5 +1,3 @@
-require 'java'
-
 $profiling = false #change this to true to start the profiler
 if $profiling
   require 'profile'
@@ -8,13 +6,10 @@ if $profiling
   end)
 end
 
+require 'java'
+
 $LOAD_PATH.clear
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
-$LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'game_objects'))
-$LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'managers'))
-$LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'states'))
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/../../../src')
-
 
 # only when running in non-standalone
 if File.exist? File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib'))
@@ -23,12 +18,19 @@ if File.exist? File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '.
     $CLASSPATH << jar
   end
 end
+if File.exist? File.join(File.dirname(__FILE__), '..', '..', '..', 'src')
+  $LOAD_PATH << File.join(File.dirname(__FILE__), '..', '..', '..', 'src')
+end
+%w{behaviors game_objects input_helpers input_mappings states}.each do |dir|
+  $LOAD_PATH << "src/#{dir}"
+end
 
 require 'gemini'
 
 begin
-  Gemini::Main.start_app("Life Tank", 800, 600, :MenuState, false)
-#  Gemini::Main.start_app("Life Tank", 800, 600, :InputDiagnosticState, false)
+  # Change :HelloState to point to the initial state of your game
+  # Gemini::Main.start_app("", 800, 600, :HelloWorldState, false)
+  Gemini::Main.start_app("AtacToe", 1024, 768, :MainState, false)
 rescue => e
   warn e
   warn e.backtrace
