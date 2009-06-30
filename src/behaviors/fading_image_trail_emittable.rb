@@ -18,10 +18,13 @@ class FadingImageTrailEmittable < Gemini::Behavior
     end 
   end
   
+  #Sets the Image to emit.
   def emit_fading_image(image)
     @image = image
   end
   
+  #Causes fading images to appear at some distance away from object.
+  #Takes a Vector with the x/y offset at which to emit the images.
   def emit_fading_image_trail_from_offset(offset)
     @fading_image_offset = offset
   end

@@ -13,6 +13,9 @@ class DrawableShape < Drawable
     $v = 0.0
   end
 
+  #Set the shape to draw.
+  #Accepts :Polygon or the name of a class in the DrawableShape namespace.
+  #TODO: There are no DrawableShape::* classes yet!
   def set_visual_shape(shape, *params)
     if shape == :polygon || shape == :Polygon
       @visual_shape = "#{self.class}::#{shape}".constantize.new
@@ -26,9 +29,6 @@ class DrawableShape < Drawable
   
   def image=(image)
     @image = image
-    puts "width: #{@image.width}, height: #{@image.height}"
-    puts "width / screen width: #{@image.width.to_f / @target.game_state.screen_width.to_f}"
-    puts "1/width: #{1.0 / @image.width.to_f}"
   end
   alias_method :set_image, :image=
 

@@ -2,6 +2,7 @@
 class GravitySource < Gemini::Behavior
   depends_on :Physical
   
+  #The attractive force to exert.  0 means no pull.
   attr_accessor :gravity
   alias_method :set_gravity, :gravity=
 

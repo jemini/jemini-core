@@ -5,7 +5,12 @@ class MultiAnimatedSprite < Gemini::Behavior
   def load
     @animations = {}
   end
-  
+
+  #Add an animation for later use.
+  #Takes a hash with the following keys and values:
+  #[:name] The name to assign the animation.
+  #[:sprites] A list of Image names.
+  #[:speed] The speed at which to animate.
   def add_animation(options)
     name    = options[:name]
     sprites = options[:sprites]

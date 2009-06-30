@@ -2,8 +2,7 @@ require 'behaviors/spatial'
 
 #Makes an object interact with the physics engine.
 class Physical < Gemini::Behavior
-  # TODO: Move to Math?
-  SQUARE_ROOT_OF_TWO = Math.sqrt(2)
+
   INFINITE_MASS = Java::net::phys2d::raw::Body::INFINITE_MASS
   
   include_class "net.phys2d.raw.Body"
@@ -52,6 +51,7 @@ class Physical < Gemini::Behavior
     @body.position
   end
   
+  #Takes a Vector with the x/y coordinates to move the object to.
   def body_position=(vector)
     # set_position doesn't take a vector, only x/y
     @body.set_position(vector.x, vector.y)
@@ -74,9 +74,10 @@ class Physical < Gemini::Behavior
     end
   end
 
+  #The maximum speed the object is allowed to travel.  Takes either a Vector with the x/y limits or the numeric value to assign to both x and y.
   def speed_limit=(vector_or_shared_value)
     if vector_or_shared_value.kind_of? Numeric
-      axis_limit_x = axis_limit_y = vector_or_shared_value / SQUARE_ROOT_OF_TWO
+      axis_limit_x = axis_limit_y = vector_or_shared_value / Gemini::Math::SQUARE_ROOT_OF_TWO
     else
       axis_limit_x = vector_or_shared_value.x
       axis_limit_y = vector_or_shared_value.y
@@ -103,6 +104,8 @@ class Physical < Gemini::Behavior
 #  end
 #  alias_method :set_safe_move, :safe_move=
   
+  #Attempt to move the object to the given coordinates.
+  #Note that the object might be blocked if its path intersects another physical object.
   def wish_move(x, y)
     # WARNING: @body.last_position is not to be trusted. We'll just handle it ourselves.
     @last_x = @target.x
@@ -127,11 +130,13 @@ class Physical < Gemini::Behavior
     @body.shape.size
   end
   
-  def physical_rotation=(rotation)
-    @body.rotation = Gemini::Math.degrees_to_radians(rotation)
+  #Set the absolute rotation.
+  def physical_rotation=(degrees)
+    @body.rotation = Gemini::Math.degrees_to_radians(degrees)
   end
   alias_method :set_physical_rotation, :physical_rotation=
   
+  #Set the rotation relative to the current rotation.
   def rotate_physical(degrees)
     @body.adjust_rotation Gemini::Math.degrees_to_radians(degrees)
   end
@@ -144,11 +149,14 @@ class Physical < Gemini::Behavior
     @body.rotatable?
   end
   
+  #Set whether the object is allowed to rotate.
   def physical_rotatable=(rotatable)
     @body.rotatable = rotatable
   end
   alias_method :set_physical_rotatable, :physical_rotatable=
-  
+
+  #Push on the object.
+  #Takes either a Vector or x/y values representing the force to apply.
   def add_force(x_or_vector, y = nil)
     if y.nil?
       @body.add_force(x_or_vector.to_phys2d_vector)
@@ -157,6 +165,7 @@ class Physical < Gemini::Behavior
     end
   end
   
+  #Set the force being applied to the object.  Disregards all other forces.
   def set_force(x, y)
     @body.set_force(x, y)
   end
@@ -165,6 +174,8 @@ class Physical < Gemini::Behavior
     @body.force
   end
   
+  #Adjust the object's velocity.
+  #Takes either a Vector or x/y values representing the adjustment to make.
   def add_velocity(x_or_vector, y = nil)
     if x_or_vector.kind_of? Vector
       @body.adjust_velocity(x_or_vector.to_phys2d_vector)
@@ -190,7 +201,8 @@ class Physical < Gemini::Behavior
     @body.adjust_angular_velocity(delta - angular_velocity)
   end
   alias_method :set_angular_velocity, :angular_velocity=
-  
+
+  #Immediately halt movement.
   def come_to_rest
     current_velocity = @body.velocity
     add_velocity(-current_velocity.x, -current_velocity.y)
@@ -198,7 +210,9 @@ class Physical < Gemini::Behavior
     @body.is_resting = true
   end
 
-  # numbers or :infinite
+  #Takes the following values:
+  #[:infinite] Object has infinite mass.
+  #[number] Value to set the mass to.
   def mass=(mass)
     @mass = mass
     x, y = @target.x, @target.y
@@ -219,6 +233,12 @@ class Physical < Gemini::Behavior
   end
   alias_method :set_restitution, :restitution=
   
+  #Set the shape of the object as seen by the physics engine.
+  #call-seq:
+  #set_shape(:Box, width, height)
+  #set_shape(:Circle, radius)
+  #set_shape(:Polygon, *vectors)
+  #
   def set_shape(shape, *params)
     # Save off data that is destroyed when @body.set is called
     saved_damping = damping
@@ -244,6 +264,7 @@ class Physical < Gemini::Behavior
     self.angular_damping = saved_angular_damping 
   end
   
+  #This is the RDoc for name=.
   def name=(name)
     @name = name
     setup_body

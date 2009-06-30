@@ -1,5 +1,6 @@
 #Makes an object transition between several states in succession.
 class AxisStateful < Gemini::Behavior
+  #Indicates that an object has transitioned from one state to another along an axis.
   class AxialStateTransferEvent
     attr_accessor :before_state, :after_state, :axis
     def initialize(axis, before_state, after_state)

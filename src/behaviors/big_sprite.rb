@@ -1,6 +1,6 @@
 require 'behaviors/drawable'
 
-#Simplistic implementation of a big image to be used as a background image.
+#Simplistic implementation of a big image to be used as a background image.  See Sprite.
 class BigSprite < Drawable
   include_class 'org.newdawn.slick.BigImage'
   attr_accessor :image
@@ -38,6 +38,7 @@ class BigSprite < Drawable
     end
   end
   
+  #Takes a BigImage, but is otherwise identical to Sprite.set_image.
   def image=(sprite_name)
     if sprite_name.kind_of? BigImage
       @image = sprite_name

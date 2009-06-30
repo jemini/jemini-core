@@ -1,6 +1,8 @@
 #Makes an object resist changes in velocity.
 class Inertial < Gemini::Behavior
   depends_on :UpdatesAtConsistantRate
+  
+  #A 2-element array with x/y inertial values. 0 means no resistance to acceleration.
   attr_accessor :inertia
   
   def load
