@@ -14,8 +14,8 @@ class PhysicalCardinalMovable < Gemini::Behavior
   SOUTH_EAST = :south_east
   SOUTH_WEST = :south_west
   NORTH_WEST = :north_west
-  DIAGONOL_DIRECTIONS = [NORTH_EAST, SOUTH_EAST, SOUTH_WEST, NORTH_WEST]
-  CARDINAL_DIRECTIONS = [NORTH, EAST, SOUTH, WEST] + DIAGONOL_DIRECTIONS
+  DIAGONAL_DIRECTIONS = [NORTH_EAST, SOUTH_EAST, SOUTH_WEST, NORTH_WEST]
+  CARDINAL_DIRECTIONS = [NORTH, EAST, SOUTH, WEST] + DIAGONAL_DIRECTIONS
   DIRECTION_TRANSLATION_IN_DEGREES = []
   
   depends_on :Physical
@@ -35,12 +35,12 @@ class PhysicalCardinalMovable < Gemini::Behavior
   def facing_direction=(direction)
     if @allowed_directions.include? direction
       if @moving && orthogonal_directions?(@facing_direction, direction)
-        diagonol_direction = begin
+        diagonal_direction = begin
                                "#{self.class}::#{@facing_direction.to_s.upcase}_#{direction.to_s.upcase}".constantize
                              rescue
                                "#{self.class}::#{direction.to_s.upcase}_#{@facing_direction.to_s.upcase}".constantize
                              end
-        @facing_direction = diagonol_direction
+        @facing_direction = diagonal_direction
       else
         @facing_direction = direction
       end
@@ -64,7 +64,7 @@ class PhysicalCardinalMovable < Gemini::Behavior
   
   def end_cardinal_movement(message)
     direction = message.value
-    @facing_direction = other_direction(@facing_direction, direction) if diagonol_direction? @facing_direction
+    @facing_direction = other_direction(@facing_direction, direction) if diagonal_direction? @facing_direction
     if @facing_direction == direction
       @cardinal_velocity = Vector.new(0,0)
       @moving = false
@@ -72,7 +72,9 @@ class PhysicalCardinalMovable < Gemini::Behavior
       @cardinal_velocity = direction_to_polar_vector(@facing_direction)
     end
   end
-  
+
+private
+
   def direction_to_polar_vector(direction)
     angle = case direction
             when NORTH
@@ -95,12 +97,12 @@ class PhysicalCardinalMovable < Gemini::Behavior
     Vector.from_polar_vector(@cardinal_speed, angle)
   end
   
-  def diagonol_direction?(direction)
-    DIAGONOL_DIRECTIONS.include? direction
+  def diagonal_direction?(direction)
+    DIAGONAL_DIRECTIONS.include? direction
   end
   
-  def other_direction(diagonol_direction, direction)
-    diagonol_direction.to_s.sub(direction.to_s, '').sub('_', '').to_sym
+  def other_direction(diagonal_direction, direction)
+    diagonal_direction.to_s.sub(direction.to_s, '').sub('_', '').to_sym
   end
   
   def orthogonal_directions?(direction_a, direction_b)
