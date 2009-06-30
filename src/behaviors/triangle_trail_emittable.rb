@@ -20,6 +20,7 @@ class TriangleTrailEmittable < Gemini::Behavior
     @target.game_state.remove @emitter
   end
   
+  #Transparency to use.  1.0 is opaque.  Default is 0.5.
   def alpha
     @emitter.alpha
   end
@@ -28,14 +29,17 @@ class TriangleTrailEmittable < Gemini::Behavior
     @emitter.alpha = alpha
   end
   
+  #Takes an Array with the relative x and y coordinates to begin the trail.
   def emit_triangle_trail_from_offset(offset)
     @emitter_offset = offset
   end
   
+  #Specifies the half-width of the widest part of the trail.
   def emit_triangle_trail_with_radius(radius)
     @emitter.radius = radius
   end
   
+  #Name of layer to draw trail on.
   def layer=(layer_name)
     @target.game_state.manager(:game_object).move_game_object_to_layer(@emitter, layer_name)
   end

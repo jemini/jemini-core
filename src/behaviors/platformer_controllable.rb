@@ -61,14 +61,18 @@ class PlatformerControllable < Gemini::Behavior
 #    end
   end
   
+  #Refers to the cached result of detect_grounded to indicate whether the object is touching the ground.
   def grounded?
     @grounded
   end
   
+  #Cardinal direction the object is facing, :east or :west.
   def facing_direction
     @facing_right ? :east : :west
   end
-    
+  
+  #Move the object, setting the appropriate animation and flipping its bitmap in the appropriate direction.
+  #Takes a message with :left or :right as its value.  
   def start_move(message)
     @moving = true
     if grounded?
@@ -89,6 +93,8 @@ class PlatformerControllable < Gemini::Behavior
     end
   end
   
+  #Halt the object, setting the appropriate animation and flipping its bitmap in the appropriate direction.
+  #Takes a message with :left or :right as its value.  
   def stop_move(message)
     if grounded?
       @target.animate :stand
@@ -103,10 +109,10 @@ class PlatformerControllable < Gemini::Behavior
     end
   end
   
+  #Add vertical velocity to an object, but only if it's on the ground.
   def jump(message)
     detect_grounded
     if grounded?
-      puts "jump!"
       @target.animate :jump
       # This should help us get the object unstuck if it's sunk a little into another body
       # Although, this might also get us stuck too
@@ -119,6 +125,7 @@ class PlatformerControllable < Gemini::Behavior
     end
   end
   
+  #Determine if the object is touching the ground.
   def detect_grounded
     @target.get_collision_events.each do |collision_event|
       # shameless rip/port from Kevin Glass's platformer example, with his comments

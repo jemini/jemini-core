@@ -44,6 +44,7 @@ class Regional < Gemini::Behavior
 #    end
   end
   
+  #Indicates whether the given point is within the region's boundaries.
   def within_region?(spatial)
     half_width = dimensions.x / 2.0
     half_height = dimensions.y / 2.0
@@ -51,6 +52,8 @@ class Regional < Gemini::Behavior
     ((@target.y - half_height) < spatial.y) && ((@target.y + half_height) > spatial.y)
   end
   
+  #Indicates whether the given object existed on the previous world update.
+  #If not, it should not be considered for collision events on this update.
   def existed_last_update?(game_object)
     @last_spatials.find {|previous_game_object| game_object == previous_game_object}
   end

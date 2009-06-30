@@ -10,10 +10,14 @@ class Timeable < Gemini::Behavior
     end
   end
   
+  #Add a countdown delay of the given number of seconds to the object.
+  #When the specified time has elapsed, a :countdown_complete event with the specified name will be passed to the object.
+  #If notify_frequency is specified, a :timer_tick event with the Timer object will be passed to the object each time the specified interval elapses.
   def add_countdown(name, seconds, notify_frequency = nil)
     @timers[name] = Timer.new(name, Timer::COUNTDOWN, seconds, notify_frequency) {|timer| @target.notify :timer_tick, timer }
   end
   
+  #Add a countup delay to the object.  See add_countdown.
   def add_countup(name, seconds, notify_frequency = nil)
     @timers[name] = Timer.new(name, Timer::COUNTUP, seconds, notify_frequency) {|timer| @target.notify :timer_tick, timer }
   end
@@ -45,6 +49,7 @@ class Timer
     @milliseconds_since_last_notify = 0
   end
   
+  #Use the given elapsed time to determine if callbacks should be triggered.
   def apply_delta(delta_in_milliseconds)
     return if @countdown_complete
     
@@ -63,10 +68,12 @@ class Timer
     @countdown_complete = false
   end
   
+  #Number of timer ticks (notification periods) that have passed.
   def ticks_elapsed
     (@current_milliseconds / (@notify_frequency)).round
   end
   
+  #Number of timer ticks (notification periods) left before the countdown/countup is complete.
   def ticks_left
     ((@milliseconds - @current_milliseconds) / (@notify_frequency)).round
   end

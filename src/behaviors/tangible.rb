@@ -28,6 +28,11 @@ class Tangible < Gemini::Behavior
   end
   alias_method :set_tangible_debug_mode, :tangible_debug_mode=
 
+  #Set the shape of the object as seen by collision calculations.
+  #call-seq:
+  #set_shape(:Box, vector)
+  #set_shape(:Box, width, height)
+  #
   def set_tangible_shape(name, *args)
     @tangible_shape =  case name
                        when :Box
@@ -41,6 +46,7 @@ class Tangible < Gemini::Behavior
                        end
   end
 
+  #Indicates whether this object collides with the given object.
   def tangibly_collides_with?(other_tangible)
     #TODO: top_left isn't on spatial...
     other_shape = other_tangible.tangible_shape

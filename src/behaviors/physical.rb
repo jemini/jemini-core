@@ -264,24 +264,26 @@ class Physical < Gemini::Behavior
     self.angular_damping = saved_angular_damping 
   end
   
-  #This is the RDoc for name=.
   def name=(name)
     @name = name
     setup_body
   end
   
+  #Place this object under the control of the physics engine.
   def add_to_world(world)
     world.add @body
     @world = world
   end
   
+  #Remove this object from the control of the physics engine.
   def remove_from_world(world)
     world.remove @body
     @world = nil
   end
   
-  def physical_debug_mode=(mode)
-    if mode
+  #Turn debug mode on or off for this object.
+  def physical_debug_mode=(flag)
+    if flag
       @target.add_behavior :DebugPhysical
     else
       @target.remove_behavior :DebugPhysical
@@ -289,8 +291,8 @@ class Physical < Gemini::Behavior
   end
   alias_method :set_physical_debug_mode, :physical_debug_mode=
   
-  def movable=(movable)
-    @body.moveable = movable
+  def movable=(flag)
+    @body.moveable = flag
   end
   alias_method :set_movable, :movable=
   
@@ -298,6 +300,7 @@ class Physical < Gemini::Behavior
     @body.moveable?
   end
   
+  #The amount of air friction slowing the object's movement.
   def damping
     @body.damping
   end
@@ -316,17 +319,20 @@ class Physical < Gemini::Behavior
   end
   alias_method :set_angular_damping, :damping=
   
+  #Set this object as immobile.
   def set_static_body
     @body.moveable = false
     @body.rotatable = false
     @body.is_resting = true
   end
   
-  def gravity_effected=(effected)
-    @body.gravity_effected = effected
+  #Set whether gravity affects this object.
+  def gravity_effected=(flag)
+    @body.gravity_effected = flag
   end
   alias_method :set_gravity_effected, :gravity_effected=
   
+  #The amount of friction slowing the object's movement.
   def friction
     @body.friction
   end
@@ -341,6 +347,7 @@ class Physical < Gemini::Behavior
 #    tangible_game_object
 #  end
   
+  #Get a list of CollisionEvents for objects currently colliding with this one.
   def get_collision_events
     @world.get_contacts(@body)
   end

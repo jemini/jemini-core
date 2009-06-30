@@ -11,6 +11,7 @@ class RotatesToPoint < Gemini::Behavior
     end
   end
   
+  #The angle that the object must turn to face the rotation_target.
   def rotation_to_face_target
     #TODO: Use vector
     diff_angle = Gemini::Math.radians_to_degrees Math.atan2(@target.y - @rotation_target.y, @target.x - @rotation_target.x)

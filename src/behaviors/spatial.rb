@@ -24,6 +24,7 @@ class Spatial < Gemini::Behavior
     @position.y = y
   end
   
+  #Takes a Vector or x/y coordinates to move to.
   def move(x_or_other, y=nil)
     if y.nil?
       if x_or_other.kind_of? Vector

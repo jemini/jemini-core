@@ -22,6 +22,7 @@ class Pointer < Gemini::Behavior
 #    end
   end
   
+  #Takes a message with a Vector indicating the x/y coordinates to move the object to.
   def mouse_movement(message)
     vector = message.value
     @target.move(vector.location.x, vector.location.y)
