@@ -1,6 +1,7 @@
 require 'rawr'
 require 'rake'
 require 'spec/rake/spectask'
+require 'rake/rdoctask'
 
 desc "Run all spec tests"
 Spec::Rake::SpecTask.new do |t|
@@ -43,6 +44,13 @@ task :update_version_readme do
     f << readme
   }
 end
+
+desc "Create documentation"
+Rake::RDocTask.new do |task|
+  task.rdoc_dir = "doc"
+  task.rdoc_files = FileList["src/**/*.rb"]
+end
+
 
 # TODO: There's a task that runs before gem:package that sucks in the manifest data, hook before that task instead
 task 'gem:package' => [:update_version_readme]
