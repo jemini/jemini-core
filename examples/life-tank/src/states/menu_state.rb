@@ -10,7 +10,7 @@ class MenuState < Gemini::BaseState
     manager(:sound).loop_song "just-aimin.ogg", :volume => 0.5
 
     manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
-    manager(:sound).add_sound :shell_explosion, "shell-explosion-int.wav"
+    manager(:sound).add_sound :explosion, "shell-explosion-int.wav"
 
     load_keymap :GameStartKeymap
     

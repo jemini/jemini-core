@@ -17,7 +17,7 @@ class PlayState < Gemini::BaseState
     manager(:render).cache_image :smoke, "smoke.png"
 
     manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
-    manager(:sound).add_sound :shell_explosion, "shell-explosion-int.wav"
+    manager(:sound).add_sound :explosion, "shell-explosion-int.wav"
 
     load_keymap :PlayKeymap
 
@@ -78,9 +78,4 @@ class PlayState < Gemini::BaseState
     end
   end
   
-  def create_smoke_at(position)
-    smoke = create(:FadingImage, manager(:render).get_cached_image(:smoke), Color.new(:white), 1.0)
-    smoke.set_position position
-    smoke.on_update {|delta| smoke.x += delta * 0.01}
-  end
 end
