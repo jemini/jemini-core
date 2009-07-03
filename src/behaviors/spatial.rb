@@ -27,14 +27,12 @@ class Spatial < Gemini::Behavior
   #Takes a Vector or x/y coordinates to move to.
   def move(x_or_other, y=nil)
     if y.nil?
-      if x_or_other.kind_of? Vector
-        @position = Vector.new(x_or_other.x, x_or_other.y)
       #TODO: Determine if Spatial should really suppor this behavior.
       # use case: Pipe a mouse move event directly to move
-      elsif x_or_other.kind_of? Gemini::Message
+      if x_or_other.kind_of? Gemini::Message
         @position = Vector.new(x_or_other.value.x, x_or_other.value.y)
       else
-        raise "move does not support #{x_or_other.class}"
+        @position = Vector.new(x_or_other.x, x_or_other.y)
       end
     else
       @position = Vector.new(x_or_other, y)
