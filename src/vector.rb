@@ -1,22 +1,26 @@
 class Vector
+  SlickVector = Java::org::newdawn::slick::geom::Vector2f
+  
   attr_reader :native_vector
 
-  def dup
-    self.new(x, y)
-  end
-  
   def self.from_polar_vector(magnitude, angle)
     w = Math.sin(Gemini::Math.degrees_to_radians(angle))
     h = -Math.cos(Gemini::Math.degrees_to_radians(angle))
     return new(w * magnitude, h * magnitude)
   end
-  
+
   def initialize(x = 0.0, y = 0.0, z = nil)
-    @native_vector = Java::org::newdawn::slick::geom::Vector2f.new(x, y)
+    @native_vector = SlickVector.new(x, y)
+  end
+
+  ORIGIN = new(0.0, 0.0).freeze
+
+  def dup
+    self.class.new(x, y)
   end
 
   def +(other_vector)
-    Vector.new(x + other_vector.x, y + other_vector.y)
+    self.class.new(x + other_vector.x, y + other_vector.y)
   end
   
   def x

@@ -4,7 +4,7 @@ require 'behaviors/spatial'
 class Physical < Gemini::Behavior
 
   INFINITE_MASS = Java::net::phys2d::raw::Body::INFINITE_MASS
-  
+
   include_class "net.phys2d.raw.Body"
   include_class "net.phys2d.raw.shapes.Box"
   include_class "net.phys2d.raw.shapes.Circle"
@@ -14,12 +14,13 @@ class Physical < Gemini::Behavior
   include_class "net.phys2d.math.Vector2f"
   include_class 'net.phys2d.raw.AngleJoint'
   include_class 'net.phys2d.raw.BasicJoint'
-  
+  include_class 'net.phys2d.raw.SpringJoint'
+
   attr_reader :mass, :name, :shape
   depends_on :Spatial
   depends_on :Updates
-  wrap_with_callbacks :mass=
-  
+  wrap_with_callbacks :mass=, :add_to_world, :body_position=, :set_body_position
+
   def load
     @mass = 1
     @shape = Box.new(1,1)
@@ -30,27 +31,31 @@ class Physical < Gemini::Behavior
     @target.enable_listeners_for :physical_collided
     @target.on_after_move { move @target.x , @target.y}
     # Manual angular damping. New Phys2D may support this? If not, file a bug.
-    @target.on_update {|delta| set_angular_velocity(angular_velocity - (angular_velocity * (@angular_damping * (1.0/mass) ))) }
+    @target.on_update do |delta|
+      next if @angular_damping.zero? || angular_velocity.zero?
+      decay = (delta * @angular_damping * angular_velocity) / (mass * shape.surface_factor)
+      set_angular_velocity(angular_velocity - decay) unless decay.nan?
+    end
   end
-  
+
   def add_excluded_physical(physical_game_object)
     @body.add_excluded_body physical_game_object.instance_variable_get(:@__behaviors)[:Physical].instance_variable_get(:@body)
   end
-  
+
   def physics_bitmask
     @body.bitmask
   end
-  
+
   def physics_bitmask=(bitmask)
     @body.bitmask = bitmask
   end
   alias_method :set_physics_bitmask, :physics_bitmask=
-  
-  
+
+
   def body_position
     @body.position
   end
-  
+
   #Takes a Vector with the x/y coordinates to move the object to.
   def body_position=(vector)
     # set_position doesn't take a vector, only x/y
@@ -59,19 +64,23 @@ class Physical < Gemini::Behavior
   alias_method :set_body_position, :body_position=
 
   # See about Phys2D joints here: http://www.cokeandcode.com/phys2d/source/javadoc/net/phys2d/raw/Joint.html
-  # what do we do with the joint? Just let it die when the objects die? Makes sense to me.
-  # Both physicals might want to own the joint
-  # This seems to need more work
+  # TODO: Make the joint a game object and/or behavior
   def join_to_physical(physical_game_object, options={})
     other_body = physical_game_object.instance_variable_get(:@__behaviors)[:Physical].instance_variable_get(:@body)
-    case options[:joint]
-    when :angle
-      AngleJoint.new(@body, other_body, options[:self_body_point].to_phys2d_vector, options[:other_body_point].to_phys2d_vector, options[:self_body_angle], options[:other_body_angle])
-    when :basic
-      BasicJoint.new(@body, other_body, options[:anchor].to_phys2d_vector)
-    else
-      raise "Joint type #{options[:joint].inspect} not supported."
-    end
+    joint = case options[:joint]
+            when :angle
+              AngleJoint.new(@body, other_body, options[:self_body_point].to_phys2d_vector, options[:other_body_point].to_phys2d_vector, options[:self_body_angle], options[:other_body_angle])
+            when :basic
+              joint = BasicJoint.new(@body, other_body, options[:anchor].to_phys2d_vector)
+              joint.relaxation = options[:relaxation] if options[:relaxation]
+              joint
+            when :spring
+              joint = SpringJoint.new(@body, other_body, options[:self_anchor].to_phys2d_vector, options[:other_anchor].to_phys2d_vector)
+              joint
+            else
+              raise "Joint type #{options[:joint].inspect} not supported."
+            end
+    @world.add joint
   end
 
   #The maximum speed the object is allowed to travel.  Takes either a Vector with the x/y limits or the numeric value to assign to both x and y.
@@ -85,7 +94,7 @@ class Physical < Gemini::Behavior
     @body.set_max_velocity(axis_limit_x, axis_limit_y)
   end
   alias_method :set_speed_limit, :speed_limit=
-  
+
 #  def safe_move=(safe_move)
 #    @safe_move = safe_move
 #    if safe_move
@@ -103,7 +112,7 @@ class Physical < Gemini::Behavior
 #    end
 #  end
 #  alias_method :set_safe_move, :safe_move=
-  
+
   #Attempt to move the object to the given coordinates.
   #Note that the object might be blocked if its path intersects another physical object.
   def wish_move(x, y)
@@ -113,42 +122,42 @@ class Physical < Gemini::Behavior
     @body.move(x, y)
     #@body.set_position(@last_x, @last_y) if @target.game_state.manager(:physics).colliding? @body
   end
-  
+
   def width
     @body.shape.bounds.width
   end
-  
+
   def height
     @body.shape.bounds.height
   end
-  
+
   def radius
     @body.shape.radius
   end
-  
+
   def box_size
     @body.shape.size
   end
-  
+
   #Set the absolute rotation.
   def physical_rotation=(degrees)
     @body.rotation = Gemini::Math.degrees_to_radians(degrees)
   end
   alias_method :set_physical_rotation, :physical_rotation=
-  
+
   #Set the rotation relative to the current rotation.
   def rotate_physical(degrees)
     @body.adjust_rotation Gemini::Math.degrees_to_radians(degrees)
   end
-  
+
   def physical_rotation
     Gemini::Math.radians_to_degrees(@body.rotation)
   end
-  
+
   def physical_rotatable?
     @body.rotatable?
   end
-  
+
   #Set whether the object is allowed to rotate.
   def physical_rotatable=(rotatable)
     @body.rotatable = rotatable
@@ -164,16 +173,16 @@ class Physical < Gemini::Behavior
       @body.add_force(Vector2f.new(x_or_vector, y))
     end
   end
-  
+
   #Set the force being applied to the object.  Disregards all other forces.
   def set_force(x, y)
     @body.set_force(x, y)
   end
-  
+
   def force
     @body.force
   end
-  
+
   #Adjust the object's velocity.
   #Takes either a Vector or x/y values representing the adjustment to make.
   def add_velocity(x_or_vector, y = nil)
@@ -183,24 +192,28 @@ class Physical < Gemini::Behavior
       @body.adjust_velocity(Java::net::phys2d::math::Vector2f.new(x_or_vector, y))
     end
   end
-  
+
   def velocity
     @body.velocity.to_vector
   end
-  
+
   def velocity=(vector)
     @body.adjust_velocity(Java::net::phys2d::math::Vector2f.new(vector.x - @body.velocity.x, vector.y - @body.velocity.y))
   end
   alias_method :set_velocity, :velocity=
-  
+
   def angular_velocity
     @body.angular_velocity
   end
-  
+
   def angular_velocity=(delta)
     @body.adjust_angular_velocity(delta - angular_velocity)
   end
   alias_method :set_angular_velocity, :angular_velocity=
+
+  def apply_angular_velocity(velocity)
+    @body.adjust_angular_velocity velocity
+  end
 
   #Immediately halt movement.
   def come_to_rest
@@ -223,16 +236,16 @@ class Physical < Gemini::Behavior
     @body.move x, y
   end
   alias_method :set_mass, :mass=
-  
+
   def restitution
     @body.restitution
   end
-  
+
   def restitution=(restitution)
     @body.restitution = restitution
   end
   alias_method :set_restitution, :restitution=
-  
+
   #Set the shape of the object as seen by the physics engine.
   #call-seq:
   #set_shape(:Box, width, height)
@@ -244,6 +257,7 @@ class Physical < Gemini::Behavior
     saved_damping = damping
     saved_angular_damping = angular_damping
     saved_body_position = body_position
+    saved_friction = friction
     saved_position = @target.position
     saved_x, saved_y = @target.x, @target.y
     if shape.respond_to?(:to_str) || shape.kind_of?(Symbol)
@@ -259,28 +273,29 @@ class Physical < Gemini::Behavior
     @body.set(@shape, @mass)
     set_body_position saved_body_position
     @target.set_position saved_position
+    set_friction saved_friction
     @target.move(saved_x, saved_y)
     self.damping = saved_damping
-    self.angular_damping = saved_angular_damping 
+    self.angular_damping = saved_angular_damping
   end
-  
+
   def name=(name)
     @name = name
     setup_body
   end
-  
+
   #Place this object under the control of the physics engine.
   def add_to_world(world)
     world.add @body
     @world = world
   end
-  
+
   #Remove this object from the control of the physics engine.
   def remove_from_world(world)
     world.remove @body
     @world = nil
   end
-  
+
   #Turn debug mode on or off for this object.
   def physical_debug_mode=(flag)
     if flag
@@ -290,68 +305,70 @@ class Physical < Gemini::Behavior
     end
   end
   alias_method :set_physical_debug_mode, :physical_debug_mode=
-  
+
   def movable=(flag)
     @body.moveable = flag
   end
   alias_method :set_movable, :movable=
-  
+
   def movable?
     @body.moveable?
   end
-  
+
   #The amount of air friction slowing the object's movement.
   def damping
     @body.damping
   end
-  
+
   def damping=(damping)
     @body.damping = damping
   end
   alias_method :set_damping, :damping=
-  
+
   def angular_damping
     @angular_damping
+    #@body.rot_damping
   end
-  
+
   def angular_damping=(damping)
     @angular_damping = damping
+    #@body.rot_damping = damping
   end
-  alias_method :set_angular_damping, :damping=
-  
+  alias_method :set_angular_damping, :angular_damping=
+
   #Set this object as immobile.
   def set_static_body
     @body.moveable = false
     @body.rotatable = false
     @body.is_resting = true
   end
-  
+
   #Set whether gravity affects this object.
   def gravity_effected=(flag)
     @body.gravity_effected = flag
   end
   alias_method :set_gravity_effected, :gravity_effected=
-  
+
   #The amount of friction slowing the object's movement.
   def friction
     @body.friction
   end
-  
+
   def friction=(friction)
     @body.friction = friction
   end
   alias_method :set_friction, :friction=
-  
+
 #  def get_colliding_game_objects(tangible_game_object)
 #    # TODO: Tangibles only?
 #    tangible_game_object
 #  end
-  
+
   #Get a list of CollisionEvents for objects currently colliding with this one.
   def get_collision_events
     @world.get_contacts(@body)
   end
-  
+
 private
   def setup_body
     if @name
@@ -359,7 +376,7 @@ private
     else
       @body = Body.new(@shape, @mass)
     end
-    
+
     x = @body.position.x
     y = @body.position.y
 

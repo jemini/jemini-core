@@ -42,7 +42,7 @@ module Gemini
       if post_canceled?
         nil
       else
-        to_game_message(raw_input)
+        to_game_message(raw_input, @poll_result)
       end
     end
 
@@ -116,8 +116,8 @@ module Gemini
     end
     
     # eventually, raw_input will need to be wrapped
-    def to_game_message(raw_input)
-      game_message = InputMessage.new(@game_message, @game_value)
+    def to_game_message(raw_input, game_value)
+      game_message = InputMessage.new(@game_message, game_value)
       game_message.player = @player
       @input_callback.call(game_message, raw_input) unless @input_callback.nil?
       game_message

@@ -15,6 +15,7 @@ class PlayState < Gemini::BaseState
     manager(:render).cache_image :power_arrow_neck, "power-arrow-neck.png"
     manager(:render).cache_image :shell, "shell.png"
     manager(:render).cache_image :smoke, "smoke.png"
+    manager(:render).cache_image :tank_wheel, "tank-wheel.png"
 
     manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
     manager(:sound).add_sound :explosion, "shell-explosion-int.wav"
@@ -43,6 +44,11 @@ class PlayState < Gemini::BaseState
     floor.set_static_body
     floor.body_position = Vector.new(screen_width / 2, screen_height + 20)
 
+#    ceiling = create :GameObject, :Physical, :Taggable
+#    ceiling.set_shape :Box, screen_width, 40
+#    ceiling.set_static_body
+#    ceiling.body_position = Vector.new(screen_width / 2, 20)
+    
     manager(:sound).loop_song "mortor-maddness.ogg", :volume => 0.5
 
     @tanks = []
@@ -55,7 +61,7 @@ class PlayState < Gemini::BaseState
       end
       tank
     end
-
+    
     game_end_checker = create :GameObject, :Updates, :ReceivesEvents
     game_end_checker.handle_event :quit do
       switch_state :MenuState, player_count

@@ -5,7 +5,7 @@ class Tank < Gemini::GameObject
   has_behavior :Taggable
 
   attr_accessor :player
-  
+
   ANGLE_ADJUSTMENT_FACTOR = 1.5 / 20.0
   POWER_ADJUSTMENT_FACTOR = 1.0 / 20.0
   TOTAL_POWER = 100.0
@@ -15,21 +15,26 @@ class Tank < Gemini::GameObject
   MOVEMENT_FACTOR = 25.0
 #  RELOAD_WARMPUP_IN_SECONDS = 1.5
   INITIAL_LIFE = 100.0
-  
+
   def load(player_index)
     @player_id = player_index
-    set_bounded_image @game_state.manager(:render).get_cached_image(:tank_body)
+    set_image @game_state.manager(:render).get_cached_image(:tank_body)
+    set_shape :Box, image.width, image.height / 2.0
+    #set_physical_sprite_position_offset Vector.new(0.0, image.height / 2.0)
     set_friction 1.0
-    set_damping 0.06
-    set_mass 5
+#    set_damping 0.06
+    set_mass 25
     set_restitution 0.5
+    on_after_body_position_changes :update_wheels
+    @wheels = []
     @angle = 45.0
     @power = 50.0
     @life = INITIAL_LIFE
-    
+
     @zero = Vector.new(0.0, 0.0)
     @barrel_offset = Vector.new 0.0, 10.0
     @barrel = @game_state.create :Turret
+    attach_wheels
 #    @barrel_anchor = Vector.new 0.0, -((image.height.to_f * 3.0 / 4.0))
 #    @barrel_anchor = Vector.new 0.0, -(image.height * 0.75)
     @barrel_anchor = Vector.new 0.0, -(@barrel.image.width / 2)
@@ -38,14 +43,16 @@ class Tank < Gemini::GameObject
     @power_arrow_head = @game_state.create :PowerArrowHead
 
     @power_changed = true # to set the proper scale on the first update, flag as true
-    @movement = 0.0
+#    @movement = 0.0
     @twist = 0.0
     @jump_charge = 0.0
 #    on_update :tank_update
 
     on_update do |delta|
-      add_force @movement * MOVEMENT_FACTOR * delta, 0.0
-      @movement = 0.0
+#      puts body_position if @player_id == 1
+#      puts velocity if @player_id == 1
+#      add_force @movement * MOVEMENT_FACTOR * delta, 0.0
+#      @movement = 0.0
 
       if @charging_jump
         @jump_charge += delta * 10.0 unless @jump_charge >= 100000.0
@@ -80,7 +87,7 @@ class Tank < Gemini::GameObject
       life_percent = @life / INITIAL_LIFE
       self.color = @barrel.color = Color.new(1.0, life_percent, life_percent)
     end
-    
+
 #    join_to_physical @barrel, :joint => :basic, :anchor => Vector.new(0.0, 0.0)
 
     handle_event :adjust_angle do |message|
@@ -103,7 +110,7 @@ class Tank < Gemini::GameObject
     handle_event :fire,        :fire_shell
     handle_event :charge_jump, :charge_jump
     handle_event :jump,        :jump_tank
-    
+
     on_countdown_complete do |name|
       if name == :shot
         @ready_to_fire = true
@@ -118,11 +125,7 @@ class Tank < Gemini::GameObject
       @power_arrow_head.color = @power_arrow_neck.color = Color.new(percent, percent, percent)
     end
 
-    on_physical_collided do |other_physical|
-      next unless other_physical.other.has_tag? :damage
-      @life -= other_physical.other.damage
-      @game_state.remove self if @life < 1
-    end
+    on_physical_collided :take_damage
 
     reload_shot
   end
@@ -134,6 +137,44 @@ class Tank < Gemini::GameObject
   end
 
 private
+
+  def take_damage(collision_event)
+    return unless collision_event.other.has_tag? :damage
+    @life -= collision_event.other.damage
+    @game_state.remove self if @life < 1
+  end
+
+  def update_wheels(event)
+    return if @wheels.empty?
+    @wheels[0].body_position = body_position + Vector.new(-16.0, 8.0)
+    @wheels[1].body_position = body_position + Vector.new(  0.0, 8.0)
+    @wheels[2].body_position = body_position + Vector.new( 16.0, 8.0)
+  end
+
+  def attach_wheels
+    left_wheel = @game_state.create :TankWheel
+    left_wheel.body_position = Vector.new(-16.0, 8.0)
+
+    middle_wheel = @game_state.create :TankWheel
+    middle_wheel.body_position = Vector.new(0.0, 8.0)
+
+    right_wheel = @game_state.create :TankWheel
+    right_wheel.body_position = Vector.new(16.0, 8.0)
+
+    @wheels = [left_wheel, middle_wheel, right_wheel]
+    left_wheel.add_excluded_physical middle_wheel
+    left_wheel.add_excluded_physical right_wheel
+    middle_wheel.add_excluded_physical right_wheel
+
+    @wheels.each do |wheel|
+      add_excluded_physical wheel
+      wheel.on_physical_collided {|event| take_damage(event)}
+      on_after_add_to_world do
+#        join_to_physical wheel, :joint => :spring, :self_anchor => Vector.new(0.0), :other_anchor => wheel.body_position
+        join_to_physical wheel, :joint => :basic, :anchor => wheel.body_position, :relaxation => -10.0
+      end
+    end
+  end
 
   def charge_jump(message)
     return unless message.player == @player_id
@@ -160,8 +201,10 @@ private
   def move_tank(message)
     return unless message.player == @player_id
     return if message.value.nil?
-#    puts "moving tank: #{message.value}" if @player_id == 0
-    @movement = message.value
+#    puts "moving tank: #{message.value}, #{message.delta}" if @player_id == 0
+#    @movement = message.value
+
+    @wheels.each {|wheel| wheel.turn(message.value * message.delta)}
   end
 
   def fire_shell(message)
