@@ -31,7 +31,7 @@ PROJ.spec.opts << '--color'
 PROJ.spec.libs << 'test/unit'
 PROJ.ruby_opts = []
 PROJ.libs << 'src'
-PROJ.gem.dependencies << "rawr 1.3.7"
+PROJ.gem.dependencies << ["rawr", ">= 1.3.7"]
 PROJ.gem.platform = "java"
 PROJ.rdoc.exclude << /lib/
 PROJ.rdoc.exclude << /gemini\.jar/
