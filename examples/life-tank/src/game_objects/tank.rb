@@ -35,8 +35,7 @@ class Tank < Gemini::GameObject
     @barrel_offset = Vector.new 0.0, 10.0
     @barrel = @game_state.create :Turret
     attach_wheels
-#    @barrel_anchor = Vector.new 0.0, -((image.height.to_f * 3.0 / 4.0))
-#    @barrel_anchor = Vector.new 0.0, -(image.height * 0.75)
+    
     @barrel_anchor = Vector.new 0.0, -(@barrel.image.width / 2)
 
     @power_arrow_neck = @game_state.create :PowerArrowNeck
@@ -55,10 +54,10 @@ class Tank < Gemini::GameObject
 #      @movement = 0.0
 
       if @charging_jump
-        @jump_charge += delta * 10.0 unless @jump_charge >= 100000.0
+        @jump_charge += delta * 50.0 unless @jump_charge >= 100000.0
       end
 
-      rotate_physical @twist
+      self.angular_velocity += @twist
       @twist = 0.0
 
       barrel_position = @barrel_anchor.pivot_around_degrees(@barrel_offset, physical_rotation + @angle)
@@ -134,15 +133,16 @@ class Tank < Gemini::GameObject
     @game_state.remove @power_arrow_head
     @game_state.remove @power_arrow_neck
     @game_state.remove @barrel
+    @wheels.each {|wheel| @game_state.remove wheel }
   end
-
-private
 
   def take_damage(collision_event)
     return unless collision_event.other.has_tag? :damage
     @life -= collision_event.other.damage
     @game_state.remove self if @life < 1
   end
+
+private
 
   def update_wheels(event)
     return if @wheels.empty?
@@ -152,13 +152,13 @@ private
   end
 
   def attach_wheels
-    left_wheel = @game_state.create :TankWheel
+    left_wheel = @game_state.create :TankWheel, self
     left_wheel.body_position = Vector.new(-16.0, 8.0)
 
-    middle_wheel = @game_state.create :TankWheel
+    middle_wheel = @game_state.create :TankWheel, self
     middle_wheel.body_position = Vector.new(0.0, 8.0)
 
-    right_wheel = @game_state.create :TankWheel
+    right_wheel = @game_state.create :TankWheel, self
     right_wheel.body_position = Vector.new(16.0, 8.0)
 
     @wheels = [left_wheel, middle_wheel, right_wheel]
@@ -195,7 +195,7 @@ private
   def twist_tank(message)
     return unless message.player == @player_id
     return if message.value.nil?
-    @twist = 1.125
+    @twist = 0.05
   end
 
   def move_tank(message)

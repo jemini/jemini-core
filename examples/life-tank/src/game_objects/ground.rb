@@ -11,7 +11,7 @@ class Ground < Gemini::GameObject
     set_static_body
     set_mass :infinite
     set_restitution 0.5
-    set_friction 1.0
+    set_friction 10.0
     set_image @game_state.manager(:render).get_cached_image(:ground)
   end
   

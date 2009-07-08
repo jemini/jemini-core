@@ -54,7 +54,7 @@ module Gemini
       $canvas.set_size(screen_width, screen_height)
       puts "done setting size"
       container = $canvas.container
-      container.vsync = true
+      container.vsync = false
       container.maximum_logic_update_interval = 60
       #container.start
       $canvas
