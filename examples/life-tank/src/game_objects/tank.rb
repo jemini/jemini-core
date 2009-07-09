@@ -21,7 +21,8 @@ class Tank < Gemini::GameObject
     set_image @game_state.manager(:render).get_cached_image(:tank_body)
     set_shape :Box, image.width, image.height / 2.0
     #set_physical_sprite_position_offset Vector.new(0.0, image.height / 2.0)
-    set_friction 1.0
+    set_friction 10.0
+#    set_speed_limit 100.0
 #    set_damping 0.06
     set_mass 25
     set_restitution 0.5
@@ -139,6 +140,7 @@ class Tank < Gemini::GameObject
   def take_damage(collision_event)
     return unless collision_event.other.has_tag? :damage
     @life -= collision_event.other.damage
+    collision_event.other.remove_tag :damage # so other parts aren't damaged, should stop one-shots
     @game_state.remove self if @life < 1
   end
 

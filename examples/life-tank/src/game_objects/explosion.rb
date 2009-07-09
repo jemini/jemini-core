@@ -7,10 +7,10 @@ class Explosion < Gemini::GameObject
   #Takes a Vector with the starting x/y coordinates.
   def load(location)
     
-    self.move(location)
-    self.game_state.manager(:sound).play_sound :explosion
+    move(location)
+    game_state.manager(:sound).play_sound :explosion
     
-    smoke = self.game_state.create(:FadingImage, self.game_state.manager(:render).get_cached_image(:smoke), Color.new(:white), 1.0)
+    smoke = game_state.create(:FadingImage, game_state.manager(:render).get_cached_image(:smoke), Color.new(:white), 1.0)
     smoke.set_position position
     
     add_countdown(:fade, 0.1)

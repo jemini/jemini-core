@@ -12,7 +12,7 @@ class TankWheel < Gemini::GameObject
     set_mass 5.0
     set_angular_damping 50.0
     set_angular_velocity 0.0
-    set_restitution 0.25
+    set_restitution 0.50
     on_physical_collided {|e| @tank.take_damage e}
   end
 
