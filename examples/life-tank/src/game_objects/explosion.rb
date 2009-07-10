@@ -1,6 +1,6 @@
 #Makes an object attract other Physical game objects towards it.
 class Explosion < Gemini::GameObject
-  has_behavior :Repulsive
+  has_behavior :Magnetic
   has_behavior :Timeable
   has_behavior :Taggable
   

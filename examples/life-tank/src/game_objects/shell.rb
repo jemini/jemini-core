@@ -15,8 +15,9 @@ class Shell < Gemini::GameObject
     
     on_physical_collided do |event|
       explosion = @game_state.create :Explosion, body_position
-      explosion.push = 1000
-      explosion.effect_radius = 80
+      explosion.magnetism = 1000.0
+      explosion.magnetism_max_radius = 80.0
+      explosion.magnetism_min_radius = 5.0
       @game_state.remove self
     end
 
