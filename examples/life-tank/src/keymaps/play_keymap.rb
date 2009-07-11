@@ -59,7 +59,6 @@ Gemini::InputManager.define_keymap do |i|
       message.value = -i.filter_dead_zone(0.2, message.value)
     end
     i.map_joystick :joystick_id => j, :held => XBOX_360_A, :fire => nil, :player => j
-    i.map_joystick :joystick_id => j, :held => XBOX_360_Y, :twist => nil, :player => j
     i.map_joystick :joystick_id => j, :pressed  => XBOX_360_B, :charge_jump => nil, :player => j
     i.map_joystick :joystick_id => j, :released => XBOX_360_B, :jump => nil, :player => j
   end

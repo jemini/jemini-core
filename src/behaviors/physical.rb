@@ -1,4 +1,5 @@
 require 'behaviors/spatial'
+require 'events/physical_message'
 
 #Makes an object interact with the physics engine.
 class Physical < Gemini::Behavior
@@ -366,7 +367,10 @@ class Physical < Gemini::Behavior
 
   #Get a list of CollisionEvents for objects currently colliding with this one.
   def get_collision_events
-    @world.get_contacts(@body)
+    @world.get_contacts(@body).map do |event|
+      body_method = event.body_a == @body ? :body_b : :body_a
+      PhysicsMessage.new(event, event.send(body_method).user_data)
+    end
   end
 
 private

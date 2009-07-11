@@ -1,4 +1,5 @@
 require 'behaviors/physical'
+require 'events/physical_message'
 
 class BasicPhysicsManager < Gemini::GameObject
   INTERPOLATION_THESHOLD = 6.0
@@ -85,13 +86,5 @@ private
 #    0 < @world.get_contacts(body).size
 #  end
 
-  #TODO: Make subclass of Message
-  class PhysicsMessage
-    attr_reader :other, :event
-    
-    def initialize(slick_event, other)
-      @event = slick_event
-      @other = other
-    end
-  end
+
 end

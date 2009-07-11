@@ -6,6 +6,9 @@ class Tank < Gemini::GameObject
 
   attr_accessor :player
 
+  FLIP_THRESHOLD = 0.25 * 1000.0
+  FLIP_LIFT = -750.0
+  FLIP_SPIN = 2.5
   ANGLE_ADJUSTMENT_FACTOR = 1.5 / 20.0
   POWER_ADJUSTMENT_FACTOR = 1.0 / 20.0
   TOTAL_POWER = 100.0
@@ -48,45 +51,7 @@ class Tank < Gemini::GameObject
     @jump_charge = 0.0
 #    on_update :tank_update
 
-    on_update do |delta|
-#      puts body_position if @player_id == 1
-#      puts velocity if @player_id == 1
-#      add_force @movement * MOVEMENT_FACTOR * delta, 0.0
-#      @movement = 0.0
-
-      if @charging_jump
-        @jump_charge += delta * 50.0 unless @jump_charge >= 100000.0
-      end
-
-      self.angular_velocity += @twist
-      @twist = 0.0
-
-      barrel_position = @barrel_anchor.pivot_around_degrees(@barrel_offset, physical_rotation + @angle)
-      @barrel.position = barrel_position + body_position
-      @barrel.image_rotation = @angle + physical_rotation - 90.0
-
-      if @power_changed
-        width_factor = 2 * @power / 100.0
-        @power_arrow_neck.scale_image_from_original width_factor, 1.0
-      end
-
-      neck_offset = @barrel_anchor + Vector.new(0.0, -7.0 - (@power_arrow_neck.image.width + @barrel.image.width) / 2.0)
-      neck_position = neck_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
-      @power_arrow_neck.position = neck_position + body_position
-      @power_arrow_neck.image_rotation = @angle + physical_rotation - 90.0
-
-      power_arrow_head_anchor = neck_offset + Vector.new(0.0, (7.0 - (@power_arrow_neck.image.width) / 2.0))
-      head_position = power_arrow_head_anchor.pivot_around_degrees(@zero, physical_rotation + @angle)
-      @power_arrow_head.position = head_position + body_position
-      @power_arrow_head.image_rotation = @angle + physical_rotation - 90.0
-
-#      @game_state.manager(:render).debug(:point, :red,   :position => (barrel_position + body_position))
-#      @game_state.manager(:render).debug(:point, :green, :position => (neck_position + body_position))
-#      @game_state.manager(:render).debug(:point, :blue,  :position => (head_position + body_position))
-
-      life_percent = @life / INITIAL_LIFE
-      self.color = @barrel.color = Color.new(1.0, life_percent, life_percent)
-    end
+    on_update :update_tank
 
 #    join_to_physical @barrel, :joint => :basic, :anchor => Vector.new(0.0, 0.0)
 
@@ -106,7 +71,6 @@ class Tank < Gemini::GameObject
     end
 
     handle_event :move,        :move_tank
-    handle_event :twist,       :twist_tank
     handle_event :fire,        :fire_shell
     handle_event :charge_jump, :charge_jump
     handle_event :jump,        :jump_tank
@@ -145,6 +109,52 @@ class Tank < Gemini::GameObject
   end
 
 private
+
+  def update_tank(delta)
+    if get_collision_events.any? {|collision_event| collision_event.other.has_tag? :ground }
+      @flip_wait += delta
+      if @flip_wait > FLIP_THRESHOLD
+        @flip_wait = 0.0
+        add_force(0.0, FLIP_LIFT)
+        apply_angular_velocity(FLIP_SPIN) #TODO: Fix inconistent naming
+      end
+    else
+      @flip_wait = 0.0
+    end
+    
+    if @charging_jump
+      @jump_charge += delta * 50.0 unless @jump_charge >= 100000.0
+    end
+
+    self.angular_velocity += @twist
+    @twist = 0.0
+
+    barrel_position = @barrel_anchor.pivot_around_degrees(@barrel_offset, physical_rotation + @angle)
+    @barrel.position = barrel_position + body_position
+    @barrel.image_rotation = @angle + physical_rotation - 90.0
+
+    if @power_changed
+      width_factor = 2 * @power / 100.0
+      @power_arrow_neck.scale_image_from_original width_factor, 1.0
+    end
+
+    neck_offset = @barrel_anchor + Vector.new(0.0, -7.0 - (@power_arrow_neck.image.width + @barrel.image.width) / 2.0)
+    neck_position = neck_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
+    @power_arrow_neck.position = neck_position + body_position
+    @power_arrow_neck.image_rotation = @angle + physical_rotation - 90.0
+
+    power_arrow_head_anchor = neck_offset + Vector.new(0.0, (7.0 - (@power_arrow_neck.image.width) / 2.0))
+    head_position = power_arrow_head_anchor.pivot_around_degrees(@zero, physical_rotation + @angle)
+    @power_arrow_head.position = head_position + body_position
+    @power_arrow_head.image_rotation = @angle + physical_rotation - 90.0
+
+#      @game_state.manager(:render).debug(:point, :red,   :position => (barrel_position + body_position))
+#      @game_state.manager(:render).debug(:point, :green, :position => (neck_position + body_position))
+#      @game_state.manager(:render).debug(:point, :blue,  :position => (head_position + body_position))
+
+    life_percent = @life / INITIAL_LIFE
+    self.color = @barrel.color = Color.new(1.0, life_percent, life_percent)
+  end
 
   def update_wheels(event)
     return if @wheels.empty?
@@ -192,12 +202,6 @@ private
     jump_vector = Vector.from_polar_vector(@jump_charge, physical_rotation)
     add_force jump_vector
     @jump_charge = 0.0
-  end
-
-  def twist_tank(message)
-    return unless message.player == @player_id
-    return if message.value.nil?
-    @twist = 0.05
   end
 
   def move_tank(message)

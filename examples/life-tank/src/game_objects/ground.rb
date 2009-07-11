@@ -13,6 +13,7 @@ class Ground < Gemini::GameObject
     set_restitution 0.75
     set_friction 10.0
     set_image @game_state.manager(:render).get_cached_image(:ground)
+    add_tag :ground
   end
   
   def fill_dimensions(left, top, right, bottom)
