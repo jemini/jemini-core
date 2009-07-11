@@ -52,7 +52,7 @@ class PlayState < Gemini::BaseState
     manager(:sound).loop_song "mortor-maddness.ogg", :volume => 0.5
 
     @tanks = []
-    ground.spawn_along player_count, Vector.new(0.0, -30.0) do |index|
+    ground.spawn_along player_count, Vector.new(0.0, -40.0) do |index|
       tank = create :Tank, index
       tank.player = index + 1
       @tanks << tank
