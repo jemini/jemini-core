@@ -18,9 +18,11 @@ class Tank < Gemini::GameObject
   MOVEMENT_FACTOR = 25.0
 #  RELOAD_WARMPUP_IN_SECONDS = 1.5
   INITIAL_LIFE = 100.0
+  COLOR_WHEEL = [:green, :red, :yellow, :blue].map {|c| Color.new c}
 
   def load(player_index)
     @player_id = player_index
+    
     set_image @game_state.manager(:render).get_cached_image(:tank_body)
     set_shape :Box, image.width, image.height / 2.0
     #set_physical_sprite_position_offset Vector.new(0.0, image.height / 2.0)
@@ -39,6 +41,7 @@ class Tank < Gemini::GameObject
     @barrel_offset = Vector.new 0.0, 10.0
     @barrel = @game_state.create :Turret
     attach_wheels
+    attach_flag
     
     @barrel_anchor = Vector.new 0.0, -(@barrel.image.width / 2)
 
@@ -98,6 +101,7 @@ class Tank < Gemini::GameObject
     @game_state.remove @power_arrow_head
     @game_state.remove @power_arrow_neck
     @game_state.remove @barrel
+    @game_state.remove @flag
     @wheels.each {|wheel| @game_state.remove wheel }
   end
 
@@ -109,6 +113,11 @@ class Tank < Gemini::GameObject
   end
 
 private
+
+  def attach_flag
+    @flag = @game_state.create_on_layer :Flag, :flag, self
+    @flag.color = COLOR_WHEEL[@player_id]
+  end
 
   def update_tank(delta)
     if get_collision_events.any? {|collision_event| collision_event.other.has_tag? :ground }

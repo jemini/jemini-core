@@ -367,6 +367,7 @@ class Physical < Gemini::Behavior
 
   #Get a list of CollisionEvents for objects currently colliding with this one.
   def get_collision_events
+    return [] if @world.nil? # a worthwhile check in some cases. Maybe because the physical is removed but the game object is not?
     @world.get_contacts(@body).map do |event|
       body_method = event.body_a == @body ? :body_b : :body_a
       PhysicsMessage.new(event, event.send(body_method).user_data)

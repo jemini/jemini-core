@@ -4,8 +4,11 @@ class Shell < Gemini::GameObject
   has_behavior :TriangleTrailEmittable
   
   attr_accessor :damage
-
+  @@active_shells = []
+  
   def load
+    @@active_shells.each {|other_shell| add_excluded_physical other_shell}
+    @@active_shells << self
     add_tag :damage
     @damage = 33
     set_bounded_image @game_state.manager(:render).get_cached_image(:shell)
@@ -24,5 +27,9 @@ class Shell < Gemini::GameObject
     on_update do
       self.physical_rotation = velocity.polar_angle_degrees
     end
+  end
+
+  def unload
+    @@active_shells.delete self
   end
 end

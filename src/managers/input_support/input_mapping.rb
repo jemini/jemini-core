@@ -68,7 +68,7 @@ module Gemini
     end
 
     def poll_joystick(raw_input)
-      if @joystick_id >= raw_input.controller_count
+      if @joystick_id && @joystick_id >= raw_input.controller_count
         cancel_post!
         return
       end
@@ -79,11 +79,21 @@ module Gemini
         axis_value = raw_input.get_axis_value(@joystick_id, @axis_id)
         axis_value
       when :pressed
-        result = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
-        cancel_post! unless result
-        result
+        if @joystick_id.nil?
+          result = (0..raw_input.controller_count).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)} unless raw_input.controller_count.zero?
+        else
+          result = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
+        end
+        pressed = !@key_down_on_last_poll && result
+        @key_down_on_last_poll = result
+        cancel_post! unless pressed
+        pressed
       when :held
-        result = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
+        if @joystick_id.nil?
+          result = (0..raw_input.controller_count).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)} unless raw_input.controller_count.zero?
+        else
+          result = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
+        end
         cancel_post! unless result
         result
       when :released

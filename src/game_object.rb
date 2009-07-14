@@ -100,7 +100,7 @@ module Gemini
       if callback_or_callback_method.nil? || callback_or_callback_method.kind_of?(Symbol)
         @callbacks[listener_method_name].delete callback_or_callback_method
       else
-        @callbacks[listener_method_name].delete_if {|callback| callback.source == object }
+        @callbacks[listener_method_name].delete_if {|callback| callback.source == object unless callback.kind_of?(Symbol) }
       end
     end
     

@@ -6,6 +6,8 @@ class PlayState < Gemini::BaseState
     set_manager :tangible, create(:BasicTangibleManager)
     
     manager(:game_object).add_layer_at :gui_text, 5
+    manager(:game_object).add_layer_at :logo, 4
+    manager(:game_object).add_layer_at :flag, 3
     
 
     manager(:render).cache_image :tank_body, "tank-body.png"
@@ -16,6 +18,8 @@ class PlayState < Gemini::BaseState
     manager(:render).cache_image :shell, "shell.png"
     manager(:render).cache_image :smoke, "smoke.png"
     manager(:render).cache_image :tank_wheel, "tank-wheel.png"
+    manager(:render).cache_image :flag_background, "flag_background.png"
+    manager(:render).cache_image :gangplank_logo, "gangplank_logo.png"
 
     manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
     manager(:sound).add_sound :explosion, "shell-explosion-int.wav"
