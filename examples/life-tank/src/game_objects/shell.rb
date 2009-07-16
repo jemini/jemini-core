@@ -5,28 +5,37 @@ class Shell < Gemini::GameObject
   
   attr_accessor :damage
   @@active_shells = []
-  
+
+  VELOCITY_TO_DAMAGE_RATIO = 0.5
+
   def load
     @@active_shells.each {|other_shell| add_excluded_physical other_shell}
     @@active_shells << self
     add_tag :damage
-    @damage = 33
+    @damage = 20
     set_bounded_image @game_state.manager(:render).get_cached_image(:shell)
     set_mass 1
     
     emit_triangle_trail_with_radius(image.height / 2)
     
-    on_physical_collided do |event|
-      explosion = @game_state.create :Explosion, body_position
-      explosion.magnetism = 1000.0
-      explosion.magnetism_max_radius = 80.0
-      explosion.magnetism_min_radius = 5.0
-      @game_state.remove self
-    end
+    on_physical_collided :explode
+    on_update :align_shell
+  end
 
-    on_update do
-      self.physical_rotation = velocity.polar_angle_degrees
-    end
+  def align_shell(delta)
+    self.physical_rotation = velocity.polar_angle_degrees
+  end
+
+  def explode(event)
+    explosion = @game_state.create :Explosion, body_position
+    explosion.magnetism = 1000.0
+    explosion.magnetism_max_radius = 80.0
+    explosion.magnetism_min_radius = 5.0
+    @game_state.remove self
+  end
+
+  def damage
+    @damage + (VELOCITY_TO_DAMAGE_RATIO * velocity.magnitude.abs)
   end
 
   def unload

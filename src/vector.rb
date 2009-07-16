@@ -87,6 +87,10 @@ class Vector
     Gemini::Math.radians_to_degrees polar_angle
   end
 
+  def magnitude
+    Math::sqrt((x ** 2) + (y ** 2))
+  end
+
   def negate
     self.class.new(-x, -y)
   end
