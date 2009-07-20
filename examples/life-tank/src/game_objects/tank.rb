@@ -6,9 +6,9 @@ class Tank < Gemini::GameObject
 
   attr_accessor :player
 
-  FLIP_THRESHOLD = 0.25 * 1000.0
-  FLIP_LIFT = -750.0
-  FLIP_SPIN = 2.5
+  FLIP_THRESHOLD = 0.50 * 1000.0
+  FLIP_LIFT = -1000.0
+  FLIP_SPIN = 4.5
   ANGLE_ADJUSTMENT_FACTOR = 1.5 / 20.0
   POWER_ADJUSTMENT_FACTOR = 1.0 / 20.0
   TOTAL_POWER = 100.0

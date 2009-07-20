@@ -1,10 +1,8 @@
-#Makes an object attract other Physical game objects towards it.
 class Explosion < Gemini::GameObject
   has_behavior :Magnetic
   has_behavior :Timeable
   has_behavior :Taggable
   
-  #Takes a Vector with the starting x/y coordinates.
   def load(location)
     
     move(location)

@@ -48,6 +48,7 @@ class PlayState < Gemini::BaseState
     floor.set_static_body
     floor.body_position = Vector.new(screen_width / 2, screen_height + 20)
 
+    [left_wall, right_wall, floor].each {|o| o.add_tag :ground }
 #    ceiling = create :GameObject, :Physical, :Taggable
 #    ceiling.set_shape :Box, screen_width, 40
 #    ceiling.set_static_body
