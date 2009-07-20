@@ -61,10 +61,6 @@ if Platform.using_osx?
   XBOX_360_RIGHT_TRIGGER_AXIS = 'rz' # On Windows, both triggers serve as one axis
 elsif Platform.using_windows?
   # buttons
-  XBOX_360_DPAD_UP            =  nil # No Windows "buttons" for the dpad - it's unusable
-  XBOX_360_DPAD_DOWN          =  nil
-  XBOX_360_DPAD_LEFT          =  nil
-  XBOX_360_DPAD_RIGHT         =  nil
   XBOX_360_A                  =  0
   XBOX_360_B                  =  1
   XBOX_360_X                  =  2
