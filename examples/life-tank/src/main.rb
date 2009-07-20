@@ -27,7 +27,7 @@ end
 require 'gemini'
 
 begin
-  Gemini::Main.start_app("Life Tank", 800, 600, :MenuState, false)
+  Gemini::Main.start_app("Life Tank", 800, 600, :MenuState, true)
 #  Gemini::Main.start_app("Life Tank", 800, 600, :InputDiagnosticState, false)
 rescue => e
   warn e
