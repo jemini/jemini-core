@@ -67,8 +67,21 @@ module Gemini
       end
     end
 
+    # raw_input#controller_count lies. Find out ourselves
+    def controller_count(raw_input)
+      @controller_count ||= (0..25).inject(0) do |sum, i|
+        begin
+          raw_input.is_button_pressed(i, 0)
+          sum + i
+        rescue
+          sum
+        end
+      end
+    end
+
     def poll_joystick(raw_input)
-      if @joystick_id && @joystick_id >= raw_input.controller_count
+      puts controller_count(raw_input)
+      if @joystick_id && @joystick_id >= controller_count(raw_input)
         cancel_post!
         return
       end
@@ -80,7 +93,7 @@ module Gemini
         axis_value
       when :pressed
         if @joystick_id.nil?
-          result = (0..raw_input.controller_count).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)} unless raw_input.controller_count.zero?
+          result = (0..controller_count(raw_input)).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)} unless controller_count(raw_input).zero?
         else
           result = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
         end
@@ -90,7 +103,7 @@ module Gemini
         pressed
       when :held
         if @joystick_id.nil?
-          result = (0..raw_input.controller_count).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)} unless raw_input.controller_count.zero?
+          result = (0..controller_count(raw_input)).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)} unless controller_count(raw_input).zero?
         else
           result = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
         end

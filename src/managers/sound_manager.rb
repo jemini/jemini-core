@@ -40,21 +40,12 @@ class SoundManager < Gemini::GameObject
   
   def play_song(music_file_name)
     @music.stop if @music
-    begin
-      @music = Java::org::newdawn::slick::Music.new("data/#{music_file_name}", true)
-      @music.play
-    rescue java.lang.RuntimeException
-      @music = Java::org::newdawn::slick::Music.new("../data/#{music_file_name}", true)
-      @music.play
-    end
+    @music = Java::org::newdawn::slick::Music.new(Resource.path_of(music_file_name), true)
+    @music.play
   end
 private
 
   def load_sound(sound_file_name)
-    begin
-      Sound.new("data/#{sound_file_name}")
-    rescue #java.lang.RuntimeException
-      Sound.new("../data/#{sound_file_name}")
-    end
+    Sound.new(Resource.path_of(sound_file_name))
   end
 end

@@ -17,6 +17,7 @@ require 'inflector'
 
 require 'math'
 require 'proc_enhancement'
+require 'resource'
 require 'game_object'
 require 'message_queue'
 require 'input_manager'
