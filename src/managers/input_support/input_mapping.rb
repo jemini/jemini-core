@@ -32,6 +32,7 @@ module Gemini
     end
 
     def poll(raw_input)
+      #puts "polling #{self}"
       @poll_result = case @device
                      when :key
                        poll_key(raw_input)
@@ -122,9 +123,13 @@ module Gemini
     end
 
     def key
-      "#{@device}_#{@input_type}_#{@input_button_or_axis}_#{@joystick_id}"
+      "#{@device}_#{@input_type}_#{@input_button_or_axis}_#{@joystick_id || 'any'}"
     end
-    
+
+    def to_s
+      key
+    end
+
     # eventually, raw_input will need to be wrapped
     def to_game_message(raw_input, game_value)
       game_message = InputMessage.new(@game_message, game_value)

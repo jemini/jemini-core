@@ -7,8 +7,8 @@
             <source-roots>
                 <root id="src.tasks.dir"/>
                 <root id="src.skeleton.dir"/>
-                <root id="src.dir" name="src"/>
-                <root id="bin.dir"/>
+                <root id="src.bin.dir"/>
+                <root id="src.src.dir"/>
             </source-roots>
             <test-roots>
                 <root id="test.src.dir" name="test"/>
