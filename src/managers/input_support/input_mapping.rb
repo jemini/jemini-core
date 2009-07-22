@@ -32,6 +32,7 @@ module Gemini
     end
 
     def poll(raw_input)
+      #puts "polling #{self}"
       @poll_result = case @device
                      when :key
                        poll_key(raw_input)
@@ -67,21 +68,8 @@ module Gemini
       end
     end
 
-    # raw_input#controller_count lies. Find out ourselves
-    def controller_count(raw_input)
-      @controller_count ||= (0..25).inject(0) do |sum, i|
-        begin
-          raw_input.is_button_pressed(i, 0)
-          sum + i
-        rescue
-          sum
-        end
-      end
-    end
-
     def poll_joystick(raw_input)
-      puts controller_count(raw_input)
-      if @joystick_id && @joystick_id >= controller_count(raw_input)
+      if @joystick_id && @joystick_id >= raw_input.controller_count
         cancel_post!
         return
       end
@@ -93,7 +81,7 @@ module Gemini
         axis_value
       when :pressed
         if @joystick_id.nil?
-          result = (0..controller_count(raw_input)).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)} unless controller_count(raw_input).zero?
+          result = (0..raw_input.controller_count).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)} unless raw_input.controller_count.zero?
         else
           result = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
         end
@@ -103,7 +91,7 @@ module Gemini
         pressed
       when :held
         if @joystick_id.nil?
-          result = (0..controller_count(raw_input)).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)} unless controller_count(raw_input).zero?
+          result = (0..raw_input.controller_count).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)} unless raw_input.controller_count.zero?
         else
           result = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
         end
@@ -135,9 +123,13 @@ module Gemini
     end
 
     def key
-      "#{@device}_#{@input_type}_#{@input_button_or_axis}_#{@joystick_id}"
+      "#{@device}_#{@input_type}_#{@input_button_or_axis}_#{@joystick_id || 'any'}"
     end
-    
+
+    def to_s
+      key
+    end
+
     # eventually, raw_input will need to be wrapped
     def to_game_message(raw_input, game_value)
       game_message = InputMessage.new(@game_message, game_value)
