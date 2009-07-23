@@ -43,13 +43,7 @@ class BigSprite < Drawable
     if sprite_name.kind_of? BigImage
       @image = sprite_name
     else
-      begin
-        @image = BigImage.new("data/#{sprite_name}")
-      rescue java.lang.RuntimeException
-        @image = BigImage.new("../data/#{sprite_name}")
-      end
-      puts @image.width
-      puts @image.height
+      @image = BigImage.new(Resource.path_of(sprite_name))
     end
     set_image_size(Vector.new(@image.width, @image.height))
   end

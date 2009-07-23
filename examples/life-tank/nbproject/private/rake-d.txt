@@ -1,0 +1,14 @@
+rawr\:build_data_jars=Build all data jars
+rawr\:bundle\:app=Bundles the jar from rawr:jar into a native Mac OS X application (.app)
+rawr\:bundle\:exe=Bundles the jar from rawr:jar into a native Windows application (.exe)
+rawr\:clean=Removes generated content
+rawr\:compile=Compiles all the Java source and Ruby source files in the source_dirs entry in the build_configuration.rb file.
+rawr\:compile_duby_classes=Compiles the Duby source files specified in the source_dirs entry
+rawr\:compile_java_classes=Compiles the Java source files specified in the source_dirs entry
+rawr\:compile_ruby_classes=Compiles the Ruby source files specified in the source_dirs entry
+rawr\:copy_other_file_in_source_dirs=
+rawr\:get\:current-jruby=Fetch the most recent build of  jruby-complete.jar. Might be an RC
+rawr\:get\:current-stable-jruby=Fetch the most recent stable jruby-complete.jar
+rawr\:jar=Uses compiled output and creates an executable jar file.
+rawr\:load_configuration=Loads data from the build_configuration.rb file. You can override the file to be used by setting RAWR_CONFIG_FILE
+rawr\:prepare=Creates the output directory and sub-directories, reads in configuration data

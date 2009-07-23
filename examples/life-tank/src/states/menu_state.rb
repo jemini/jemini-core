@@ -25,7 +25,8 @@ class MenuState < Gemini::BaseState
       screen_height * 0.25, 
       "Press 1 or A: Start a game with #{@player_count} tanks"
     )
-    create :Text, screen_width * 0.25, screen_height * 0.30, "Up/Down to change player count"
+    display_instructions
+    
 
     menu_handler = create :GameObject, :ReceivesEvents
     menu_handler.handle_event :increase_player_count do
@@ -43,5 +44,16 @@ class MenuState < Gemini::BaseState
       switch_state :PlayState, @player_count
     end
 
+  end
+
+  def display_instructions
+    create :Text, screen_width * 0.25, screen_height * 0.30, "Press up/down or left/right bumpers to change player count"
+    create :Text, screen_width * 0.30, screen_height * 0.35, "Tank Controls for player 1, 2, and XBox 360 controllers:"
+    create :Text, screen_width * 0.30, screen_height * 0.40, "Space, Left Shift, or A: Fire"
+    create :Text, screen_width * 0.30, screen_height * 0.45, "Left/Right, A/D, or Left Stick Left/Right: Aim turret"
+    create :Text, screen_width * 0.30, screen_height * 0.50, "Up/Down, W/S, or Left Stick Up/Down: Adjust shot power"
+    create :Text, screen_width * 0.30, screen_height * 0.55, "Left/Right Trigger: Move the tank"
+    create :Text, screen_width * 0.30, screen_height * 0.60, "Hold B: Charge jump"
+    create :Text, screen_width * 0.30, screen_height * 0.65, "Release B: Jump!"
   end
 end
