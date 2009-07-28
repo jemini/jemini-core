@@ -220,7 +220,6 @@ private
     return if message.value.nil?
 #    puts "moving tank: #{message.value}, #{message.delta}" if @player_id == 0
 #    @movement = message.value
-
     @wheels.each {|wheel| wheel.turn(message.value * message.delta)}
   end
 

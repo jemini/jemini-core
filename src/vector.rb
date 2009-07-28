@@ -27,6 +27,10 @@ class Vector
   def +(other_vector)
     self.class.new(x + other_vector.x, y + other_vector.y)
   end
+
+  def -(other_vector)
+    self.class.new(x - other_vector.x, y - other_vector.y)
+  end
   
   def x
     @native_vector.x

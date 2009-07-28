@@ -41,6 +41,7 @@ module Gemini
     def poll(raw_input)
       @poll_result = poll_value(raw_input)
       if post_canceled?
+        @cancel_post = false
         nil
       else
         to_game_message(raw_input, @poll_result)
@@ -52,9 +53,7 @@ module Gemini
     end
 
     def post_canceled?
-      result = @cancel_post
-      @cancel_post = false
-      result
+      @cancel_post
     end
 
     def key
