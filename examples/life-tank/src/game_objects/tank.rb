@@ -12,7 +12,7 @@ class Tank < Gemini::GameObject
   ANGLE_ADJUSTMENT_FACTOR = 1.5 / 20.0
   POWER_ADJUSTMENT_FACTOR = 1.0 / 20.0
   TOTAL_POWER = 100.0
-  POWER_FACTOR = 40.0
+  POWER_FACTOR = 60.0
   RELOAD_UPDATES_PER_SECOND = 1.0 / 30.0
   RELOAD_WARMPUP_IN_SECONDS = 5
   MOVEMENT_FACTOR = 25.0
@@ -55,7 +55,6 @@ class Tank < Gemini::GameObject
 #    @movement = 0.0
     @twist = 0.0
     @jump_charge = 0.0
-#    on_update :tank_update
 
     on_update :update_tank
 
