@@ -26,6 +26,14 @@ Gemini::InputManager.define_keymap do |i|
     message.value = -KEYBOARD_POWER_ADJUST_RATE
   end
 
+  i.map_key :held => Input::KEY_Q, :move => -1, :player => 0
+  i.map_key :held => Input::KEY_E, :move =>  1, :player => 0
+  i.map_key :held => Input::KEY_COMMA, :move => -1, :player => 1
+  i.map_key :held => Input::KEY_PERIOD, :move =>  1, :player => 1
+  i.map_key :pressed  => Input::KEY_F, :charge_jump => nil, :player => 0
+  i.map_key :released => Input::KEY_F, :jump => nil, :player => 0
+  i.map_key :pressed  => Input::KEY_SLASH, :charge_jump => nil, :player => 1
+  i.map_key :released => Input::KEY_SLASH, :jump => nil, :player => 1
   # KEY_TAB doesn't work unless alt+tab. Mac only?
   i.map_key :held => Input::KEY_LSHIFT, :fire => nil, :player => 0
 

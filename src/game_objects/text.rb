@@ -1,8 +1,9 @@
-include_class "org.newdawn.slick.TrueTypeFont"
-include_class "java.awt.Font"
 require 'behaviors/drawable'
 
 class Text < Gemini::GameObject
+  include_class "org.newdawn.slick.TrueTypeFont"
+  include_class "java.awt.Font"
+  
   has_behavior :Spatial
   PLAIN = Font::PLAIN
   ITALIC = Font::ITALIC
@@ -10,13 +11,13 @@ class Text < Gemini::GameObject
   
   attr_accessor :text, :size, :style, :font_name
   
-  def load(x = 0, y = 0, text = "")
-    move(x, y)
+  def load(text, options={})
     @font_name = "Arial"
     @size = 12
     @text = text
     @style = PLAIN
     load_font
+    orient_text(options)
   end
 
   def text_width
@@ -53,6 +54,17 @@ class Text < Gemini::GameObject
   alias_method :set_style, :style=
   
 private
+  def orient_text(options)
+    case options[:justify]
+    when :top_left
+      move options[:position] + Vector.new(text_width, text_height).half if options[:position]
+    when :bottom_right
+      move options[:position] - Vector.new(text_width, text_height).half if options[:position]
+    when :center, nil
+      move options[:position]
+    end
+  end
+
   def load_font
     @font = TrueTypeFont.new(Font.new(@font_name, @style, @size), true)
   end

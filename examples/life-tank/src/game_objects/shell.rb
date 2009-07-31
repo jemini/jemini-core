@@ -6,13 +6,13 @@ class Shell < Gemini::GameObject
   attr_accessor :damage
   @@active_shells = []
 
-  VELOCITY_TO_DAMAGE_RATIO = 0.5
+  VELOCITY_TO_DAMAGE_RATIO = 0.05
 
   def load
     @@active_shells.each {|other_shell| add_excluded_physical other_shell}
     @@active_shells << self
     add_tag :damage
-    @damage = 20
+    @damage = 15
     set_bounded_image @game_state.manager(:render).get_cached_image(:shell)
     set_mass 1
     

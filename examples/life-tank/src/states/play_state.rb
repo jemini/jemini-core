@@ -74,7 +74,7 @@ class PlayState < Gemini::BaseState
     game_end_checker.on_update do
       next if @tanks.size > 1 || @switching_state
       @switching_state = true
-      end_game_text = create :Text, screen_width / 2, screen_height / 2, "Player #{@tanks.first.player} wins!"
+      end_game_text = create :Text, "Player #{@tanks.first.player} wins!", :position => Vector.new(screen_width / 2, screen_height / 2)
       end_game_text.add_behavior :Timeable
       end_game_text.add_countdown :end_game, 5
       end_game_text.on_countdown_complete do

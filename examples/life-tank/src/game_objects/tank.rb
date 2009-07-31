@@ -12,12 +12,15 @@ class Tank < Gemini::GameObject
   ANGLE_ADJUSTMENT_FACTOR = 1.5 / 20.0
   POWER_ADJUSTMENT_FACTOR = 1.0 / 20.0
   TOTAL_POWER = 100.0
-  POWER_FACTOR = 40.0
+  POWER_FACTOR = 60.0
   RELOAD_UPDATES_PER_SECOND = 1.0 / 30.0
   RELOAD_WARMPUP_IN_SECONDS = 5
   MOVEMENT_FACTOR = 25.0
 #  RELOAD_WARMPUP_IN_SECONDS = 1.5
   INITIAL_LIFE = 100.0
+  MAX_JUMP_POWER = 75_000.0
+  JUMP_CHARGE_FACTOR = 50.0
+  
   COLOR_WHEEL = [:green, :red, :yellow, :blue].map {|c| Color.new c}
 
   def load(player_index)
@@ -30,7 +33,7 @@ class Tank < Gemini::GameObject
 #    set_speed_limit 100.0
 #    set_damping 0.06
     set_mass 25
-    set_restitution 0.5
+    set_restitution 0.75
     on_after_body_position_changes :update_wheels
     @wheels = []
     @angle = 45.0
@@ -52,7 +55,6 @@ class Tank < Gemini::GameObject
 #    @movement = 0.0
     @twist = 0.0
     @jump_charge = 0.0
-#    on_update :tank_update
 
     on_update :update_tank
 
@@ -132,7 +134,7 @@ private
     end
     
     if @charging_jump
-      @jump_charge += delta * 50.0 unless @jump_charge >= 100000.0
+      @jump_charge += delta * JUMP_CHARGE_FACTOR unless @jump_charge >= MAX_JUMP_POWER
     end
 
     self.angular_velocity += @twist
@@ -192,7 +194,7 @@ private
       wheel.on_physical_collided {|event| take_damage(event)}
       on_after_add_to_world do
 #        join_to_physical wheel, :joint => :spring, :self_anchor => Vector.new(0.0), :other_anchor => wheel.body_position
-        join_to_physical wheel, :joint => :basic, :anchor => wheel.body_position, :relaxation => -10.0
+        join_to_physical wheel, :joint => :basic, :anchor => wheel.body_position, :relaxation => -25.0
       end
     end
   end
@@ -218,7 +220,6 @@ private
     return if message.value.nil?
 #    puts "moving tank: #{message.value}, #{message.delta}" if @player_id == 0
 #    @movement = message.value
-
     @wheels.each {|wheel| wheel.turn(message.value * message.delta)}
   end
 

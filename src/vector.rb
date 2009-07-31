@@ -19,8 +19,17 @@ class Vector
     self.class.new(x, y)
   end
 
+  # often used for center calculations. Other multiples are not needed
+  def half
+    Vector.new(x / 2.0, y / 2.0)
+  end
+
   def +(other_vector)
     self.class.new(x + other_vector.x, y + other_vector.y)
+  end
+
+  def -(other_vector)
+    self.class.new(x - other_vector.x, y - other_vector.y)
   end
   
   def x

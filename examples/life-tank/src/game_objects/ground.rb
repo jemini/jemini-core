@@ -1,7 +1,8 @@
 class Ground < Gemini::GameObject
-  POINT_SPACING = 25
-  DIRT_DEATH_FACTOR = 0.50
-  MINIMUM_BOTTOM = 50
+  POINT_SPACING     = 25
+  DIRT_DEATH_FACTOR =  0.50
+  MINIMUM_BOTTOM    = 50
+  VARIANCE_FACTOR   =  0.05
   
   has_behavior :Taggable
   has_behavior :Physical
@@ -55,7 +56,7 @@ class Ground < Gemini::GameObject
     height = bottom - top
     current_height = rand(height.to_f * 0.6) + (height.to_f * 0.2) + top
     points = [Vector.new(right, bottom), Vector.new(left, bottom)] # these are the start points
-    variance = height.to_f * 0.1
+    variance = height.to_f * VARIANCE_FACTOR
     y_direction = 0
     (0..(width / POINT_SPACING + 1)).each do |point_width|
       y_direction += (rand(variance) * 2 - variance)

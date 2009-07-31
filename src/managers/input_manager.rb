@@ -2,37 +2,14 @@ include_class 'org.newdawn.slick.Input'
 include_class 'org.newdawn.slick.InputListener'
 require 'message_queue'
 
-require 'input_support/input_mapping'
-require 'input_support/input_message'
-require 'input_support/slick_input_listener'
-require 'input_support/slick_input_message'
+require 'managers/input_support/input_mapping'
+require 'managers/input_support/mouse_mapping'
+require 'managers/input_support/key_mapping'
+require 'managers/input_support/joystick_mapping'
 
-KEY_PRESSED = {:source_type => :key, :source_state => :pressed}
-KEY_RELEASED = {:source_type => :key, :source_state => :released}
-KEY_HELD = {:source_type => :key, :source_state => :held}
-MOUSE_MOVED = {:source_type => :mouse, :source_state => :moved, :source_value => :any}
-MOUSE_BUTTON1_PRESSED = {:source_type => :mouse, :source_state => :pressed, :source_value => Input::MOUSE_LEFT_BUTTON }
-MOUSE_BUTTON1_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_LEFT_BUTTON}
-MOUSE_BUTTON2_PRESSED = {:source_type => :mouse, :source_state => :pressed, :source_value => Input::MOUSE_RIGHT_BUTTON}
-MOUSE_BUTTON2_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_RIGHT_BUTTON}
-MOUSE_BUTTON3_PRESSED = {:source_type => :mouse, :source_state => :pressed, :source_value => Input::MOUSE_MIDDLE_BUTTON}
-MOUSE_BUTTON3_RELEASED = {:source_type => :mouse, :source_state => :released, :source_value => Input::MOUSE_MIDDLE_BUTTON}
-
-#
-# XBox 360 controllers use the following axii:
-# x
-# y
-# z
-# rx
-# ry
-# rz
-#
-# The 360 controller has two sticks and two triggers
-#
-CONTROLLER_AXIS_UPDATE = {:source_type => :controller, :source_state => :axis_update}
-CONTROLLER_BUTTON_PRESSED = {:source_type => :controller, :source_state => :pressed}
-CONTROLLER_BUTTON_RELEASED = {:source_type => :controller, :source_state => :released}
-CONTROLLER_BUTTON_HELD = {:source_type => :controller, :source_state => :held}
+require 'managers/input_support/input_message'
+require 'managers/input_support/slick_input_listener'
+require 'managers/input_support/slick_input_message'
 
 #TODO: Discover Windows mappings
 if Platform.using_osx?
@@ -175,39 +152,8 @@ module Gemini
       return if @keymap.nil?
       @input_listener.delta = delta
       @raw_input.poll(screen_width, screen_height)
-      @keymap.values.map {|keymap_array| keymap_array.map{|keymap| keymap.poll(@raw_input)} }.flatten.compact.each do |game_message|
+      all_keymappings_to_game_messages.each do |game_message|
         @game_state.manager(:message_queue).post_message game_message
-      end
-      
-      # Check for any held keys
-#      @held_buttons.each do |device, button_ids|
-#        button_ids.each do |button_id|
-#          invoke_callbacks_for(device, :held, button_id, nil, delta)
-#        end
-#      end
-    end
-
-    # probably needs deletion
-    def poll_keyboard
-      
-    end
-
-    # probably needs deletion
-    def poll_mouse
-
-    end
-
-    # probably needs deletion
-    def poll_joystick
-      @raw_input.controller_count.times do |controller_id|
-        @raw_input.get_axis_count(controller_id).times do |axis_id|
-          axis_name =  @raw_input.get_axis_name(controller_id, axis_id)
-          axis_value = @raw_input.get_axis_value(controller_id, axis_id)
-          # Do we really want to do this on each poll?
-          # No raw slick event to catch, should be wrapped anyways
-          message = InputMessage.new(:joystick_id => controller_id, :input_name => axis_name, :input_value => axis_value, :raw_input => @raw_input)
-          invoke_callbacks_for(:joystick, :axis_update, axis_name, controller_id, message)
-        end
       end
     end
 
@@ -242,6 +188,25 @@ module Gemini
       key_mappings.each do |key_map|
         @game_state.manager(:message_queue).post_message key_map.to_game_message(input_message)
       end
+    end
+
+    def all_keymappings_to_game_messages
+      @keymap.values.map {|keymap_array| poll_to_game_messages(keymap_array)}.flatten.compact
+    end
+
+    def poll_to_game_messages(keymaps)
+      messages = []
+      keymaps.reject! do |keymap|
+        begin
+          messages << keymap.poll(@raw_input)
+          false  # don't delete me
+        rescue => e
+          warn "error in poll: #{e}"
+          warn "removing keymap #{keymap}"
+          true   # I've been bad, delete me
+        end
+      end
+      messages
     end
   end
 end

@@ -15,7 +15,6 @@ $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'managers'))
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'states'))
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/../../../src')
 
-
 # only when running in non-standalone
 if File.exist? File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib'))
   jar_glob = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib', '*.jar'))
@@ -27,7 +26,7 @@ end
 require 'gemini'
 
 begin
-  Gemini::Main.start_app("Life Tank", 800, 600, :MenuState, false)
+  Gemini::Main.start_app("Life Tank", 800, 600, :MenuState, true)
 #  Gemini::Main.start_app("Life Tank", 800, 600, :InputDiagnosticState, false)
 rescue => e
   warn e

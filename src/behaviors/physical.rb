@@ -114,16 +114,6 @@ class Physical < Gemini::Behavior
 #  end
 #  alias_method :set_safe_move, :safe_move=
 
-  #Attempt to move the object to the given coordinates.
-  #Note that the object might be blocked if its path intersects another physical object.
-  def wish_move(x, y)
-    # WARNING: @body.last_position is not to be trusted. We'll just handle it ourselves.
-    @last_x = @target.x
-    @last_y = @target.y
-    @body.move(x, y)
-    #@body.set_position(@last_x, @last_y) if @target.game_state.manager(:physics).colliding? @body
-  end
-
   def width
     @body.shape.bounds.width
   end
