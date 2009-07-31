@@ -5,6 +5,7 @@ class Tank < Gemini::GameObject
   has_behavior :Taggable
 
   attr_accessor :player
+  attr_accessor :life
 
   FLIP_THRESHOLD = 0.50 * 1000.0
   FLIP_LIFT = -1000.0
@@ -109,9 +110,8 @@ class Tank < Gemini::GameObject
 
   def take_damage(collision_event)
     return unless collision_event.other.has_tag? :damage
-    @life -= collision_event.other.damage
     collision_event.other.remove_tag :damage # so other parts aren't damaged, should stop one-shots
-    explode if @life < 1
+    self.life -= collision_event.other.damage
   end
 
   def explode
@@ -120,6 +120,11 @@ class Tank < Gemini::GameObject
     explosion.magnetism_max_radius = 80.0
     explosion.magnetism_min_radius = 5.0
     @game_state.remove self
+  end
+  
+  def life=(value)
+    @life = value
+    explode if @life < 1
   end
   
 private
