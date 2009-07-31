@@ -115,10 +115,7 @@ class Tank < Gemini::GameObject
   end
 
   def explode
-    explosion = @game_state.create :Explosion, body_position
-    explosion.magnetism = 1000.0
-    explosion.magnetism_max_radius = 80.0
-    explosion.magnetism_min_radius = 5.0
+    explosion = @game_state.create :Explosion, :location => body_position, :radius => 30.0
     @game_state.remove self
   end
   

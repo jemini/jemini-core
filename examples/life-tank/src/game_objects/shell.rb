@@ -27,10 +27,7 @@ class Shell < Gemini::GameObject
   end
 
   def explode(event)
-    explosion = @game_state.create :Explosion, body_position
-    explosion.magnetism = 1000.0
-    explosion.magnetism_max_radius = 80.0
-    explosion.magnetism_min_radius = 5.0
+    explosion = @game_state.create(:Explosion, :location => body_position)
     @game_state.remove self
   end
 
