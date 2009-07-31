@@ -15,7 +15,8 @@ class Tank < Gemini::GameObject
   TOTAL_POWER = 100.0
   POWER_FACTOR = 60.0
   RELOAD_UPDATES_PER_SECOND = 1.0 / 30.0
-  RELOAD_WARMPUP_IN_SECONDS = 5
+  SHELL_RELOAD_TIME = 3
+  NUKE_RELOAD_TIME = 5
   MOVEMENT_FACTOR = 25.0
 #  RELOAD_WARMPUP_IN_SECONDS = 1.5
   INITIAL_LIFE = 100.0
@@ -97,7 +98,7 @@ class Tank < Gemini::GameObject
 
     on_physical_collided :take_damage
 
-    reload_shot
+    reload_shot SHELL_RELOAD_TIME
   end
 
   def unload
@@ -115,7 +116,7 @@ class Tank < Gemini::GameObject
   end
 
   def explode
-    explosion = @game_state.create :Explosion, :location => body_position, :radius => 30.0
+    explosion = @game_state.create :Explosion, :location => body_position, :radius => 40.0
     @game_state.remove self
   end
   
@@ -236,7 +237,19 @@ private
   def fire_shell(message)
     return unless message.player == @player_id
     return unless @ready_to_fire
-    shell = @game_state.create :Shell
+    launch_projectile(:Shell)
+    reload_shot SHELL_RELOAD_TIME
+  end
+  
+  def fire_nuke(message)
+    return unless message.player == @player_id
+    return unless @ready_to_fire
+    launch_projectile(:Nuke)
+    reload_shot NUKE_RELOAD_TIME
+  end
+  
+  def launch_projectile(type)
+    shell = @game_state.create type
     shell_offset = @barrel_anchor + Vector.new(0.0, -5.0 - (@barrel.image.width / 2.0))
     shell_position = shell_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
     shell.body_position = body_position + shell_position
@@ -245,11 +258,10 @@ private
     shell.add_force shell_vector
     @game_state.manager(:sound).play_sound :fire_cannon
     add_force shell_vector.negate
-    reload_shot
   end
 
-  def reload_shot
+  def reload_shot(delay)
     @ready_to_fire = false
-    add_countdown :shot, RELOAD_WARMPUP_IN_SECONDS, RELOAD_UPDATES_PER_SECOND
+    add_countdown :shot, delay, RELOAD_UPDATES_PER_SECOND
   end
 end

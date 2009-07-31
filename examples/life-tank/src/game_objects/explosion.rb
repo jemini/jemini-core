@@ -8,7 +8,7 @@ class Explosion < Gemini::GameObject
   #Takes a hash with the following keys and values:
   #[:location] The vector with the explosion's x/y coordinates.
   #[:duration] How long the explosion lasts.  (Default 0.1 seconds.)
-  #[:radius] Size of explosion.  (Default 80.0.)
+  #[:radius] Size of explosion.  (Default 64.0.)
   #[:damage] Maximum number of hit points taken from targets.  (Default 15.)
   #[:force] Maximum concussive force applied to targets.  (Default 1000.)
   #[:sound_volume]  (Default 1.0.)
@@ -19,15 +19,16 @@ class Explosion < Gemini::GameObject
       :sound_volume => 1.0,
       :sound_pitch => 1.0,
       :damage => 15,
-      :radius => 80.0,
+      :radius => 64.0,
       :force => 1000
     }.merge(options)
     
     move(options[:location])
     game_state.manager(:sound).play_sound :explosion, options[:sound_volume], options[:sound_pitch]
     
-    smoke = game_state.create(:FadingImage, game_state.manager(:render).get_cached_image(:smoke), Color.new(:white), 1.0)
+    smoke = game_state.create(:FadingImage, game_state.manager(:render).get_cached_image(:smoke), Color.new(:white), options[:duration] * 10.0)
     smoke.set_position position
+    smoke.scale_image_from_original(options[:radius] / 64.0)
     
     add_countdown(:fade, options[:duration])
     on_countdown_complete do |name|
