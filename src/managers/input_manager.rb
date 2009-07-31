@@ -77,6 +77,24 @@ elsif Platform.using_windows?
   XBOX_360_TRIGGER_AXIS       = 'Z Axis'  # On OSX, both triggers serve as individual axes
   XBOX_360_RIGHT_X_AXIS       = 'X Rotation'
   XBOX_360_RIGHT_Y_AXIS       = 'Y Rotation'
+elsif Platform.using_linux?
+  XBOX_360_A                  =  0
+  XBOX_360_B                  =  1
+  XBOX_360_X                  =  2
+  XBOX_360_Y                  =  3
+  XBOX_360_LEFT_BUMPER        =  4
+  XBOX_360_RIGHT_BUMPER       =  5
+  XBOX_360_BACK               =  6
+  XBOX_360_START              =  7
+  XBOX_360_GUIDE              =  8
+  XBOX_360_LEFT_STICK         =  9
+  XBOX_360_RIGHT_STICK        = 10
+  XBOX_360_LEFT_X_AXIS        = 'x'
+  XBOX_360_LEFT_Y_AXIS        = 'y'
+  XBOX_360_LEFT_TRIGGER_AXIS  = 'z'
+  XBOX_360_RIGHT_X_AXIS       = 'rx'
+  XBOX_360_RIGHT_Y_AXIS       = 'ry'
+  XBOX_360_RIGHT_TRIGGER_AXIS = 'rz'
 end
 
 # LWJGL can't poll for buttons in the negative range yet. Possible bug to report?
