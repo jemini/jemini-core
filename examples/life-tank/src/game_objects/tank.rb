@@ -111,9 +111,17 @@ class Tank < Gemini::GameObject
     return unless collision_event.other.has_tag? :damage
     @life -= collision_event.other.damage
     collision_event.other.remove_tag :damage # so other parts aren't damaged, should stop one-shots
-    @game_state.remove self if @life < 1
+    explode if @life < 1
   end
 
+  def explode
+    explosion = @game_state.create :Explosion, body_position
+    explosion.magnetism = 1000.0
+    explosion.magnetism_max_radius = 80.0
+    explosion.magnetism_min_radius = 5.0
+    @game_state.remove self
+  end
+  
 private
 
   def attach_flag
