@@ -17,6 +17,7 @@ class PlayState < Gemini::BaseState
     manager(:render).cache_image :power_arrow_neck, "power-arrow-neck.png"
     manager(:render).cache_image :shell, "shell.png"
     manager(:render).cache_image :nuke, "nuke.png"
+    manager(:render).cache_image :rolling_mine, "rolling-mine.png"
     manager(:render).cache_image :smoke, "smoke.png"
     manager(:render).cache_image :tank_wheel, "tank-wheel.png"
     manager(:render).cache_image :flag_background, "flag_background.png"

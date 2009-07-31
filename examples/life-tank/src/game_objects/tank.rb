@@ -17,6 +17,7 @@ class Tank < Gemini::GameObject
   RELOAD_UPDATES_PER_SECOND = 1.0 / 30.0
   SHELL_RELOAD_TIME = 3
   NUKE_RELOAD_TIME = 5
+  ROLLING_MINE_RELOAD_TIME = 3
   MOVEMENT_FACTOR = 25.0
 #  RELOAD_WARMPUP_IN_SECONDS = 1.5
   INITIAL_LIFE = 100.0
@@ -246,6 +247,13 @@ private
     return unless @ready_to_fire
     launch_projectile(:Nuke)
     reload_shot NUKE_RELOAD_TIME
+  end
+  
+  def fire_rolling_mine(message)
+    return unless message.player == @player_id
+    return unless @ready_to_fire
+    launch_projectile(:RollingMine)
+    reload_shot ROLLING_MINE_RELOAD_TIME
   end
   
   def launch_projectile(type)
