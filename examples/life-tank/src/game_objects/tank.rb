@@ -6,6 +6,7 @@ class Tank < Gemini::GameObject
 
   attr_accessor :player
   attr_accessor :life
+  attr_accessor :ready_to_fire
 
   FLIP_THRESHOLD = 0.50 * 1000.0
   FLIP_LIFT = -1000.0
@@ -78,15 +79,19 @@ class Tank < Gemini::GameObject
       end
     end
 
-    handle_event :move,        :move_tank
-    handle_event :fire,        :fire_shell
-    handle_event :charge_jump, :charge_jump
-    handle_event :jump,        :jump_tank
+    handle_event :move,         :move_tank
+    handle_event :charge_shell, :charge_shell
+    handle_event :fire_shell,   :fire_shell
+    handle_event :charge_nuke,  :charge_nuke
+    handle_event :fire_nuke,    :fire_nuke
+    handle_event :charge_rolling_mine, :charge_rolling_mine
+    handle_event :fire_rolling_mine,   :fire_rolling_mine
+    handle_event :charge_jump,  :charge_jump
+    handle_event :jump,         :jump_tank
 
     on_countdown_complete do |name|
       if name == :shot
-        @ready_to_fire = true
-        @power_arrow_head.color = @power_arrow_neck.color = Color.new(:yellow)
+        self.ready_to_fire = true
       else
         raise "countdown #{name.inspect} not supported!"
       end
@@ -99,7 +104,6 @@ class Tank < Gemini::GameObject
 
     on_physical_collided :take_damage
 
-    reload_shot SHELL_RELOAD_TIME
   end
 
   def unload
@@ -124,6 +128,12 @@ class Tank < Gemini::GameObject
   def life=(value)
     @life = value
     explode if @life < 1
+  end
+  
+  def ready_to_fire=(value)
+    @ready_to_fire = value
+    color = (value == true ? Color.new(:yellow) : Color.new(:black))
+    @power_arrow_head.color = @power_arrow_neck.color = color
   end
   
 private
@@ -216,6 +226,51 @@ private
 #    return if message.value.nil?
     @charging_jump = true
   end
+  
+  def charge_shell(message)
+    return unless message.player == @player_id
+    @charging_shell = true
+    reload_shot SHELL_RELOAD_TIME
+  end
+
+  def charge_nuke(message)
+    return unless message.player == @player_id
+    @charging_nuke = true
+    reload_shot NUKE_RELOAD_TIME
+  end
+
+  def charge_rolling_mine(message)
+    return unless message.player == @player_id
+    @charging_rolling_mine = true
+    reload_shot ROLLING_MINE_RELOAD_TIME
+  end
+
+  def fire_shell(message)
+    return unless message.player == @player_id
+    return unless @charging_shell 
+    @charging_shell = false
+    return unless self.ready_to_fire
+    self.ready_to_fire = false
+    launch_projectile(:Shell)
+  end
+  
+  def fire_nuke(message)
+    return unless message.player == @player_id
+    return unless @charging_nuke 
+    @charging_nuke = false
+    return unless self.ready_to_fire
+    self.ready_to_fire = false
+    launch_projectile(:Nuke)
+  end
+  
+  def fire_rolling_mine(message)
+    return unless message.player == @player_id
+    return unless @charging_rolling_mine 
+    @charging_rolling_mine = false
+    return unless self.ready_to_fire
+    self.ready_to_fire = false
+    launch_projectile(:RollingMine)
+  end
 
   def jump_tank(message)
     return unless message.player == @player_id
@@ -234,27 +289,6 @@ private
 #    @movement = message.value
     @wheels.each {|wheel| wheel.turn(message.value * message.delta)}
   end
-
-  def fire_shell(message)
-    return unless message.player == @player_id
-    return unless @ready_to_fire
-    launch_projectile(:Shell)
-    reload_shot SHELL_RELOAD_TIME
-  end
-  
-  def fire_nuke(message)
-    return unless message.player == @player_id
-    return unless @ready_to_fire
-    launch_projectile(:Nuke)
-    reload_shot NUKE_RELOAD_TIME
-  end
-  
-  def fire_rolling_mine(message)
-    return unless message.player == @player_id
-    return unless @ready_to_fire
-    launch_projectile(:RollingMine)
-    reload_shot ROLLING_MINE_RELOAD_TIME
-  end
   
   def launch_projectile(type)
     shell = @game_state.create type
@@ -269,7 +303,7 @@ private
   end
 
   def reload_shot(delay)
-    @ready_to_fire = false
+    self.ready_to_fire = false
     add_countdown :shot, delay, RELOAD_UPDATES_PER_SECOND
   end
 end
