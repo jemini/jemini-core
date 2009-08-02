@@ -28,14 +28,15 @@ Gemini::InputManager.define_keymap do |i|
 
   i.map_key :held => Input::KEY_Q, :move => -1, :player => 0
   i.map_key :held => Input::KEY_E, :move =>  1, :player => 0
-  i.map_key :held => Input::KEY_COMMA, :move => -1, :player => 1
-  i.map_key :held => Input::KEY_PERIOD, :move =>  1, :player => 1
   i.map_key :pressed  => Input::KEY_F, :charge_jump => nil, :player => 0
   i.map_key :released => Input::KEY_F, :jump => nil, :player => 0
-  i.map_key :pressed  => Input::KEY_SLASH, :charge_jump => nil, :player => 1
-  i.map_key :released => Input::KEY_SLASH, :jump => nil, :player => 1
   # KEY_TAB doesn't work unless alt+tab. Mac only?
-  i.map_key :held => Input::KEY_LSHIFT, :fire => nil, :player => 0
+  i.map_key :pressed => Input::KEY_LSHIFT, :charge_shell => nil, :player => 0
+  i.map_key :released => Input::KEY_LSHIFT, :fire_shell => nil, :player => 0
+  i.map_key :pressed => Input::KEY_C, :charge_nuke => nil, :player => 0
+  i.map_key :released => Input::KEY_C, :fire_nuke => nil, :player => 0
+  i.map_key :pressed => Input::KEY_V, :charge_rolling_mine => nil, :player => 0
+  i.map_key :released => Input::KEY_V, :fire_rolling_mine => nil, :player => 0
 
   0.upto i.connected_joystick_size - 1 do |j|
     if Platform.using_osx?
@@ -66,9 +67,14 @@ Gemini::InputManager.define_keymap do |i|
       # y is inverted
       message.value = -i.filter_dead_zone(0.2, message.value)
     end
-    i.map_joystick :joystick_id => j, :held => XBOX_360_A, :fire => nil, :player => j
-    i.map_joystick :joystick_id => j, :pressed  => XBOX_360_B, :charge_jump => nil, :player => j
-    i.map_joystick :joystick_id => j, :released => XBOX_360_B, :jump => nil, :player => j
+    i.map_joystick :joystick_id => j, :pressed => XBOX_360_A, :charge_shell => nil, :player => j
+    i.map_joystick :joystick_id => j, :released => XBOX_360_A, :fire_shell => nil, :player => j
+    i.map_joystick :joystick_id => j, :pressed => XBOX_360_X, :charge_shell => nil, :player => j
+    i.map_joystick :joystick_id => j, :released => XBOX_360_X, :fire_shell => nil, :player => j
+    i.map_joystick :joystick_id => j, :pressed => XBOX_360_Y, :charge_shell => nil, :player => j
+    i.map_joystick :joystick_id => j, :released => XBOX_360_Y, :fire_shell => nil, :player => j
+    i.map_joystick :joystick_id => j, :pressed  => XBOX_360_RIGHT_BUMPER, :charge_jump => nil, :player => j
+    i.map_joystick :joystick_id => j, :released => XBOX_360_RIGHT_BUMPER, :jump => nil, :player => j
   end
 #  25.times do |button_number|
 #    i.map_joystick :joystick_id => 0, :pressed => button_number, :fire => nil do |message, raw_input|
@@ -79,22 +85,32 @@ Gemini::InputManager.define_keymap do |i|
   ########################################
   # Keys for player 2
   ########################################
-  i.map_key :held => Input::KEY_LEFT, :adjust_angle => nil, :player => 1 do |message, raw_input|
+  i.map_key :held => Input::KEY_J, :adjust_angle => nil, :player => 1 do |message, raw_input|
     message.value = -KEYBOARD_ANGLE_ADJUST_RATE
   end
 
-  i.map_key :held => Input::KEY_RIGHT, :adjust_angle => nil, :player => 1 do |message, raw_input|
+  i.map_key :held => Input::KEY_L, :adjust_angle => nil, :player => 1 do |message, raw_input|
     message.value = KEYBOARD_ANGLE_ADJUST_RATE
   end
 
-  i.map_key :held => Input::KEY_UP, :adjust_power => nil, :player => 1 do |message, raw_input|
+  i.map_key :held => Input::KEY_I, :adjust_power => nil, :player => 1 do |message, raw_input|
     message.value = KEYBOARD_POWER_ADJUST_RATE
   end
 
-  i.map_key :held => Input::KEY_DOWN, :adjust_power => nil, :player => 1 do |message, raw_input|
+  i.map_key :held => Input::KEY_K, :adjust_power => nil, :player => 1 do |message, raw_input|
     message.value = -KEYBOARD_POWER_ADJUST_RATE
   end
 
   # KEY_TAB doesn't work unless alt+tab. Mac only?
-  i.map_key :held => Input::KEY_SPACE, :fire => nil, :player => 1
+  i.map_key :pressed => Input::KEY_SPACE, :charge_shell => nil, :player => 1
+  i.map_key :released => Input::KEY_SPACE, :fire_shell => nil, :player => 1
+  i.map_key :pressed => Input::KEY_N, :charge_nuke => nil, :player => 1
+  i.map_key :released => Input::KEY_N, :fire_nuke => nil, :player => 1
+  i.map_key :pressed => Input::KEY_M, :charge_rolling_mine => nil, :player => 1
+  i.map_key :released => Input::KEY_M, :fire_rolling_mine => nil, :player => 1
+  i.map_key :held => Input::KEY_U, :move => -1, :player => 1
+  i.map_key :held => Input::KEY_O, :move =>  1, :player => 1
+  i.map_key :pressed  => Input::KEY_H, :charge_jump => nil, :player => 1
+  i.map_key :released => Input::KEY_H, :jump => nil, :player => 1
+  
 end

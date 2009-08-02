@@ -5,6 +5,8 @@ class Tank < Gemini::GameObject
   has_behavior :Taggable
 
   attr_accessor :player
+  attr_accessor :life
+  attr_accessor :ready_to_fire
 
   FLIP_THRESHOLD = 0.50 * 1000.0
   FLIP_LIFT = -1000.0
@@ -14,7 +16,9 @@ class Tank < Gemini::GameObject
   TOTAL_POWER = 100.0
   POWER_FACTOR = 60.0
   RELOAD_UPDATES_PER_SECOND = 1.0 / 30.0
-  RELOAD_WARMPUP_IN_SECONDS = 5
+  SHELL_RELOAD_TIME = 3
+  NUKE_RELOAD_TIME = 5
+  ROLLING_MINE_RELOAD_TIME = 3
   MOVEMENT_FACTOR = 25.0
 #  RELOAD_WARMPUP_IN_SECONDS = 1.5
   INITIAL_LIFE = 100.0
@@ -75,15 +79,19 @@ class Tank < Gemini::GameObject
       end
     end
 
-    handle_event :move,        :move_tank
-    handle_event :fire,        :fire_shell
-    handle_event :charge_jump, :charge_jump
-    handle_event :jump,        :jump_tank
+    handle_event :move,         :move_tank
+    handle_event :charge_shell, :charge_shell
+    handle_event :fire_shell,   :fire_shell
+    handle_event :charge_nuke,  :charge_nuke
+    handle_event :fire_nuke,    :fire_nuke
+    handle_event :charge_rolling_mine, :charge_rolling_mine
+    handle_event :fire_rolling_mine,   :fire_rolling_mine
+    handle_event :charge_jump,  :charge_jump
+    handle_event :jump,         :jump_tank
 
     on_countdown_complete do |name|
       if name == :shot
-        @ready_to_fire = true
-        @power_arrow_head.color = @power_arrow_neck.color = Color.new(:yellow)
+        self.ready_to_fire = true
       else
         raise "countdown #{name.inspect} not supported!"
       end
@@ -96,7 +104,6 @@ class Tank < Gemini::GameObject
 
     on_physical_collided :take_damage
 
-    reload_shot
   end
 
   def unload
@@ -109,11 +116,26 @@ class Tank < Gemini::GameObject
 
   def take_damage(collision_event)
     return unless collision_event.other.has_tag? :damage
-    @life -= collision_event.other.damage
     collision_event.other.remove_tag :damage # so other parts aren't damaged, should stop one-shots
-    @game_state.remove self if @life < 1
+    self.life -= collision_event.other.damage
   end
 
+  def explode
+    explosion = @game_state.create :Explosion, :location => body_position, :radius => 40.0
+    @game_state.remove self
+  end
+  
+  def life=(value)
+    @life = value
+    explode if @life < 1
+  end
+  
+  def ready_to_fire=(value)
+    @ready_to_fire = value
+    color = (value == true ? Color.new(:yellow) : Color.new(:black))
+    @power_arrow_head.color = @power_arrow_neck.color = color
+  end
+  
 private
 
   def attach_flag
@@ -204,6 +226,51 @@ private
 #    return if message.value.nil?
     @charging_jump = true
   end
+  
+  def charge_shell(message)
+    return unless message.player == @player_id
+    @charging_shell = true
+    reload_shot SHELL_RELOAD_TIME
+  end
+
+  def charge_nuke(message)
+    return unless message.player == @player_id
+    @charging_nuke = true
+    reload_shot NUKE_RELOAD_TIME
+  end
+
+  def charge_rolling_mine(message)
+    return unless message.player == @player_id
+    @charging_rolling_mine = true
+    reload_shot ROLLING_MINE_RELOAD_TIME
+  end
+
+  def fire_shell(message)
+    return unless message.player == @player_id
+    return unless @charging_shell 
+    @charging_shell = false
+    return unless self.ready_to_fire
+    self.ready_to_fire = false
+    launch_projectile(:Shell)
+  end
+  
+  def fire_nuke(message)
+    return unless message.player == @player_id
+    return unless @charging_nuke 
+    @charging_nuke = false
+    return unless self.ready_to_fire
+    self.ready_to_fire = false
+    launch_projectile(:Nuke)
+  end
+  
+  def fire_rolling_mine(message)
+    return unless message.player == @player_id
+    return unless @charging_rolling_mine 
+    @charging_rolling_mine = false
+    return unless self.ready_to_fire
+    self.ready_to_fire = false
+    launch_projectile(:RollingMine)
+  end
 
   def jump_tank(message)
     return unless message.player == @player_id
@@ -222,11 +289,9 @@ private
 #    @movement = message.value
     @wheels.each {|wheel| wheel.turn(message.value * message.delta)}
   end
-
-  def fire_shell(message)
-    return unless message.player == @player_id
-    return unless @ready_to_fire
-    shell = @game_state.create :Shell
+  
+  def launch_projectile(type)
+    shell = @game_state.create type
     shell_offset = @barrel_anchor + Vector.new(0.0, -5.0 - (@barrel.image.width / 2.0))
     shell_position = shell_offset.pivot_around_degrees(@zero, physical_rotation + @angle)
     shell.body_position = body_position + shell_position
@@ -235,11 +300,10 @@ private
     shell.add_force shell_vector
     @game_state.manager(:sound).play_sound :fire_cannon
     add_force shell_vector.negate
-    reload_shot
   end
 
-  def reload_shot
-    @ready_to_fire = false
-    add_countdown :shot, RELOAD_WARMPUP_IN_SECONDS, RELOAD_UPDATES_PER_SECOND
+  def reload_shot(delay)
+    self.ready_to_fire = false
+    add_countdown :shot, delay, RELOAD_UPDATES_PER_SECOND
   end
 end
