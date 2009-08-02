@@ -1,5 +1,5 @@
-include_class 'org.newdawn.slick.Input'
-include_class 'org.newdawn.slick.InputListener'
+java_import 'org.newdawn.slick.Input'
+
 require 'message_queue'
 
 require 'managers/input_support/input_mapping'
@@ -76,9 +76,8 @@ module Gemini
   # Consumes raw slick_input events and output events based on 
   # registered key bindings.
   class InputManager < Gemini::GameObject
-
+    
     $LOAD_PATH.each do |path|
-      puts path
       if File.basename(path) == "input_helpers"
         # could be .class or .rb, we'll just search for *.* and hope nobody is silly (:
         Dir.glob(File.join(File.expand_path(path), "*.*").gsub('%20', ' ')).each do |input_helper_path|

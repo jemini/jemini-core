@@ -17,7 +17,6 @@ class IconStripCounterDisplay < Gemini::GameObject
     self.x = 0
     self.y = 0
     on_after_count_changes do
-      puts "count changed #{count}"
       icon_count = count < 0 ? 0 : count
       diff = @icons.size - icon_count
       if diff > 0

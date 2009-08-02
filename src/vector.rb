@@ -1,3 +1,4 @@
+# TODO: Remove reliance on Slick's vector
 class Vector
   SlickVector = Java::org::newdawn::slick::geom::Vector2f
   
@@ -22,6 +23,11 @@ class Vector
   # often used for center calculations. Other multiples are not needed
   def half
     Vector.new(x / 2.0, y / 2.0)
+  end
+
+  def ==(other_vector)
+    return false unless other_vector.respond_to?(:x) || other_vector.respond_to?(:y)
+    x == other_vector.x && y == other_vector.y
   end
 
   def +(other_vector)

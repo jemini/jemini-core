@@ -96,24 +96,6 @@ class Physical < Gemini::Behavior
   end
   alias_method :set_speed_limit, :speed_limit=
 
-#  def safe_move=(safe_move)
-#    @safe_move = safe_move
-#    if safe_move
-#      puts "adding safe move listener"
-#      listen_for(:collided, @target) do
-#        puts "collision event"
-#        if @safe_move
-#          puts "position: #{@body.position}"
-#          puts "last position: #{@body.last_position}"
-#          #@body.set_position(@body.last_position.x, @body.last_position.y)
-#          puts "reseting position to #{@last_x}, #{@last_y}"
-#          @body.set_position(@last_x, @last_y)
-#        end
-#      end
-#    end
-#  end
-#  alias_method :set_safe_move, :safe_move=
-
   def width
     @body.shape.bounds.width
   end

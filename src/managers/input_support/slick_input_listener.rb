@@ -1,5 +1,6 @@
 module Gemini
   class SlickInputListener
+    java_import 'org.newdawn.slick.InputListener'
     include InputListener
 
     def initialize(state)

@@ -18,7 +18,6 @@ class BigSprite < Drawable
     half_height = @image.height / 2
     center_x = @target.x - half_width
     center_y = @target.y - half_height
-    #puts "drawing with rotation: #{@image.rotation}"
     unless 0 == @image.rotation
       graphics.rotate @target.x, @target.y, @image.rotation
     end

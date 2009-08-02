@@ -55,8 +55,6 @@ class Sprite < Drawable
   
   def image_rotation=(rotation)
     @rotation = rotation
-  rescue => e
-    puts "rotation error for: #{@target}"
   end
   alias_method :set_image_rotation, :image_rotation=
   
