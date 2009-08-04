@@ -25,17 +25,17 @@ class Spatial < Gemini::Behavior
   end
   
   #Takes a Vector or x/y coordinates to move to.
-  def move(x_or_other, y=nil)
-    if y.nil?
-      #TODO: Determine if Spatial should really suppor this behavior.
-      # use case: Pipe a mouse move event directly to move
-      if x_or_other.kind_of? Gemini::Message
-        @position = Vector.new(x_or_other.value.x, x_or_other.value.y)
-      else
-        @position = Vector.new(x_or_other.x, x_or_other.y)
-      end
-    else
-      @position = Vector.new(x_or_other, y)
-    end
-  end
+#  def move(x_or_other, y=nil)
+#    if y.nil?
+#      #TODO: Determine if Spatial should really suppor this behavior.
+#      # use case: Pipe a mouse move event directly to move
+#      if x_or_other.kind_of? Gemini::Message
+#        @position = Vector.new(x_or_other.value.x, x_or_other.value.y)
+#      else
+#        @position = Vector.new(x_or_other.x, x_or_other.y)
+#      end
+#    else
+#      @position = Vector.new(x_or_other, y)
+#    end
+#  end
 end

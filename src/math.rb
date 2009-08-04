@@ -10,4 +10,14 @@ module Gemini
       radians * (180.0/::Math::PI)
     end
   end
+
+  module FloatHelpers
+    def near?(numeric, percent)
+      self <= (numeric + numeric * percent) && self >= (numeric - numeric * percent)
+    end
+  end
+end
+
+class Float
+  include Gemini::FloatHelpers
 end

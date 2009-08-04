@@ -106,8 +106,14 @@ class Vector
     Math::sqrt((x ** 2) + (y ** 2))
   end
 
+  # TODO: Implement -@ and +@, the negate and plus(?) unary operators
   def negate
     self.class.new(-x, -y)
+  end
+
+  def near?(other_vector, radius)
+    puts "distance: #{distance_from(other_vector)}"
+    distance_from(other_vector) <= radius
   end
 
   def to_s
