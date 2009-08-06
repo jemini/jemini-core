@@ -12,7 +12,7 @@ class TriangleTrail < Gemini::GameObject
     @flip = false
     #TODO: Remove message when the callback stuff is checked in
     @first_move = true
-    listen_for(:after_move) do |message|
+    on_after_position_changes do |message|
       if @first_move
         @first_move = false
         next

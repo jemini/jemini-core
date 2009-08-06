@@ -30,7 +30,7 @@ class Physical < Gemini::Behavior
     @body.user_data = @target
     @angular_damping = 0.0
     @target.enable_listeners_for :physical_collided
-    @target.on_after_move { move @target.x , @target.y}
+    @target.on_after_position_changes { move_body @target.position }
     # Manual angular damping. New Phys2D may support this? If not, file a bug.
     @target.on_update do |delta|
       next if @angular_damping.zero? || angular_velocity.zero?
@@ -54,7 +54,7 @@ class Physical < Gemini::Behavior
 
 
   def body_position
-    @body.position
+    @body.position.to_vector
   end
 
   #Takes a Vector with the x/y coordinates to move the object to.
@@ -201,12 +201,11 @@ class Physical < Gemini::Behavior
   #[number] Value to set the mass to.
   def mass=(mass)
     @mass = mass
-    x, y = @target.x, @target.y
     @mass = @mass.kind_of?(Symbol) ? INFINITE_MASS : @mass
     @body.set(@shape, @mass)
     # TODO: Consider moving to set_shape
     # A body's position is lost when it moves, reset the position to where it was
-    @body.move x, y
+    @body.move @target.position.x, @target.position.y
   end
   alias_method :set_mass, :mass=
 
@@ -247,7 +246,7 @@ class Physical < Gemini::Behavior
     set_body_position saved_body_position
     @target.set_position saved_position
     set_friction saved_friction
-    @target.move(saved_x, saved_y)
+    @target.position = Vector.new(saved_x, saved_y)
     self.damping = saved_damping
     self.angular_damping = saved_angular_damping
   end
@@ -361,11 +360,7 @@ private
     @body.move(x, y)
   end
 
-  def move(x_or_vector, y=nil)
-    if x_or_vector.kind_of? Numeric
-      @body.move(x_or_vector, y)
-    else
-      @body.move(x_or_vector.x, x_or_vector.y)
-    end
+  def move_body(vector)
+    @body.move(vector.x, vector.y)
   end
 end

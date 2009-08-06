@@ -1,8 +1,10 @@
 #Gives an object x/y coordinates.
 class Spatial < Gemini::Behavior
+  wrap_with_callbacks :position=
   attr_accessor :position
+  
   alias_method :set_position, :position=
-  wrap_with_callbacks :move
+  
   
   def load
     @position = Vector.new(0,0)

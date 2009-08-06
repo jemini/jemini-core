@@ -13,8 +13,8 @@ class Flag < Gemini::GameObject
   end
 
   def snap_to_tank
-    move Vector.new(@tank.body_position.x, 40.0)
-    @logo.move Vector.new(@tank.body_position.x, 40.0)
+    self.position  = Vector.new(@tank.body_position.x, 40.0)
+    @logo.position = Vector.new(@tank.body_position.x, 40.0)
   end
 
   def unload

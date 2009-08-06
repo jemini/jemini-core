@@ -12,7 +12,7 @@ class TriangleTrailEmittable < Gemini::Behavior
 
     
     @target.on_update do
-      @emitter.move(@emitter_offset[0] + @target.x, @emitter_offset[1] + @target.y)
+      @emitter.position = Vector.new(@emitter_offset[0] + @target.x, @emitter_offset[1] + @target.y)
     end
   end
 

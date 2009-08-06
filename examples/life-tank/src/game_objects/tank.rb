@@ -64,21 +64,8 @@ class Tank < Gemini::GameObject
 
 #    join_to_physical @barrel, :joint => :basic, :anchor => Vector.new(0.0, 0.0)
 
-    handle_event :adjust_angle do |message|
-      next unless message.player == @player_id
-      new_angle = @angle + (message.value * ANGLE_ADJUSTMENT_FACTOR * message.delta)
-      @angle = new_angle if new_angle < 90.0 && new_angle > -90.0
-    end
-
-    handle_event :adjust_power do |message|
-      next unless message.player == @player_id
-      new_power = @power + (message.value * POWER_ADJUSTMENT_FACTOR * message.delta)
-      if new_power < TOTAL_POWER && new_power > 10.0
-        @power_changed = true if new_power != @power # @power_changed is used during update
-        @power = new_power
-      end
-    end
-
+    handle_event :adjust_angle, :adjust_angle
+    handle_event :adjust_power, :adjust_power
     handle_event :move,         :move_tank
     handle_event :charge_shell, :charge_shell
     handle_event :fire_shell,   :fire_shell
@@ -103,7 +90,7 @@ class Tank < Gemini::GameObject
     end
 
     on_physical_collided :take_damage
-
+    charge_shell
   end
 
   def unload
@@ -132,11 +119,26 @@ class Tank < Gemini::GameObject
   
   def ready_to_fire=(value)
     @ready_to_fire = value
-    color = (value == true ? Color.new(:yellow) : Color.new(:black))
+    color = (value ? Color.new(:yellow) : Color.new(:black))
     @power_arrow_head.color = @power_arrow_neck.color = color
   end
   
 private
+
+  def adjust_angle(message)
+    return unless message.player == @player_id
+    new_angle = @angle + (message.value * ANGLE_ADJUSTMENT_FACTOR * message.delta)
+    @angle = new_angle if new_angle < 90.0 && new_angle > -90.0
+  end
+
+  def adjust_power(message)
+    return unless message.player == @player_id
+    new_power = @power + (message.value * POWER_ADJUSTMENT_FACTOR * message.delta)
+    if new_power < TOTAL_POWER && new_power > 10.0
+      @power_changed = true if new_power != @power # @power_changed is used during update
+      @power = new_power
+    end
+  end
 
   def attach_flag
     @flag = @game_state.create_on_layer :Flag, :flag, self
@@ -227,8 +229,9 @@ private
     @charging_jump = true
   end
   
-  def charge_shell(message)
-    return unless message.player == @player_id
+  def charge_shell(message=nil)
+    return if message && message.player != @player_id
+    return if @charging_shell
     @charging_shell = true
     reload_shot SHELL_RELOAD_TIME
   end
@@ -247,18 +250,19 @@ private
 
   def fire_shell(message)
     return unless message.player == @player_id
-    return unless @charging_shell 
+    return unless @charging_shell
+    return unless ready_to_fire
     @charging_shell = false
-    return unless self.ready_to_fire
     self.ready_to_fire = false
     launch_projectile(:Shell)
+    charge_shell
   end
   
   def fire_nuke(message)
     return unless message.player == @player_id
     return unless @charging_nuke 
     @charging_nuke = false
-    return unless self.ready_to_fire
+    return unless ready_to_fire
     self.ready_to_fire = false
     launch_projectile(:Nuke)
   end
@@ -267,7 +271,7 @@ private
     return unless message.player == @player_id
     return unless @charging_rolling_mine 
     @charging_rolling_mine = false
-    return unless self.ready_to_fire
+    return unless ready_to_fire
     self.ready_to_fire = false
     launch_projectile(:RollingMine)
   end
@@ -285,8 +289,6 @@ private
   def move_tank(message)
     return unless message.player == @player_id
     return if message.value.nil?
-#    puts "moving tank: #{message.value}, #{message.delta}" if @player_id == 0
-#    @movement = message.value
     @wheels.each {|wheel| wheel.turn(message.value * message.delta)}
   end
   

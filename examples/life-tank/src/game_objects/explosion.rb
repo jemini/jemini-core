@@ -23,7 +23,7 @@ class Explosion < Gemini::GameObject
       :force => 1000
     }.merge(options)
     
-    move(options[:location])
+    self.position = (options[:location])
     game_state.manager(:sound).play_sound :explosion, options[:sound_volume], options[:sound_pitch]
     
     smoke = game_state.create(:FadingImage, game_state.manager(:render).get_cached_image(:smoke), Color.new(:white), options[:duration] * 10.0)

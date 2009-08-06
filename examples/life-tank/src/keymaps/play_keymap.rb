@@ -32,7 +32,7 @@ Gemini::InputManager.define_keymap do |i|
   i.map_key :released => Input::KEY_F, :jump => nil, :player => 0
   # KEY_TAB doesn't work unless alt+tab. Mac only?
   i.map_key :pressed => Input::KEY_LSHIFT, :charge_shell => nil, :player => 0
-  i.map_key :released => Input::KEY_LSHIFT, :fire_shell => nil, :player => 0
+  i.map_key :held => Input::KEY_LSHIFT, :fire_shell => nil, :player => 0
   i.map_key :pressed => Input::KEY_C, :charge_nuke => nil, :player => 0
   i.map_key :released => Input::KEY_C, :fire_nuke => nil, :player => 0
   i.map_key :pressed => Input::KEY_V, :charge_rolling_mine => nil, :player => 0
@@ -68,11 +68,11 @@ Gemini::InputManager.define_keymap do |i|
       message.value = -i.filter_dead_zone(0.2, message.value)
     end
     i.map_joystick :joystick_id => j, :pressed => XBOX_360_A, :charge_shell => nil, :player => j
-    i.map_joystick :joystick_id => j, :released => XBOX_360_A, :fire_shell => nil, :player => j
+    i.map_joystick :joystick_id => j, :held => XBOX_360_A, :fire_shell => nil, :player => j
     i.map_joystick :joystick_id => j, :pressed => XBOX_360_X, :charge_shell => nil, :player => j
-    i.map_joystick :joystick_id => j, :released => XBOX_360_X, :fire_shell => nil, :player => j
+    i.map_joystick :joystick_id => j, :held => XBOX_360_X, :fire_shell => nil, :player => j
     i.map_joystick :joystick_id => j, :pressed => XBOX_360_Y, :charge_shell => nil, :player => j
-    i.map_joystick :joystick_id => j, :released => XBOX_360_Y, :fire_shell => nil, :player => j
+    i.map_joystick :joystick_id => j, :held => XBOX_360_Y, :fire_shell => nil, :player => j
     i.map_joystick :joystick_id => j, :pressed  => XBOX_360_RIGHT_BUMPER, :charge_jump => nil, :player => j
     i.map_joystick :joystick_id => j, :released => XBOX_360_RIGHT_BUMPER, :jump => nil, :player => j
   end
@@ -103,7 +103,7 @@ Gemini::InputManager.define_keymap do |i|
 
   # KEY_TAB doesn't work unless alt+tab. Mac only?
   i.map_key :pressed => Input::KEY_SPACE, :charge_shell => nil, :player => 1
-  i.map_key :released => Input::KEY_SPACE, :fire_shell => nil, :player => 1
+  i.map_key :held => Input::KEY_SPACE, :fire_shell => nil, :player => 1
   i.map_key :pressed => Input::KEY_N, :charge_nuke => nil, :player => 1
   i.map_key :released => Input::KEY_N, :fire_nuke => nil, :player => 1
   i.map_key :pressed => Input::KEY_M, :charge_rolling_mine => nil, :player => 1

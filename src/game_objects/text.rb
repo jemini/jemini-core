@@ -57,11 +57,11 @@ private
   def orient_text(options)
     case options[:justify]
     when :top_left
-      move options[:position] + Vector.new(text_width, text_height).half if options[:position]
+      self.position = options[:position] + Vector.new(text_width, text_height).half if options[:position]
     when :bottom_right
-      move options[:position] - Vector.new(text_width, text_height).half if options[:position]
+      self.position = options[:position] - Vector.new(text_width, text_height).half if options[:position]
     when :center, nil
-      move options[:position]
+      self.position = options[:position]
     end
   end
 

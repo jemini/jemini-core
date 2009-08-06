@@ -17,51 +17,49 @@ module Gemini
     attr_reader :reference_count, :target
     
     def self.method_added(method)
-      if callback_methods_to_wrap.member? method
-        begin
-          return if callback_methods_wrapped.member? method #instance_method(:"wrapped_#{method}") #&& wrapped_methods.member?(method)
-        rescue NameError; end #Intentionally swallow, this section is to prevent infinite recursion
-        callback_methods_wrapped << method
-        alias_method :"wrapped_#{method}", method
-        arity = instance_method(:"wrapped_#{method}").arity
-        if arity.abs > 0
-          args = (1..arity.abs).inject([]){|args, i| args << "arg#{i}" }
-          args[-1].insert(0,"*") if arity < 0
-        end
-        if match = /^(.*)=$/.match(method.to_s)
-          method_name = match[1]
-          code = <<-ENDL
-            def #{method}(#{args})
-              raise Gemini::InvalidWrapWithCallbacksError.new("Cannot wrap #{method} with callbacks without \\"#{method_name}\\"") unless respond_to?(:#{method_name})
-              event = ValueChangedEvent.new(@target.#{method_name}, #{args})
-              callback_abort = CallbackStatus.new
-              @target.notify :before_#{method_name}_changes, event
-              if callback_abort.continue?              
-                self.wrapped_#{method}(#{args})
-                @target.notify :after_#{method_name}_changes, event
-              end
-            end
-          ENDL
-          wrapped_methods << "before_#{method_name}_changes"
-          wrapped_methods << "after_#{method_name}_changes"
-        else
-          code = <<-ENDL
-            def #{method}(#{(args.join(",") + ",") if args} &block)
-              callback_abort = CallbackStatus.new
-              @target.notify :before_#{method}, callback_abort
-              if callback_abort.continue?              
-                self.wrapped_#{method}(#{(args.join(",") + ",") if args} &block)
-                @target.notify :after_#{method}
-              end
-            end
-          ENDL
-          wrapped_methods << "before_#{method}"
-          wrapped_methods << "after_#{method}"
-        end
-        self.class_eval(code, __FILE__, __LINE__)
-      else
+      if !callback_methods_to_wrap.member?(method) || callback_methods_wrapped.member?(method)
         super
+        return
       end
+      
+      callback_methods_wrapped << method
+      alias_method :"wrapped_#{method}", method
+      arity = instance_method(:"wrapped_#{method}").arity
+      if arity.abs > 0
+        args = (1..arity.abs).inject([]){|args, i| args << "arg#{i}" }
+        args[-1].insert(0,"*") if arity < 0
+      end
+      if match = /^(.*)=$/.match(method.to_s)
+        method_name = match[1]
+        code = <<-ENDL
+          def #{method}(#{args})
+            raise Gemini::InvalidWrapWithCallbacksError.new("Cannot wrap #{method} with callbacks without \\"#{method_name}\\"") unless respond_to?(:#{method_name})
+            event = ValueChangedEvent.new(@target.#{method_name}, #{args})
+            callback_abort = CallbackStatus.new
+            @target.notify :before_#{method_name}_changes, event
+            if callback_abort.continue?
+              self.wrapped_#{method}(#{args})
+              @target.notify :after_#{method_name}_changes, event
+            end
+          end
+        ENDL
+        wrapped_methods << "before_#{method_name}_changes"
+        wrapped_methods << "after_#{method_name}_changes"
+      else
+        code = <<-ENDL
+          def #{method}(#{(args.join(",") + ",") if args} &block)
+            callback_abort = CallbackStatus.new
+            @target.notify :before_#{method}, callback_abort
+            if callback_abort.continue?
+              self.wrapped_#{method}(#{(args.join(",") + ",") if args} &block)
+              @target.notify :after_#{method}
+            end
+          end
+        ENDL
+        wrapped_methods << "before_#{method}"
+        wrapped_methods << "after_#{method}"
+      end
+      self.class_eval(code, __FILE__, __LINE__)
     end
     
   protected
@@ -133,6 +131,7 @@ module Gemini
         rescue NameError
           raise "Cannot load dependant behavior '#{dependant_behavior}' in behavior '#{self.class}'"
         end
+
         unless @target.kind_of? dependant_behavior_class
           @target.add_behavior dependant_behavior_class.to_s 
           @dependant_behaviors << dependant_behavior
@@ -143,13 +142,6 @@ module Gemini
       behavior_list = @target.send(:instance_variable_get, :@__behaviors)
       return unless behavior_list[self.class.name.to_sym].nil?
       behavior_list[self.class.name.to_sym] = self 
-
-#      self.class.kind_of_dependencies.each do |dependant_behavior|
-#        dependency = dependant_behavior.constantize
-#        next if behavior_list.find {|behavior| behavior.last.kind_of?(dependency)}
-#        
-#        raise "Dependant behavior '#{dependant_behavior}' was not found on class #{self.class}" 
-#      end
 
       self.class.declared_method_list.each do |method|
         #TODO: Tell us which behavior is being overridden
