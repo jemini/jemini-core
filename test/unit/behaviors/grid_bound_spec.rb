@@ -9,10 +9,36 @@ describe "GridBound" do
     @game_object.add_behavior :GridBound
   end
 
+  it "depends on Movable" do
+    @game_object.should be_kind_of(Movable)
+  end
+
+  it "depends on Spatial" do
+    @game_object.should be_kind_of(Spatial)
+  end
+  
   describe '#grid_size' do
     it "defaults to 32x32 by default" do
-      @game_object.grid_size.x.should be_close(32, 0.01)
-      @game_object.grid_size.y.should be_close(32, 0.01)
+      @game_object.grid_size.x.should == 32
+      @game_object.grid_size.y.should == 32
+    end
+  end
+
+  describe '#grid_changed' do
+    it 'is wrapped with callbacks' do
+      @grid_changed = false
+
+      @game_object.on_grid_changed do
+        @grid_changed = true
+      end
+      
+      @grid_changed.should be_false
+      @game_object.movable_speed = 34.0 / 2.0
+      @game_object.move Vector.new(1.0, 0.0)
+      @game_object.update(1)
+      @grid_changed.should be_false
+      @game_object.update(1)
+      @grid_changed.should be_true
     end
   end
   
@@ -24,9 +50,9 @@ describe "GridBound" do
     end
 
     it "sets the value used for #grid_position" do
-      @game_object.grid_position = Vector.new(2.0, 3.0)
-      @game_object.grid_position.x.should be_close(2.0, 0.01)
-      @game_object.grid_position.y.should be_close(3.0, 0.01)
+      @game_object.grid_position = Vector.new(2, 3)
+      @game_object.grid_position.x.should == 2
+      @game_object.grid_position.y.should == 3
     end
   end
 
