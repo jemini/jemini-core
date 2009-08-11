@@ -39,6 +39,11 @@ class Movable < Gemini::Behavior
     @destination = desired_location
   end
 
+  def movement_direction
+    return nil if @movement.nil?
+    @movement.angle_from(Vector.new(0.0, 0.0))
+  end
+
 private
   def update_movement(delta)
     return unless @movement

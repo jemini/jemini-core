@@ -26,11 +26,9 @@ class GridBound < Gemini::Behavior
   end
   # position is a vector
   # setting grid position calculates at the center of the grid
-  def grid_position=(position)
-    top_left_of_grid = Vector.new(position.x.to_i * @grid_size.x.to_i, position.y.to_i * @grid_size.y.to_i)
-    center_offset = @grid_size.half
-    @target.position = top_left_of_grid + center_offset
-    @grid_position = position
+  def grid_position=(grid_position)
+    @target.position = position_at(grid_position)
+    @grid_position = grid_position
   end
 
   def adjacent_grid(direction)
@@ -48,7 +46,27 @@ class GridBound < Gemini::Behavior
     adjacent_grid
   end
 
+  def move_to_adjacent_grid(direction)
+    move_to_grid(adjacent_grid(direction))
+  end
+
+  def move_to_grid(grid)
+    @target.move_to position_at(grid)
+  end
+
 private
+  def position_at(grid_position)
+    top_left_of_grid = Vector.new(grid_position.x.to_i * grid_size.x.to_i, grid_position.y.to_i * grid_size.y.to_i)
+    center_offset = grid_size.half
+    top_left_of_grid + center_offset
+  end
+  
+  def grid_at(position)
+    x = position.x.to_i / grid_size.x.to_i
+    y = position.y.to_i / grid_size.y.to_i
+    Vector.new(x, y)
+  end
+
   def notify_grid_changed
     old_position = @grid_position
     new_position = detect_grid_position
@@ -60,8 +78,6 @@ private
   end
 
   def detect_grid_position
-    x = @target.x.to_i / grid_size.x.to_i
-    y = @target.y.to_i / grid_size.y.to_i
-    Vector.new(x, y)
+    grid_at @target.position
   end
 end
