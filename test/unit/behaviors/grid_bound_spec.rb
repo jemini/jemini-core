@@ -31,7 +31,11 @@ describe "GridBound" do
   end
 
   describe '#snap_to_grid' do
-    
+    it 'sets the Spatial position to the nearest grid' do
+      @game_object.position = Vector.new(50.0, 12.0)
+      @game_object.snap_to_grid
+      @game_object.position.should be_near(Vector.new(48.0, 16.0), 1.0)
+    end
   end
   
   describe '#grid_size' do

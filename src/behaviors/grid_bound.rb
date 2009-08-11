@@ -54,6 +54,17 @@ class GridBound < Gemini::Behavior
     @target.move_to position_at(grid)
   end
 
+  def snap_to_grid
+    grids = adjacent_grids
+    grids << grid_position
+    nearest_grid = grids.min_by { |g| g.distance_from(@target.position) }
+    self.grid_position = nearest_grid
+  end
+
+  def adjacent_grids
+    [adjacent_grid(:north), adjacent_grid(:east), adjacent_grid(:south), adjacent_grid(:west)]
+  end
+
 private
   def position_at(grid_position)
     top_left_of_grid = Vector.new(grid_position.x.to_i * grid_size.x.to_i, grid_position.y.to_i * grid_size.y.to_i)
