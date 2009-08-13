@@ -1,3 +1,4 @@
+#Controls the objects in the game world.
 class BasicGameObjectManager < Gemini::GameObject
   attr_reader :layers
   FRONT_LAYER = 'front'
@@ -20,12 +21,16 @@ class BasicGameObjectManager < Gemini::GameObject
     end
   end
   
+  #Called when GameState#create is called.
+  #Triggers :before_add_game_object, :after_add_game_object callbacks.
   def add_game_object(game_object)
     notify :before_add_game_object, game_object, :default
     @layers[:default] << game_object
     notify :after_add_game_object, game_object, :default
   end
   
+  #Called when GameState#remove is called.
+  #Triggers :before_remove_game_object, :after_remove_game_object callbacks.
   def remove_game_object(game_object)
     owning_layer = @layers.values.find {|layer| layer.include? game_object}
     return if owning_layer.nil? #NOTE: Not sure if this is the right thing to do, but at least no exception is thrown
@@ -37,19 +42,23 @@ class BasicGameObjectManager < Gemini::GameObject
     #game_object.unload
   end
   
-  def add_game_object_to_layer(game_object, layer)
-    notify :before_add_game_object, game_object, layer
-    @layers[layer] << game_object
-    #@game_objects_to_add.push [layer, game_object]
+  #Adds game object to named layer.
+  #Triggers :before_add_game_object, :after_add_game_object callbacks.
+  def add_game_object_to_layer(game_object, layer_name)
+    notify :before_add_game_object, game_object, layer_name
+    @layers[layer_name] << game_object
+    #@game_objects_to_add.push [layer_name, game_object]
     notify :after_add_game_object, game_object
   end
   
+  #Moves given object from one layer to another.
   def move_game_object_to_layer(game_object, layer_name)
     owning_layer = @layers.values.find {|layer| layer.include? game_object}
     owning_layer.delete game_object
     @layers[layer_name] << game_object
   end
-  
+
+  #Returns Array of all game objects.
   def game_objects
     game_objects = []
     @layers.values.each do |layer|
@@ -60,10 +69,13 @@ class BasicGameObjectManager < Gemini::GameObject
     game_objects
   end
   
+  #Returns Array of all layers by drawing order.
   def layers_by_order
     @layer_order.map {|layer_name| @layers[layer_name]}.compact
   end
   
+  #Add the named layer at the given drawing order position.
+  #Position can be a number or one of the constants FRONT_LAYER or BACK_LAYER.
   def add_layer_at(layer_name, location)
     if location.kind_of? Numeric
       @layer_order.delete_at(location) if @layer_order[location].nil?

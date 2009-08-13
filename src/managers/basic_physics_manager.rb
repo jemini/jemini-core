@@ -1,6 +1,7 @@
 require 'behaviors/physical'
 require 'events/physical_message'
 
+#Controls objects that collide, fall with gravity, roll, etc.
 class BasicPhysicsManager < Gemini::GameObject
   INTERPOLATION_THESHOLD = 6.0
   MILLISECONDS_PER_UPDATE = 6 # 6000/ 1000
@@ -57,6 +58,7 @@ class BasicPhysicsManager < Gemini::GameObject
     event.body_b.user_data.notify :physical_collided, PhysicsMessage.new(event, event.body_a.user_data)
   end
   
+  #Turns drawing of physical bodies on/off.
   def toggle_debug_mode(message)
     @debug_mode = !@debug_mode
     @game_state.manager(:game_object).game_objects.each do |game_object|
@@ -64,6 +66,7 @@ class BasicPhysicsManager < Gemini::GameObject
     end
   end
   
+  #Takes a number representing the downward force to apply to physical objects.
   def gravity=(gravity_or_x)
     if gravity_or_x.kind_of? Numeric
       @world.set_gravity(0, gravity_or_x)

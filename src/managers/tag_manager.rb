@@ -1,3 +1,4 @@
+#Tracks tags applied to objects.
 class TagManager < Gemini::GameObject
   def load
     require 'behaviors/taggable'
@@ -25,18 +26,21 @@ class TagManager < Gemini::GameObject
     end
   end
   
+  #Returns all game objects that have all the given tags.
   def find_by_all_tags(*tags)
     tags[1..-1].inject(@tagged_objects[tags[0]]) do |results, tag|
       results & @tagged_objects[tag]
     end
   end
   
+  #Returns all game objects that have any of the given tags.
   def find_by_any_tags(*tags)
     tags.inject([]) do |results, tag|
       results.concat @tagged_objects[tag]
     end.uniq
   end
   
+  #Returns all game objects that have the given tag.
   def find_by_tag(tag)
     @tagged_objects[tag]
   end

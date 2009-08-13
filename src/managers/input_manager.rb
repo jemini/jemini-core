@@ -90,7 +90,7 @@ class MouseEvent
 end
 
 module Gemini
-  # Consumes raw slick_input events and output events based on 
+  # Consumes raw slick_input events and outputs events based on 
   # registered key bindings.
   class InputManager < Gemini::GameObject
     
@@ -123,6 +123,7 @@ module Gemini
       @held_buttons = {}
     end
     
+    #Load a file with the specified name from the keymaps directory.
     def load_keymap(keymap)
       @keymap = Hash.new{|h,k| h[k] = []}
 
@@ -146,6 +147,7 @@ module Gemini
       @@loading_input_manager = nil
     end
     
+    #Check for keypresses and send messages to message queue accordingly.
     def poll(screen_width, screen_height, delta)
       return if @keymap.nil?
       @input_listener.delta = delta
@@ -154,19 +156,33 @@ module Gemini
         @game_state.manager(:message_queue).post_message game_message
       end
     end
-
+    
+    #The number of connected game controllers.
     def connected_joystick_size
       @raw_input.controller_count
     end
 
+    #Add a keyboard mapping.
+    #Takes a hash with the following keys and values:
+    #[:event_name] Use any key name you want for the event name. The value will be used as the event value.
+    #[:pressed] The given key will trigger the event when pressed.
+    #[:released] The given key will trigger the event when released.
+    #[:held] The given key will trigger the event when held.
+    #[:player] The player number, starting with 0, that the event will apply to.
     def map_key(options, &block)
       map :key, options, &block
     end
 
+    #Add a mouse button mapping.
+    #Takes a hash with the same keys and values as map_key.
     def map_mouse(options, &block)
       map :mouse, options, &block
     end
 
+    #Add a button or axis mapping for a joystick.
+    #Takes a hash with the same keys and values as map_key.
+    #Also accepts this additional key/value pair:
+    #[:axis_update] The given axis will trigger the event when the joystick is moved along it.
     def map_joystick(options, &block)
       map :joystick, options, &block
     end

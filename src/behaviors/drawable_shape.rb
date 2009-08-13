@@ -15,7 +15,7 @@ class DrawableShape < Drawable
 
   #Set the shape to draw.
   #Accepts :Polygon or the name of a class in the DrawableShape namespace.
-  #TODO: There are no DrawableShape::* classes yet!
+  #TODO: There are no DrawableShape::* classes yet!f
   def set_visual_shape(shape, *params)
     if shape == :polygon || shape == :Polygon
       @visual_shape = "#{self.class}::#{shape}".constantize.new

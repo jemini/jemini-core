@@ -7,6 +7,8 @@ class BasicRenderManager < Gemini::GameObject
     @debug_queue = []
   end
   
+  #Render all game objects to the given graphics context.
+  #Triggers :before_render, :after_render callbacks.
   def render(graphics)
     notify :before_render, graphics
     #game_state.manager(:game_object).game_objects.each { |game_object| game_object.draw if game_object.respond_to? :draw}
@@ -33,11 +35,13 @@ class BasicRenderManager < Gemini::GameObject
     @debug_queue << {:type => type, :color => color}.merge(options)
   end
   
+  #Load image for rapid retrieval via get_cached_image.
   def cache_image(cache_name, image_name)
     image_resource = Java::org::newdawn::slick::Image.new Resource.path_of(image_name)
     @image_cache[cache_name] = image_resource
   end
   
+  #Retrieve cached image.
   def get_cached_image(cache_name)
     @image_cache[cache_name].copy
   end
