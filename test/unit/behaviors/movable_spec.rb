@@ -7,7 +7,7 @@ describe 'Movable' do
     @game_object.add_behavior(:Movable)
   end
 
-  it 'notfies listeners when moving'
+  it 'notifies listeners when moving'
 
   describe '#move' do
     it 'accepts a speed'
