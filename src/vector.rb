@@ -112,7 +112,6 @@ class Vector
   end
 
   def near?(other_vector, radius)
-    puts "distance: #{distance_from(other_vector)}"
     distance_from(other_vector) <= radius
   end
 

@@ -6,8 +6,8 @@ class Movable < Gemini::Behavior
   
   depends_on :Spatial
   depends_on :Updates
-  wrap_with_callbacks :move, :move_to, :moveable_speed
-  #enable_listeners_for :movement, :movable_arrival
+  wrap_with_callbacks :move, :moveable_speed=
+  listen_for :movement, :movable_arrival
   
   attr_accessor :movable_speed, :movable_destination_accuracy
   alias_method :set_movable_speed, :movable_speed
@@ -37,6 +37,11 @@ class Movable < Gemini::Behavior
     self.movable_speed = speed if speed
     move desired_location.angle_from(@target.position), movable_speed
     @destination = desired_location
+  end
+
+  def movement_direction
+    return nil if @movement.nil?
+    @movement.angle_from(Vector.new(0.0, 0.0))
   end
 
 private

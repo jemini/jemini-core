@@ -9,7 +9,27 @@ describe Gemini::Behavior do
   before :each do
     @game_object = Gemini::GameObject.new(@state)
   end
-  
+
+  it "can declare class-level listeners" do
+    class ListeningBehavior < Gemini::Behavior
+      listen_for :event
+
+      def fire_event
+        @target.notify :event
+      end
+    end
+
+    @game_object.add_behavior :ListeningBehavior
+    @callback_invoked_with_block = false
+    @game_object.on_event do
+      @callback_invoked_with_block = true
+    end
+
+    @callback_invoked_with_block.should be_false
+    @game_object.fire_event
+    @callback_invoked_with_block.should be_true
+  end
+
   it "can declare dependant behaviors" do
     class DeclareDependantBehavior < Gemini::Behavior
       def self.require(not_used); end

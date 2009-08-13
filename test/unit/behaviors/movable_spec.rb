@@ -11,6 +11,7 @@ describe 'Movable' do
 
   describe '#move' do
     it 'accepts a speed'
+    #TODO: Movable expects a polar vector. Make sure we build our vectors this way so the test data makes sense!
     
     # TODO: Create spec helper that detects if method is wrapped with callbacks
 #    it "notifies listeners when move is performed" do

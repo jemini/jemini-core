@@ -11,7 +11,6 @@ require 'managers/input_support/input_message'
 require 'managers/input_support/slick_input_listener'
 require 'managers/input_support/slick_input_message'
 
-#TODO: Discover Windows mappings
 if Platform.using_osx?
   # buttons
   XBOX_360_DPAD_UP            =  0

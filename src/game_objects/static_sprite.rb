@@ -13,7 +13,7 @@ class StaticSprite < Gemini::GameObject
     set_restitution 1.0
     set_friction 0.0
     unless x.nil? || y.nil?
-      move(x, y)
+      self.position = Vector.new(x, y)
     end
   end
 end

@@ -63,7 +63,16 @@ module Gemini
     end
     
   protected
-  
+
+    @@listener_names = Hash.new {|h,k| h[k] = []}
+    def self.listen_for(*listener_names)
+      @@listener_names[self].concat listener_names
+    end
+
+    def self.listener_names
+      @@listener_names[self]
+    end
+
     def self.depends_on(behavior)
       require "behaviors/#{behavior.underscore}"
       add_dependency(behavior)
@@ -125,27 +134,21 @@ module Gemini
       @dependant_behaviors = []
       @reference_count = 0
       
-      self.class.dependencies.each do |dependant_behavior|
-        begin
-          dependant_behavior_class = Object.const_get(dependant_behavior)
-        rescue NameError
-          raise "Cannot load dependant behavior '#{dependant_behavior}' in behavior '#{self.class}'"
-        end
-
-        unless @target.kind_of? dependant_behavior_class
-          @target.add_behavior dependant_behavior_class.to_s 
-          @dependant_behaviors << dependant_behavior
-        end
-      end
+      initialize_dependant_behaviors
 
       #TODO: Move this to GameObject
       behavior_list = @target.send(:instance_variable_get, :@__behaviors)
       return unless behavior_list[self.class.name.to_sym].nil?
       behavior_list[self.class.name.to_sym] = self 
 
+      initialize_declared_methods
+      initialize_listeners
+
+      load
+    end
+
+    def initialize_declared_methods
       self.class.declared_method_list.each do |method|
-        #TODO: Tell us which behavior is being overridden
-        #TODO: Allow for overriding
         raise MethodExistsError.new("Error while adding the behavior #{self.class}. The method #{method} already exists on game object #{@target}.") if @target.respond_to? method
         if method.to_s =~ /=/
           code = <<-ENDL
@@ -162,12 +165,26 @@ module Gemini
         end
         @target.send(:instance_eval, code, __FILE__, __LINE__)
       end
+    end
 
-      self.class.wrapped_methods.each do |method|
-        @target.enable_listeners_for method
+    def initialize_dependant_behaviors
+      self.class.dependencies.each do |dependant_behavior|
+        begin
+          dependant_behavior_class = Object.const_get(dependant_behavior)
+        rescue NameError
+          raise "Cannot load dependant behavior '#{dependant_behavior}' in behavior '#{self.class}'"
+        end
+
+        unless @target.kind_of? dependant_behavior_class
+          @target.add_behavior dependant_behavior_class.to_s
+          @dependant_behaviors << dependant_behavior
+        end
       end
+    end
 
-      load
+    def initialize_listeners
+      @target.enable_listeners_for *self.class.listener_names
+      @target.enable_listeners_for *self.class.wrapped_methods
     end
 
     def delete
