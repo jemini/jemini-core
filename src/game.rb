@@ -11,7 +11,7 @@ module Gemini
       @initial_state = options[:initial_state] || :MainState
       @screen_size   = options[:screen_size] || Vector.new(800, 600)
       @fullscreen    = options[:fullscreen]
-      @always_render = options[:always_render]
+      @always_render = !!options[:always_render] # coercing to boolean, always_render can't be nil/null
       @fresh_state   = true
     end
 

@@ -26,7 +26,9 @@ end
 require 'gemini'
 
 begin
-  Gemini::Main.start_app("Life Tank", 800, 600, :MenuState, true)
+  game = Gemini::Game.new :title => 'Life Tank', :screen_size => Vector.new(800, 600), :fullscreen => true
+  game.app
+#  Gemini::Main.start_app("Life Tank", 800, 600, :MenuState, true)
 #  Gemini::Main.start_app("Life Tank", 800, 600, :InputDiagnosticState, false)
 rescue => e
   warn e
