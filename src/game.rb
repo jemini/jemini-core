@@ -1,7 +1,4 @@
 module Gemini
-  # TODO: Ensure generation uses Game instead of Main
-  # TODO: Move class methods start_app and create_canvas to instance equivalents
-  # TODO: Ensure generation uses new instance version of methods
   class Game < Java::org::newdawn::slick::BasicGame
     include_class 'org.newdawn.slick.AppGameContainer'
     attr_accessor :screen_size, :fullscreen, :initial_state

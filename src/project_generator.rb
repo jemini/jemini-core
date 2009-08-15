@@ -50,7 +50,11 @@ require 'gemini'
 
 begin
   # Change :HelloState to point to the initial state of your game
-  Gemini::Main.start_app("", 800, 600, :HelloWorldState, false)
+  game = Gemini::Game.new :title => 'Jemini Game',
+                          :screen_size => Vector.new(800, 600),
+                          :initial_state => :HelloWorldState,
+                          :fullscreen => false
+  game.app
 rescue => e
   warn e
   warn e.backtrace
