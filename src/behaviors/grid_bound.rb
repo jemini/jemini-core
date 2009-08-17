@@ -34,14 +34,26 @@ class GridBound < Gemini::Behavior
   def adjacent_grid(direction)
     adjacent_grid = @grid_position.dup
     case direction
-    when :left, :west
-      adjacent_grid.x -= 1
-    when :right, :east
-      adjacent_grid.x += 1
     when :top, :north, :up
       adjacent_grid.y += 1
+    when :north_east
+      adjacent_grid.x += 1
+      adjacent_grid.y += 1
+    when :right, :east
+      adjacent_grid.x += 1
+    when :south_east
+      adjacent_grid.x += 1
+      adjacent_grid.y -= 1
     when :bottom, :south, :down
       adjacent_grid.y -= 1
+    when :south_west
+      adjacent_grid.x -= 1
+      adjacent_grid.y -= 1
+    when :left, :west
+      adjacent_grid.x -= 1
+    when :north_west
+      adjacent_grid.x -= 1
+      adjacent_grid.y += 1
     end
     adjacent_grid
   end
@@ -57,12 +69,14 @@ class GridBound < Gemini::Behavior
   def snap_to_grid
     grids = adjacent_grids
     grids << grid_position
-    nearest_grid = grids.min_by { |g| g.distance_from(@target.position) }
+    nearest_grid = grids.min_by { |g| position_at(g).distance_from(@target.position) }
     self.grid_position = nearest_grid
   end
 
   def adjacent_grids
-    [adjacent_grid(:north), adjacent_grid(:east), adjacent_grid(:south), adjacent_grid(:west)]
+    [:north, :north_east, :east, :south_east, :south, :south_west, :west, :north_west].map do |direction|
+      adjacent_grid direction
+    end
   end
 
 private

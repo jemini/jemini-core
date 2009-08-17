@@ -118,6 +118,10 @@ class Vector
   def to_s
     "<#{self.class} - X: #{x} Y: #{y}>"
   end
+
+  def inspect
+    "<#{super} - X: #{x} Y: #{y}>"
+  end
 end
 
 class Java::net::phys2d::math::Vector2f

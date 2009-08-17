@@ -17,6 +17,12 @@ describe "GridBound" do
     @game_object.should be_kind_of(Spatial)
   end
 
+  describe '#adjacent_grids' do
+    it 'returns the nearby 8 grids' do
+      @game_object.adjacent_grids.should have(8).grids
+    end
+  end
+
   describe '#move_to_adjacent_grid' do
     it 'can move in a direction along the grid to another grid' do
       @game_object.movable_speed = 1
@@ -35,6 +41,12 @@ describe "GridBound" do
       @game_object.position = Vector.new(50.0, 12.0)
       @game_object.snap_to_grid
       @game_object.position.should be_near(Vector.new(48.0, 16.0), 1.0)
+    end
+
+    it 'snaps to the nearest grid location' do
+      @game_object.position = Vector.new(320.0, 640.0)
+      @game_object.snap_to_grid
+      @game_object.grid_position.should == Vector.new(10, 20)
     end
   end
   
@@ -110,6 +122,11 @@ describe "GridBound" do
 
       @game_object.grid_position = Vector.new(5, 4)
       @game_object.adjacent_grid(:south).should == Vector.new(5, 3)
+    end
+
+    it 'supports dianganol directions' do
+      @game_object.grid_position = Vector.new(5, 4)
+      @game_object.adjacent_grid(:north_west).should == Vector.new(4, 5)
     end
 
     it 'supports up/down as directions' do
