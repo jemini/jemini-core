@@ -3,7 +3,9 @@ module Gemini
   
   # Message object that is posted to the MessageQueue.
   class Message
-    attr_accessor :name, :value, :delta
+    attr_accessor :name, :value
+    #Time elapsed for the message.
+    attr_accessor :delta
     def initialize(name, value, delta=nil)
       @name = name
       @value = value
