@@ -48,7 +48,11 @@ end
 desc "Create documentation"
 Rake::RDocTask.new do |task|
   task.rdoc_dir = "doc"
-  task.rdoc_files = FileList["src/**/*.rb"]
+  task.rdoc_files = FileList["src/**/*.rb", "README.txt"]
+  task.options = [
+    "--title", "Gemini - A game library for Ruby/JRuby",
+    "--main", "README.txt"
+  ]
 end
 
 
