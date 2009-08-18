@@ -29,11 +29,17 @@ module Gemini
       
       @paused = false
     end
-    
+
+    def screen_size
+      @game.screen_size
+    end
+
+    # deprecate
     def screen_width
       @game.screen_width
     end
-    
+
+    #deprecate
     def screen_height
       @game.screen_height
     end

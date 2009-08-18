@@ -1,4 +1,4 @@
-#Makes an object resist changes in velocity.
+# deprecated
 class Inertial < Gemini::Behavior
   depends_on :UpdatesAtConsistantRate
   
