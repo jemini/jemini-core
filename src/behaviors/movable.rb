@@ -61,9 +61,9 @@ private
     move_normally_with new_position # may seem like a possible no-op from above, but will kick off callbacks for Movable and Spatial
 
     if @target.position.near?(@destination, @movable_destination_accuracy)
-      @target.notify :movable_arrival
       @destination = nil
       @movement    = nil
+      @target.notify :movable_arrival
     end
   end
 
