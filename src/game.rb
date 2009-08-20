@@ -76,6 +76,14 @@ module Gemini
       @queued_state = state
     end
 
+    def fresh_state?
+      @fresh_state
+    end
+
+    def active_state
+      BaseState.active_state
+    end
+
   private
     def create_app
       @app = AppGameContainer.new(self, screen_size.x, screen_size.y, fullscreen)

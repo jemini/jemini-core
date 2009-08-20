@@ -1,1 +1,1 @@
-Gemini 1.0.1
+Gemini is a game library designed to allow creation of reusable features. How many times has someone implemented the aiming on a first person shooter, or a minimap on a real time strategy? Gemini comes packaged with lots of behaviors out of the box, with the ability to easily author more. Gemini uses Phys2D and Slick for physics and graphics, with 3D on the roadmap.

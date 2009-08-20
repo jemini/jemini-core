@@ -65,6 +65,10 @@ class Vector
   def to_phys2d_vector
     Java::net::phys2d::math::Vector2f.new(@native_vector.x, @native_vector.y)
   end
+
+  def to_slick_vector
+    @native_vector
+  end
   
   def distance_from(other_vector)
     (((x - other_vector.x) ** 2) + ((y - other_vector.y) ** 2)) ** (1.0 / 2.0)

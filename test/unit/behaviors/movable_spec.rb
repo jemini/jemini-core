@@ -54,7 +54,52 @@ describe 'Movable' do
   describe '#move_to' do
     it 'accepts a speed'
     it 'cancels a #move call made before it'
-    it 'stops moving after it arrives'
+
+    it 'can be given a new direction upon arrival' do
+      @game_object.movable_speed = 1.0
+      @game_object.position = Vector.new(0.0, 0.0)
+      @game_object.move_to Vector.new(10.0, 0.0)
+      @game_object.on_movable_arrival do
+        @game_object.move_to Vector.new(10.0, 20.0)
+      end
+      @game_object.update(10)
+      @game_object.position.should be_near(Vector.new(10.0,  0.0), 0.1)
+      @game_object.update(10)
+      @game_object.update(10)
+      @game_object.position.should be_near(Vector.new(10.0, 20.0), 0.1)
+    end
+
+    it 'stops moving after it arrives' do
+      @game_object.movable_speed = 1.0
+      @game_object.position = Vector.new(0.0, 0.0)
+      @game_object.move_to Vector.new(10.0, 20.0)
+      @game_object.update(10)
+      @game_object.update(10)
+      @game_object.update(10)
+      @game_object.position.should be_near(Vector.new(10.0, 20.0), 0.1)
+      @game_object.update(10)
+      @game_object.update(10)
+      @game_object.update(10)
+      @game_object.position.should be_near(Vector.new(10.0, 20.0), 0.1)
+    end
+
+    it 'notifies when arriving at the destination' do
+      @game_object.movable_speed = 1.0
+      @game_object.position = Vector.new(0.0, 0.0)
+      @game_object.move_to Vector.new(10.0, 20.0)
+      @game_object.on_movable_arrival do
+        fail("on_movable_arrival should only be called once") if @arrived
+        @arrived = true
+      end
+      @game_object.update(10)
+      @game_object.update(10)
+      @game_object.update(10)
+      @game_object.position.should be_near(Vector.new(10.0, 20.0), 0.1)
+      @game_object.update(10)
+      @game_object.update(10)
+      @game_object.update(10)
+      @arrived.should be_true
+    end
 
     it 'eventually ends up at the destination' do
       @game_object.movable_speed = 1.0

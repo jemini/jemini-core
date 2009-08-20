@@ -38,7 +38,7 @@ module Gemini
             callback_abort = CallbackStatus.new
             @target.notify :before_#{method_name}_changes, event
             if callback_abort.continue?
-              self.wrapped_#{method}(#{args})
+              self.wrapped_#{method} #{args}
               @target.notify :after_#{method_name}_changes, event
             end
           end
@@ -59,7 +59,12 @@ module Gemini
         wrapped_methods << "before_#{method}"
         wrapped_methods << "after_#{method}"
       end
-      self.class_eval(code, __FILE__, __LINE__)
+      begin
+        self.class_eval(code, __FILE__, __LINE__)
+      rescue Exception => exception
+        STDERR.puts "Failed to evaluate code:", code
+        raise
+      end
     end
     
   protected
