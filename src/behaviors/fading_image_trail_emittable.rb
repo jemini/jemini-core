@@ -10,9 +10,9 @@ class FadingImageTrailEmittable < Gemini::Behavior
     @target.on_update do
       @move_count += 1
       if @move_count >= @move_threshold
-        fading_image = @target.game_state.create_game_object :FadingImage, @image, Color.new(:white), @seconds_to_fade_away
+        fading_image = @target.game_state.create :FadingImage, @image, Color.new(:white), @seconds_to_fade_away
         #center_position = @target.center_position
-        fading_image.move(@fading_image_offset.x + @target.x, @fading_image_offset.y + @target.y)
+        fading_image.position = Vector.new(@fading_image_offset.x + @target.x, @fading_image_offset.y + @target.y)
         @move_count = 0
       end
     end 
