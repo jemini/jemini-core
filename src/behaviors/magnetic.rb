@@ -15,18 +15,18 @@ class Magnetic < Gemini::Behavior
   alias_method :set_magnetism_min_radius, :magnetism_min_radius=
 
   def load
-    @magnetism = 0.0
-    @magnetism_max_radius = 0.0
-    @magnetism_min_radius = 0.0
+    @magnetism = 1.0
+    @magnetism_max_radius = 1000.0
+    @magnetism_min_radius =  10.0
     @target.on_update do |delta|
       physicals = @target.game_state.manager(:game_object).game_objects.select {|game_object| game_object.kind_of? Physical}
       physicals.each do |physical|
         next if @target == physical
-        distance = @target.position.distance_from physical
+        distance = @target.body_position.distance_from physical
         next if distance > @magnetism_max_radius
         distance = @magnetism_min_radius if distance < @magnetism_min_radius
         force = delta * @magnetism / (distance * Gemini::Math::SQUARE_ROOT_OF_TWO)
-        magnetism = Vector.from_polar_vector(force, physical.position.angle_from(@target))
+        magnetism = Vector.from_polar_vector(force, physical.body_position.angle_from(@target.body_position))
         physical.add_force magnetism
       end
     end
