@@ -310,9 +310,9 @@ class Physical < Gemini::Behavior
 
   #Set this object as immobile.
   def set_static_body
+    come_to_rest
     @body.moveable = false
     @body.rotatable = false
-    @body.is_resting = true
   end
 
   #Set whether gravity affects this object.
