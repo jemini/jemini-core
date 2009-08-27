@@ -1,8 +1,11 @@
+#Updates all game objects.
 class BasicUpdateManager < Gemini::GameObject
   def load
     enable_listeners_for :update, :before_update, :after_update
   end
   
+  #Call update method on all game objects that support it.
+  #Triggers :before_update, :after_update callbacks.
   def update(delta)
 #    delta = 20.0
     return if paused?

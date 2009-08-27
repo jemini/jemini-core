@@ -26,7 +26,7 @@ class Magnetic < Gemini::Behavior
         next if distance > @magnetism_max_radius
         distance = @magnetism_min_radius if distance < @magnetism_min_radius
         force = delta * @magnetism / (distance * Gemini::Math::SQUARE_ROOT_OF_TWO)
-        magnetism = Vector.from_polar_vector(force, physical.body_position.angle_from(@target.body_position))
+        magnetism = Vector.from_polar_vector(force, @target.body_position.angle_from(physical.body_position))
         physical.add_force magnetism
       end
     end

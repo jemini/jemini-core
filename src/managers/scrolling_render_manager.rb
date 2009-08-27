@@ -1,5 +1,6 @@
 require 'managers/basic_render_manager'
 
+#Deprecated; its functionality will be replaced by cameras in a future version.
 class ScrollingRenderManager < BasicRenderManager
   attr_accessor :camera_position, :tracking_game_object
   alias_method :set_camera_position, :camera_position=
