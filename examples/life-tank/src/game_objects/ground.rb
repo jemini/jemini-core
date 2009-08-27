@@ -2,7 +2,7 @@ class Ground < Gemini::GameObject
   POINT_SPACING     = 25
   DIRT_DEATH_FACTOR =  0.50
   MINIMUM_BOTTOM    = 50
-  VARIANCE_FACTOR   =  0.05
+  VARIANCE_FACTOR   =  0.0125
   
   has_behavior :Taggable
   has_behavior :Physical
@@ -17,7 +17,7 @@ class Ground < Gemini::GameObject
     set_friction 10.0
     set_image @game_state.manager(:render).get_cached_image(:ground)
     add_tag :ground
-    on_physical_collided :deform_ground
+#    on_physical_collided :deform_ground
   end
 
   def deform_ground(event)

@@ -52,7 +52,7 @@ class PlayState < Gemini::BaseState
 
     [left_wall, right_wall, floor].each {|o| o.add_tag :ground }
 #    ceiling = create :GameObject, :Physical, :Taggable
-#    ceiling.set_shape :Box, screen_width, 40
+#    ceiling.set_shape :Box, screen_6r[0width, 40
 #    ceiling.set_static_body
 #    ceiling.body_position = Vector.new(screen_width / 2, 20)
     
@@ -61,7 +61,7 @@ class PlayState < Gemini::BaseState
     @tanks = []
     ground.spawn_along player_count, Vector.new(0.0, -40.0) do |index|
       tank = create :Tank, index
-      tank.player = index + 1
+      tank.player_id = index
       @tanks << tank
       tank.on_before_remove do |unloading_tank|
         @tanks.delete unloading_tank
@@ -76,7 +76,7 @@ class PlayState < Gemini::BaseState
     game_end_checker.on_update do
       next if @tanks.size > 1 || @switching_state
       @switching_state = true
-      end_game_text = create :Text, "Player #{@tanks.first.player} wins!", :position => Vector.new(screen_width / 2, screen_height / 2)
+      end_game_text = create :Text, "Player #{@tanks.first.player_id + 1} wins!", :position => screen_size.half
       end_game_text.add_behavior :Timeable
       end_game_text.add_countdown :end_game, 5
       end_game_text.on_countdown_complete do

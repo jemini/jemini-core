@@ -12,7 +12,7 @@ class Shell < Gemini::GameObject
     # @@active_shells.each {|other_shell| add_excluded_physical other_shell}
     # @@active_shells << self
     add_tag :damage
-    @damage = 15
+    @damage = 8
     set_bounded_image @game_state.manager(:render).get_cached_image(:shell)
     set_mass 1
     

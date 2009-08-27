@@ -3,7 +3,7 @@
     <type>org.netbeans.modules.ruby.rubyproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/ruby-project/1">
-            <name>Gemini - Life-Tank</name>
+            <name>Jemini - Life-Tank</name>
             <source-roots>
                 <root id="src.src.dir"/>
             </source-roots>
