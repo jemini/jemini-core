@@ -16,6 +16,8 @@ class Physical < Gemini::Behavior
   include_class 'net.phys2d.raw.AngleJoint'
   include_class 'net.phys2d.raw.BasicJoint'
   include_class 'net.phys2d.raw.SpringJoint'
+  include_class 'net.phys2d.raw.FixedAngleJoint'
+  include_class 'net.phys2d.raw.DistanceJoint'
 
   attr_reader :mass, :name, :shape
   depends_on :Spatial
@@ -43,6 +45,15 @@ class Physical < Gemini::Behavior
     @body.add_excluded_body physical_game_object.instance_variable_get(:@__behaviors)[:Physical].instance_variable_get(:@body)
   end
 
+  # prevent collision and interaction with all physicals now and in the future
+  def exclude_all_physicals
+    @target.game_state.manager(:game_object).game_objects.select {|game_object| game_object.kind_of? Physical }.each {|physical| add_excluded_physical physical }
+    
+    @target.game_state.manager(:game_object).on_before_add_game_object do |game_object, event|
+      add_excluded_physical game_object if game_object.kind_of? Physical
+    end
+  end
+
   def physics_bitmask
     @body.bitmask
   end
@@ -68,9 +79,16 @@ class Physical < Gemini::Behavior
   # TODO: Make the joint a game object and/or behavior
   def join_to_physical(physical_game_object, options={})
     other_body = physical_game_object.instance_variable_get(:@__behaviors)[:Physical].instance_variable_get(:@body)
+
+    self_body_point  = (options[:self_body_point]  || Vector::ORIGIN).to_phys2d_vector
+    other_body_point = (options[:other_body_point] || Vector::ORIGIN).to_phys2d_vector
     joint = case options[:joint]
+            when :distance
+              DistanceJoint.new(@body, other_body, self_body_point, other_body_point, options[:distance])
+            when :fixed_angle
+              FixedAngleJoint.new(@body, other_body, self_body_point, other_body_point, options[:angle])
             when :angle
-              AngleJoint.new(@body, other_body, options[:self_body_point].to_phys2d_vector, options[:other_body_point].to_phys2d_vector, options[:self_body_angle], options[:other_body_angle])
+              AngleJoint.new(@body, other_body, self_body_point, other_body_point, options[:self_body_angle], options[:other_body_angle])
             when :basic
               joint = BasicJoint.new(@body, other_body, options[:anchor].to_phys2d_vector)
               joint.relaxation = options[:relaxation] if options[:relaxation]

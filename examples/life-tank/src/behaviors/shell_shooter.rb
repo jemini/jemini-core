@@ -1,5 +1,5 @@
 class ShellShooter < Gemini::Behavior
-  POWER_FACTOR = 60.0
+  POWER_FACTOR = 120.0
   
   def fire_weapon(power, angle)
     #TODO: configurable fire_from_distance to replace barrel anchor

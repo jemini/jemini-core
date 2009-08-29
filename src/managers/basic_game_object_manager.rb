@@ -44,8 +44,10 @@ class BasicGameObjectManager < Gemini::GameObject
   
   #Adds game object to named layer.
   #Triggers :before_add_game_object, :after_add_game_object callbacks.
+  #TODO: If layers are desired for the add game object call, then include them in the notify.
+  #      This cannot be as an extra param
   def add_game_object_to_layer(game_object, layer_name)
-    notify :before_add_game_object, game_object, layer_name
+    notify :before_add_game_object, game_object
     @layers[layer_name] << game_object
     #@game_objects_to_add.push [layer_name, game_object]
     notify :after_add_game_object, game_object

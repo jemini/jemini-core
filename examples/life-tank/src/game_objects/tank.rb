@@ -9,11 +9,11 @@ class Tank < Gemini::GameObject
   attr_accessor :player_id, :life
 
   FLIP_THRESHOLD = 0.50 * 1000.0
-  FLIP_LIFT = -1000.0
+  FLIP_LIFT = -10000.0
   FLIP_SPIN = 4.5
   MOVEMENT_FACTOR = 25.0
   INITIAL_LIFE = 100.0
-  
+  BALANCE_OFFSET = 400.0
   COLOR_WHEEL = [:green, :red, :yellow, :blue].map {|c| Color.new c}
 
   def load(player_index)
@@ -23,14 +23,16 @@ class Tank < Gemini::GameObject
     set_shape :Box, image.width, image.height / 2.0
     #set_physical_sprite_position_offset Vector.new(0.0, image.height / 2.0)
     set_friction 10.0
-    set_mass 25
-    set_restitution 0.75
+    set_mass 20
+    set_restitution 1.0
     on_after_body_position_changes :update_wheels
+#    on_after_body_position_changes :update_balance
     @wheels = []
     @life = INITIAL_LIFE
 
     attach_wheels
     attach_flag
+#    attach_balance
 
     on_update :update_tank
 
@@ -42,6 +44,7 @@ class Tank < Gemini::GameObject
   def unload
     @game_state.remove @flag
     @wheels.each {|wheel| @game_state.remove wheel }
+    @game_state.remove @balance
   end
 
   def take_damage(collision_event)
@@ -88,6 +91,24 @@ private
     @wheels[0].body_position = body_position + Vector.new(-16.0, 8.0)
     @wheels[1].body_position = body_position + Vector.new(  0.0, 8.0)
     @wheels[2].body_position = body_position + Vector.new( 16.0, 8.0)
+#    @wheels[1].body_position = body_position + Vector.new( 16.0, 8.0)
+  end
+
+  def update_balance(event)
+    return if @balance.nil?
+    @balance.body_position = body_position + Vector.new(0.0, BALANCE_OFFSET)
+  end
+
+  def attach_balance
+    @balance = @game_state.create :Balance
+    @balance.body_position = Vector.new(0.0, BALANCE_OFFSET)
+    on_after_add_to_world do
+      join_to_physical @balance, :joint => :basic, :anchor => @balance.body_position, :relaxation => 0.0
+      
+#      join_to_physical @balance, :joint => :fixed_angle, :self_body_point => body_position, :other_body_point => @balance.body_position, :angle => -90.0
+#      join_to_physical @balance, :joint => :fixed_angle, :angle => -90.0
+#      join_to_physical @balance, :joint => :distance, :distance => 30.0
+    end
   end
 
   def attach_wheels
@@ -101,6 +122,7 @@ private
     right_wheel.body_position = Vector.new(16.0, 8.0)
 
     @wheels = [left_wheel, middle_wheel, right_wheel]
+#    @wheels = [left_wheel, right_wheel]
     left_wheel.add_excluded_physical middle_wheel
     left_wheel.add_excluded_physical right_wheel
     middle_wheel.add_excluded_physical right_wheel
@@ -111,6 +133,8 @@ private
       on_after_add_to_world do
 #        join_to_physical wheel, :joint => :spring, :self_anchor => Vector.new(0.0), :other_anchor => wheel.body_position
         join_to_physical wheel, :joint => :basic, :anchor => wheel.body_position, :relaxation => -25.0
+#        join_to_physical wheel, :joint => :basic, :anchor => Vector::ORIGIN, :relaxation => 0.0
+#        join_to_physical wheel, :joint => :distance, :distance => 7
       end
     end
   end

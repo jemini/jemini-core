@@ -3,9 +3,10 @@ require 'events/physical_message'
 
 #Controls objects that collide, fall with gravity, roll, etc.
 class BasicPhysicsManager < Gemini::GameObject
-  INTERPOLATION_THESHOLD = 6.0
-  MILLISECONDS_PER_UPDATE = 6 # 6000/ 1000
-  DELTA_FACTOR = 0.01
+  INTERPOLATION_THESHOLD  = 6.0
+  MILLISECONDS_PER_UPDATE = 1000 / 60
+  PHYS2D_UPDATE_DIFF      = (1000.to_f / 60.to_f) - MILLISECONDS_PER_UPDATE.to_f
+  DELTA_FACTOR            = 0.01
   include_class 'net.phys2d.math.Vector2f'
   include_class 'net.phys2d.raw.World'
   include_class 'net.phys2d.raw.strategies.QuadSpaceStrategy'
@@ -36,6 +37,7 @@ class BasicPhysicsManager < Gemini::GameObject
     delta += @delta_debt
     @delta_debt = 0
     if delta == MILLISECONDS_PER_UPDATE
+      sleep PHYS2D_UPDATE_DIFF / 1000.0
       step
     else
       temp_delta = delta

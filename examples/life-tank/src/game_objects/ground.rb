@@ -2,7 +2,8 @@ class Ground < Gemini::GameObject
   POINT_SPACING     = 25
   DIRT_DEATH_FACTOR =  0.50
   MINIMUM_BOTTOM    = 50
-  VARIANCE_FACTOR   =  0.0125
+  VARIANCE_FACTOR   =  0.05
+  MAX_STEEPNESS     = 18
   
   has_behavior :Taggable
   has_behavior :Physical
@@ -13,7 +14,7 @@ class Ground < Gemini::GameObject
   def load
     set_static_body
     set_mass :infinite
-    set_restitution 0.75
+    set_restitution 1.0
     set_friction 10.0
     set_image @game_state.manager(:render).get_cached_image(:ground)
     add_tag :ground
@@ -60,7 +61,7 @@ class Ground < Gemini::GameObject
     y_direction = 0
     (0..(width / POINT_SPACING + 1)).each do |point_width|
       y_direction += (rand(variance) * 2 - variance)
-      y_direction = constrain(y_direction, -50, 50)
+      y_direction = constrain(y_direction, -MAX_STEEPNESS, MAX_STEEPNESS)
       current_height += y_direction
       current_height = constrain(current_height, top, @minimum_height)
       y_direction = 0 if current_height <= top or current_height >= @minimum_height

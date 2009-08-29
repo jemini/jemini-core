@@ -21,7 +21,7 @@ class Explosion < Gemini::GameObject
       :sound_pitch => 1.0,
       :damage => 150,
       :radius => 64.0,
-      :force => 1000,
+      :force => -1000,
       :max_damage => 15
     }.merge(options)
     

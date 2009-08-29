@@ -28,7 +28,7 @@ class PlayState < Gemini::BaseState
 
     load_keymap :PlayKeymap
 
-    manager(:physics).gravity = 5
+    manager(:physics).gravity = 35
     
     create :Background, "hazy-horizon.png"
     
@@ -52,7 +52,7 @@ class PlayState < Gemini::BaseState
 
     [left_wall, right_wall, floor].each {|o| o.add_tag :ground }
 #    ceiling = create :GameObject, :Physical, :Taggable
-#    ceiling.set_shape :Box, screen_6r[0width, 40
+#    ceiling.set_shape :Box, screen_width, 40
 #    ceiling.set_static_body
 #    ceiling.body_position = Vector.new(screen_width / 2, 20)
     
@@ -85,9 +85,9 @@ class PlayState < Gemini::BaseState
     end
 
     after_warmup = create :GameObject, :Timeable
-    after_warmup.add_countdown(:warmup, 1)
+    after_warmup.add_countdown(:warmup, 5)
     after_warmup.on_countdown_complete do
-      
+#      @tanks.first.body_position = screen_size.half
     end
   end
   
