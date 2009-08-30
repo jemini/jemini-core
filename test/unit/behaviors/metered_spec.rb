@@ -1,4 +1,4 @@
-require 'spec/helper'
+require 'spec_helper'
 require 'behaviors/metered'
 
 describe 'Metered' do
