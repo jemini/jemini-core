@@ -6,6 +6,7 @@ require 'managers/input_support/input_mapping'
 require 'managers/input_support/mouse_mapping'
 require 'managers/input_support/key_mapping'
 require 'managers/input_support/joystick_mapping'
+require 'managers/input_support/input_builder'
 
 require 'managers/input_support/input_message'
 require 'managers/input_support/slick_input_listener'
@@ -93,6 +94,7 @@ module Gemini
   # Consumes raw slick_input events and outputs events based on 
   # registered key bindings.
   class InputManager < Gemini::GameObject
+    attr_reader :bindings
     
     $LOAD_PATH.each do |path|
       if File.basename(path) == "input_helpers"
@@ -116,6 +118,7 @@ module Gemini
     end
 
     def load(container)
+      @bindings  = []
       @held_keys = []
       @raw_input = container.input
       @input_listener = Gemini::SlickInputListener.new(@game_state)

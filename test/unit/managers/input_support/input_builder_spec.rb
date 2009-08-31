@@ -1,9 +1,25 @@
 require 'spec_helper'
-#require 'managers/input_support/input_builder'
+require 'managers/input_manager'
+require 'managers/input_support/input_builder'
 
 describe 'InputBuilder' do
+  it_should_behave_like "initial mock state"
+  
   describe '.declare' do
-    it 'allows mappings to be declared'
+    before do
+      @container = mock(:MockContainer, :input => mock(:MockContainerInput, :add_listener => nil))
+      @state.stub!(:manager).with(:input).and_return(Gemini::InputManager.new(@state, @container))
+    end
+
+    it 'allows mappings to be declared' do
+      Jemini::InputBuilder.declare do |i|
+        i.bind :jump do
+          i.hold :a
+        end
+      end
+
+      Gemini::BaseState.active_state.manager(:input).bindings.should have(1).binding
+    end
   end
   
   describe '#bind' do
