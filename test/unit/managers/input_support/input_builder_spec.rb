@@ -1,12 +1,14 @@
 require 'spec_helper'
 require 'managers/input_manager'
 require 'managers/input_support/input_builder'
+require 'managers/message_queue'
 
 describe 'InputBuilder' do
   it_should_behave_like "initial mock state"
   before do
     @container = mock(:MockContainer, :input => mock(:MockContainerInput, :add_listener => nil))
-    @state.stub!(:manager).with(:input).and_return(Gemini::InputManager.new(@state, @container))
+    @state.stub!(:manager).with(:input).and_return(Jemini::InputManager.new(@state, @container))
+    @state.stub!(:manager).with(:message_queue).and_return(Jemini::MessageQueue.new(@state))
   end
 
   describe '.declare' do
@@ -19,7 +21,7 @@ describe 'InputBuilder' do
         end
       end
 
-      Gemini::BaseState.active_state.manager(:input).listeners.should have(1).listener
+      Jemini::BaseState.active_state.manager(:input).listeners.should have(1).listener
     end
   end
   
@@ -31,14 +33,22 @@ describe 'InputBuilder' do
         end
       end
 
-#      Gemini::BaseState.active_state.manager(:input).listeners.first.button_id.should == :a
-      Gemini::BaseState.active_state.manager(:input).listeners.first.device.should == :key
-#      Gemini::BaseState.active_state.manager(:input).bindings.first.type.should == :hold
-#      Gemini::BaseState.active_state.manager(:input).bindings.first.button.should == :a
+      Jemini::BaseState.active_state.manager(:input).listeners.first.device.should == :key
     end
 
     it 'allows bindings to be turned off with #off'
-    it 'appends multiple bindings for the same action'
+    
+    it 'appends multiple bindings for the same action' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :jump do
+          i.hold :a
+          i.hold :b
+        end
+      end
+
+      Jemini::BaseState.active_state.manager(:input).listeners.should have(2).listeners
+    end
+    
     it 'appends multiple bindings inside the same binding'
 
 
@@ -59,7 +69,17 @@ describe 'InputBuilder' do
   end
 
   describe '#press' do
-    it 'creates a binding that fires when the button is pressed'
+    it 'creates a binding that fires when the button is pressed' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :jump do
+          i.press :a
+        end
+      end
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :ReceivesEvents
+
+    end
   end
 
   describe '#hold' do

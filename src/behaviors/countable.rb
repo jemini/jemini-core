@@ -1,5 +1,5 @@
 #Makes an object receive events when its numbers have changed.
-class Countable < Gemini::Behavior
+class Countable < Jemini::Behavior
   attr_accessor :count
   wrap_with_callbacks :count=
   

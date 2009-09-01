@@ -1,4 +1,4 @@
-class StaticSprite < Gemini::GameObject
+class StaticSprite < Jemini::GameObject
   has_behavior :PhysicalSprite
   
   def load(sprite_name_or_image, x=nil, y=nil, width=nil, height=nil, *tags)

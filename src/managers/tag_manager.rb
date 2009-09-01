@@ -1,5 +1,5 @@
 #Tracks tags applied to objects.
-class TagManager < Gemini::GameObject
+class TagManager < Jemini::GameObject
   def load
     require 'behaviors/taggable'
     @tagged_objects = Hash.new { |h,k| h[k] = [] }

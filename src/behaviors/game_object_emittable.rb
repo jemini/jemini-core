@@ -1,5 +1,5 @@
 #Makes an object create other objects.
-class GameObjectEmittable < Gemini::Behavior
+class GameObjectEmittable < Jemini::Behavior
   attr_accessor :emitting_game_object_name
   alias_method :set_emitting_game_object_name, :emitting_game_object_name=
   def load

@@ -4,7 +4,7 @@
 # TODO: Allow disabling of directions
 # TODO: Allow speed limit per axis
 # TODO: Allow speed limit per direction
-class PhysicalCardinalMovable < Gemini::Behavior
+class PhysicalCardinalMovable < Jemini::Behavior
   NORTH = :north
   EAST  = :east
   SOUTH = :south

@@ -1,5 +1,5 @@
 #Makes an object receive events for changes in state.
-class Updates < Gemini::Behavior
+class Updates < Jemini::Behavior
   listen_for :update
   
   def update(delta)

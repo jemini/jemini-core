@@ -1,7 +1,7 @@
 # Enables simple movement
 # This movement is not coupled to any physics behavior
 # TODO: Consider adding #move_with(spline) method
-class Movable < Gemini::Behavior
+class Movable < Jemini::Behavior
   DEFAULT_DESTINATION_ACCURACY = 0.1
   
   depends_on :Spatial

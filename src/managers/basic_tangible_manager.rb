@@ -1,6 +1,6 @@
 require 'behaviors/tangible'
 
-class BasicTangibleManager < Gemini::GameObject
+class BasicTangibleManager < Jemini::GameObject
   has_behavior :ReceivesEvents
   has_behavior :Updates
   

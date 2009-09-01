@@ -1,4 +1,4 @@
-class SoundManager < Gemini::GameObject
+class SoundManager < Jemini::GameObject
   #TODO: Raise errors if sounds/music loaded/used when not on the proper thread?
   #TODO: We can't play oggs as sounds in Windows/Linux. We get an Open AL error: 40963
   #Wrapper for org.newdawn.slick.Sound.

@@ -1,4 +1,4 @@
-class IconStripCounterDisplay < Gemini::GameObject
+class IconStripCounterDisplay < Jemini::GameObject
   TOP_LEFT_TO_BOTTOM_RIGHT_LAYOUT_MODE = :top_left_to_bottom_right
   BOTTOM_RIGHT_TO_TOP_LEFT_LAYOUT_MODE = :bottom_right_to_top_left
   

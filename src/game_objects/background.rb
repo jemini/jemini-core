@@ -1,4 +1,4 @@
-class Background < Gemini::GameObject
+class Background < Jemini::GameObject
   has_behavior :BigSprite
   
   def load(file)

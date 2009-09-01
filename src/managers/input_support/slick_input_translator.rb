@@ -1,4 +1,4 @@
-module Gemini
+module Jemini
   class SlickInputTranslator
     SLICK_INPUT_TYPE_TRANSLATION = {
       :keyPressed  => [:key, :pressed], # which key?

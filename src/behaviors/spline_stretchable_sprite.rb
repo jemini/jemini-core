@@ -1,4 +1,4 @@
-class SplineStretchableSprite < Gemini::Behavior
+class SplineStretchableSprite < Jemini::Behavior
   INDEPENDENT_MODE = :independent
   MERGED_MODE = :merged
   depends_on_kind_of :Sprite

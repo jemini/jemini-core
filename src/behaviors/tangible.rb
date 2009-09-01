@@ -11,7 +11,7 @@ class TangibleBox
 end
 
 #Allows an object to indicate when it collides with another.
-class Tangible < Gemini::Behavior
+class Tangible < Jemini::Behavior
   depends_on :Spatial
   attr_reader :tangible_shape
 

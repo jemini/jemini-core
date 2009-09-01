@@ -1,4 +1,4 @@
-class FadingImage < Gemini::GameObject
+class FadingImage < Jemini::GameObject
   has_behavior :Sprite
   has_behavior :Spatial
   has_behavior :Timeable

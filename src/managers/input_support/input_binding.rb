@@ -11,7 +11,7 @@ module Jemini
 
     def add_input_listener(button_type, button_id)
       listener = InputListener.create(action_name, button_type, detect_device(button_id), button_id)
-      Gemini::BaseState.active_state.manager(:input).listeners << listener
+      Jemini::BaseState.active_state.manager(:input).listeners << listener
 #      @listeners << 
     end
 

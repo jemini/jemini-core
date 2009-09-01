@@ -1,5 +1,5 @@
 #Makes an object receive events when a time period has elapsed.
-class UpdatesAtConsistantRate < Gemini::Behavior
+class UpdatesAtConsistantRate < Jemini::Behavior
   attr_accessor :updates_per_second
   
   def load

@@ -1,5 +1,5 @@
 #Makes an object draw its interactions with the physics engine on the screen.
-class DebugPhysical < Gemini::Behavior
+class DebugPhysical < Jemini::Behavior
 
   PhysVector   = Java::net::phys2d::math::Vector2f
   PhysCircle   = Java::net.phys2d.raw.shapes.Circle

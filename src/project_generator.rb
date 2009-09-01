@@ -1,7 +1,7 @@
 require 'fileutils'
 #require 'rawr'
 
-module Gemini
+module Jemini
   class ProjectGenerator
     include FileUtils
 
@@ -50,7 +50,7 @@ require 'gemini'
 
 begin
   # Change :HelloState to point to the initial state of your game
-  game = Gemini::Game.new :title => 'Jemini Game',
+  game = Jemini::Game.new :title => 'Jemini Game',
                           :screen_size => Vector.new(800, 600),
                           :initial_state => :HelloWorldState,
                           :fullscreen => false
@@ -99,7 +99,7 @@ ENDL
       path = File.expand_path(File.join(@project_dir, 'src', 'states', 'hello_world_state.rb'))
       File.open(path, "w") do |f|
         f << <<-ENDL
-class HelloWorldState < Gemini::BaseState
+class HelloWorldState < Jemini::BaseState
 end
 ENDL
       end

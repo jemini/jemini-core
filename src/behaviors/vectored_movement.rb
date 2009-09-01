@@ -1,5 +1,5 @@
 #Makes an object move within a 2D plane.
-class VectoredMovement < Gemini::Behavior
+class VectoredMovement < Jemini::Behavior
   attr_accessor :forward_speed, :reverse_speed, :rotation_speed
   alias_method :set_forward_speed, :forward_speed=
   alias_method :set_reverse_speed, :reverse_speed=

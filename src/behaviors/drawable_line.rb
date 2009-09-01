@@ -1,6 +1,6 @@
 # draws a line on the screen
 # TODO: Enable color
-class DrawableLine < Gemini::Behavior
+class DrawableLine < Jemini::Behavior
   java_import 'org.newdawn.slick.geom.Line'
   depends_on :Spatial
   wrap_with_callbacks :draw

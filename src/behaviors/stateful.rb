@@ -4,7 +4,7 @@
 # I started on this behavior, and realized what I needed was multiple axises of states for my behavior
 # that I wanted to use Stateful in. This behavior is simple, and seems like it would be useful for some cases.
 # Thus, the behavior remains, but it is not tested or used at the time of this comment.
-class Stateful < Gemini::Behavior
+class Stateful < Jemini::Behavior
   class StateTransferEvent
     attr_accessor :before_state, :after_state
     def initialize(before_state, after_state)

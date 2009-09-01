@@ -1,5 +1,5 @@
 #Controls the objects in the game world.
-class BasicGameObjectManager < Gemini::GameObject
+class BasicGameObjectManager < Jemini::GameObject
   attr_reader :layers
   FRONT_LAYER = 'front'
   BACK_LAYER = 'back'

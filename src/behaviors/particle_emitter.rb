@@ -1,4 +1,4 @@
-class ParticleEmitter < Gemini::Behavior
+class ParticleEmitter < Jemini::Behavior
   has_behavior :Updates
 
   java_import 'org.newdawn.slick.particles.ConfigurableEmitter'

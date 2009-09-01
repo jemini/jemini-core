@@ -1,5 +1,5 @@
 #Allows an object to be categorized.
-class Taggable < Gemini::Behavior
+class Taggable < Jemini::Behavior
 
   def load
     @tags = []

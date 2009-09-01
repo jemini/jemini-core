@@ -1,3 +1,3 @@
-class BasicTileManager < Gemini::GameObject
+class BasicTileManager < Jemini::GameObject
   
 end

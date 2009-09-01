@@ -1,6 +1,6 @@
 #TODO: This appears to be un-used. Use it or drop it.
 
-module Gemini
+module Jemini
   class BehaviorEvent
     def initialize(*args)
       @memoizations = Hash.new { |h,k| h[k] = {} }

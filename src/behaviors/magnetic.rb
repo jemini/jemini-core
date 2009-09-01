@@ -1,5 +1,5 @@
 #Makes an object attract other Physical game objects towards it.
-class Magnetic < Gemini::Behavior
+class Magnetic < Jemini::Behavior
   depends_on :Physical
   
   #The force to exert.  0 means no push.
@@ -25,7 +25,7 @@ class Magnetic < Gemini::Behavior
         distance = @target.body_position.distance_from physical
         next if distance > @magnetism_max_radius
         distance = @magnetism_min_radius if distance < @magnetism_min_radius
-        force = delta * @magnetism / (distance * Gemini::Math::SQUARE_ROOT_OF_TWO)
+        force = delta * @magnetism / (distance * Jemini::Math::SQUARE_ROOT_OF_TWO)
         magnetism = Vector.from_polar_vector(force, @target.body_position.angle_from(physical.body_position))
         physical.add_force magnetism
       end

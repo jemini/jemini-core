@@ -1,4 +1,4 @@
-module Gemini
+module Jemini
   class Game < Java::org::newdawn::slick::BasicGame
     include_class 'org.newdawn.slick.AppGameContainer'
     attr_accessor :screen_size, :fullscreen, :initial_state

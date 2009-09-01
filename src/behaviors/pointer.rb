@@ -1,5 +1,5 @@
 #Makes an object move with the mouse.
-class Pointer < Gemini::Behavior
+class Pointer < Jemini::Behavior
   depends_on :Sprite
 #  depends_on :Movable2d
 #  depends_on :CollisionPoolAlgorithmTaggable

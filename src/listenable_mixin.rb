@@ -1,4 +1,4 @@
-module Gemini
+module Jemini
   module ListenableMixin
     def __added_listener_for(target, method_name, callback)
       @__methods_registered ||= {}

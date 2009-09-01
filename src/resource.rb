@@ -1,4 +1,4 @@
-# TODO: Wrap in Gemini module
+# TODO: Wrap in Jemini module
 class Resource
   def self.path_of(file)
     #TODO: Find the JRuby classloader and use that?

@@ -90,10 +90,10 @@ class MouseEvent
   end
 end
 
-module Gemini
+module Jemini
   # Consumes raw slick_input events and outputs events based on 
   # registered key bindings.
-  class InputManager < Gemini::GameObject
+  class InputManager < Jemini::GameObject
     attr_reader :listeners
     
     $LOAD_PATH.each do |path|
@@ -121,7 +121,7 @@ module Gemini
       @listeners = []
       @held_keys = []
       @raw_input = container.input
-      @input_listener = Gemini::SlickInputListener.new(@game_state)
+      @input_listener = SlickInputListener.new(@game_state)
       @raw_input.add_listener @input_listener
       @held_buttons = {}
     end

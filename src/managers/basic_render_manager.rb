@@ -1,4 +1,4 @@
-class BasicRenderManager < Gemini::GameObject
+class BasicRenderManager < Jemini::GameObject
   include_class 'org.newdawn.slick.geom.Circle'
 
   def load

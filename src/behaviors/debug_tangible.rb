@@ -1,5 +1,5 @@
 #Makes an object draw its collisions on the screen.
-class DebugTangible < Gemini::Behavior #Drawable
+class DebugTangible < Jemini::Behavior
   #declared_methods :draw
   PhysVector = Java::net::phys2d::math::Vector2f
   SlickVector = Java::org::newdawn::slick::geom::Vector2f
