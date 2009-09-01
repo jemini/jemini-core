@@ -6,8 +6,28 @@ module Jemini
       yield new
     end
 
-    def bind(*args)
-      Gemini::BaseState.active_state.manager(:input).bindings << Jemini::InputBinding.new
+    def in_order_to(action_name)
+      @current_binding = create_binding(action_name)
+      yield self
+      @current_binding = nil
     end
+
+    def create_binding(action_name)
+      InputBinding.new(action_name)
+    end
+
+    def hold(button)
+      @current_binding.add_input_listener(:hold, button)
+    end
+
+    def press(button)
+      @current_binding.add_input_listener(:press, button)
+    end
+
+    def release(button)
+      @current_binding.add_input_listener(:release, button)
+    end
+
+
   end
 end

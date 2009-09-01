@@ -4,29 +4,44 @@ require 'managers/input_support/input_builder'
 
 describe 'InputBuilder' do
   it_should_behave_like "initial mock state"
-  
+  before do
+    @container = mock(:MockContainer, :input => mock(:MockContainerInput, :add_listener => nil))
+    @state.stub!(:manager).with(:input).and_return(Gemini::InputManager.new(@state, @container))
+  end
+
   describe '.declare' do
-    before do
-      @container = mock(:MockContainer, :input => mock(:MockContainerInput, :add_listener => nil))
-      @state.stub!(:manager).with(:input).and_return(Gemini::InputManager.new(@state, @container))
-    end
+    
 
     it 'allows mappings to be declared' do
       Jemini::InputBuilder.declare do |i|
-        i.bind :jump do
+        i.in_order_to :jump do
           i.hold :a
         end
       end
 
-      Gemini::BaseState.active_state.manager(:input).bindings.should have(1).binding
+      Gemini::BaseState.active_state.manager(:input).listeners.should have(1).listener
     end
   end
   
-  describe '#bind' do
+  describe '#in_order_to' do
+    it 'binds keyboard keys with the name of the key' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :jump do
+          i.hold :a
+        end
+      end
+
+#      Gemini::BaseState.active_state.manager(:input).listeners.first.button_id.should == :a
+      Gemini::BaseState.active_state.manager(:input).listeners.first.device.should == :key
+#      Gemini::BaseState.active_state.manager(:input).bindings.first.type.should == :hold
+#      Gemini::BaseState.active_state.manager(:input).bindings.first.button.should == :a
+    end
+
     it 'allows bindings to be turned off with #off'
     it 'appends multiple bindings for the same action'
     it 'appends multiple bindings inside the same binding'
-    it 'binds keyboard keys with the name of the key'
+
+
     it 'binds left, right, and middle mouse buttons'
     it 'binds scroll up and scroll down mouse buttons'
     it 'can bind to a given mouse button number'

@@ -2,10 +2,10 @@ java_import 'org.newdawn.slick.Input'
 
 require 'message_queue'
 
-require 'managers/input_support/input_mapping'
-require 'managers/input_support/mouse_mapping'
-require 'managers/input_support/key_mapping'
-require 'managers/input_support/joystick_mapping'
+require 'managers/input_support/input_listener'
+require 'managers/input_support/mouse_listener'
+require 'managers/input_support/key_listener'
+require 'managers/input_support/joystick_listener'
 require 'managers/input_support/input_builder'
 
 require 'managers/input_support/input_message'
@@ -94,7 +94,7 @@ module Gemini
   # Consumes raw slick_input events and outputs events based on 
   # registered key bindings.
   class InputManager < Gemini::GameObject
-    attr_reader :bindings
+    attr_reader :listeners
     
     $LOAD_PATH.each do |path|
       if File.basename(path) == "input_helpers"
@@ -118,7 +118,7 @@ module Gemini
     end
 
     def load(container)
-      @bindings  = []
+      @listeners = []
       @held_keys = []
       @raw_input = container.input
       @input_listener = Gemini::SlickInputListener.new(@game_state)

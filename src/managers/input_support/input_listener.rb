@@ -1,24 +1,24 @@
 require 'managers/input_support/input_message'
 
-module Gemini
-  class InputMapping
+module Jemini
+  class InputListener
     attr_accessor :device, :input_type, :input_button_or_axis, :joystick_id, :destination_type, :destination_value, :input_callback
 
-    def self.create(device, options, &callback)
+    def self.create(message, type, device, button_id, options={}, &callback)
       options[:input_callback] = callback
-      type =  case device
-              when :key
-                ::Gemini::KeyMapping
-              when :mouse
-                ::Gemini::MouseMapping
-              when :joystick
-                ::Gemini::JoystickMapping
-              end
-      type.new(options)
+      device_type =  case device
+                     when :key
+                       KeyListener
+                     when :mouse
+                       MouseListener
+                     when :joystick
+                       JoystickListener
+                     end
+      device_type.new(message, button_id, options)
     end
 
     # TODO: Indicate whether or not a joystick mapping is active if a joystick is not installed
-    def initialize(options)
+    def initialize(message, button_id, options)
       options = options.dup # we're going to delete some entries, which could have odd side effects without a clone
       @input_type = [:held, :released, :pressed, :axis_update].find do |input_event_name|
                       input_event_button_or_axis = options.delete input_event_name
@@ -34,7 +34,7 @@ module Gemini
       @input_callback = options.delete(:input_callback)
       @player         = options.delete :player
       # after all the deletes, the game message and value should be only what's left
-      @game_message   = options.keys.first
+      @game_message   = message
       @game_value     = options.values.first
     end
 
