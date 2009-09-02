@@ -6,14 +6,15 @@ require 'managers/message_queue'
 describe 'InputBuilder' do
   it_should_behave_like "initial mock state"
   before do
-    @container = mock(:MockContainer, :input => mock(:MockContainerInput, :add_listener => nil))
-    @state.stub!(:manager).with(:input).and_return(Jemini::InputManager.new(@state, @container))
-    @state.stub!(:manager).with(:message_queue).and_return(Jemini::MessageQueue.new(@state))
+    @raw_input = mock(:MockContainerInput, :add_listener => nil, :poll => nil)
+    @container = mock(:MockContainer, :input => @raw_input)
+    @input_manager = Jemini::InputManager.new(@state, @container)
+    @state.stub!(:manager).with(:input).and_return(@input_manager)
+    @message_queue = Jemini::MessageQueue.new(@state)
+    @state.stub!(:manager).with(:message_queue).and_return(@message_queue)
   end
 
   describe '.declare' do
-    
-
     it 'allows mappings to be declared' do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :jump do
@@ -38,7 +39,9 @@ describe 'InputBuilder' do
 
     it 'allows bindings to be turned off with #off'
     
-    it 'appends multiple bindings for the same action' do
+    it 'appends multiple bindings for the same action'
+    
+    it 'appends multiple bindings inside the same binding' do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :jump do
           i.hold :a
@@ -48,8 +51,6 @@ describe 'InputBuilder' do
 
       Jemini::BaseState.active_state.manager(:input).listeners.should have(2).listeners
     end
-    
-    it 'appends multiple bindings inside the same binding'
 
 
     it 'binds left, right, and middle mouse buttons'
@@ -76,9 +77,18 @@ describe 'InputBuilder' do
         end
       end
 
+      @raw_input.stub!(:is_key_pressed).and_return true
+      
       game_object = Jemini::GameObject.new(@state)
       game_object.add_behavior :ReceivesEvents
+      game_object.handle_event :jump do
+        @pass = true
+      end
 
+      # simulate pressing 'a'
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+      @pass.should be_true
     end
   end
 

@@ -152,7 +152,8 @@ module Jemini
     
     #Check for keypresses and send messages to message queue accordingly.
     def poll(screen_width, screen_height, delta)
-      return if @keymap.nil?
+      @keymap ||= {}
+#      return if @keymap.nil?
       @input_listener.delta = delta
       @raw_input.poll(screen_width, screen_height)
       all_keymappings_to_game_messages.each do |game_message|
@@ -208,11 +209,16 @@ module Jemini
     end
 
     def all_keymappings_to_game_messages
-      @keymap.values.map {|keymap_array| poll_to_game_messages(keymap_array)}.flatten.compact
+#      @keymap.values.map {|keymap_array| poll_to_game_messages(keymap_array)}.flatten.compact
+      puts "****************************************************"
+      puts listeners
+      puts "****************************************************"
+      poll_to_game_messages(listeners).compact
     end
 
     def poll_to_game_messages(keymaps)
       messages = []
+      puts "keymaps: #{keymaps}"
       keymaps.reject! do |keymap|
         begin
           messages << keymap.poll(@raw_input)

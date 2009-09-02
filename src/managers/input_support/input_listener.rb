@@ -14,22 +14,23 @@ module Jemini
                      when :joystick
                        JoystickListener
                      end
-      device_type.new(message, button_id, options)
+      device_type.new(message, type, button_id, options)
     end
 
     # TODO: Indicate whether or not a joystick mapping is active if a joystick is not installed
-    def initialize(message, button_id, options)
+    def initialize(message, button_type, button_id, options)
       options = options.dup # we're going to delete some entries, which could have odd side effects without a clone
-      @input_type = [:held, :released, :pressed, :axis_update].find do |input_event_name|
-                      input_event_button_or_axis = options.delete input_event_name
-                      if input_event_button_or_axis.nil?
-                        false
-                      else
-                        @input_button_or_axis = input_event_button_or_axis
-                        true
-                      end
-                    end
-
+#      @input_type = [:held, :released, :pressed, :axis_update].find do |input_event_name|
+#                      input_event_button_or_axis = options.delete input_event_name
+#                      if input_event_button_or_axis.nil?
+#                        false
+#                      else
+#                        @input_button_or_axis = input_event_button_or_axis
+#                        true
+#                      end
+#                    end
+      @input_type     = button_type
+      @input_button_or_axis = button_id
       @joystick_id    = options.delete(:joystick_id)
       @input_callback = options.delete(:input_callback)
       @player         = options.delete :player
