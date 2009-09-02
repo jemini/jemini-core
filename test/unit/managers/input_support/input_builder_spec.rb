@@ -66,7 +66,32 @@ describe 'InputBuilder' do
   end
 
   describe '#release' do
-    it 'creates a binding that fires when the button is released'
+    it 'creates a binding that fires when the button is released' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :place_token do
+          i.release :space
+        end
+      end
+
+      @raw_input.stub!(:is_key_down).and_return true
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :ReceivesEvents
+      game_object.handle_event :place_token do
+        @pass = true
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+      @pass.should be_nil
+
+      @pass = false # reset
+      @raw_input.stub!(:is_key_down).and_return false
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+      @pass.should be_true
+    end
   end
 
   describe '#press' do
