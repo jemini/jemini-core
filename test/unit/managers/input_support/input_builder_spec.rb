@@ -93,7 +93,31 @@ describe 'InputBuilder' do
   end
 
   describe '#hold' do
-    it 'creates a binding that fires on each update while the button is held'
+    it 'creates a binding that fires on each update while the button is held' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :run do
+          i.hold :left_arrow
+        end
+      end
+
+      @raw_input.stub!(:is_key_down).and_return true
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :ReceivesEvents
+      game_object.handle_event :run do
+        @pass = true
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+      @pass.should be_true
+
+      @pass = false # reset
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+      @pass.should be_true
+    end
   end
 
   #TODO: Create a Chargable behavior that integrates with this binding type

@@ -75,7 +75,7 @@ elsif Platform.using_linux?
 end
 
 # LWJGL can't poll for buttons in the negative range yet. Possible bug to report?
-# 360 controller provides button presses for analog inputs for convienence
+# 360 controller provides button presses for analog in for convienence
 XBOX_360_LEFT_STICK_LEFT = -1
 XBOX_360_LEFT_STICK_RIGHT = -2
 XBOX_360_LEFT_STICK_UP = -3
@@ -210,15 +210,11 @@ module Jemini
 
     def all_keymappings_to_game_messages
 #      @keymap.values.map {|keymap_array| poll_to_game_messages(keymap_array)}.flatten.compact
-      puts "****************************************************"
-      puts listeners
-      puts "****************************************************"
       poll_to_game_messages(listeners).compact
     end
 
     def poll_to_game_messages(keymaps)
       messages = []
-      puts "keymaps: #{keymaps}"
       keymaps.reject! do |keymap|
         begin
           messages << keymap.poll(@raw_input)

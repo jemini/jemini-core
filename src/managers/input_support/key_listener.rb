@@ -7,7 +7,6 @@ module Jemini
     end
 
     def poll_value(raw_input)
-      puts "polling for type #{@input_type}"
       case @input_type
       when :press
         cancel_post! unless raw_input.is_key_pressed(@input_button_or_axis)
