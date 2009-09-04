@@ -5,6 +5,7 @@ require 'managers/message_queue'
 
 describe 'InputBuilder' do
   it_should_behave_like "initial mock state"
+  
   before do
     @raw_input = mock(:MockContainerInput, :add_listener => nil, :poll => nil)
     @container = mock(:MockContainer, :input => @raw_input)
@@ -65,8 +66,38 @@ describe 'InputBuilder' do
     it 'works with the mouse position'
   end
 
+
   describe '#release' do
-    it 'creates a binding that fires when the button is released' do
+    it 'creates a binding that fires when the mouse is released' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :place_token do
+          i.release :mouse_left
+        end
+      end
+
+      @raw_input.stub!(:mouse_x).and_return 0
+      @raw_input.stub!(:mouse_y).and_return 0
+      @raw_input.stub!(:mouse_button_down?).and_return true
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :ReceivesEvents
+      game_object.handle_event :place_token do
+        @pass = true
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+      @pass.should be_nil
+
+      @pass = false # reset
+      @raw_input.stub!(:mouse_button_down?).and_return false
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+      @pass.should be_true
+    end
+
+    it 'creates a binding that fires when the key is released' do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :place_token do
           i.release :space
@@ -95,7 +126,29 @@ describe 'InputBuilder' do
   end
 
   describe '#press' do
-    it 'creates a binding that fires when the button is pressed' do
+    it 'creates a binding that fires when the mouse is pressed' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :shoot do
+          i.press :mouse_left
+        end
+      end
+
+      @raw_input.stub!(:mouse_x).and_return 0
+      @raw_input.stub!(:mouse_y).and_return 0
+      @raw_input.stub!(:mouse_pressed?).and_return true
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :ReceivesEvents
+      game_object.handle_event :shoot do
+        @pass = true
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+      @pass.should be_true
+    end
+
+    it 'creates a binding that fires when the key is pressed' do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :jump do
           i.press :a
@@ -118,7 +171,11 @@ describe 'InputBuilder' do
   end
 
   describe '#hold' do
-    it 'creates a binding that fires on each update while the button is held' do
+    it 'creates a binding that fires on each update while the mouse is held' do
+      pending
+    end
+
+    it 'creates a binding that fires on each update while the key is held' do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :run do
           i.hold :left_arrow

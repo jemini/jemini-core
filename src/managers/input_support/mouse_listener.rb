@@ -12,11 +12,11 @@ module Jemini
       case @input_type
       when :axis_update, :move
         
-      when :pressed
+      when :press
         cancel_post! unless raw_input.mouse_pressed?(@input_button_or_axis)
-      when :held
+      when :hold
         cancel_post! unless raw_input.mouse_button_down?(@input_button_or_axis)
-      when :released
+      when :release
         button_down = raw_input.mouse_button_down?(@input_button_or_axis)
         result = (@button_down_on_last_poll && !button_down)
         @button_down_on_last_poll = button_down
