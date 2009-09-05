@@ -1,10 +1,10 @@
 require 'spec_helper'
-require File.join(File.dirname(__FILE__), 'shared_spec')
+# require File.join(File.dirname(__FILE__), 'shared_spec')
 require 'managers/network_manager'
 
 describe 'NetworkManager' do
 
-  it_should_behave_like "a manager"
+  # it_should_behave_like "a manager"
 
   before :each do
     @network_manager = Jemini::NetworkManager.new(@state)
@@ -14,7 +14,11 @@ describe 'NetworkManager' do
     @network_manager.add_peer '192.168.0.100', 9999
     @network_manager.peers.should include(['192.168.0.100', 9999])
   end
-  it "defaults to 5364 (JEMI) for port"
+  
+  it "defaults to 5364 (JEMI) for port" do
+    @network_manager.add_peer '192.168.0.100'
+    @network_manager.peers.should include(['192.168.0.100', 5364])
+  end
   it "can register itself as a listener for an event type"
   it "transmits events it receives to a peer"
   it "can broadcast an event to multiple peers"
