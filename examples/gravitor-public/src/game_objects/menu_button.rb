@@ -1,4 +1,4 @@
-class MenuButton < Gemini::GameObject
+class MenuButton < Jemini::GameObject
   has_behavior :Clickable
   has_behavior :Sprite
   

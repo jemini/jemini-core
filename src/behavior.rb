@@ -1,6 +1,6 @@
 require 'listenable_mixin'
 
-module Gemini
+module Jemini
   class MethodExistsError < Exception; end
   class InvalidWrapWithCallbacksError < Exception; end
   
@@ -33,7 +33,7 @@ module Gemini
         method_name = match[1]
         code = <<-ENDL
           def #{method}(#{args})
-            raise Gemini::InvalidWrapWithCallbacksError.new("Cannot wrap #{method} with callbacks without \\"#{method_name}\\"") unless respond_to?(:#{method_name})
+            raise Jemini::InvalidWrapWithCallbacksError.new("Cannot wrap #{method} with callbacks without \\"#{method_name}\\"") unless respond_to?(:#{method_name})
             event = ValueChangedEvent.new(@target.#{method_name}, #{args})
             callback_abort = CallbackStatus.new
             @target.notify :before_#{method_name}_changes, event

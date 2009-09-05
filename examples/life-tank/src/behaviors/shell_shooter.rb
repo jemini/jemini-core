@@ -1,4 +1,4 @@
-class ShellShooter < Gemini::Behavior
+class ShellShooter < Jemini::Behavior
   POWER_FACTOR = 120.0
   
   def fire_weapon(power, angle)

@@ -1,4 +1,4 @@
-class Mark < Gemini::GameObject
+class Mark < Jemini::GameObject
   has_behavior :Sprite
 
   def load(mark)

@@ -1,4 +1,4 @@
-class Cursor < Gemini::GameObject
+class Cursor < Jemini::GameObject
   has_behavior :Sprite
   has_behavior :ReceivesEvents
   has_behavior :Timeable

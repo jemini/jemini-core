@@ -1,7 +1,7 @@
 require 'managers/input_support/input_mapping'
 
-module Gemini
-  class JoystickMapping < Gemini::InputMapping
+module Jemini
+  class JoystickMapping < Jemini::InputMapping
     def device
       :joystick
     end

@@ -1,4 +1,4 @@
-class ShootableBarrel < Gemini::Behavior
+class ShootableBarrel < Jemini::Behavior
   RELOAD_WARMPUP_IN_SECONDS = 3.5
   RELOAD_UPDATES_PER_SECOND = 1.0 / 30.0
   ANGLE_ADJUSTMENT_FACTOR = 1.5 / 20.0

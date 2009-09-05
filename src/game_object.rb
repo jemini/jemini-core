@@ -1,7 +1,7 @@
 require 'behavior'
 require 'listenable_mixin'
 
-module Gemini
+module Jemini
   class GameObject
     include ListenableMixin
     attr_reader :game_state
@@ -48,7 +48,7 @@ module Gemini
     def __destroy
       notify :before_remove, self
       #TODO: Perhaps expose this as a method on Behavior
-      #Gemini::Behavior.send(:class_variable_get, :@@depended_on_by).delete self
+      #Jemini::Behavior.send(:class_variable_get, :@@depended_on_by).delete self
       __remove_listeners
       @__behaviors.each do |name, behavior|
         #the list is being modified as we go through it, so check before use.
@@ -90,7 +90,7 @@ module Gemini
         @callbacks[listener_method_name] << callback_method_name
       else
         origin = callback.source
-        origin.extend Gemini::ListenableMixin unless origin.kind_of? Gemini::ListenableMixin
+        origin.extend Jemini::ListenableMixin unless origin.kind_of? Jemini::ListenableMixin
         origin.__added_listener_for(self, "#{listener_method_name}", callback)
         @callbacks[listener_method_name] << callback
       end

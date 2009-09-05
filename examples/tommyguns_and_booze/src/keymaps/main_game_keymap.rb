@@ -1,4 +1,4 @@
-Gemini::InputManager.define_keymap do |i|
+Jemini::InputManager.define_keymap do |i|
   #map KEY_HELD, :source_value => Input::KEY_W,  :destination_type => :move, :destination_value => :up
   #map KEY_HELD, :source_value => Input::KEY_S, :destination_type => :move, :destination_value => :down
   #map KEY_HELD, :source_value => Input::KEY_A,  :destination_type => :move, :destination_value => :left

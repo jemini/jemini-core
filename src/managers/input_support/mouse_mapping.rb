@@ -1,7 +1,7 @@
 require 'managers/input_support/input_mapping'
 
-module Gemini
-  class MouseMapping < Gemini::InputMapping
+module Jemini
+  class MouseMapping < Jemini::InputMapping
     def device
       :mouse
     end

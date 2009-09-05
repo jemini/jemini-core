@@ -6,4 +6,4 @@ $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../../../src")
 end
 
 require 'gemini'
-Gemini::Main.new("Platform Wars", 640, 480)
+Jemini::Main.new("Platform Wars", 640, 480)

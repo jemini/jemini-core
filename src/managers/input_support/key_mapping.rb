@@ -1,7 +1,7 @@
 require 'managers/input_support/input_mapping'
 
-module Gemini
-  class KeyMapping < Gemini::InputMapping
+module Jemini
+  class KeyMapping < Jemini::InputMapping
     def device
       :key
     end

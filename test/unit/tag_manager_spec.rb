@@ -1,7 +1,7 @@
 require 'managers/tag_manager'
 
 describe TagManager do
-  class TagManagerGameObject < Gemini::GameObject
+  class TagManagerGameObject < Jemini::GameObject
     has_behavior :Taggable
   end
   

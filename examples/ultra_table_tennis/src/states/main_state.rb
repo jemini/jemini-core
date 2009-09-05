@@ -3,7 +3,7 @@ require 'score_manager'
 require 'basic_physics_manager'
 require 'ball'
 
-class MainState < Gemini::BaseState 
+class MainState < Jemini::BaseState 
   def load
     manager(:game_object).add_layer_at(:ball_effects_layer, 1)
     manager(:game_object).add_layer_at(:ball_layer, 2)

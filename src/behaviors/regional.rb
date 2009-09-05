@@ -10,7 +10,7 @@ class RegionalTransitionEvent
 end
 
 #Makes an object receive a RegionalTransitionEvent whenever it enters/exits a given area.
-class Regional < Gemini::Behavior
+class Regional < Jemini::Behavior
   depends_on :Spatial
   attr_accessor :dimensions, :region_shape
   alias_method :set_dimensions, :dimensions=

@@ -5,7 +5,7 @@
 # TODO: Allow Walljumping?
 # TODO: Jump-platform exclusion list
 # TODO: Stateful behavior to know when we're jumping, walking, jumping + shooting, walking + shooting, etc
-class PlatformerControllable < Gemini::Behavior
+class PlatformerControllable < Jemini::Behavior
   depends_on :ReceivesEvents
   depends_on :MultiAnimatedSprite
   depends_on :PhysicalSprite

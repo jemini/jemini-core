@@ -1,5 +1,5 @@
 #A 2D sprite with mutltiple frames of animation.
-class AnimatedSprite < Gemini::Behavior
+class AnimatedSprite < Jemini::Behavior
   include_class 'org.newdawn.slick.Image'
   include_class 'org.newdawn.slick.Animation'
   depends_on :Sprite

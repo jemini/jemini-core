@@ -1,4 +1,4 @@
-class Explosion < Gemini::GameObject
+class Explosion < Jemini::GameObject
   has_behavior :Magnetic
   has_behavior :Timeable
   has_behavior :Taggable
@@ -50,7 +50,7 @@ class Explosion < Gemini::GameObject
         distance = body_position.distance_from tank.body_position
         next if distance > @damage_max_radius
         next if @already_hit.include?(tank)
-        splash_damage = @damage / (distance * Gemini::Math::SQUARE_ROOT_OF_TWO)
+        splash_damage = @damage / (distance * Jemini::Math::SQUARE_ROOT_OF_TWO)
         splash_damage = @max_damage if splash_damage > @max_damage
         tank.life -= splash_damage
         @already_hit << tank

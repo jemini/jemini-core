@@ -1,4 +1,4 @@
-class Duke < Gemini::GameObject
+class Duke < Jemini::GameObject
   has_behavior :ReceivesEvents
   has_behavior :Sprite
   has_behavior :UpdatesAtConsistantRate
@@ -55,7 +55,7 @@ class Duke < Gemini::GameObject
   end
 end
 
-class Bullet < Gemini::GameObject
+class Bullet < Jemini::GameObject
   has_behavior :Sprite
   has_behavior :CollidableWhenMoving
   has_behavior :UpdatesAtConsistantRate
@@ -75,7 +75,7 @@ class Bullet < Gemini::GameObject
   end
 end
 
-class DotNet < Gemini::GameObject
+class DotNet < Jemini::GameObject
   RADIANS_PER_DEGREE = Math::PI/ 180
   
   has_behavior :Sprite

@@ -1,4 +1,4 @@
-class Paddle < Gemini::GameObject
+class Paddle < Jemini::GameObject
   has_behavior :ReceivesEvents
   has_behavior :Taggable
   has_behavior :TangibleSprite

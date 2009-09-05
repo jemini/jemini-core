@@ -1,4 +1,4 @@
-class Car < Gemini::GameObject
+class Car < Jemini::GameObject
   attr_accessor :facing_in_degrees
   
   has_behavior :TopDownVehicle

@@ -1,4 +1,4 @@
-class NetworkManager < Gemini::GameObject
+class NetworkManager < Jemini::GameObject
   
   def load
     @peers = []

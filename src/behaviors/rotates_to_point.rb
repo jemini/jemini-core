@@ -1,5 +1,5 @@
 # This behavior rotates to face the tracking point or game object.
-class RotatesToPoint < Gemini::Behavior
+class RotatesToPoint < Jemini::Behavior
   #TODO: Add offset rotation
   depends_on :Physical
   attr_accessor :rotation_target
@@ -14,6 +14,6 @@ class RotatesToPoint < Gemini::Behavior
   #The angle that the object must turn to face the rotation_target.
   def rotation_to_face_target
     #TODO: Use vector
-    diff_angle = Gemini::Math.radians_to_degrees Math.atan2(@target.y - @rotation_target.y, @target.x - @rotation_target.x)
+    diff_angle = Jemini::Math.radians_to_degrees Math.atan2(@target.y - @rotation_target.y, @target.x - @rotation_target.x)
   end
 end

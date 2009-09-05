@@ -2,7 +2,7 @@ require 'behaviors/physical'
 require 'events/physical_message'
 
 #Controls objects that collide, fall with gravity, roll, etc.
-class BasicPhysicsManager < Gemini::GameObject
+class BasicPhysicsManager < Jemini::GameObject
   INTERPOLATION_THESHOLD  = 6.0
   MILLISECONDS_PER_UPDATE = 1000 / 60
   PHYS2D_UPDATE_DIFF      = (1000.to_f / 60.to_f) - MILLISECONDS_PER_UPDATE.to_f

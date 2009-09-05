@@ -2,7 +2,7 @@ require 'behaviors/spatial'
 require 'events/physical_message'
 
 #Makes an object interact with the physics engine.
-class Physical < Gemini::Behavior
+class Physical < Jemini::Behavior
 
   INFINITE_MASS = Java::net::phys2d::raw::Body::INFINITE_MASS
 
@@ -105,7 +105,7 @@ class Physical < Gemini::Behavior
   #The maximum speed the object is allowed to travel.  Takes either a Vector with the x/y limits or the numeric value to assign to both x and y.
   def speed_limit=(vector_or_shared_value)
     if vector_or_shared_value.kind_of? Numeric
-      axis_limit_x = axis_limit_y = vector_or_shared_value / Gemini::Math::SQUARE_ROOT_OF_TWO
+      axis_limit_x = axis_limit_y = vector_or_shared_value / Jemini::Math::SQUARE_ROOT_OF_TWO
     else
       axis_limit_x = vector_or_shared_value.x
       axis_limit_y = vector_or_shared_value.y
@@ -132,17 +132,17 @@ class Physical < Gemini::Behavior
 
   #Set the absolute rotation.
   def physical_rotation=(degrees)
-    @body.rotation = Gemini::Math.degrees_to_radians(degrees)
+    @body.rotation = Jemini::Math.degrees_to_radians(degrees)
   end
   alias_method :set_physical_rotation, :physical_rotation=
 
   #Set the rotation relative to the current rotation.
   def rotate_physical(degrees)
-    @body.adjust_rotation Gemini::Math.degrees_to_radians(degrees)
+    @body.adjust_rotation Jemini::Math.degrees_to_radians(degrees)
   end
 
   def physical_rotation
-    Gemini::Math.radians_to_degrees(@body.rotation)
+    Jemini::Math.radians_to_degrees(@body.rotation)
   end
 
   def physical_rotatable?

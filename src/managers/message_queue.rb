@@ -1,5 +1,5 @@
 require 'thread'
-module Gemini
+module Jemini
   
   # Message object that is posted to the MessageQueue.
   class Message
@@ -13,7 +13,7 @@ module Gemini
     end
   end
   
-  class MessageQueue < Gemini::GameObject
+  class MessageQueue < Jemini::GameObject
     def load
       @listeners = Hash.new {|h,k| h[k] = []}
       @messages = Queue.new

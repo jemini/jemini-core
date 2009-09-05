@@ -6,7 +6,7 @@ describe 'InputManager' do
 
   before :each do
     #TODO: Provide (mock) container
-#    @input_manager = Gemini::InputManager.new(@state)
+#    @input_manager = Jemini::InputManager.new(@state)
   end
 
   it "can take a player count" do

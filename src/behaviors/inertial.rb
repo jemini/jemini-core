@@ -1,5 +1,5 @@
 # deprecated
-class Inertial < Gemini::Behavior
+class Inertial < Jemini::Behavior
   depends_on :UpdatesAtConsistantRate
   
   #A 2-element array with x/y inertial values. 0 means no resistance to acceleration.

@@ -7,7 +7,7 @@ puts "this is the file we're in: #{__FILE__}"
 puts "This is where we think we are: #{File.expand_path(File.dirname(__FILE__))}"
 puts "pwd: #{FileUtils.pwd}"
 
-module Gemini
+module Jemini
   class Resolver
     IN_FILE_SYSTEM = :in_file_system
     IN_JAR_FILE = :in_jar_file
@@ -23,7 +23,7 @@ module Gemini
   end
 end
 
-if Gemini::Resolver.run_location == Gemini::Resolver::IN_FILE_SYSTEM
+if Jemini::Resolver.run_location == Jemini::Resolver::IN_FILE_SYSTEM
   $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/..")
   $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
   $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../../../src")
@@ -43,4 +43,4 @@ puts $LOAD_PATH
 puts "classpath:"
 puts $CLASSPATH
 require 'gemini'
-Gemini::Main.start_app("Microman", 640, 480)
+Jemini::Main.start_app("Microman", 640, 480)

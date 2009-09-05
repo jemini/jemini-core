@@ -1,6 +1,6 @@
 require 'managers/input_support/input_message'
 
-module Gemini
+module Jemini
   class InputMapping
     attr_accessor :device, :input_type, :input_button_or_axis, :joystick_id, :destination_type, :destination_value, :input_callback
 
@@ -8,11 +8,11 @@ module Gemini
       options[:input_callback] = callback
       type =  case device
               when :key
-                ::Gemini::KeyMapping
+                ::Jemini::KeyMapping
               when :mouse
-                ::Gemini::MouseMapping
+                ::Jemini::MouseMapping
               when :joystick
-                ::Gemini::JoystickMapping
+                ::Jemini::JoystickMapping
               end
       type.new(options)
     end

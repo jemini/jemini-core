@@ -3,15 +3,15 @@ require 'behavior'
 
 GEMINI_VERSION = "1.0.0"
 
-describe Gemini::Behavior do
+describe Jemini::Behavior do
   it_should_behave_like "initial mock state"
 
   before :each do
-    @game_object = Gemini::GameObject.new(@state)
+    @game_object = Jemini::GameObject.new(@state)
   end
 
   it "can declare class-level listeners" do
-    class ListeningBehavior < Gemini::Behavior
+    class ListeningBehavior < Jemini::Behavior
       listen_for :event
 
       def fire_event
@@ -31,20 +31,20 @@ describe Gemini::Behavior do
   end
 
   it "can declare dependant behaviors" do
-    class DeclareDependantBehavior < Gemini::Behavior
+    class DeclareDependantBehavior < Jemini::Behavior
       def self.require(not_used); end
       depends_on :dependency
     end
   end
   
   it "can declare kind_of dependant behaviors" do
-    class DeclareKindOfDependantBehavior < Gemini::Behavior
+    class DeclareKindOfDependantBehavior < Jemini::Behavior
       depends_on_kind_of :dependency
     end
   end
   
   it "calls load upon instantiation" do
-    class CallsLoad < Gemini::Behavior
+    class CallsLoad < Jemini::Behavior
       def has_called_load?
         @has_called_load
       end
@@ -59,7 +59,7 @@ describe Gemini::Behavior do
   end
   
   it "calls unload upon deletion" do
-    class CallsUnload < Gemini::Behavior
+    class CallsUnload < Jemini::Behavior
 
       def calls_unload_behavior
         self
@@ -72,7 +72,7 @@ describe Gemini::Behavior do
   end
   
   it "loads its dependant behaviors when initializing" do
-    class Dependency1 < Gemini::Behavior
+    class Dependency1 < Jemini::Behavior
       def has_loaded_dep1?
         @was_called
       end
@@ -81,7 +81,7 @@ describe Gemini::Behavior do
       end
     end
     
-    class Dependency2 < Gemini::Behavior
+    class Dependency2 < Jemini::Behavior
       def has_loaded_dep2?
         @was_called
       end
@@ -90,7 +90,7 @@ describe Gemini::Behavior do
       end
     end
     
-    class DependentLoadBehavior < Gemini::Behavior
+    class DependentLoadBehavior < Jemini::Behavior
       def self.require(not_used); end
       depends_on :Dependency1
       depends_on :Dependency2
@@ -102,9 +102,9 @@ describe Gemini::Behavior do
   end
   
   it "removes its dependant behaviors if not in use by another behavior" do
-    class RemovalBehavior < Gemini::Behavior; end
+    class RemovalBehavior < Jemini::Behavior; end
     
-    class ParentOfRemovalBehavior < Gemini::Behavior
+    class ParentOfRemovalBehavior < Jemini::Behavior
       def self.require(not_used); end
       depends_on :RemovalBehavior
     end
@@ -116,10 +116,10 @@ describe Gemini::Behavior do
   
   it "doesn't remove dependent behaviors when it is removed" do
     pending GEMINI_VERSION == "1.1.0"
-    class ShouldNotRemoveBehavior < Gemini::Behavior
+    class ShouldNotRemoveBehavior < Jemini::Behavior
     end
     
-    class ParentOfShouldNotRemoveBehavior < Gemini::Behavior
+    class ParentOfShouldNotRemoveBehavior < Jemini::Behavior
       def self.require(not_used); end
       depends_on :ShouldNotRemoveBehavior
     end
@@ -132,7 +132,7 @@ describe Gemini::Behavior do
   end
 
   it "adds its public instance methods to the game object it is attached to when added" do
-    class AddPublicTestBehavior < Gemini::Behavior
+    class AddPublicTestBehavior < Jemini::Behavior
       def foo; end
       def bar; end
       def bazz; end
@@ -145,7 +145,7 @@ describe Gemini::Behavior do
   end
 
   it "private methods are not added to the game object" do
-    class DoNotAddPrivateTestBehavior < Gemini::Behavior
+    class DoNotAddPrivateTestBehavior < Jemini::Behavior
       private
       def foo; end
       def bar; end
@@ -160,7 +160,7 @@ describe Gemini::Behavior do
   end
 
   it "removes its public instance methods from the game object it is attached to when removed" do
-    class RemovePublicsTestBehavior < Gemini::Behavior
+    class RemovePublicsTestBehavior < Jemini::Behavior
       def foo; end
       def bar; end
       def bazz; end
@@ -180,16 +180,16 @@ describe Gemini::Behavior do
   end
 
   it "doesn't attach load and unload methods to the game object" do
-    class SpecialMethodsTestBehavior < Gemini::Behavior
+    class SpecialMethodsTestBehavior < Jemini::Behavior
       def load; end
       def unload; end
     end
 
-    lambda { @game_object.add_behavior :SpecialMethodsTestBehavior }.should_not raise_error(Gemini::MethodExistsError)
+    lambda { @game_object.add_behavior :SpecialMethodsTestBehavior }.should_not raise_error(Jemini::MethodExistsError)
   end
   
   it "has a reference of the game object (@target)" do
-    class ForwardTestBehavior < Gemini::Behavior
+    class ForwardTestBehavior < Jemini::Behavior
 
       def load
         @target.oneword
@@ -208,11 +208,11 @@ describe Gemini::Behavior do
   end
 end
 
-describe Gemini::Behavior, "callback registration" do
+describe Jemini::Behavior, "callback registration" do
   it_should_behave_like "initial mock state"
 
   before :each do
-    @game_object = Gemini::GameObject.new(@state)
+    @game_object = Jemini::GameObject.new(@state)
   end
 
   it "can register on_foo callbacks with blocks" do
@@ -232,7 +232,7 @@ describe Gemini::Behavior, "callback registration" do
   end
 
   it "can register before_foo callbacks with a method name" do
-    class BeforeFooCallbackBehavior < Gemini::Behavior
+    class BeforeFooCallbackBehavior < Jemini::Behavior
       wrap_with_callbacks :foo
       def foo;end
     end
@@ -243,7 +243,7 @@ describe Gemini::Behavior, "callback registration" do
   end
 
   it "can register after_foo callbacks with a method name" do
-    class AfterFooCallbackBehavior < Gemini::Behavior
+    class AfterFooCallbackBehavior < Jemini::Behavior
       wrap_with_callbacks :foo
       def foo;end
     end
@@ -254,7 +254,7 @@ describe Gemini::Behavior, "callback registration" do
   end
 
   it "can register on_before_foo_changes callbacks with a method name" do
-    class BeforeFooChangesCallbackBehavior < Gemini::Behavior
+    class BeforeFooChangesCallbackBehavior < Jemini::Behavior
       wrap_with_callbacks :foo=
       def foo=(not_used);end
       def foo; end
@@ -266,21 +266,21 @@ describe Gemini::Behavior, "callback registration" do
   end
 end
 
-describe Gemini::Behavior, ".wrap_with_callbacks" do
+describe Jemini::Behavior, ".wrap_with_callbacks" do
   it_should_behave_like "initial mock state"
   
   before :each do
-    @game_object = Gemini::GameObject.new(@state)
+    @game_object = Jemini::GameObject.new(@state)
   end
 
   it "accepts an array of symbols" do
-    class ArrayOfSymbolsBehavior < Gemini::Behavior
+    class ArrayOfSymbolsBehavior < Jemini::Behavior
       wrap_with_callbacks :foo, :bar
     end
   end
   
   it "renames wrapped methods to wrapped_<method>" do
-    class RenameWrappedMethodsBehavior < Gemini::Behavior
+    class RenameWrappedMethodsBehavior < Jemini::Behavior
       wrap_with_callbacks :foo=, :bar, :bazz, :quux, :quuux
       def foo=(arg1); end
       def bar; end
@@ -299,7 +299,7 @@ describe Gemini::Behavior, ".wrap_with_callbacks" do
   end
   
   it "creates a wrapper method that calls the wrapped method" do
-    class ForwardToWrappedMethodBehavior < Gemini::Behavior
+    class ForwardToWrappedMethodBehavior < Jemini::Behavior
       wrap_with_callbacks :foo, :bar, :baz, :baz=
       def foo; end
       def bar; end
@@ -318,17 +318,17 @@ describe Gemini::Behavior, ".wrap_with_callbacks" do
   end
 
   it "raises an error when <method>= is wrapped with no matching <method> on wrap_with_callbacks" do
-    class RaisesWrapperErrorBehavior < Gemini::Behavior
+    class RaisesWrapperErrorBehavior < Jemini::Behavior
       wrap_with_callbacks :baz=
       
       def baz=(value); end
     end
     @game_object.add_behavior :RaisesWrapperErrorBehavior
-    lambda {@game_object.baz = 6}.should raise_error(Gemini::InvalidWrapWithCallbacksError)
+    lambda {@game_object.baz = 6}.should raise_error(Jemini::InvalidWrapWithCallbacksError)
   end
   
   it "passes a block from the wrapper method through to the wrapped method" do
-    class ForwardBlockToWrappedMethodsBehavior < Gemini::Behavior
+    class ForwardBlockToWrappedMethodsBehavior < Jemini::Behavior
       wrap_with_callbacks :method_that_takes_a_block
       
       def method_that_takes_a_block(&block)
@@ -346,7 +346,7 @@ describe Gemini::Behavior, ".wrap_with_callbacks" do
   end
   
   it "adds listener registration methods of the form on_before_<method> and on_after_<method> to target GameObject" do
-    class ListenerRegistrationMethodsAddedBehavior < Gemini::Behavior
+    class ListenerRegistrationMethodsAddedBehavior < Jemini::Behavior
       wrap_with_callbacks :foo,:bar=
       def foo; end
       def bar=(value); end
@@ -360,7 +360,7 @@ describe Gemini::Behavior, ".wrap_with_callbacks" do
   end
   
   it "adds a wrapper method that invokes callbacks before and after the wrapped method" do
-    class CallbackInvokedByWrapperMethodBehavior < Gemini::Behavior
+    class CallbackInvokedByWrapperMethodBehavior < Jemini::Behavior
       wrap_with_callbacks :foo
       
       def foo; end

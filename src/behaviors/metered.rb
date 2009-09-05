@@ -1,3 +1,3 @@
-class Metered < Gemini::Behavior
+class Metered < Jemini::Behavior
   
 end

@@ -3,7 +3,7 @@
 #require 'base_state'
 #
 #describe Spatial2D do
-#  class Spatial2DGameObject < Gemini::GameObject
+#  class Spatial2DGameObject < Jemini::GameObject
 #    has_behavior :Spatial2D
 #  end
 #

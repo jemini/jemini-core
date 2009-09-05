@@ -3,7 +3,7 @@ require 'behaviors/movable'
 
 describe 'Movable' do
   before :each do
-    @game_object = Gemini::GameObject.new(@state)
+    @game_object = Jemini::GameObject.new(@state)
     @game_object.add_behavior(:Movable)
   end
 

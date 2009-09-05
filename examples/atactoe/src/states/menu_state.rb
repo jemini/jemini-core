@@ -1,4 +1,4 @@
-class MenuState < Gemini::BaseState
+class MenuState < Jemini::BaseState
   
   def load(target_score = 10)
     @target_score = target_score

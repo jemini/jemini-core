@@ -1,3 +1,3 @@
-class WarpedSprite < Gemini::Behavior
+class WarpedSprite < Jemini::Behavior
   
 end

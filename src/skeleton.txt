@@ -1,4 +1,4 @@
-As a user I should be able to invoke 'gemini <myproject>' to create a fresh Gemini project
+As a user I should be able to invoke 'gemini <myproject>' to create a fresh Jemini project
 As a user I should be able to have a default directory structure created for me (keymaps, game_objects, input_helpers, managers, and behaviors, states)
 As a user I should be able to have a lib directory populated with default jars and libs.
 As a user I should be able to have a Rawr configuration generated

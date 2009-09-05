@@ -1,5 +1,5 @@
 #Gives an object a bitmap that responds appropriately to the physics engine.
-class PhysicalSprite < Gemini::Behavior
+class PhysicalSprite < Jemini::Behavior
   depends_on :Sprite
   depends_on :Physical
   attr_accessor :tiled_to_bounds

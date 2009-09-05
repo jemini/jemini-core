@@ -1,4 +1,4 @@
-class GameOverState < Gemini::BaseState
+class GameOverState < Jemini::BaseState
   def load
     set_manager :sound, create_game_object(:SoundManager)
     

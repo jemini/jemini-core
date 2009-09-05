@@ -1,5 +1,5 @@
 #Updates all game objects.
-class BasicUpdateManager < Gemini::GameObject
+class BasicUpdateManager < Jemini::GameObject
   def load
     enable_listeners_for :update, :before_update, :after_update
   end

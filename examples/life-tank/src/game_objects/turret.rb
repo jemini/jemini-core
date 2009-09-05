@@ -1,4 +1,4 @@
-class Turret < Gemini::GameObject
+class Turret < Jemini::GameObject
   has_behavior :Sprite
 
   def load

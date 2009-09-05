@@ -1,5 +1,5 @@
 #Makes an object emit sounds.
-class Audible < Gemini::Behavior
+class Audible < Jemini::Behavior
   
   #Load a sound file and assign a reference to it, which can later be passed to emit_sound.
   def load_sound(reference, path)

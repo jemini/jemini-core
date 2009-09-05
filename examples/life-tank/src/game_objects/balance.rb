@@ -1,4 +1,4 @@
-class Balance < Gemini::GameObject
+class Balance < Jemini::GameObject
   has_behavior :Physical
   has_behavior :Taggable
   

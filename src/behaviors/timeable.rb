@@ -1,5 +1,5 @@
 #Makes an object receive an event when a given time period has elapsed.
-class Timeable < Gemini::Behavior
+class Timeable < Jemini::Behavior
   depends_on :Updates
   
   def load

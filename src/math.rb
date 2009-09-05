@@ -1,4 +1,4 @@
-module Gemini
+module Jemini
   class Math
     SQUARE_ROOT_OF_TWO = ::Math::sqrt(2.0)
 
@@ -19,5 +19,5 @@ module Gemini
 end
 
 class Float
-  include Gemini::FloatHelpers
+  include Jemini::FloatHelpers
 end

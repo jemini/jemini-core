@@ -1,5 +1,5 @@
 #Gives an object multiple animations it can switch between.
-class MultiAnimatedSprite < Gemini::Behavior
+class MultiAnimatedSprite < Jemini::Behavior
   depends_on :AnimatedSprite
   
   def load

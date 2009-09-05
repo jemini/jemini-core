@@ -1,4 +1,4 @@
-class Gangster < Gemini::GameObject
+class Gangster < Jemini::GameObject
   has_behavior :CardinalMovable
   has_behavior :TangibleSprite
   has_behavior :RotatesToPoint

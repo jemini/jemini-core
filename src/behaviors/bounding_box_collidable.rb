@@ -2,7 +2,7 @@ require 'behavior_event'
 include_class 'org.newdawn.slick.geom.Rectangle'
 
 #Makes an object generate a BoundingBoxCollisionEvent if its bounding box intersects another's.
-class BoundingBoxCollidable < Gemini::Behavior
+class BoundingBoxCollidable < Jemini::Behavior
   depends_on :Spatial2d
   
   def load
@@ -17,7 +17,7 @@ class BoundingBoxCollidable < Gemini::Behavior
 end
 
 #Indicates that one object has collided with another.
-class BoundingBoxCollisionEvent < Gemini::BehaviorEvent
+class BoundingBoxCollisionEvent < Jemini::BehaviorEvent
   attr_accessor :colliding_object, :collided_object
   
   def load(source, other)

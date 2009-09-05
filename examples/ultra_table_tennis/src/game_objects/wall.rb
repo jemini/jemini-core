@@ -1,4 +1,4 @@
-class Wall < Gemini::GameObject
+class Wall < Jemini::GameObject
   has_behavior :Taggable
   has_behavior :Tangible
   

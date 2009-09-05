@@ -23,8 +23,8 @@ PROJ.name = 'gemini'
 PROJ.authors = 'Logan Barnett, David Koontz'
 PROJ.email = 'logustus@gmail.com'
 PROJ.url = 'http://rubyforge.org/projects/gemini/'
-PROJ.version = Gemini::VERSION
-PROJ.summary = "Gemini is a Ruby game engine that separates the game logic from reusable game features. Includes hardware accelerated graphics, physics, standalone distros, and more."
+PROJ.version = Jemini::VERSION
+PROJ.summary = "Jemini is a Ruby game engine that separates the game logic from reusable game features. Includes hardware accelerated graphics, physics, standalone distros, and more."
 PROJ.rubyforge.name = 'gemini'
 PROJ.spec.files = FileList['test/**/*_spec.rb'],
 PROJ.spec.opts << '--color'
@@ -39,7 +39,7 @@ PROJ.rdoc.exclude << /gemini\.jar/
 task :update_version_readme do
   readme = IO.readlines( 'README.txt')
   File.open( 'README.txt', 'w' ) { |f|
-    f << "Gemini #{Gemini::VERSION}\n"
+    f << "Jemini #{Jemini::VERSION}\n"
     readme.shift
     f << readme
   }
@@ -50,7 +50,7 @@ Rake::RDocTask.new do |task|
   task.rdoc_dir = "doc"
   task.rdoc_files = FileList["src/**/*.rb", "README.txt"]
   task.options = [
-    "--title", "Gemini - A game library for Ruby/JRuby",
+    "--title", "Jemini - A game library for Ruby/JRuby",
     "--main", "README.txt"
   ]
 end

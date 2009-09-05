@@ -5,8 +5,8 @@ class Vector
   attr_reader :native_vector
 
   def self.from_polar_vector(magnitude, angle)
-    w = Math.sin(Gemini::Math.degrees_to_radians(angle))
-    h = -Math.cos(Gemini::Math.degrees_to_radians(angle))
+    w = Math.sin(Jemini::Math.degrees_to_radians(angle))
+    h = -Math.cos(Jemini::Math.degrees_to_radians(angle))
     return new(w * magnitude, h * magnitude)
   end
 
@@ -77,7 +77,7 @@ class Vector
   def angle_from(other_vector)
     #TODO: Adding 90 degrees indicates to me that this is the wrong trig function.
     # Although it's good for perpendicular angles, which we'll need a method for.
-    Gemini::Math.radians_to_degrees(Math.atan2(y - other_vector.y, x - other_vector.x)) + 90.0
+    Jemini::Math.radians_to_degrees(Math.atan2(y - other_vector.y, x - other_vector.x)) + 90.0
   end
 
   def midpoint_of(other_vector)
@@ -85,7 +85,7 @@ class Vector
   end
 
   def pivot_around_degrees(other_vector, rotation)
-    pivot_around(other_vector, Gemini::Math.degrees_to_radians(rotation))
+    pivot_around(other_vector, Jemini::Math.degrees_to_radians(rotation))
   end
   
   def pivot_around(other_vector, rotation)
@@ -103,7 +103,7 @@ class Vector
   end
 
   def polar_angle_degrees
-    Gemini::Math.radians_to_degrees polar_angle
+    Jemini::Math.radians_to_degrees polar_angle
   end
 
   def magnitude

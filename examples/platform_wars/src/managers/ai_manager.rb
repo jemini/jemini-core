@@ -1,6 +1,6 @@
 require 'duke'
 
-class AIManager < Gemini::GameObject
+class AIManager < Jemini::GameObject
   def load
     @enemies = []
     

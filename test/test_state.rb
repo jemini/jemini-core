@@ -1,3 +1,3 @@
-class TestState < Gemini::BaseState
+class TestState < Jemini::BaseState
   
 end

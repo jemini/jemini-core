@@ -1,5 +1,5 @@
 #Gives an object x/y coordinates.
-class Spatial < Gemini::Behavior
+class Spatial < Jemini::Behavior
   wrap_with_callbacks :position=
   attr_accessor :position
   
@@ -31,7 +31,7 @@ class Spatial < Gemini::Behavior
 #    if y.nil?
 #      #TODO: Determine if Spatial should really suppor this behavior.
 #      # use case: Pipe a mouse move event directly to move
-#      if x_or_other.kind_of? Gemini::Message
+#      if x_or_other.kind_of? Jemini::Message
 #        @position = Vector.new(x_or_other.value.x, x_or_other.value.y)
 #      else
 #        @position = Vector.new(x_or_other.x, x_or_other.y)

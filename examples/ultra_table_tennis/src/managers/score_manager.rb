@@ -1,4 +1,4 @@
-class ScoreManager < Gemini::GameObject
+class ScoreManager < Jemini::GameObject
   has_behavior :Timeable
   
   def load

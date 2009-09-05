@@ -1,4 +1,4 @@
-module Gemini
+module Jemini
   class SlickInputListener
     java_import 'org.newdawn.slick.InputListener'
     include InputListener

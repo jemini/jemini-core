@@ -29,8 +29,8 @@ require 'gemini'
 
 begin
   # Change :HelloState to point to the initial state of your game
-  # Gemini::Main.start_app("", 800, 600, :HelloWorldState, false)
-  Gemini::Main.start_app("AtacToe", 1024, 768, :MainState, false)
+  # Jemini::Main.start_app("", 800, 600, :HelloWorldState, false)
+  Jemini::Main.start_app("AtacToe", 1024, 768, :MainState, false)
 rescue => e
   warn e
   warn e.backtrace

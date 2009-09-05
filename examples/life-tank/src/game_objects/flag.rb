@@ -1,4 +1,4 @@
-class Flag < Gemini::GameObject
+class Flag < Jemini::GameObject
   has_behavior :Sprite
   
   def load(tank)

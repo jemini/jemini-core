@@ -1,4 +1,4 @@
-Gemini::InputManager.define_keymap do |i|
+Jemini::InputManager.define_keymap do |i|
   #i.map KEY_HELD, :source_value => Input::KEY_LEFT,  :destination_type => :p1_platformer_movement, :destination_value => :left
   #i.map KEY_HELD, :source_value => Input::KEY_RIGHT, :destination_type => :p1_platformer_movement, :destination_value => :right
   i.map KEY_PRESSED, :source_value => Input::KEY_SPACE, :destination_type => :p1_platformer_jump,     :destination_value => :jump

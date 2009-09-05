@@ -1,4 +1,4 @@
-class PlayState < Gemini::BaseState
+class PlayState < Jemini::BaseState
   def load(player_count)
     set_manager :physics, create(:BasicPhysicsManager)
     set_manager :tag, create(:TagManager)

@@ -1,4 +1,4 @@
-class PowerArrowHead < Gemini::GameObject
+class PowerArrowHead < Jemini::GameObject
   has_behavior :Sprite
 
   def load

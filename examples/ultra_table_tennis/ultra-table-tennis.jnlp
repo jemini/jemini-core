@@ -2,7 +2,7 @@
   <jnlp spec='1.0+' codebase='http://www.happycamperstudios.com/gemini/ultra-table-tennis' href='ultra-table-tennis.jnlp' >
     <information>
     <title>ultra-table-tennis</title>
-    <vendor>Gemini</vendor>
+    <vendor>Jemini</vendor>
     <homepage href='http://gemini-engine.org' />
     <description>Fun!</description>
   </information>

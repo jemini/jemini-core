@@ -1,5 +1,5 @@
 #All other game states should inherit from this class.
-module Gemini
+module Jemini
   class BaseState
     @@active_state = nil
     def self.active_state
@@ -48,7 +48,7 @@ module Gemini
     #The given params will be passed to the object's constructor.
     def create_on_layer(type, layer_name, *params)
       game_object_type = if :game_object == type.to_sym || :GameObject == type.to_sym
-                           Gemini::GameObject
+                           Jemini::GameObject
                          elsif Module.const_defined?(type.camelize.to_sym)
                            type.constantize
                          else

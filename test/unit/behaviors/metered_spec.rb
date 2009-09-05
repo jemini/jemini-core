@@ -3,7 +3,7 @@ require 'behaviors/metered'
 
 describe 'Metered' do
   before :each do
-    @game_object = Gemini::GameObject.new(@state)
+    @game_object = Jemini::GameObject.new(@state)
     @game_object.add_behavior(:Metered)
   end
   describe '#on_before_meter_changes' do

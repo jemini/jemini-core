@@ -7,7 +7,7 @@ describe 'NetworkManager' do
   it_should_behave_like "a manager"
 
   before :each do
-    @network_manager = Gemini::NetworkManager.new(@state)
+    @network_manager = Jemini::NetworkManager.new(@state)
   end
   
   it "accepts peer addresses" do

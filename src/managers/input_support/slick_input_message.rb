@@ -1,4 +1,4 @@
-module Gemini
+module Jemini
   class SlickInputMessage < Message
     attr_accessor :event_name, :data
 

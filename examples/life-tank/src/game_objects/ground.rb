@@ -1,4 +1,4 @@
-class Ground < Gemini::GameObject
+class Ground < Jemini::GameObject
   POINT_SPACING     = 25
   DIRT_DEATH_FACTOR =  0.50
   MINIMUM_BOTTOM    = 50

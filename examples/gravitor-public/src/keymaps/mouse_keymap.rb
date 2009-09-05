@@ -1,4 +1,4 @@
-Gemini::InputManager.define_keymap do |i|
+Jemini::InputManager.define_keymap do |i|
   i.map MOUSE_BUTTON1_PRESSED, :destination_type => :mouse_button1_pressed do |raw_value, message|
     message.value = MouseEvent.new(MouseEvent::PRESSED, Vector.new(raw_value[1], raw_value[2]))
   end

@@ -1,6 +1,6 @@
 require 'events/grid_changed_event'
 
-class GridBound < Gemini::Behavior
+class GridBound < Jemini::Behavior
   DEFAULT_GRID_WIDTH  = 32
   DEFAULT_GRID_HEIGHT = 32
   DEFAULT_GRID_SIZE = Vector.new(DEFAULT_GRID_WIDTH, DEFAULT_GRID_HEIGHT)

@@ -1,4 +1,4 @@
-class InputDiagnosticState < Gemini::BaseState
+class InputDiagnosticState < Jemini::BaseState
   def load
     @input = manager(:input)
     @raw_input = @input.instance_variable_get(:@raw_input)

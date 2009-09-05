@@ -6,7 +6,7 @@ require 'profile' if $profiling
 require 'fileutils'
 
 
-module Gemini
+module Jemini
   class Resolver
     IN_FILE_SYSTEM = :in_file_system
     IN_JAR_FILE = :in_jar_file
@@ -22,7 +22,7 @@ module Gemini
   end
 end
 
-if Gemini::Resolver.run_location == Gemini::Resolver::IN_FILE_SYSTEM
+if Jemini::Resolver.run_location == Jemini::Resolver::IN_FILE_SYSTEM
   
   $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/..")
   $LOAD_PATH << File.dirname(__FILE__)
@@ -46,4 +46,4 @@ end
 end
 
 require 'gemini'
-Gemini::Main.start_app("Tommyguns and Booze", 1024, 768)
+Jemini::Main.start_app("Tommyguns and Booze", 1024, 768)

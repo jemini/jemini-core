@@ -1,4 +1,4 @@
-class Microman < Gemini::GameObject
+class Microman < Jemini::GameObject
   has_behavior :PlatformerControllable
   has_behavior :GameObjectEmittable
   has_behavior :Audible

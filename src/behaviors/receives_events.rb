@@ -1,5 +1,5 @@
 #Enables an object to respond to events.
-class ReceivesEvents < Gemini::Behavior
+class ReceivesEvents < Jemini::Behavior
 
   def load
     @handled_events = []

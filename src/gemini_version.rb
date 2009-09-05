@@ -1,3 +1,3 @@
-module Gemini
+module Jemini
   VERSION = "1.0.1"
 end

@@ -1,4 +1,4 @@
-class Ball < Gemini::GameObject
+class Ball < Jemini::GameObject
   has_behavior :TangibleSprite
   
   def load

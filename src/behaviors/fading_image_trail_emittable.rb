@@ -1,5 +1,5 @@
 #Makes an object leave a trail of images behind it that fade over time.
-class FadingImageTrailEmittable < Gemini::Behavior
+class FadingImageTrailEmittable < Jemini::Behavior
   depends_on :Updates
   
   def load

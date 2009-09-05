@@ -5,7 +5,7 @@ describe Taggable do
   it_should_behave_like "initial mock state"
 
   before(:each) do
-    @game_object = Gemini::GameObject.new(@state)
+    @game_object = Jemini::GameObject.new(@state)
     @game_object.add_behavior :Taggable
   end
   
