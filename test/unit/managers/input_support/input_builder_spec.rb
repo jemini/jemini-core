@@ -39,7 +39,6 @@ describe 'InputBuilder' do
     end
 
     it 'allows bindings to be turned off with #off'
-    
     it 'appends multiple bindings for the same action'
     
     it 'appends multiple bindings inside the same binding' do
@@ -54,9 +53,44 @@ describe 'InputBuilder' do
     end
 
 
-    it 'binds left, right, and middle mouse buttons'
+    it 'binds the left mouse button by name'
+    it 'binds the right mouse button by name'
+    it 'binds the middle mouse button by name'
+    
     it 'binds scroll up and scroll down mouse buttons'
-    it 'can bind to a given mouse button number'
+    
+    it 'can bind to a given mouse button number' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :fire_primary do
+          i.press :mouse_button => 1
+        end
+
+        i.in_order_to :fire_secondary do
+          i.press :mouse_button => 2
+        end
+      end
+
+      @raw_input.stub!(:mouse_x).and_return 0
+      @raw_input.stub!(:mouse_y).and_return 0
+      @raw_input.stub!(:mouse_pressed?).with(1).and_return true
+      @raw_input.stub!(:mouse_pressed?).with(2).and_return false
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :ReceivesEvents
+      game_object.handle_event :fire_primary do
+        @primary = true
+      end
+      game_object.handle_event :fire_secondary do
+        @secondary = true
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      @primary.should be_true
+      @secondary.should be_nil
+    end
+
     it 'can bind to a given xbox number'
   end
 
@@ -172,7 +206,31 @@ describe 'InputBuilder' do
 
   describe '#hold' do
     it 'creates a binding that fires on each update while the mouse is held' do
-      pending
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :run do
+          i.hold :mouse_left
+        end
+      end
+
+      @raw_input.stub!(:mouse_x).and_return 0
+      @raw_input.stub!(:mouse_y).and_return 0
+      @raw_input.stub!(:mouse_button_down?).and_return true
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :ReceivesEvents
+      game_object.handle_event :run do
+        @pass = true
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+      @pass.should be_true
+
+      @pass = false # reset
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+      @pass.should be_true
     end
 
     it 'creates a binding that fires on each update while the key is held' do

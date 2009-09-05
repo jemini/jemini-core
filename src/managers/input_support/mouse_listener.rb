@@ -15,7 +15,12 @@ module Jemini
       when :press
         cancel_post! unless raw_input.mouse_pressed?(@input_button_or_axis)
       when :hold
+        begin
         cancel_post! unless raw_input.mouse_button_down?(@input_button_or_axis)
+        rescue => e
+          puts e
+          puts e.backtrace
+        end
       when :release
         button_down = raw_input.mouse_button_down?(@input_button_or_axis)
         result = (@button_down_on_last_poll && !button_down)
