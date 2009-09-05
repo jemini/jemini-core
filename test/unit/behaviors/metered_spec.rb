@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'behaviors/metered'
 
 describe 'Metered' do
-  pending
   before :each do
     @game_object = Gemini::GameObject.new(@state)
     @game_object.add_behavior(:Metered)
