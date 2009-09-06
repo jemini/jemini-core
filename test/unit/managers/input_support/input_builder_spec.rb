@@ -53,9 +53,101 @@ describe 'InputBuilder' do
     end
 
 
-    it 'binds the left mouse button by name'
-    it 'binds the right mouse button by name'
-    it 'binds the middle mouse button by name'
+    it 'binds the left mouse button by name' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :fire_primary do
+          i.press :mouse_left
+        end
+
+        i.in_order_to :fire_secondary do
+          i.press :mouse_button => 2
+        end
+      end
+
+      @raw_input.stub!(:mouse_x).and_return 0
+      @raw_input.stub!(:mouse_y).and_return 0
+      @raw_input.stub!(:mouse_pressed?).with(1).and_return true
+      @raw_input.stub!(:mouse_pressed?).with(2).and_return false
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :ReceivesEvents
+      game_object.handle_event :fire_primary do
+        @primary = true
+      end
+      game_object.handle_event :fire_secondary do
+        @secondary = true
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      @primary.should be_true
+      @secondary.should be_nil
+    end
+
+    it 'binds the right mouse button by name' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :fire_primary do
+          i.press :mouse_left
+        end
+
+        i.in_order_to :fire_secondary do
+          i.press :mouse_right
+        end
+      end
+
+      @raw_input.stub!(:mouse_x).and_return 0
+      @raw_input.stub!(:mouse_y).and_return 0
+      @raw_input.stub!(:mouse_pressed?).with(1).and_return false
+      @raw_input.stub!(:mouse_pressed?).with(2).and_return true
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :ReceivesEvents
+      game_object.handle_event :fire_primary do
+        @primary = true
+      end
+      game_object.handle_event :fire_secondary do
+        @secondary = true
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      @primary.should be_nil
+      @secondary.should be_true
+    end
+
+    it 'binds the middle mouse button by name' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :fire_primary do
+          i.press :mouse_left
+        end
+
+        i.in_order_to :use do
+          i.press :mouse_middle
+        end
+      end
+
+      @raw_input.stub!(:mouse_x).and_return 0
+      @raw_input.stub!(:mouse_y).and_return 0
+      @raw_input.stub!(:mouse_pressed?).with(1).and_return false
+      @raw_input.stub!(:mouse_pressed?).with(3).and_return true
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :ReceivesEvents
+      game_object.handle_event :fire_primary do
+        @primary = true
+      end
+      game_object.handle_event :use do
+        @use = true
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      @primary.should be_nil
+      @use.should be_true
+    end
     
     it 'binds scroll up and scroll down mouse buttons'
     
