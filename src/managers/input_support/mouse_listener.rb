@@ -7,10 +7,11 @@ module Jemini
     end
 
     def poll_value(raw_input)
-      value = MouseValue.new
-      value.pointer = Vector.new(raw_input.mouse_x, raw_input.mouse_y)
+      value                 = MouseValue.new
+      value.position        = percent_on_screen(raw_input)
+      value.screen_position = Vector.new(raw_input.mouse_x, raw_input.mouse_y)
       case @input_type
-      when :axis_update, :move
+      when :move, :axis_update
         
       when :press
         cancel_post! unless raw_input.mouse_pressed?(@input_button_or_axis)
@@ -30,9 +31,13 @@ module Jemini
 
       value
     end
+
+    def percent_on_screen(raw_input)
+      Vector.new(raw_input.mouse_x.to_f / game_state.screen_size.x.to_f, raw_input.mouse_y.to_f / game_state.screen_size.y.to_f)
+    end
   end
 
   class MouseValue
-    attr_accessor :pointer, :pointer_delta
+    attr_accessor :position, :screen_position, :position_delta, :screen_position_delta
   end
 end

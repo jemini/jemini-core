@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'managers/input_manager'
 require 'managers/input_support/input_builder'
 require 'managers/message_queue'
+#require 'game_state'
 
 describe 'InputBuilder' do
   it_should_behave_like "initial mock state"
@@ -13,6 +14,8 @@ describe 'InputBuilder' do
     @state.stub!(:manager).with(:input).and_return(@input_manager)
     @message_queue = Jemini::MessageQueue.new(@state)
     @state.stub!(:manager).with(:message_queue).and_return(@message_queue)
+    Jemini::BaseState.stub!(:active_state).and_return @state
+    @state.stub!(:screen_size).and_return Vector.new(640, 480)
   end
 
   describe '.declare' do
@@ -186,8 +189,30 @@ describe 'InputBuilder' do
     it 'can bind to a given xbox number'
   end
 
-  describe '#axis_update' do
-    it 'creates a binding that fires on every update with the new position of the axis'
+  describe '#move' do
+    it 'creates a binding that fires on every update with the new position of the axis' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :steer do
+          i.move :mouse
+        end
+      end
+
+      @raw_input.stub!(:mouse_x).and_return 40
+      @raw_input.stub!(:mouse_y).and_return 50
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :Spatial
+      game_object.handle_event :steer do |event|
+        game_object.position = event.screen_position
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+      
+      game_object.position.should == Vector.new(40, 50)
+    end
+
     it 'works with joystick axes'
     it 'works with the mouse position'
   end

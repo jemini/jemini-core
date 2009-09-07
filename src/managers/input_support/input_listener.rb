@@ -2,7 +2,7 @@ require 'managers/input_support/input_message'
 
 module Jemini
   class InputListener
-    attr_accessor :device, :input_type, :input_button_or_axis, :joystick_id, :destination_type, :destination_value, :input_callback
+    attr_accessor :device, :input_type, :input_button_or_axis, :joystick_id, :destination_type, :destination_value, :input_callback, :game_state
 
     def self.create(message, type, device, button_id, options={}, &callback)
       options[:input_callback] = callback
@@ -37,6 +37,7 @@ module Jemini
       # after all the deletes, the game message and value should be only what's left
       @game_message   = message
       @game_value     = options.values.first
+      @game_state     = BaseState.active_state
     end
 
     def poll(raw_input)

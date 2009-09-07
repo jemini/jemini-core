@@ -220,8 +220,9 @@ module Jemini
           messages << keymap.poll(@raw_input)
           false  # don't delete me
         rescue => e
-          warn "error in poll: #{e}"
-          warn "removing keymap #{keymap}"
+          # TODO: puts in test, warn in production. Is there a better way?
+          puts "error in poll: #{e}"
+          puts "removing keymap #{keymap}"
           true   # I've been bad, delete me
         end
       end

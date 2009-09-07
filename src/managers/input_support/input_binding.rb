@@ -10,16 +10,17 @@ module Jemini
       @listeners = []
     end
 
-    def add_input_listener(button_type, button_id)
-      device      = detect_device(button_id)
+    # type can be one of :hold, :release, :press, and :move
+    def add_input_listener(type, button_id)
+      device      = detect_device(button_id, type)
       real_button = detect_button(button_id, device)
-      listener    = InputListener.create(action_name, button_type, device, real_button)
+      listener    = InputListener.create(action_name, type, device, real_button)
       Jemini::BaseState.active_state.manager(:input).listeners << listener
 #      @listeners << 
     end
 
-    def detect_device(button_id)
-      if mouse_button?(button_id)
+    def detect_device(button_id, type)
+      if mouse_button?(button_id, type)
         :mouse
       else
         :key
@@ -37,7 +38,8 @@ module Jemini
       end
     end
 
-    def mouse_button?(button_id)
+    def mouse_button?(button_id, type)
+      return true if type == :move && button_id == :mouse
       return true if MOUSE_BUTTON_NAMES.include? button_id
       return false unless button_id.respond_to? :has_key?
       return true if button_id.has_key? :mouse_button
@@ -51,6 +53,8 @@ module Jemini
         2
       when :mouse_middle
         3
+      when :mouse
+        nil
       else
         button_id[:mouse_button]
       end

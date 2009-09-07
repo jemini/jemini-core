@@ -28,6 +28,8 @@ module Jemini
       @current_binding.add_input_listener(:release, button)
     end
 
-
+    def move(button)
+      @current_binding.add_input_listener(:move, button)
+    end
   end
 end
