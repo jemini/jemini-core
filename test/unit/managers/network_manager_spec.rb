@@ -7,20 +7,31 @@ describe 'NetworkManager' do
   # it_should_behave_like "a manager"
 
   before :each do
+    @state = Jemini::BaseState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
     @network_manager = Jemini::NetworkManager.new(@state)
   end
   
   it "accepts peer addresses" do
     @network_manager.add_peer '192.168.0.100', 9999
-    @network_manager.peers.should include(['192.168.0.100', 9999])
+    @network_manager.peers.first.address.should == '192.168.0.100'
+    @network_manager.peers.first.port.should == 9999
   end
+  
+  it "accepts a socket object"
   
   it "defaults to 5364 (JEMI) for port" do
     @network_manager.add_peer '192.168.0.100'
-    @network_manager.peers.should include(['192.168.0.100', 5364])
+    @network_manager.peers.first.address.should == '192.168.0.100'
+    @network_manager.peers.first.port.should == 5364
   end
-  it "can register itself as a listener for an event type"
-  it "transmits events it receives to a peer"
+  
+  it "transmits events it receives to a peer" do
+    pending
+    @network_manager.add_peer 'localhost'
+    @network_manager.handle_event :my_event, :notify_peers
+    @network_manager.socket.should_receive(:send).with(:my_event, 0, 'localhost', 5364)
+    @network_manager.notify(:my_event)
+  end
   it "can broadcast an event to multiple peers"
   
   it "can be set as the authority (server)"

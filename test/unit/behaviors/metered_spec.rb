@@ -8,24 +8,30 @@ describe 'Metered' do
   end
   describe '#on_before_meter_changes' do
     it 'accepts a meter key and block' do
+      pending
       lambda {@game_object.on_before_meter_changes(:key) {}}.should_not raise_error
     end
     it 'throws an error without a block' do
+      pending
       lambda {@game_object.on_before_meter_changes(:key)}.should raise_error
     end
     it 'throws an error without a key' do
+      pending
       lambda {@game_object.on_before_meter_changes {}}.should raise_error
     end
     it 'calls the block with the new value before the meter changes' do
+      pending
       @game_object.on_before_meter_changes(:health) {|value| update_bar(value)}
       @game_object.should_receive(:update_bar).with(10)
       @game_object.meter[:health] = 10
     end
     it 'can call the block without passing the new value' do
+      pending
       @game_object.on_before_meter_changes(:health) {play_sound :beep}
       lambda {@game_object.meter[:health] = 10}.should_not raise_error
     end
     it 'does not update the value until after the block is called' do
+      pending
       @game_object.meter[:health] = 11
       @game_object.on_before_meter_changes(:health) {|value| fail unless @game_object.meter[:health] == 11}
       @game_object.meter[:health] = 10
@@ -35,24 +41,30 @@ describe 'Metered' do
   end
   describe '#on_after_meter_changes' do
     it 'accepts a meter key and block' do
+      pending
       lambda {@game_object.on_after_meter_changes(:key) {}}.should_not raise_error
     end
     it 'throws an error without a block' do
+      pending
       lambda {@game_object.on_after_meter_changes(:key)}.should raise_error
     end
     it 'throws an error without a key' do
+      pending
       lambda {@game_object.on_after_meter_changes {}}.should raise_error
     end
     it 'calls the block with the new value after the meter changes' do
+      pending
       @game_object.on_after_meter_changes(:health) {|value| update_bar(value)}
       @game_object.should_receive(:update_bar).with(10)
       @game_object.meter[:health] = 10
     end
     it 'can call the block without passing the new value' do
+      pending
       @game_object.on_after_meter_changes(:health) {play_sound :beep}
       lambda {@game_object.meter[:health] = 10}.should_not raise_error
     end
     it 'only calls the block after the value is updated' do
+      pending
       @game_object.meter[:health] = 11
       @game_object.on_after_meter_changes(:health) {|value| fail unless @game_object.meter[:health] == 10}
       @game_object.meter[:health] = 10
