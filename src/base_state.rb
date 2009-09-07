@@ -107,9 +107,10 @@ module Jemini
     def quit_game
       java.lang.System.exit 0
     end
-  private
+    
     def set_manager(type, manager)
       @managers[type] = manager
     end
+    
   end
 end
