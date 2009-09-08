@@ -42,7 +42,22 @@ describe 'InputBuilder' do
     end
 
     it 'allows bindings to be turned off with #off'
-    it 'appends multiple bindings for the same action'
+    
+    it 'appends multiple bindings for the same action' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :jump do
+          i.hold :a
+        end
+      end
+
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :jump do
+          i.hold :b
+        end
+      end
+
+      Jemini::BaseState.active_state.manager(:input).listeners.should have(2).listeners
+    end
     
     it 'appends multiple bindings inside the same binding' do
       Jemini::InputBuilder.declare do |i|
