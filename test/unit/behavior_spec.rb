@@ -253,15 +253,23 @@ describe Jemini::Behavior, "callback registration" do
     @game_object.foo
   end
 
-  it "can register on_before_foo_changes callbacks with a method name" do
-    class BeforeFooChangesCallbackBehavior < Jemini::Behavior
+  it "can register changes callbacks with a method name" do
+    class FooChangesCallbackBehavior < Jemini::Behavior
       wrap_with_callbacks :foo=
       def foo=(not_used);end
       def foo; end
     end
-    @game_object.add_behavior :BeforeFooChangesCallbackBehavior
+    @game_object.add_behavior :FooChangesCallbackBehavior
     @game_object.on_before_foo_changes :handle_before_foo
-    @game_object.should_receive :handle_before_foo
+    @game_object.should_receive(:handle_before_foo).with(an_instance_of(Jemini::ValueChangedEvent)) do |event|
+      event.previous_value.should be_nil
+      event.desired_value.should == "bar"
+    end
+    @game_object.on_after_foo_changes :handle_after_foo
+    @game_object.should_receive(:handle_after_foo).with(an_instance_of(Jemini::ValueChangedEvent)) do |event|
+      event.previous_value.should be_nil
+      event.desired_value.should == "bar"
+    end
     @game_object.foo = "bar"
   end
 end
