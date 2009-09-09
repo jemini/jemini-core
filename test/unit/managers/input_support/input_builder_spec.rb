@@ -16,6 +16,7 @@ describe 'InputBuilder' do
     @state.stub!(:manager).with(:message_queue).and_return(@message_queue)
     Jemini::GameState.stub!(:active_state).and_return @state
     @state.stub!(:screen_size).and_return Vector.new(640, 480)
+    Jemini::InputManager.stub!(:loading_input_manager).and_return @input_manager
   end
 
   describe '.declare' do
@@ -78,14 +79,14 @@ describe 'InputBuilder' do
         end
 
         i.in_order_to :fire_secondary do
-          i.press :mouse_button => 2
+          i.press :mouse_button => 1
         end
       end
 
       @raw_input.stub!(:mouse_x).and_return 0
       @raw_input.stub!(:mouse_y).and_return 0
-      @raw_input.stub!(:mouse_pressed?).with(1).and_return true
-      @raw_input.stub!(:mouse_pressed?).with(2).and_return false
+      @raw_input.stub!(:mouse_pressed?).with(0).and_return true
+      @raw_input.stub!(:mouse_pressed?).with(1).and_return false
 
       game_object = Jemini::GameObject.new(@state)
       game_object.add_behavior :ReceivesEvents
@@ -116,8 +117,8 @@ describe 'InputBuilder' do
 
       @raw_input.stub!(:mouse_x).and_return 0
       @raw_input.stub!(:mouse_y).and_return 0
-      @raw_input.stub!(:mouse_pressed?).with(1).and_return false
-      @raw_input.stub!(:mouse_pressed?).with(2).and_return true
+      @raw_input.stub!(:mouse_pressed?).with(0).and_return false
+      @raw_input.stub!(:mouse_pressed?).with(1).and_return true
 
       game_object = Jemini::GameObject.new(@state)
       game_object.add_behavior :ReceivesEvents
@@ -148,8 +149,8 @@ describe 'InputBuilder' do
 
       @raw_input.stub!(:mouse_x).and_return 0
       @raw_input.stub!(:mouse_y).and_return 0
-      @raw_input.stub!(:mouse_pressed?).with(1).and_return false
-      @raw_input.stub!(:mouse_pressed?).with(3).and_return true
+      @raw_input.stub!(:mouse_pressed?).with(0).and_return false
+      @raw_input.stub!(:mouse_pressed?).with(2).and_return true
 
       game_object = Jemini::GameObject.new(@state)
       game_object.add_behavior :ReceivesEvents
@@ -172,18 +173,18 @@ describe 'InputBuilder' do
     it 'can bind to a given mouse button number' do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :fire_primary do
-          i.press :mouse_button => 1
+          i.press :mouse_button => 0
         end
 
         i.in_order_to :fire_secondary do
-          i.press :mouse_button => 2
+          i.press :mouse_button => 1
         end
       end
 
       @raw_input.stub!(:mouse_x).and_return 0
       @raw_input.stub!(:mouse_y).and_return 0
-      @raw_input.stub!(:mouse_pressed?).with(1).and_return true
-      @raw_input.stub!(:mouse_pressed?).with(2).and_return false
+      @raw_input.stub!(:mouse_pressed?).with(0).and_return true
+      @raw_input.stub!(:mouse_pressed?).with(1).and_return false
 
       game_object = Jemini::GameObject.new(@state)
       game_object.add_behavior :ReceivesEvents

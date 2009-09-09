@@ -7,7 +7,7 @@ module Jemini
 
     def initialize(action_name)
       @action_name = action_name
-      @listeners = []
+      @listeners   = []
     end
 
     # type can be one of :hold, :release, :press, and :move
@@ -15,8 +15,7 @@ module Jemini
       device      = detect_device(button_id, type)
       real_button = detect_button(button_id, device)
       listener    = InputListener.create(action_name, type, device, real_button)
-      Jemini::GameState.active_state.manager(:input).listeners << listener
-#      @listeners << 
+      InputManager.loading_input_manager.listeners << listener
     end
 
     def detect_device(button_id, type)
@@ -48,11 +47,11 @@ module Jemini
     def detect_mouse_button(button_id)
       case button_id
       when :mouse_left
-        1
+        0
       when :mouse_right
-        2
+        1
       when :mouse_middle
-        3
+        2
       when :mouse
         nil
       else
