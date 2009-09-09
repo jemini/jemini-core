@@ -31,9 +31,12 @@ module Jemini
       when :mouse
         detect_mouse_button(button_id)
       when :key
-        #TODO: translate button ids from friendly form to something that works for the Input class
-        #"Input::KEY_#{button_id.to_s.upcase}".constantize
-        button_id
+        case button_id.to_s
+        when /(up|down|left|right)_arrow/
+          "Input::KEY_#{$1.upcase}".constantize
+        else
+          "Input::KEY_#{button_id.to_s.underscore.upcase}".constantize
+        end
       end
     end
 

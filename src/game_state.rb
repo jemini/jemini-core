@@ -36,7 +36,7 @@ module Jemini
                    :message_queue => message_manager
                   }
 
-      self.class.inputs.each {|input| use_input input}
+      configure_inputs
       @paused = false
     end
 
@@ -107,10 +107,6 @@ module Jemini
       #state.load
       state
     end
-    
-    def load_keymap(keymap)
-      @managers[:input].load_keymap keymap
-    end
 
     def use_input(input)
       @managers[:input].use_input input
@@ -121,7 +117,25 @@ module Jemini
     def quit_game
       java.lang.System.exit 0
     end
+    
   private
+
+    def configure_inputs
+      # global - automatic
+      begin
+        use_input :global
+      rescue LoadError
+      end
+
+      # class name - automatic
+      begin
+        use_input self.class.to_s.underscore.sub('_state', '')
+      rescue LoadError
+      end
+      # class declared
+      self.class.inputs.each {|input| use_input input}
+    end
+    
     def set_manager(type, manager)
       @managers[type] = manager
     end

@@ -113,10 +113,6 @@ module Jemini
       @@loading_input_manager
     end
 
-    def self.define_keymap
-      yield loading_input_manager
-    end
-
     def load(container)
       @listeners = []
       @held_keys = []
@@ -124,30 +120,6 @@ module Jemini
       @input_listener = SlickInputListener.new(@game_state)
       @raw_input.add_listener @input_listener
       @held_buttons = {}
-    end
-    
-    #Load a file with the specified name from the keymaps directory.
-    def load_keymap(keymap)
-      @keymap = Hash.new{|h,k| h[k] = []}
-
-      @held_buttons = Hash.new {|h,k| h[k] = []}
-      keymap_name = "/keymaps/#{keymap.underscore}"
-      keymap_path = $LOAD_PATH.find do |path|
-        puts "trying path for .rb/.class: #{File.expand_path(path + keymap_name)}"
-        File.exist?(File.expand_path(path + keymap_name + '.rb')) || File.exist?(File.expand_path(path + keymap_name + '.class'))
-      end
-      puts "keymap found: #{keymap_path.inspect}"
-
-      @@loading_input_manager = self
-      keymap_path += '/' unless keymap_path.nil? # was using <<, but that alters the load path in a bad way.
-      begin
-        # the method 'load' already exists on this scope
-        Kernel.load "#{keymap_path}#{keymap_name.sub('/', '')}.class"
-      rescue LoadError
-        # the method 'load' already exists on this scope
-        Kernel.load "#{keymap_path}#{keymap_name.sub('/', '')}.rb"
-      end
-      @@loading_input_manager = nil
     end
 
     def use_input(input)
@@ -172,48 +144,8 @@ module Jemini
     def connected_joystick_size
       @raw_input.controller_count
     end
-
-    #Add a keyboard mapping.
-    #Takes a hash with the following keys and values:
-    #[:event_name] Use any key name you want for the event name. The value will be used as the event value.
-    #[:pressed] The given key will trigger the event when pressed.
-    #[:released] The given key will trigger the event when released.
-    #[:held] The given key will trigger the event when held.
-    #[:player] The player number, starting with 0, that the event will apply to.
-    def map_key(options, &block)
-      map :key, options, &block
-    end
-
-    #Add a mouse button mapping.
-    #Takes a hash with the same keys and values as map_key.
-    def map_mouse(options, &block)
-      map :mouse, options, &block
-    end
-
-    #Add a button or axis mapping for a joystick.
-    #Takes a hash with the same keys and values as map_key.
-    #Also accepts this additional key/value pair:
-    #[:axis_update] The given axis will trigger the event when the joystick is moved along it.
-    def map_joystick(options, &block)
-      map :joystick, options, &block
-    end
     
   private
-    def find_keymaps_for(device, input_button_or_axis, id)
-      @keymap["#{device}_#{input_button_or_axis}_#{id}"]
-    end
-
-    def map(device, options, &block)
-      mapping = InputMapping.create(device, options, &block)
-      @keymap[mapping.key] << mapping
-    end
-
-    def invoke_callbacks_for(device, input_type, input_button_or_axis, id, input_message)
-      key_mappings = find_keymaps_for(device, input_type, input_button_or_axis, id)
-      key_mappings.each do |key_map|
-        @game_state.manager(:message_queue).post_message key_map.to_game_message(input_message)
-      end
-    end
 
     def all_keymappings_to_game_messages
 #      @keymap.values.map {|keymap_array| poll_to_game_messages(keymap_array)}.flatten.compact
