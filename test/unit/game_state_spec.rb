@@ -13,10 +13,12 @@ describe 'Jemini::GameState' do
 
   describe 'input' do
     it 'allows adding of inputs with .input' do
-      pending
       class InputState < Jemini::GameState
-        input
+        use_input :jump
       end
+
+      @game_state = InputState.new(@container, @game)
+      @game_state.manager(:input).listeners.should have(1).listener
     end
 
     it 'automatically uses the input "global"'

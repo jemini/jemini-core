@@ -9,7 +9,16 @@ module Jemini
     def self.active_state=(state)
       @@active_state = state
     end
-        
+
+    @@inputs = Hash.new {|h,k| h[k] = []}
+    def self.use_input(input)
+      @@inputs[self] << input
+    end
+
+    def self.inputs
+      @@inputs[self]
+    end
+
     def initialize(container, game)
       @container = container
       @game = game
@@ -26,7 +35,8 @@ module Jemini
                    :input => input_manager,
                    :message_queue => message_manager
                   }
-      
+
+      self.class.inputs.each {|input| use_input input}
       @paused = false
     end
 
