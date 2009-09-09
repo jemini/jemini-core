@@ -1,6 +1,6 @@
 #All other game states should inherit from this class.
 module Jemini
-  class BaseState
+  class GameState
     @@active_state = nil
     def self.active_state
       @@active_state
@@ -100,6 +100,10 @@ module Jemini
     
     def load_keymap(keymap)
       @managers[:input].load_keymap keymap
+    end
+
+    def use_input(input)
+      @managers[:input].use_input input
     end
     
     def load(*args); end

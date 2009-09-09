@@ -1,4 +1,4 @@
-class GameWonState < Gemini::BaseState
+class GameWonState < Gemini::GameState
   
   def load(target_score, score_x, score_o, winner)
     set_manager :sound, create(:SoundManager)

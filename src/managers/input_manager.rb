@@ -149,6 +149,11 @@ module Jemini
       end
       @@loading_input_manager = nil
     end
+
+    def use_input(input)
+      require File.join('input', "#{input}_input")
+      $".pop # remove the entry so we can require it again
+    end
     
     #Check for keypresses and send messages to message queue accordingly.
     def poll(screen_width, screen_height, delta)

@@ -15,7 +15,7 @@ module Jemini
       device      = detect_device(button_id, type)
       real_button = detect_button(button_id, device)
       listener    = InputListener.create(action_name, type, device, real_button)
-      Jemini::BaseState.active_state.manager(:input).listeners << listener
+      Jemini::GameState.active_state.manager(:input).listeners << listener
 #      @listeners << 
     end
 

@@ -37,7 +37,7 @@ module Jemini
       # after all the deletes, the game message and value should be only what's left
       @game_message   = message
       @game_value     = options.values.first
-      @game_state     = BaseState.active_state
+      @game_state     = GameState.active_state
     end
 
     def poll(raw_input)

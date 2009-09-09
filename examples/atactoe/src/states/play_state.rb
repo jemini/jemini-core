@@ -1,4 +1,4 @@
-class PlayState < Gemini::BaseState
+class PlayState < Gemini::GameState
   
   attr_accessor :grid
   attr_accessor :score_x

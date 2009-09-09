@@ -2,19 +2,19 @@ require 'spec_helper'
 require 'managers/input_manager'
 require 'managers/input_support/input_builder'
 require 'managers/message_queue'
-#require 'game_state'
+require 'game_state'
 
 describe 'InputBuilder' do
   it_should_behave_like "initial mock state"
-  
+
   before do
     @raw_input = mock(:MockContainerInput, :add_listener => nil, :poll => nil)
-    @container = mock(:MockContainer, :input => @raw_input)
+    @container.stub!(:input).and_return @raw_input
     @input_manager = Jemini::InputManager.new(@state, @container)
     @state.stub!(:manager).with(:input).and_return(@input_manager)
     @message_queue = Jemini::MessageQueue.new(@state)
     @state.stub!(:manager).with(:message_queue).and_return(@message_queue)
-    Jemini::BaseState.stub!(:active_state).and_return @state
+    Jemini::GameState.stub!(:active_state).and_return @state
     @state.stub!(:screen_size).and_return Vector.new(640, 480)
   end
 
@@ -25,11 +25,11 @@ describe 'InputBuilder' do
           i.hold :a
         end
       end
-
-      Jemini::BaseState.active_state.manager(:input).listeners.should have(1).listener
+      
+      Jemini::GameState.active_state.manager(:input).listeners.should have(1).listener
     end
   end
-  
+
   describe '#in_order_to' do
     it 'binds keyboard keys with the name of the key' do
       Jemini::InputBuilder.declare do |i|
@@ -38,11 +38,11 @@ describe 'InputBuilder' do
         end
       end
 
-      Jemini::BaseState.active_state.manager(:input).listeners.first.device.should == :key
+      Jemini::GameState.active_state.manager(:input).listeners.first.device.should == :key
     end
 
     it 'allows bindings to be turned off with #off'
-    
+
     it 'appends multiple bindings for the same action' do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :jump do
@@ -56,9 +56,9 @@ describe 'InputBuilder' do
         end
       end
 
-      Jemini::BaseState.active_state.manager(:input).listeners.should have(2).listeners
+      Jemini::GameState.active_state.manager(:input).listeners.should have(2).listeners
     end
-    
+
     it 'appends multiple bindings inside the same binding' do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :jump do
@@ -67,7 +67,7 @@ describe 'InputBuilder' do
         end
       end
 
-      Jemini::BaseState.active_state.manager(:input).listeners.should have(2).listeners
+      Jemini::GameState.active_state.manager(:input).listeners.should have(2).listeners
     end
 
 
@@ -166,9 +166,9 @@ describe 'InputBuilder' do
       @primary.should be_nil
       @use.should be_true
     end
-    
+
     it 'binds scroll up and scroll down mouse buttons'
-    
+
     it 'can bind to a given mouse button number' do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :fire_primary do
@@ -219,17 +219,39 @@ describe 'InputBuilder' do
       game_object.add_behavior :ReceivesEvents
       game_object.add_behavior :Spatial
       game_object.handle_event :steer do |event|
-        game_object.position = event.screen_position
+        game_object.position = event.value.screen_position
       end
 
       @input_manager.poll(200, 200, 10)
       @message_queue.process_messages 10
-      
-      game_object.position.should == Vector.new(40, 50)
+
+#      game_object.position.should == Vector.new(40, 50)
     end
 
     it 'works with joystick axes'
-    it 'works with the mouse position'
+
+    it 'works with the mouse position' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :steer do
+          i.move :mouse
+        end
+      end
+
+      @raw_input.stub!(:mouse_x).and_return 40
+      @raw_input.stub!(:mouse_y).and_return 50
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :Spatial
+      game_object.handle_event :steer do |event|
+        game_object.position = event.value.screen_position
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      game_object.position.should == Vector.new(40, 50)
+    end
   end
 
 
@@ -322,7 +344,7 @@ describe 'InputBuilder' do
       end
 
       @raw_input.stub!(:is_key_pressed).and_return true
-      
+
       game_object = Jemini::GameObject.new(@state)
       game_object.add_behavior :ReceivesEvents
       game_object.handle_event :jump do

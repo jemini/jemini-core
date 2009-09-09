@@ -3,7 +3,7 @@ require 'sound_manager'
 require 'basic_physics_manager'
 require 'scrolling_render_manager'
 
-class PlayState < Gemini::BaseState
+class PlayState < Gemini::GameState
   GRAVITY_WELL_MASS = 100
   SINGULARITY_THRESHOLD = GRAVITY_WELL_MASS * 5.0
   
