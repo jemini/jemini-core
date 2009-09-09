@@ -20,7 +20,7 @@ require 'gemini_version'
 #end
 
 PROJ.name = 'gemini'
-PROJ.authors = 'Logan Barnett, David Koontz'
+PROJ.authors = 'Logan Barnett, David Koontz, Jay McGavren'
 PROJ.email = 'logustus@gmail.com'
 PROJ.url = 'http://rubyforge.org/projects/gemini/'
 PROJ.version = Jemini::VERSION
