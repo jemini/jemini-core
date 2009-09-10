@@ -2,17 +2,17 @@ require 'spec_helper'
 require 'behaviors/physical'
 
 MARGIN = 0.001
-MILLISECONDS = 1000.0
+MILLISECONDS = 40.0
 
 describe "Physical" do
   
   def do_update
-    @state.manager(:update).update(MILLISECONDS)
+    @state.manager(:physics).update(MILLISECONDS)
   end
   
   before :each do
     @state = TestState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
-    @state.set_manager(:physics, @state.create(:BasicPhysicsManager))
+    @state.send(:set_manager, :physics, @state.create(:BasicPhysicsManager))
     @game_object = @state.create :GameObject, :Physical
   end
   
@@ -69,22 +69,17 @@ describe "Physical" do
       @other_object.body_position = Vector.new(1.0, 1.0)
       @game_object.add_excluded_physical(@other_object)
       do_update
-      @game_object.body_position.x.should be_close(1.0, MARGIN)
-      @game_object.body_position.y.should be_close(1.0, MARGIN)
-      @other_object.body_position.x.should be_close(1.0, MARGIN)
-      @other_object.body_position.y.should be_close(1.0, MARGIN)
+      @game_object.body_position.should be_near(Vector.new(1.0, 1.0), MARGIN)
+      @other_object.body_position.should be_near(Vector.new(1.0, 1.0), MARGIN)
     end
   end
   
   describe "#angular_damping=" do
     it "slows rotation continually when angular damping is applied" do
       @game_object.angular_velocity = 1.0
-      @game_object.angular_damping = 1.0
+      @game_object.angular_damping = 1000.0
       do_update
       @game_object.angular_velocity.should < 1.0
-      old_value = @game_object.angular_velocity
-      do_update
-      @game_object.angular_velocity.should < old_value
     end
     it "does not slow if angular damping is zero" do
       @game_object.angular_velocity = 1.0
@@ -160,24 +155,6 @@ describe "Physical" do
       @game_object.body_position.y.should be_close(1.0, MARGIN)
       @other_object.body_position.x.should be_close(1.0, MARGIN)
       @other_object.body_position.y.should be_close(1.0, MARGIN)
-    end
-  end
-  
-  describe "#friction=" do
-    it "slows continually when friction is applied" do
-      @game_object.velocity = Vector.new(1.0, 0.0)
-      @game_object.friction = 1.0
-      do_update
-      @game_object.velocity.x.should < 1.0
-      old_x = @game_object.velocity.x
-      do_update
-      @game_object.velocity.x.should < old_x
-    end
-    it "does not slow if friction is zero" do
-      @game_object.velocity = Vector.new(1.0, 0.0)
-      @game_object.friction = 0.0
-      do_update
-      @game_object.velocity.x.should be_close(1.0, MARGIN)
     end
   end
   
@@ -280,5 +257,5 @@ describe "Physical" do
       @game_object.velocity.y.should be_close(1.0, MARGIN)
     end
   end
-    
+
 end
