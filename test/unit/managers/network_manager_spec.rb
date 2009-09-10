@@ -9,6 +9,7 @@ describe 'NetworkManager' do
   before :each do
     @state = Jemini::BaseState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
     @network_manager = Jemini::NetworkManager.new(@state)
+    @state.send(:set_manager, :network, @network_manager)
   end
   
   it "accepts peer addresses" do
