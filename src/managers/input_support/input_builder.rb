@@ -16,20 +16,20 @@ module Jemini
       InputBinding.new(action_name)
     end
 
-    def hold(button)
-      @current_binding.add_input_listener(:hold, button)
+    def hold(button, options={})
+      @current_binding.add_input_listener(:hold, button, options)
     end
 
-    def press(button)
-      @current_binding.add_input_listener(:press, button)
+    def press(button, options={})
+      @current_binding.add_input_listener(:press, button, options)
     end
 
-    def release(button)
-      @current_binding.add_input_listener(:release, button)
+    def release(button, options={})
+      @current_binding.add_input_listener(:release, button, options)
     end
 
-    def move(button)
-      @current_binding.add_input_listener(:move, button)
+    def move(button, options={})
+      @current_binding.add_input_listener(:move, button, options)
     end
   end
 end

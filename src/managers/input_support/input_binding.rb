@@ -11,10 +11,12 @@ module Jemini
     end
 
     # type can be one of :hold, :release, :press, and :move
-    def add_input_listener(type, button_id)
-      device      = detect_device(button_id, type)
-      real_button = detect_button(button_id, device)
-      listener    = InputListener.create(action_name, type, device, real_button)
+    def add_input_listener(type, button_id, options={})
+      device                 = detect_device(button_id, type)
+      real_button            = detect_button(button_id, device)
+      value                  = options[:value]
+      listener               = InputListener.create(action_name, type, device, real_button)
+      listener.default_value = value
       InputManager.loading_input_manager.listeners << listener
     end
 

@@ -32,6 +32,29 @@ describe 'InputBuilder' do
   end
 
   describe '#in_order_to' do
+    describe 'custom_values' do
+      it 'Allows values to directly be injected from the input declaration' do
+        Jemini::InputBuilder.declare do |i|
+          i.in_order_to :jump do
+            i.hold :a, :value => 1.0
+          end
+        end
+
+        game_object = Jemini::GameObject.new(@state)
+        game_object.add_behavior :ReceivesEvents
+        game_object.handle_event :jump do |event|
+          @primary = true
+          event.value.should == 1.0
+        end
+
+        @raw_input.stub!(:is_key_down).and_return true
+        @input_manager.poll(200, 200, 10)
+        @message_queue.process_messages 10
+        
+        @primary.should be_true
+      end
+    end
+
     it 'binds keyboard keys with the name of the key' do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :jump do

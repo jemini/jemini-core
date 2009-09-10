@@ -2,7 +2,15 @@ require 'managers/input_support/input_message'
 
 module Jemini
   class InputListener
-    attr_accessor :device, :input_type, :input_button_or_axis, :joystick_id, :destination_type, :destination_value, :input_callback, :game_state
+    attr_accessor :device,
+                  :input_type,
+                  :input_button_or_axis,
+                  :joystick_id,
+                  :destination_type,
+                  :destination_value,
+                  :input_callback,
+                  :game_state,
+                  :default_value
 
     def self.create(message, type, device, button_id, options={}, &callback)
       options[:input_callback] = callback
@@ -68,7 +76,7 @@ module Jemini
 
     # eventually, raw_input will need to be wrapped
     def to_game_message(raw_input, game_value)
-      game_message = InputMessage.new(@game_message, game_value)
+      game_message = InputMessage.new(@game_message, default_value || game_value)
       game_message.player = @player
       @input_callback.call(game_message, raw_input) unless @input_callback.nil?
       game_message

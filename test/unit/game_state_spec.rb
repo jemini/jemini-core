@@ -41,7 +41,6 @@ describe 'Jemini::GameState' do
 
         @game_state = UsingGlobalState.new(@container, @game)
         @game_state.manager(:input).listeners.should have(1).listener
-
       end
     end
 
