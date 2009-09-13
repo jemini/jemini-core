@@ -260,6 +260,6 @@ class PlayState < Jemini::BaseState
       end
     end
     #set_manager :render, create_game_object(:ScrollingRenderManager, ship)
-    manager(:sound).loop_song "gravitor_spatial_thinking.ogg"
+    manager(:sound).play_song "gravitor_spatial_thinking.ogg", :loop => true
   end
 end

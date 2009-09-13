@@ -7,7 +7,7 @@ class MenuState < Jemini::BaseState
     set_manager :sound, create(:SoundManager)
     
     manager(:render).cache_image :ground, "ground.png"
-    manager(:sound).loop_song "just-aimin.ogg", :volume => 0.5
+    manager(:sound).play_song "just-aimin.ogg", :volume => 0.5, :loop => true
 
     manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
     manager(:sound).add_sound :explosion, "shell-explosion-int.wav"

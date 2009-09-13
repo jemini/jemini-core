@@ -3,7 +3,7 @@ class MenuState < Jemini::BaseState
   def load(target_score = 10)
     @target_score = target_score
     set_manager :sound, create(:SoundManager)
-    manager(:sound).loop_song "j-hop.ogg", :volume => 0.6
+    manager(:sound).play_song "j-hop.ogg", :volume => 0.6, :loop => true
     manager(:sound).add_sound :no, "no.wav"
     
     manager(:render).cache_image :grid, "grid.png"
