@@ -1,5 +1,4 @@
 require 'spec_helper'
-# require File.join(File.dirname(__FILE__), 'shared_spec')
 require 'managers/sound_manager'
 
 describe 'SoundManager' do
