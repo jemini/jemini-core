@@ -38,6 +38,8 @@ module Jemini
         case button_id.to_s
         when /(up|down|left|right)_arrow/
           "Input::KEY_#{$1.upcase}".constantize
+        when /(left|right)_shift/
+          "Input::KEY_#{$1[0].chr.upcase}SHIFT".constantize
         else
           "Input::KEY_#{button_id.to_s.underscore.upcase}".constantize
         end
