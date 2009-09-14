@@ -1,7 +1,7 @@
 KEYBOARD_ANGLE_ADJUST_RATE = 1.0
 KEYBOARD_POWER_ADJUST_RATE = 1.0
 
-Gemini::InputManager.define_keymap do |i|
+Jemini::InputManager.define_keymap do |i|
   ########################################
   # Keys for player 1
   ########################################

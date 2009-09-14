@@ -1,4 +1,4 @@
-class PowerArrowNeck < Gemini::GameObject
+class PowerArrowNeck < Jemini::GameObject
   has_behavior :Sprite
 
   def load

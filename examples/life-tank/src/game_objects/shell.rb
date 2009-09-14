@@ -1,4 +1,4 @@
-class Shell < Gemini::GameObject
+class Shell < Jemini::GameObject
   has_behavior :PhysicalSprite
   has_behavior :Taggable
   has_behavior :TriangleTrailEmittable

@@ -1,4 +1,4 @@
-class MainState < Gemini::GameState
+class MainState < Jemini::GameState
   def load
 #    set_manager :physics, create_game_object(:BasicPhysicsManager)
 #    set_manager :tag, create_game_object(:TagManager)

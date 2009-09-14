@@ -8,28 +8,28 @@ ANGLE_LEFT  = -ANGLE_RIGHT
 
 Jemini::InputBuilder.declare do |i|
   i.in_order_to :adjust_angle do
-    i.hold :a, :value => ANGLE_RIGHT
-    i.hold :d, :value => ANGLE_LEFT
+    i.hold :a, :value => ANGLE_RIGHT, :to => 1
+    i.hold :d, :value => ANGLE_LEFT,  :to => 1
   end
 
   i.in_order_to :adjust_power do
-    i.hold :w, :value => POWER_UP
-    i.hold :s, :value => POWER_DOWN
+    i.hold :w, :value => POWER_UP,   :to => 1
+    i.hold :s, :value => POWER_DOWN, :to => 1
   end
 
   i.in_order_to :move do
-    i.hold :e, :value => MOVE_LEFT
-    i.hold :q, :value => MOVE_RIGHT
+    i.hold :e, :value => MOVE_LEFT,  :to => 1
+    i.hold :q, :value => MOVE_RIGHT, :to => 1
   end
 
   i.in_order_to :fire do
     i.hold :space
-    i.hold :left_shift
+    i.hold :left_shift, :to => 1
   end
 
-  i.in_order_to :steer do
-#    i.move :xbox_360_left_stick, :using => :x_axis
-    i.move :left_arrow,          :value =>  1.0
-    i.move :right_arrow,         :value => -1.0
-  end
+#  i.in_order_to :steer do
+##    i.move :xbox_360_left_stick, :using => :x_axis
+#    i.move :left_arrow,          :value =>  1.0
+#    i.move :right_arrow,         :value => -1.0
+#  end
 end

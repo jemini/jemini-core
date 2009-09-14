@@ -1,4 +1,4 @@
-class MenuState < Gemini::GameState
+class MenuState < Jemini::GameState
   
   def load(player_count = 2)
     @player_count = player_count

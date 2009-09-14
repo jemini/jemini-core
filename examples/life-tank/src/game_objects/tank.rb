@@ -1,4 +1,4 @@
-class Tank < Gemini::GameObject
+class Tank < Jemini::GameObject
   has_behavior :PhysicalSprite
   has_behavior :HandlesEvents
   has_behavior :Taggable

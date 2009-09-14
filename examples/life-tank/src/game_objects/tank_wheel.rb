@@ -1,4 +1,4 @@
-class TankWheel < Gemini::GameObject
+class TankWheel < Jemini::GameObject
   has_behavior :PhysicalSprite
   has_behavior :Taggable
   
