@@ -1,5 +1,5 @@
 class Duke < Gemini::GameObject
-  has_behavior :ReceivesEvents
+  has_behavior :HandlesEvents
   has_behavior :Sprite
   has_behavior :UpdatesAtConsistantRate
   has_behavior :Taggable

@@ -8,7 +8,7 @@ class GameOverState < Gemini::GameState
     
     load_keymap :MouseKeymap
     
-    exiter = create_game_object :GameObject, :ReceivesEvents
+    exiter = create_game_object :GameObject, :HandlesEvents
     exiter.handle_event :mouse_button1_released do
       switch_state :MenuState
     end

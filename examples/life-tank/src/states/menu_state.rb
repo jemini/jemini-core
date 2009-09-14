@@ -11,8 +11,6 @@ class MenuState < Gemini::GameState
 
     manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
     manager(:sound).add_sound :explosion, "shell-explosion-int.wav"
-
-    load_keymap :GameStartKeymap
     
     create :Background, "evening-sky.png"
     
@@ -24,7 +22,7 @@ class MenuState < Gemini::GameState
     display_instructions
     
 
-    menu_handler = create :GameObject, :ReceivesEvents
+    menu_handler = create :GameObject, :HandlesEvents
     menu_handler.handle_event :increase_player_count do
       @player_count += 1 unless @player_count >= 6
       @player_count_text.text = "Press 1 or A: Start a game with #{@player_count} tanks"

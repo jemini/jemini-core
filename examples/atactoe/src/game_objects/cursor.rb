@@ -1,6 +1,6 @@
 class Cursor < Gemini::GameObject
   has_behavior :Sprite
-  has_behavior :ReceivesEvents
+  has_behavior :HandlesEvents
   has_behavior :Timeable
 
   attr_accessor :player_id

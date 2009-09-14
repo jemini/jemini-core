@@ -69,7 +69,7 @@ class PlayState < Gemini::GameState
       tank
     end
     
-    game_end_checker = create :GameObject, :Updates, :ReceivesEvents
+    game_end_checker = create :GameObject, :Updates, :HandlesEvents
     game_end_checker.handle_event :quit do
       switch_state :MenuState, player_count
     end

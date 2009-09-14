@@ -1,6 +1,6 @@
 #Makes an object clickable with the mouse.
 class Clickable < Jemini::Behavior
-  depends_on :ReceivesEvents
+  depends_on :HandlesEvents
   depends_on :Regional
   wrap_with_callbacks :pressed, :released
   

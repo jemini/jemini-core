@@ -2,11 +2,6 @@ KEYBOARD_ANGLE_ADJUST_RATE = 1.0
 KEYBOARD_POWER_ADJUST_RATE = 1.0
 
 Gemini::InputManager.define_keymap do |i|
-  i.map_key :pressed => Input::KEY_F1, :toggle_debug_mode => nil
-  i.map_key :pressed => Input::KEY_ESCAPE, :quit => nil
-#  i.map_key :held => Input::KEY_UP, :move => :up
-#  i.map_key :released => Input::KEY_SPACE, :spawn_thing => nil
-
   ########################################
   # Keys for player 1
   ########################################

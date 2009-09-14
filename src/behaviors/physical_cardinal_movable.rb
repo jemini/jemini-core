@@ -18,7 +18,7 @@ class PhysicalCardinalMovable < Jemini::Behavior
   DIRECTION_TRANSLATION_IN_DEGREES = []
   
   depends_on :Physical
-  depends_on :ReceivesEvents
+  depends_on :HandlesEvents
   attr_accessor :facing_direction
   wrap_with_callbacks :facing_direction=, :set_facing_drection
   

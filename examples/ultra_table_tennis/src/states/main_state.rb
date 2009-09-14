@@ -26,7 +26,7 @@ class MainState < Gemini::GameState
     paddle.set_body_position Vector.new(500, 300)
     
     quitter = create_game_object :GameObject
-    quitter.add_behavior :ReceivesEvents
+    quitter.add_behavior :HandlesEvents
     quitter.handle_event :quit do
       Profiler__::print_profile(STDERR) if $profiling
       Java::java::lang::System.exit 0

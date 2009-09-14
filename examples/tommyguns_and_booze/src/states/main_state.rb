@@ -79,7 +79,7 @@ class MainState < Gemini::GameState
     
     # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject
-#    quitter.add_behavior :ReceivesEvents
+#    quitter.add_behavior :HandlesEvents
 #    quitter.handle_event :quit do
 #      Profiler__::print_profile(STDERR) if $profiling
 #      Java::java::lang::System.exit 0

@@ -2,7 +2,7 @@ class ChargedJumper < Gemini::Behavior
   MAX_JUMP_POWER = 75_000.0
   JUMP_CHARGE_FACTOR = 50.0
   
-  depends_on :ReceivesEvents
+  depends_on :HandlesEvents
   depends_on :Physical
   depends_on :Timeable
   

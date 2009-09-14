@@ -6,7 +6,7 @@ class ShootableBarrel < Gemini::Behavior
   TOTAL_POWER = 100.0
   
   depends_on :Updates
-  depends_on :ReceivesEvents
+  depends_on :HandlesEvents
   depends_on :Physical
   depends_on :Timeable
   

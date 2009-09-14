@@ -32,7 +32,29 @@ describe 'InputBuilder' do
   end
 
   describe '#in_order_to' do
-    describe 'custom_values' do
+    describe 'destinations' do
+      it 'Allows a destination ID to be specified' do
+        Jemini::InputBuilder.declare do |i|
+          i.in_order_to :fire do
+            i.press :space, :to => :player_1
+          end
+        end
+
+        game_object = Jemini::GameObject.new(@state)
+        game_object.add_behavior :HandlesEvents
+        game_object.handle_event :fire do |event|
+          @called = true
+        end
+
+        @raw_input.stub!(:is_key_pressed).and_return true
+        @input_manager.poll(200, 200, 10)
+        @message_queue.process_messages 10
+
+        @called.should be_true
+      end
+    end
+
+    describe 'custom values' do
       it 'Allows values to directly be injected from the input declaration' do
         Jemini::InputBuilder.declare do |i|
           i.in_order_to :jump do
@@ -41,9 +63,9 @@ describe 'InputBuilder' do
         end
 
         game_object = Jemini::GameObject.new(@state)
-        game_object.add_behavior :ReceivesEvents
+        game_object.add_behavior :HandlesEvents
         game_object.handle_event :jump do |event|
-          @primary = true
+          @called = true
           event.value.should == 1.0
         end
 
@@ -51,7 +73,7 @@ describe 'InputBuilder' do
         @input_manager.poll(200, 200, 10)
         @message_queue.process_messages 10
         
-        @primary.should be_true
+        @called.should be_true
       end
     end
 
@@ -112,7 +134,7 @@ describe 'InputBuilder' do
       @raw_input.stub!(:mouse_pressed?).with(1).and_return false
 
       game_object = Jemini::GameObject.new(@state)
-      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :HandlesEvents
       game_object.handle_event :fire_primary do
         @primary = true
       end
@@ -144,7 +166,7 @@ describe 'InputBuilder' do
       @raw_input.stub!(:mouse_pressed?).with(1).and_return true
 
       game_object = Jemini::GameObject.new(@state)
-      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :HandlesEvents
       game_object.handle_event :fire_primary do
         @primary = true
       end
@@ -176,7 +198,7 @@ describe 'InputBuilder' do
       @raw_input.stub!(:mouse_pressed?).with(2).and_return true
 
       game_object = Jemini::GameObject.new(@state)
-      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :HandlesEvents
       game_object.handle_event :fire_primary do
         @primary = true
       end
@@ -210,7 +232,7 @@ describe 'InputBuilder' do
       @raw_input.stub!(:mouse_pressed?).with(1).and_return false
 
       game_object = Jemini::GameObject.new(@state)
-      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :HandlesEvents
       game_object.handle_event :fire_primary do
         @primary = true
       end
@@ -240,7 +262,7 @@ describe 'InputBuilder' do
       @raw_input.stub!(:mouse_y).and_return 50
 
       game_object = Jemini::GameObject.new(@state)
-      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :HandlesEvents
       game_object.add_behavior :Spatial
       game_object.handle_event :steer do |event|
         game_object.position = event.value.screen_position
@@ -265,7 +287,7 @@ describe 'InputBuilder' do
       @raw_input.stub!(:mouse_y).and_return 50
 
       game_object = Jemini::GameObject.new(@state)
-      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :HandlesEvents
       game_object.add_behavior :Spatial
       game_object.handle_event :steer do |event|
         game_object.position = event.value.screen_position
@@ -292,7 +314,7 @@ describe 'InputBuilder' do
       @raw_input.stub!(:mouse_button_down?).and_return true
 
       game_object = Jemini::GameObject.new(@state)
-      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :HandlesEvents
       game_object.handle_event :place_token do
         @pass = true
       end
@@ -319,7 +341,7 @@ describe 'InputBuilder' do
       @raw_input.stub!(:is_key_down).and_return true
 
       game_object = Jemini::GameObject.new(@state)
-      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :HandlesEvents
       game_object.handle_event :place_token do
         @pass = true
       end
@@ -350,7 +372,7 @@ describe 'InputBuilder' do
       @raw_input.stub!(:mouse_pressed?).and_return true
 
       game_object = Jemini::GameObject.new(@state)
-      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :HandlesEvents
       game_object.handle_event :shoot do
         @pass = true
       end
@@ -370,7 +392,7 @@ describe 'InputBuilder' do
       @raw_input.stub!(:is_key_pressed).and_return true
 
       game_object = Jemini::GameObject.new(@state)
-      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :HandlesEvents
       game_object.handle_event :jump do
         @pass = true
       end
@@ -395,7 +417,7 @@ describe 'InputBuilder' do
       @raw_input.stub!(:mouse_button_down?).and_return true
 
       game_object = Jemini::GameObject.new(@state)
-      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :HandlesEvents
       game_object.handle_event :run do
         @pass = true
       end
@@ -421,7 +443,7 @@ describe 'InputBuilder' do
       @raw_input.stub!(:is_key_down).and_return true
 
       game_object = Jemini::GameObject.new(@state)
-      game_object.add_behavior :ReceivesEvents
+      game_object.add_behavior :HandlesEvents
       game_object.handle_event :run do
         @pass = true
       end

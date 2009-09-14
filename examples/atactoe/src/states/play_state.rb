@@ -29,7 +29,7 @@ class PlayState < Gemini::GameState
     
     # manager(:sound).loop_song "j-hop.ogg", :volume => 0.6
     
-    game_end_checker = create :GameObject, :Updates, :ReceivesEvents
+    game_end_checker = create :GameObject, :Updates, :HandlesEvents
     game_end_checker.handle_event :quit do
       switch_state :MenuState, target_score
     end

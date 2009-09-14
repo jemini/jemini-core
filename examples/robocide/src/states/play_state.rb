@@ -38,7 +38,7 @@ class PlayState < Gemini::GameState
     player.set_image "commando-standing.png"
     player.set_tangible_shape :Box, player.image_size
     player.move(150, 300)
-    player.add_behavior :ReceivesEvents
+    player.add_behavior :HandlesEvents
     player.handle_event :move do |message|
       vector = Vector.new(*case message.value
                         when :up

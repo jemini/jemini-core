@@ -6,7 +6,7 @@ class VectoredMovement < Jemini::Behavior
   alias_method :set_rotation_speed, :rotation_speed=
   
   depends_on :Physical
-  depends_on :ReceivesEvents
+  depends_on :HandlesEvents
   
   def load
     @target.set_damping 0.0
