@@ -6,3 +6,5 @@ dist
 doc
 package
 pkg
+.idea
+rake-d.txt
