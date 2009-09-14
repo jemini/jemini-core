@@ -40,17 +40,23 @@ describe 'InputBuilder' do
           end
         end
 
+        called = false
+        # the message queue reshapes exceptions, which will cause errors for failed assertions in RSpec to silently die
+        to     = nil
         game_object = Jemini::GameObject.new(@state)
         game_object.add_behavior :HandlesEvents
+        game_object.handles_events_for :player_1
         game_object.handle_event :fire do |event|
-          @called = true
+          called = true
+          to = event.to
         end
 
         @raw_input.stub!(:is_key_pressed).and_return true
         @input_manager.poll(200, 200, 10)
         @message_queue.process_messages 10
 
-        @called.should be_true
+        called.should be_true
+        to.should == :player_1
       end
     end
 

@@ -15,8 +15,10 @@ module Jemini
       device                 = detect_device(button_id, type)
       real_button            = detect_button(button_id, device)
       value                  = options[:value]
+      to                     = options[:to]
       listener               = InputListener.create(action_name, type, device, real_button)
       listener.default_value = value
+      listener.message_to    = to
       InputManager.loading_input_manager.listeners << listener
     end
 
