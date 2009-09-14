@@ -140,7 +140,6 @@ private
   end
 
   def move_tank(message)
-    return unless message.player == @player_id
     return if message.value.nil?
     @wheels.each {|wheel| wheel.turn(message.value * message.delta)}
   end
