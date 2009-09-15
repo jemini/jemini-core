@@ -13,7 +13,7 @@ end
 load 'tasks/setup.rb'
 
 ensure_in_path 'src'
-require 'gemini_version'
+require 'jemini_version'
 
 #Dir.glob("tasks/**/*.rake").each do |rake_file|
 #  load File.expand_path(File.dirname(__FILE__) + "/" + rake_file)

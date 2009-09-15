@@ -107,11 +107,11 @@ describe 'Jemini::ProjectGenerator', 'project generation' do
     generator = Jemini::ProjectGenerator.new(:project_dir => @project_dir)
     generator.build_jemini_jar
 
-    File.should be_exist(File.join(@project_dir, 'lib', 'java', 'gemini.jar'))
+    File.should be_exist(File.join(@project_dir, 'lib', 'java', 'jemini.jar'))
   end
 
   it "copies in the LWJGL and Slick jars lib/java dir" do
-    generator = Gemini::ProjectGenerator.new(:project_dir => @project_dir)
+    generator = Jemini::ProjectGenerator.new(:project_dir => @project_dir)
     generator.copy_libs
     File.should be_exist(File.join(@project_dir, 'lib', 'java', 'slick.jar'))
     File.should be_exist(File.join(@project_dir, 'lib', 'java', 'phys2d.jar'))

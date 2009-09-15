@@ -1,6 +1,6 @@
 require 'rawr'
 
-task :import_gemini do
+task :import_jemini do
   FileUtils.rm_rf 'lib'
-  FileUtils.cp_r('../gemini/package/jar', 'lib')
+  FileUtils.cp_r('../jemini/package/jar', 'lib')
 end

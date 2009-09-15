@@ -38,9 +38,9 @@ end
 end
 
 puts $LOAD_PATH
-#require 'src/gemini'
-#require 'file:/Users/logan/dev/gemini/examples/ultra_table_tennis/package/deploy/ultra-table-tennis.jar!/src/gemini'
+#require 'src/jemini'
+#require 'file:/Users/logan/dev/jemini/examples/ultra_table_tennis/package/deploy/ultra-table-tennis.jar!/src/jemini'
 puts "classpath:"
 puts $CLASSPATH
-require 'gemini'
+require 'jemini'
 Jemini::Main.start_app("Microman", 640, 480)

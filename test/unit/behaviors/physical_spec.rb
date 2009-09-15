@@ -78,9 +78,11 @@ describe "Physical" do
     it "slows rotation continually when angular damping is applied" do
       @game_object.angular_velocity = 1.0
       @game_object.angular_damping = 1000.0
+      @game_object.mass = 10.0
       do_update
       @game_object.angular_velocity.should < 1.0
     end
+    
     it "does not slow if angular damping is zero" do
       @game_object.angular_velocity = 1.0
       @game_object.angular_damping = 0.0

@@ -8,8 +8,8 @@ ANGLE_LEFT  = -ANGLE_RIGHT
 
 Jemini::InputBuilder.declare do |i|
   i.in_order_to :adjust_angle do
-    i.hold :d, :value => ANGLE_RIGHT, :to => 'player_1'
     i.hold :a, :value => ANGLE_LEFT,  :to => 'player_1'
+    i.hold :d, :value => ANGLE_RIGHT, :to => 'player_1'
   end
 
   i.in_order_to :adjust_power do

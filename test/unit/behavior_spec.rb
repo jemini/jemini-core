@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'behavior'
 
-GEMINI_VERSION = "1.0.0"
+JEMINI_VERSION = "1.0.0"
 
 describe Jemini::Behavior do
   it_should_behave_like "initial mock state"
@@ -31,7 +31,7 @@ describe Jemini::Behavior do
   end
 
   it "can declare dependant behaviors" do
-    class DeclareDependantBehavior < Gemini::Behavior
+    class DeclareDependantBehavior < Jemini::Behavior
       def self.require(not_used); end
       depends_on :dependency
     end
@@ -115,7 +115,7 @@ describe Jemini::Behavior do
   end
   
   it "doesn't remove dependent behaviors when it is removed" do
-    pending GEMINI_VERSION == "1.1.0"
+    pending JEMINI_VERSION == "1.1.0"
     class ShouldNotRemoveBehavior < Jemini::Behavior
     end
     
@@ -185,7 +185,7 @@ describe Jemini::Behavior do
       def unload; end
     end
 
-    lambda { @game_object.add_behavior :SpecialMethodsTestBehavior }.should_not raise_error(Gemini::MethodExistsError)
+    lambda { @game_object.add_behavior :SpecialMethodsTestBehavior }.should_not raise_error(Jemini::MethodExistsError)
   end
   
   it "has a reference of the game object (@target)" do
@@ -368,7 +368,7 @@ describe Jemini::Behavior, ".wrap_with_callbacks" do
   end
   
   it "adds a wrapper method that invokes callbacks before and after the wrapped method" do
-    class CallbackInvokedByWrapperMethodBehavior < Gemini::Behavior
+    class CallbackInvokedByWrapperMethodBehavior < Jemini::Behavior
       wrap_with_callbacks :foo
       
       def foo; end

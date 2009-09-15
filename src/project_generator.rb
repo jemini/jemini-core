@@ -75,7 +75,7 @@ ENDL
 
     def copy_jemini_jar
       destination = File.expand_path(File.join(@project_dir, 'lib', 'java'))
-      source      = File.expand_path(File.join(File.dirname(__FILE__), '..', 'package', 'jar', 'gemini.jar'))
+      source      = File.expand_path(File.join(File.dirname(__FILE__), '..', 'package', 'jar', 'jemini.jar'))
 
       mkdir_p destination
       cp source, destination

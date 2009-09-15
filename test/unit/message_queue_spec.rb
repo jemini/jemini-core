@@ -63,8 +63,8 @@ describe Jemini::MessageQueue do
   end
   
   it "allows new messages to be posted to the queue, even if messages are being processed" do
-    @message_queue.post_message(Gemini::Message.new(:chain_message, "Will kick off a message"))
-    @message_queue.add_listener(:chain_message, self) { @message_queue.post_message(Gemini::Message.new(:chained_message, "Will be added while processing"))}
+    @message_queue.post_message(Jemini::Message.new(:chain_message, "Will kick off a message"))
+    @message_queue.add_listener(:chain_message, self) { @message_queue.post_message(Jemini::Message.new(:chained_message, "Will be added while processing"))}
     chained_message_sent = chain_message_sent = false
     @message_queue.add_listener(:chain_message, self) { chain_message_sent = true }
     @message_queue.add_listener(:chained_message, self) { chained_message_sent = true }
