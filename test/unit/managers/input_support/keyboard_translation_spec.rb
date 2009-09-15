@@ -32,4 +32,38 @@ describe "Keyboard Translation" do
       end
     end.should_not raise_error
   end
+
+  it "translates 0-9" do
+    (0..9).each do |number|
+      lambda do
+        Jemini::InputBuilder.declare do |i|
+          i.in_order_to :jump do
+            i.hold number
+          end
+        end
+      end.should_not raise_error
+    end
+  end
+
+  it "translates a-z" do
+    ('a'..'z').each do |letter|
+      lambda do
+        Jemini::InputBuilder.declare do |i|
+          i.in_order_to :jump do
+            i.hold letter
+          end
+        end
+      end.should_not raise_error
+    end
+  end
+
+  it "translates :back" do
+    lambda do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :jump do
+          i.hold :back
+        end
+      end
+    end.should_not raise_error
+  end
 end
