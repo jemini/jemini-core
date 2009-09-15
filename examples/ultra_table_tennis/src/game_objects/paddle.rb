@@ -1,5 +1,5 @@
 class Paddle < Jemini::GameObject
-  has_behavior :ReceivesEvents
+  has_behavior :HandlesEvents
   has_behavior :Taggable
   has_behavior :TangibleSprite
   has_behavior :AnimatedSprite

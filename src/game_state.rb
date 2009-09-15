@@ -1,6 +1,6 @@
 #All other game states should inherit from this class.
 module Jemini
-  class BaseState
+  class GameState
     @@active_state = nil
     def self.active_state
       @@active_state
@@ -9,7 +9,16 @@ module Jemini
     def self.active_state=(state)
       @@active_state = state
     end
-        
+
+    @@inputs = Hash.new {|h,k| h[k] = []}
+    def self.use_input(input)
+      @@inputs[self] << input
+    end
+
+    def self.inputs
+      @@inputs[self]
+    end
+
     def initialize(container, game)
       @container = container
       @game = game
@@ -26,7 +35,8 @@ module Jemini
                    :input => input_manager,
                    :message_queue => message_manager
                   }
-      
+
+      configure_inputs
       @paused = false
     end
 
@@ -97,9 +107,9 @@ module Jemini
       #state.load
       state
     end
-    
-    def load_keymap(keymap)
-      @managers[:input].load_keymap keymap
+
+    def use_input(input)
+      @managers[:input].use_input input
     end
     
     def load(*args); end
@@ -108,9 +118,25 @@ module Jemini
       java.lang.System.exit 0
     end
   private
+
+    def configure_inputs
+      # global - automatic
+      begin
+        use_input :global
+      rescue LoadError
+      end
+
+      # class name - automatic
+      begin
+        use_input self.class.to_s.underscore.sub('_state', '')
+      rescue LoadError
+      end
+      # class declared
+      self.class.inputs.each {|input| use_input input}
+    end
+    
     def set_manager(type, manager)
       @managers[type] = manager
     end
-    
   end
 end

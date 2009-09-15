@@ -23,14 +23,13 @@ if File.exist? File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '.
   end
 end
 
-require 'gemini'
+require 'jemini'
 
 begin
 #  game = Jemini::Game.new :title => 'Life Tank', :screen_size => Vector.new(800, 600), :fullscreen => true
   game = Jemini::Game.new :title => 'Life Tank', :screen_size => Vector.new(800, 600), :fullscreen => false
   game.app
-#  Jemini::Main.start_app("Life Tank", 800, 600, :MenuState, true)
-#  Jemini::Main.start_app("Life Tank", 800, 600, :InputDiagnosticState, false)
+
 rescue => e
   warn e
   warn e.backtrace

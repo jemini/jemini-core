@@ -1,7 +1,7 @@
-require 'managers/input_support/input_mapping'
+require 'managers/input_support/input_listener'
 
 module Jemini
-  class JoystickMapping < Jemini::InputMapping
+  class JoystickListener < Jemini::InputListener
     def device
       :joystick
     end

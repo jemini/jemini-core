@@ -11,7 +11,7 @@ class BasicPhysicsManager < Jemini::GameObject
   include_class 'net.phys2d.raw.World'
   include_class 'net.phys2d.raw.strategies.QuadSpaceStrategy'
   include_class 'net.phys2d.raw.strategies.BruteCollisionStrategy'
-  has_behavior :ReceivesEvents
+  has_behavior :HandlesEvents
   
   def load
     @delta_debt = 0

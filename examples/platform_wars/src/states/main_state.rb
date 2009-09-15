@@ -2,7 +2,7 @@ require 'managers/tag_manager'
 require 'ai_manager'
 require 'duke'
 
-class MainState < Jemini::BaseState 
+class MainState < Jemini::GameState
   def load
     srand(27)
     set_manager :tag, create_game_object(:TagManager)

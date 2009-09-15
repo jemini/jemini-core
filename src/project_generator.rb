@@ -18,7 +18,7 @@ module Jemini
       copy_libs
       rawr_install
       generate_hello_world_state
-      copy_gemini_jar
+      copy_jemini_jar
     end
 
     def generate_main
@@ -46,7 +46,7 @@ end
   $LOAD_PATH << "src/\#{dir}"
 end
 
-require 'gemini'
+require 'jemini'
 
 begin
   # Change :HelloState to point to the initial state of your game
@@ -73,7 +73,7 @@ ENDL
       end
     end
 
-    def copy_gemini_jar
+    def copy_jemini_jar
       destination = File.expand_path(File.join(@project_dir, 'lib', 'java'))
       source      = File.expand_path(File.join(File.dirname(__FILE__), '..', 'package', 'jar', 'gemini.jar'))
 
@@ -82,7 +82,7 @@ ENDL
     end
 
     #TODO: Implement
-    def build_gemini_jar
+    def build_jemini_jar
       
     end
 
@@ -99,7 +99,7 @@ ENDL
       path = File.expand_path(File.join(@project_dir, 'src', 'states', 'hello_world_state.rb'))
       File.open(path, "w") do |f|
         f << <<-ENDL
-class HelloWorldState < Jemini::BaseState
+class HelloWorldState < Jemini::GameState
 end
 ENDL
       end

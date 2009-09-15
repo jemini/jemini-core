@@ -6,8 +6,9 @@ describe Jemini::MessageQueue do
   
   before :each do
     @message_queue = Jemini::MessageQueue.new(@state)
+    @state.stub!(:manager).with(:message_queue).and_return(@message_queue)
   end
-  
+
   after :each do
     
   end
@@ -40,10 +41,30 @@ describe Jemini::MessageQueue do
     @message_queue.process_messages(1)
     callback_was_called.should be_true
   end
+
+  it "notifies listener objects when the object's 'events_for' matches the messages 'to'" do
+    right_callback_was_called = false
+    wrong_callback_was_called = false
+    @right_game_object = Jemini::GameObject.new(@state)
+    @right_game_object.add_behavior :HandlesEvents
+    @right_game_object.handles_events_for :ponies
+    @right_game_object.handle_event(:test_type) { right_callback_was_called = true}
+
+    @wrong_game_object = Jemini::GameObject.new(@state)
+    @wrong_game_object.add_behavior :HandlesEvents
+    @wrong_game_object.handle_event(:test_type) { wrong_callback_was_called = true}
+
+    message = Jemini::Message.new(:test_type, "Some test message")
+    message.to = :ponies
+    @message_queue.post_message(message)
+    @message_queue.process_messages(1)
+    right_callback_was_called.should be_true
+    wrong_callback_was_called.should be_false
+  end
   
   it "allows new messages to be posted to the queue, even if messages are being processed" do
-    @message_queue.post_message(Jemini::Message.new(:chain_message, "Will kick off a message"))
-    @message_queue.add_listener(:chain_message, self) { @message_queue.post_message(Jemini::Message.new(:chained_message, "Will be added while processing"))}
+    @message_queue.post_message(Gemini::Message.new(:chain_message, "Will kick off a message"))
+    @message_queue.add_listener(:chain_message, self) { @message_queue.post_message(Gemini::Message.new(:chained_message, "Will be added while processing"))}
     chained_message_sent = chain_message_sent = false
     @message_queue.add_listener(:chain_message, self) { chain_message_sent = true }
     @message_queue.add_listener(:chained_message, self) { chained_message_sent = true }

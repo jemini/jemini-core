@@ -6,7 +6,7 @@ class ShootableBarrel < Jemini::Behavior
   TOTAL_POWER = 100.0
   
   depends_on :Updates
-  depends_on :ReceivesEvents
+  depends_on :HandlesEvents
   depends_on :Physical
   depends_on :Timeable
   
@@ -103,20 +103,17 @@ class ShootableBarrel < Jemini::Behavior
 
   # TODO: Consider auto-wiring messages based on dispatch_ or handle_ method names
   def dispatch_fire_weapon(message)
-    return unless message.player == @target.player_id
     return unless ready_to_fire?
     @target.fire_weapon(@power, @angle)
     charge_weapon
   end
 
   def handle_angle_adjustment(message)
-    return unless message.player == @target.player_id
     new_angle = angle + (message.value * ANGLE_ADJUSTMENT_FACTOR * message.delta)
     self.angle = new_angle if new_angle < 90.0 && new_angle > -90.0
   end
 
   def handle_power_adjustment(message)
-    return unless message.player == @target.player_id
     new_power = power + (message.value * POWER_ADJUSTMENT_FACTOR * message.delta)
     if new_power < TOTAL_POWER && new_power > 10.0
       @power_changed = true if new_power != @power # @power_changed is used during update

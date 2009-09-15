@@ -1,4 +1,4 @@
-class PlayState < Jemini::BaseState
+class PlayState < Jemini::GameState
   def load(player_count)
     set_manager :physics, create(:BasicPhysicsManager)
     set_manager :tag, create(:TagManager)
@@ -25,8 +25,6 @@ class PlayState < Jemini::BaseState
 
     manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
     manager(:sound).add_sound :explosion, "shell-explosion-int.wav"
-
-    load_keymap :PlayKeymap
 
     manager(:physics).gravity = 35
     
@@ -62,6 +60,7 @@ class PlayState < Jemini::BaseState
     ground.spawn_along player_count, Vector.new(0.0, -40.0) do |index|
       tank = create :Tank, index
       tank.player_id = index
+      tank.handles_events_for "player_#{index+1}"
       @tanks << tank
       tank.on_before_remove do |unloading_tank|
         @tanks.delete unloading_tank
@@ -69,7 +68,7 @@ class PlayState < Jemini::BaseState
       tank
     end
     
-    game_end_checker = create :GameObject, :Updates, :ReceivesEvents
+    game_end_checker = create :GameObject, :Updates, :HandlesEvents
     game_end_checker.handle_event :quit do
       switch_state :MenuState, player_count
     end

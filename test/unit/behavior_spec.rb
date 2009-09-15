@@ -31,7 +31,7 @@ describe Jemini::Behavior do
   end
 
   it "can declare dependant behaviors" do
-    class DeclareDependantBehavior < Jemini::Behavior
+    class DeclareDependantBehavior < Gemini::Behavior
       def self.require(not_used); end
       depends_on :dependency
     end
@@ -185,7 +185,7 @@ describe Jemini::Behavior do
       def unload; end
     end
 
-    lambda { @game_object.add_behavior :SpecialMethodsTestBehavior }.should_not raise_error(Jemini::MethodExistsError)
+    lambda { @game_object.add_behavior :SpecialMethodsTestBehavior }.should_not raise_error(Gemini::MethodExistsError)
   end
   
   it "has a reference of the game object (@target)" do
@@ -368,7 +368,7 @@ describe Jemini::Behavior, ".wrap_with_callbacks" do
   end
   
   it "adds a wrapper method that invokes callbacks before and after the wrapped method" do
-    class CallbackInvokedByWrapperMethodBehavior < Jemini::Behavior
+    class CallbackInvokedByWrapperMethodBehavior < Gemini::Behavior
       wrap_with_callbacks :foo
       
       def foo; end

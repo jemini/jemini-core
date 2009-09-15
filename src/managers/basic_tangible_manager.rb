@@ -1,7 +1,7 @@
 require 'behaviors/tangible'
 
 class BasicTangibleManager < Jemini::GameObject
-  has_behavior :ReceivesEvents
+  has_behavior :HandlesEvents
   has_behavior :Updates
   
   def load

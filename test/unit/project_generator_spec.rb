@@ -13,8 +13,8 @@ describe 'Jemini::ProjectGenerator', 'project generation' do
     FileUtils.rm_rf @project_dir
   end
 
-  it "generates a ready-to-go Jemini project by typing gemini <my project>" do
-    puts `jruby #{File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'bin', 'gemini'))} -RI--no-download #{@project_dir}`
+  it "generates a ready-to-go Jemini project by typing jemini <my project>" do
+    puts `jruby #{File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'bin', 'jemini'))} -RI--no-download #{@project_dir}`
 
     File.should be_exist(File.join(@project_dir))
     File.should be_directory(File.join(@project_dir))
@@ -95,23 +95,23 @@ describe 'Jemini::ProjectGenerator', 'project generation' do
     File.should be_exist(File.join(@project_dir, 'src', 'main_with_natives.rb'))
   end
 
-  it "copies a gemini.jar into the lib/java dir" do
+  it "copies a jemini.jar into the lib/java dir" do
     puts `jruby -S rake rawr:jar`
     generator = Jemini::ProjectGenerator.new(:project_dir => @project_dir)
-    generator.copy_gemini_jar
-    File.should be_exist(File.join(@project_dir, 'lib', 'java', 'gemini.jar'))
+    generator.copy_jemini_jar
+    File.should be_exist(File.join(@project_dir, 'lib', 'java', 'jemini.jar'))
   end
 
-  it "builds a gemini.jar into the lib/java dir" do
+  it "builds a jemini.jar into the lib/java dir" do
     pending "Rawr must first support this feature"
     generator = Jemini::ProjectGenerator.new(:project_dir => @project_dir)
-    generator.build_gemini_jar
+    generator.build_jemini_jar
 
     File.should be_exist(File.join(@project_dir, 'lib', 'java', 'gemini.jar'))
   end
 
   it "copies in the LWJGL and Slick jars lib/java dir" do
-    generator = Jemini::ProjectGenerator.new(:project_dir => @project_dir)
+    generator = Gemini::ProjectGenerator.new(:project_dir => @project_dir)
     generator.copy_libs
     File.should be_exist(File.join(@project_dir, 'lib', 'java', 'slick.jar'))
     File.should be_exist(File.join(@project_dir, 'lib', 'java', 'phys2d.jar'))

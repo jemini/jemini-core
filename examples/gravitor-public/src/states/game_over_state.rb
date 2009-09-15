@@ -1,4 +1,4 @@
-class GameOverState < Jemini::BaseState
+class GameOverState < Jemini::GameState
   def load
     set_manager :sound, create_game_object(:SoundManager)
     
@@ -8,7 +8,7 @@ class GameOverState < Jemini::BaseState
     
     load_keymap :MouseKeymap
     
-    exiter = create_game_object :GameObject, :ReceivesEvents
+    exiter = create_game_object :GameObject, :HandlesEvents
     exiter.handle_event :mouse_button1_released do
       switch_state :MenuState
     end
