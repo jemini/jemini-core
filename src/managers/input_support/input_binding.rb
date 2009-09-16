@@ -36,6 +36,12 @@ module Jemini
         detect_mouse_button(button_id)
       when :key
         case button_id.to_s
+        when /(left|right)_alt/
+          "Input::KEY_#{$1[0].chr.upcase}ALT".constantize
+        when /(left|right)_ctrl/
+          "Input::KEY_#{$1[0].chr.upcase}CONTROL".constantize
+        when /(left|right)_bracket/
+          "Input::KEY_#{$1[0].chr.upcase}BRACKET".constantize
         when /(up|down|left|right)_arrow/
           "Input::KEY_#{$1.upcase}".constantize
         when /(left|right)_shift/
