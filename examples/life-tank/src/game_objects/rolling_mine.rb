@@ -8,7 +8,7 @@ class RollingMine < Shell
   def load
     @damage = 0
     set_mass 1
-    set_bounded_image @game_state.manager(:render).get_cached_image(:rolling_mine)
+    set_bounded_image :rolling_mine
     set_shape :Circle, image.width / 2.0
     on_physical_collided do |event|
       explode(event) if event.other.kind_of?(Tank) or event.other.kind_of?(TankWheel)

@@ -6,7 +6,7 @@ class TankWheel < Jemini::GameObject
   
   def load(tank)
     @tank = tank
-    set_image @game_state.manager(:render).get_cached_image(:tank_wheel)
+    set_image :tank_wheel
     set_shape :Circle, image.width / 2.0
     set_friction 2000000.0
     set_mass 5.0

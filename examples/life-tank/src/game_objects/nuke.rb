@@ -9,7 +9,7 @@ class Nuke < Shell
   def load
     super
     @damage = 0
-    set_bounded_image @game_state.manager(:render).get_cached_image(:nuke)
+    set_bounded_image :nuke
   end
 
   def explode(event)

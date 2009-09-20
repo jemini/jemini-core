@@ -13,7 +13,7 @@ class Shell < Jemini::GameObject
     # @@active_shells << self
     add_tag :damage
     @damage = 8
-    set_bounded_image @game_state.manager(:render).get_cached_image(:shell)
+    set_bounded_image :shell
     set_mass 1
     
     emit_triangle_trail_with_radius(image.height / 2)

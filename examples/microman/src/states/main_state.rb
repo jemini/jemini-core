@@ -33,7 +33,7 @@ class MainState < Jemini::BaseState
     platform.tiled_to_bounds = true
     
     ammo_display = create_game_object :IconStripCounterDisplay
-    ammo_display.icon = manager(:render).get_cached_image(:counter_bar)
+    ammo_display.icon = :counter_bar
     ammo_display.rows = nil
     ammo_display.columns = 1
     ammo_display.count = 25
