@@ -35,14 +35,14 @@ class BasicRenderManager < Jemini::GameObject
     @debug_queue << {:type => type, :color => color}.merge(options)
   end
   
-  #Load image for rapid retrieval via get_cached_image.
-  def cache_image(cache_name, image_name)
-    image_resource = Java::org::newdawn::slick::Image.new Resource.path_of(image_name)
-    @image_cache[cache_name] = image_resource
-  end
-  
-  #Retrieve cached image.
-  def get_cached_image(cache_name)
-    @image_cache[cache_name].copy
-  end
+  # #Load image for rapid retrieval via get_cached_image.
+  # def cache_image(cache_name, image_name)
+  #   image_resource = Java::org::newdawn::slick::Image.new Resource.path_of(image_name)
+  #   @image_cache[cache_name] = image_resource
+  # end
+  # 
+  # #Retrieve cached image.
+  # def get_cached_image(cache_name)
+  #   @image_cache[cache_name].copy
+  # end
 end
