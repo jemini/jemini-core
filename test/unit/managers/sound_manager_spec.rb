@@ -3,8 +3,6 @@ require 'managers/sound_manager'
 
 describe 'SoundManager' do
 
-  # it_should_behave_like "a manager"
-
   before :each do
     @state = Jemini::BaseState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
     @sound_manager = SoundManager.new(@state)
