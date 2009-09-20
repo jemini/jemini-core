@@ -8,3 +8,4 @@ require 'gemini'
 require 'test_state'
 
 require 'shared_specs'
+require 'matchers'

@@ -16,14 +16,16 @@ describe 'BasicGameObjectManager' do
   
   describe "#remove_game_object" do
   
-    it "calls unload on an object when removing it" do
+    it "calls before-callback, unload, and after-callback on an object when removing it" do
       object = @state.create :GameObject, :ReceivesEvents
+      @manager.should_receive(:before).ordered
+      @manager.on_before_remove_game_object :before
       object.should_receive(:unload).ordered
+      @manager.should_receive(:after).ordered
+      @manager.on_after_remove_game_object :after
       @manager.remove_game_object(object)
     end
   
-    it "triggers before and after callbacks for removal"
-    
     it "deletes all behaviors on an object after removing it"
     
     it "removes all listeners on an object after removing it"

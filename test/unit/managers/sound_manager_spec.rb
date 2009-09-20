@@ -17,6 +17,8 @@ describe 'SoundManager' do
   end
   
   it "plays back cached sounds" do
+    class Sound < Java::org::newdawn::slick::Sound; end
+    Sound.stub!(:new) and return mock('Sound')
     sound = mock('Sound')
     @sound_manager.add_sound :boom, sound
     sound.should_receive(:play)
