@@ -14,9 +14,6 @@ class PlayState < Jemini::BaseState
     
     load_keymap :MouseKeymap
     
-    (1..5).each {|number| manager(:render).cache_image "gravity_cloud#{number}".to_sym, "gravity_cloud#{number}.png" }
-    manager(:render).cache_image :singularity, "singularity_button_background.png"
-    manager(:render).cache_image :vortex, "clockwise_vortex_large.png"
     manager(:sound).add_sound :gobble, "gravity_gobble.wav"
     manager(:sound).add_sound :fire_gravitor, "fire_gravitor_cannon.wav"
     manager(:sound).add_sound :gasp, "singularity_birth.wav"

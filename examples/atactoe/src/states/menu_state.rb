@@ -6,8 +6,6 @@ class MenuState < Jemini::BaseState
     manager(:sound).play_song "j-hop.ogg", :volume => 0.6, :loop => true
     manager(:sound).add_sound :no, "no.wav"
     
-    manager(:render).cache_image :grid, "grid.png"
-
     load_keymap :GameStartKeymap
     
     create :Background, "grid.png"

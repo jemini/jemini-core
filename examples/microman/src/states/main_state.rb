@@ -13,9 +13,6 @@ class MainState < Jemini::BaseState
 
     set_manager :render, create_game_object(:ScrollingRenderManager, microman)
     
-    manager(:render).cache_image :bullet, "bullet.png"
-    manager(:render).cache_image :counter_bar, "counter-bar.png"
-    
     #ground
     ground = create_game_object :StaticSprite, "platform.png", 640 / 2, 480 - 10, 610, 30
     ground.tiled_to_bounds = true
