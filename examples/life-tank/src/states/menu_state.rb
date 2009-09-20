@@ -8,9 +8,6 @@ class MenuState < Jemini::BaseState
     
     manager(:sound).play_song "just-aimin.ogg", :volume => 0.5, :loop => true
 
-    manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
-    manager(:sound).add_sound :explosion, "shell-explosion-int.wav"
-
     load_keymap :GameStartKeymap
     
     create :Background, "evening-sky.png"

@@ -4,7 +4,6 @@ class MenuState < Jemini::BaseState
     @target_score = target_score
     set_manager :sound, create(:SoundManager)
     manager(:sound).play_song "j-hop.ogg", :volume => 0.6, :loop => true
-    manager(:sound).add_sound :no, "no.wav"
     
     load_keymap :GameStartKeymap
     

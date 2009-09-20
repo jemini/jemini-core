@@ -2,7 +2,6 @@ class GameWonState < Jemini::BaseState
   
   def load(target_score, score_x, score_o, winner)
     set_manager :sound, create(:SoundManager)
-    manager(:sound).add_sound :win, "woo-hoo.wav"
     manager(:sound).play_sound :win
     end_game_text = create :Text, screen_width / 2, screen_height / 2, "#{winner.to_s.capitalize} wins!"
     end_game_text.add_behavior :Timeable

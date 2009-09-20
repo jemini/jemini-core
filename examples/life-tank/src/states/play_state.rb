@@ -9,9 +9,6 @@ class PlayState < Jemini::BaseState
     manager(:game_object).add_layer_at :logo, 4
     manager(:game_object).add_layer_at :flag, 3
     
-    manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
-    manager(:sound).add_sound :explosion, "shell-explosion-int.wav"
-
     load_keymap :PlayKeymap
 
     manager(:physics).gravity = 35

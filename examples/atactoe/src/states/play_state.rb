@@ -13,9 +13,6 @@ class PlayState < Jemini::BaseState
     
     manager(:game_object).add_layer_at :gui_text, 5
     
-    manager(:sound).add_sound :draw, "draw.wav"
-    manager(:sound).add_sound :no, "no.wav"
-
     load_keymap :PlayKeymap
 
     create :Background, "grid.png"
