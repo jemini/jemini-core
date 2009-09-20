@@ -15,9 +15,9 @@ class PlayState < Jemini::BaseState
     
     load_keymap :PlayKeymap
 
-    create :Background, "grid.png"
+    create :Background, :grid
     
-    # manager(:sound).loop_song "j-hop.ogg", 0.6
+    # manager(:sound).loop_song :j-hop, 0.6
     
     game_end_checker = create :GameObject, :Updates, :ReceivesEvents
     game_end_checker.handle_event :quit do

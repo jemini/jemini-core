@@ -4,7 +4,7 @@ class Gangster < Jemini::GameObject
   has_behavior :RotatesToPoint
   
   def load
-    set_bounded_image "gangster.png"
+    set_bounded_image :gangster
     set_damping 0.6
     
     behavior_event_alias :CardinalMovable, :start_move do |message|

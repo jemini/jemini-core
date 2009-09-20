@@ -84,7 +84,7 @@ class DotNet < Jemini::GameObject
   has_behavior :UpdatesAtConsistantRate
   
   def load
-    self.image = "DotNetLogo.jpg"
+    self.image = :DotNetLogo
     image_scaling 0.1
     
     @timer = rand(300)

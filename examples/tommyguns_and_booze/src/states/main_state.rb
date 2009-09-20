@@ -51,13 +51,13 @@ class MainState < Jemini::BaseState
 #      image_name, tangible, rotation, flipping, x, y = image_name,"true" == tangible, rotation.to_i, flipping, x.to_i, y.to_i
 #
 #      if tangible
-#        tile = create_game_object(:StaticSprite, "#{image_name}.png")
+#        tile = create_game_object(:StaticSprite, image_name.to_sym)
 #        tile.rotation = rotation
 #        #tile.set_shape :Box, 64, 64
 #      else
 #        tile = create_game_object :GameObject
 #        tile.add_behavior :Sprite
-#        tile.image = "#{image_name}.png"
+#        tile.image = :#{image_name}
 #        tile.image_rotation = rotation
 #      end
 #      tile.move_by_top_left(x, y)

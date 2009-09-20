@@ -5,7 +5,7 @@ class Car < Jemini::GameObject
   has_behavior :TangibleSprite
   
   def load
-    set_bounded_image "car.png"
+    set_bounded_image :car
     
     set_forward_speed 5
     set_reverse_speed -2

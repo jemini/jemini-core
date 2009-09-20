@@ -13,6 +13,6 @@ class VictoryState < Jemini::BaseState
       switch_state :MenuState
     end
     
-    manager(:sound).loop_song "gravitor_victory.ogg"
+    manager(:sound).loop_song :gravitor_victory
   end
 end

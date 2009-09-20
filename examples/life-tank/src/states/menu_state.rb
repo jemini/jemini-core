@@ -6,11 +6,11 @@ class MenuState < Jemini::BaseState
     set_manager :tag, create(:TagManager)
     set_manager :sound, create(:SoundManager)
     
-    manager(:sound).loop_song "just-aimin.ogg", 0.5
+    manager(:sound).loop_song :just_aimin, 0.5
 
     load_keymap :GameStartKeymap
     
-    create :Background, "evening-sky.png"
+    create :Background, :evening_sky
     
     ground = create :Ground
     ground.fill_dimensions(0, screen_height / 2, screen_width, screen_height)
