@@ -75,6 +75,6 @@ class MenuState < Jemini::BaseState
     
     create_game_object_on_layer(:Text, :gui_text, gravity_source.x, gravity_source.y, "Start")
     
-    manager(:sound).play_song "gravitor_menu.ogg", :loop => true
+    manager(:sound).loop_song "gravitor_menu.ogg"
   end
 end

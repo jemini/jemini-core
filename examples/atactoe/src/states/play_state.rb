@@ -17,7 +17,7 @@ class PlayState < Jemini::BaseState
 
     create :Background, "grid.png"
     
-    # manager(:sound).play_song "j-hop.ogg", :volume => 0.6, :loop => true
+    # manager(:sound).loop_song "j-hop.ogg", 0.6
     
     game_end_checker = create :GameObject, :Updates, :ReceivesEvents
     game_end_checker.handle_event :quit do

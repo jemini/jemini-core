@@ -6,7 +6,7 @@ class MenuState < Jemini::BaseState
     set_manager :tag, create(:TagManager)
     set_manager :sound, create(:SoundManager)
     
-    manager(:sound).play_song "just-aimin.ogg", :volume => 0.5, :loop => true
+    manager(:sound).loop_song "just-aimin.ogg", 0.5
 
     load_keymap :GameStartKeymap
     

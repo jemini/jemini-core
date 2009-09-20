@@ -39,7 +39,7 @@ class PlayState < Jemini::BaseState
 #    ceiling.set_static_body
 #    ceiling.body_position = Vector.new(screen_width / 2, 20)
     
-    manager(:sound).play_song "mortor-maddness.ogg", :volume => 0.5, :loop => true
+    manager(:sound).loop_song "mortor-maddness.ogg", 0.5
 
     @tanks = []
     ground.spawn_along player_count, Vector.new(0.0, -40.0) do |index|
