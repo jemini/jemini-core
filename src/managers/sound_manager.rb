@@ -10,44 +10,38 @@ class SoundManager < Jemini::GameObject
   end
   
   def unload
-    @music.stop if @music
     stop_all
   end
   
-  #Takes a sound reference and plays it.
+  #Takes a reference to a sound loaded via the resource manager, and plays it.
+  #volume is 0.0 for silence, 1.0 for normal volume, or higher values for amplified volume.
+  #pitch is 1.0 for original pitch. Lower or higher values will bend the pitch accordingly.
   def play_sound(reference, volume = 1.0, pitch = 1.0)
     game_state.manager(:resource).get_sound(reference).play(pitch, volume)
   end
   
   #Stop playback of all sounds.
   def stop_all
+    @song.stop if @song
     game_state.manager(:resource).get_all_sounds.each {|s| s.stop if s.playing}
   end
   
-  
-  #Plays the given music.
-  #The music argument is either the music object to play, or the name of a music file to load from the data directory.
-  #Stops any previously playing song.
-  #Takes a hash with the following keys and values:
-  #[:volume] The playback volume.
-  #[:loop] If true, will restart playback when the song ends.
-  def play_song(music, options={})
-    @music.stop if @music
-    @music = case music
-      when String then Java::org::newdawn::slick::Music.new(Resource.path_of(music), true)
-      else music
-    end
-    if options[:loop]
-      @music.loop
-    else
-      @music.play
-    end
-    @music.volume = options[:volume] if options.has_key? :volume #Volume must be set AFTER loop is called.
+  #Takes a reference to a song loaded via the resource manager, and plays it.
+  #volume is 0.0 for silence, 1.0 for normal volume, or higher values for amplified volume.
+  def play_song(reference, volume=1.0)
+    @song.stop if @song
+    @song = game_state.manager(:resource).get_song(reference)
+    @song.play
+    @song.volume = volume if volume != 1.0 #Volume must be set AFTER play is called.
   end
   
-private
-
-  def load_sound(sound_file_name)
-    Sound.new(Resource.path_of(sound_file_name))
+  #Takes a reference to a song loaded via the resource manager, and plays it in a loop.
+  #volume is 0.0 for silence, 1.0 for normal volume, or higher values for amplified volume.
+  def loop_song(reference, volume=1.0)
+    @song.stop if @song
+    @song = game_state.manager(:resource).get_song(reference)
+    @song.loop
+    @song.volume = volume if volume != 1.0 #Volume must be set AFTER loop is called.
   end
+    
 end

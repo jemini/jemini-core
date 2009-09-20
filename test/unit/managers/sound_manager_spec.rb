@@ -26,24 +26,29 @@ describe 'SoundManager' do
   
     it "plays songs at desired volume" do
       song = mock('Music')
+      @resource_manager.should_receive(:get_song).with(:lala).and_return(song)
       song.should_receive(:play)
       song.should_receive(:volume=).with(0.5)
-      @sound_manager.play_song(song, :volume => 0.5)
+      @sound_manager.play_song(:lala, 0.5)
     end
     
     it "can loop songs" do
       song = mock('Music')
+      @resource_manager.should_receive(:get_song).with(:lalalala).and_return(song)
       song.should_receive(:loop)
-      @sound_manager.play_song(song, :loop => true)
+      song.should_receive(:volume=).with(0.5)
+      @sound_manager.loop_song(:lalalala, 0.5)
     end
     
     it "halts presently playing song if a new one is requested" do
-      song = mock('Music')
-      song.should_receive(:play)
-      @sound_manager.play_song(song)
+      song1 = mock('Music')
+      song1.should_receive(:play)
+      @resource_manager.should_receive(:get_song).with(:song1).and_return(song1)
+      @sound_manager.play_song(:song1)
       song2 = mock('Music', :null_object => true)
-      song.should_receive(:stop)
-      @sound_manager.play_song(song2)
+      song1.should_receive(:stop)
+      @resource_manager.should_receive(:get_song).with(:song2).and_return(song2)
+      @sound_manager.play_song(:song2)
     end
     
   end

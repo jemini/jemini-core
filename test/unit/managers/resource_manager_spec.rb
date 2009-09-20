@@ -50,6 +50,12 @@ describe 'ResourceManager' do
         @resource_manager.load_resources
       end
     
+      it "loads ogg files" do
+        @resource_manager.data_directory = "test/data/loads_ogg"
+        @resource_manager.should_receive(:cache_song).with(:test, "test/data/loads_ogg/test.ogg")
+        @resource_manager.load_resources
+      end
+    
       it "warns if multiple formats with the same name are found, but loads one anyway" do
         @resource_manager.data_directory = "test/data/warns_of_duplicates"
         @resource_manager.log.should_receive(:warn).with(/duplicate/)
