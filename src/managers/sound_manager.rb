@@ -14,23 +14,14 @@ class SoundManager < Jemini::GameObject
     stop_all
   end
   
-  #Make a sound accessible via the given reference.
-  #The sound argument is either the sound to store, or the name of a sound file to load from the data directory.
-  def add_sound(reference, sound)
-    @sounds[reference] = case sound
-      when String then load_sound(sound)
-      else sound
-    end
-  end
-  
-  #Takes a sound reference (set via add_sound) and plays it.
+  #Takes a sound reference and plays it.
   def play_sound(reference, volume = 1.0, pitch = 1.0)
-    @sounds[reference].play(pitch, volume)
+    game_state.manager(:resource).get_sound(reference).play(pitch, volume)
   end
   
   #Stop playback of all sounds.
   def stop_all
-    @sounds.each_value {|s| s.stop if s.playing}
+    game_state.manager(:resource).get_all_sounds.each {|s| s.stop if s.playing}
   end
   
   

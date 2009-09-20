@@ -7,20 +7,19 @@ describe 'SoundManager' do
     @state = Jemini::BaseState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
     @sound_manager = SoundManager.new(@state)
     @state.send(:set_manager, :sound, @sound_manager)
+    @resource_manager = mock('ResourceManager')
+    @state.send(:set_manager, :resource, @resource_manager)
   end
   
-  it "caches sounds" do
-    sound = mock('Sound')
-    lambda {@sound_manager.add_sound :boom, sound}.should_not raise_error
-  end
-  
-  it "plays back cached sounds" do
-    class Sound < Java::org::newdawn::slick::Sound; end
-    Sound.stub!(:new) and return mock('Sound')
-    sound = mock('Sound')
-    @sound_manager.add_sound :boom, sound
-    sound.should_receive(:play)
-    @sound_manager.play_sound :boom
+  describe "#play_sound" do
+
+    it "plays back cached sounds" do
+      sound = mock('Sound')
+      @resource_manager.should_receive(:get_sound).with(:boom).and_return(sound)
+      sound.should_receive(:play)
+      @sound_manager.play_sound :boom
+    end
+
   end
   
   describe "#play_song" do
@@ -49,12 +48,17 @@ describe 'SoundManager' do
     
   end
   
-  it "halts sound playback when destroyed" do
-    sound = mock('Sound', :play => nil, :playing => true)
-    @sound_manager.add_sound :boom, sound
-    @sound_manager.play_sound :boom
-    sound.should_receive(:stop)
-    @sound_manager.unload
+  describe "#unload" do
+    
+    it "halts sound playback when object is destroyed" do
+      sound = mock('Sound', :play => nil, :playing => true)
+      @resource_manager.should_receive(:get_sound).with(:boom).and_return(sound)
+      @resource_manager.should_receive(:get_all_sounds).and_return([sound])
+      @sound_manager.play_sound :boom
+      sound.should_receive(:stop)
+      @sound_manager.unload
+    end
+  
   end
     
 end
