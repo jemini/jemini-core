@@ -7,7 +7,7 @@ describe 'TagManager' do
   # it_should_behave_like "a manager"
 
   before :each do
-    @state = Jemini::BaseState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
+    @state = Jemini::GameState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
     @tag_manager = TagManager.new(@state)
     @state.send(:set_manager, :tag, @tag_manager)
   end

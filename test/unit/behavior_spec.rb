@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'behavior'
 
-GEMINI_VERSION = "1.0.0"
+JEMINI_VERSION = "1.0.0"
 
 describe Jemini::Behavior do
   it_should_behave_like "initial mock state"
@@ -115,7 +115,7 @@ describe Jemini::Behavior do
   end
   
   it "doesn't remove dependent behaviors when it is removed" do
-    pending GEMINI_VERSION == "1.1.0"
+    pending JEMINI_VERSION == "1.1.0"
     class ShouldNotRemoveBehavior < Jemini::Behavior
     end
     

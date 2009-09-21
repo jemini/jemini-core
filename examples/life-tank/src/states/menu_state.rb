@@ -1,4 +1,4 @@
-class MenuState < Jemini::BaseState
+class MenuState < Jemini::GameState
   
   def load(player_count = 2)
     @player_count = player_count
@@ -8,8 +8,6 @@ class MenuState < Jemini::BaseState
     
     manager(:sound).loop_song :just_aimin, 0.5
 
-    load_keymap :GameStartKeymap
-    
     create :Background, :evening_sky
     
     ground = create :Ground
@@ -20,7 +18,7 @@ class MenuState < Jemini::BaseState
     display_instructions
     
 
-    menu_handler = create :GameObject, :ReceivesEvents
+    menu_handler = create :GameObject, :HandlesEvents
     menu_handler.handle_event :increase_player_count do
       @player_count += 1 unless @player_count >= 6
       @player_count_text.text = "Press 1 or A: Start a game with #{@player_count} tanks"

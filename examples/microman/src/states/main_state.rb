@@ -1,4 +1,4 @@
-class MainState < Jemini::BaseState 
+class MainState < Jemini::GameState 
   def load
     set_manager :physics, create_game_object(:BasicPhysicsManager)
     set_manager :tag, create_game_object(:TagManager)
@@ -55,7 +55,7 @@ class MainState < Jemini::BaseState
     region.toggle_debug_mode
     # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject
-#    quitter.add_behavior :ReceivesEvents
+#    quitter.add_behavior :HandlesEvents
 #    quitter.handle_event :quit do
 #      Profiler__::print_profile(STDERR) if $profiling
 #      Java::java::lang::System.exit 0

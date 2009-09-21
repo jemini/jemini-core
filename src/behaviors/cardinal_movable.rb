@@ -18,7 +18,7 @@ class CardinalMovable < Jemini::Behavior
   DIRECTION_TRANSLATION_IN_DEGREES = []
 
   depends_on :Tangible
-  depends_on :ReceivesEvents
+  depends_on :HandlesEvents
   attr_accessor :facing_direction
   #TODO: Rename to cardinal facing direction
   wrap_with_callbacks :facing_direction=, :set_facing_drection

@@ -1,4 +1,4 @@
-class PlayState < Jemini::BaseState
+class PlayState < Jemini::GameState
   
   attr_accessor :grid
   attr_accessor :score_x

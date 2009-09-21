@@ -1,3 +1,3 @@
-class TestState < Jemini::BaseState
+class TestState < Jemini::GameState
   
 end

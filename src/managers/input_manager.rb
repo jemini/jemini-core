@@ -2,10 +2,11 @@ java_import 'org.newdawn.slick.Input'
 
 require 'message_queue'
 
-require 'managers/input_support/input_mapping'
-require 'managers/input_support/mouse_mapping'
-require 'managers/input_support/key_mapping'
-require 'managers/input_support/joystick_mapping'
+require 'managers/input_support/input_listener'
+require 'managers/input_support/mouse_listener'
+require 'managers/input_support/key_listener'
+require 'managers/input_support/joystick_listener'
+require 'managers/input_support/input_builder'
 
 require 'managers/input_support/input_message'
 require 'managers/input_support/slick_input_listener'
@@ -74,7 +75,7 @@ elsif Platform.using_linux?
 end
 
 # LWJGL can't poll for buttons in the negative range yet. Possible bug to report?
-# 360 controller provides button presses for analog inputs for convienence
+# 360 controller provides button presses for analog in for convienence
 XBOX_360_LEFT_STICK_LEFT = -1
 XBOX_360_LEFT_STICK_RIGHT = -2
 XBOX_360_LEFT_STICK_UP = -3
@@ -93,6 +94,7 @@ module Jemini
   # Consumes raw slick_input events and outputs events based on 
   # registered key bindings.
   class InputManager < Jemini::GameObject
+    attr_reader :listeners
     
     $LOAD_PATH.each do |path|
       if File.basename(path) == "input_helpers"
@@ -111,45 +113,26 @@ module Jemini
       @@loading_input_manager
     end
 
-    def self.define_keymap
-      yield loading_input_manager
-    end
-
     def load(container)
+      @listeners = []
       @held_keys = []
       @raw_input = container.input
-      @input_listener = Jemini::SlickInputListener.new(@game_state)
+      @input_listener = SlickInputListener.new(@game_state)
       @raw_input.add_listener @input_listener
       @held_buttons = {}
     end
-    
-    #Load a file with the specified name from the keymaps directory.
-    def load_keymap(keymap)
-      @keymap = Hash.new{|h,k| h[k] = []}
 
-      @held_buttons = Hash.new {|h,k| h[k] = []}
-      keymap_name = "/keymaps/#{keymap.underscore}"
-      keymap_path = $LOAD_PATH.find do |path|
-        puts "trying path for .rb/.class: #{File.expand_path(path + keymap_name)}"
-        File.exist?(File.expand_path(path + keymap_name + '.rb')) || File.exist?(File.expand_path(path + keymap_name + '.class'))
-      end
-      puts "keymap found: #{keymap_path.inspect}"
-
+    def use_input(input)
       @@loading_input_manager = self
-      keymap_path += '/' unless keymap_path.nil? # was using <<, but that alters the load path in a bad way.
-      begin
-        # the method 'load' already exists on this scope
-        Kernel.load "#{keymap_path}#{keymap_name.sub('/', '')}.class"
-      rescue LoadError
-        # the method 'load' already exists on this scope
-        Kernel.load "#{keymap_path}#{keymap_name.sub('/', '')}.rb"
-      end
+      require File.join('input', "#{input}_input")
       @@loading_input_manager = nil
+      $".pop # remove the entry so we can require it again
     end
     
     #Check for keypresses and send messages to message queue accordingly.
     def poll(screen_width, screen_height, delta)
-      return if @keymap.nil?
+      @keymap ||= {}
+#      return if @keymap.nil?
       @input_listener.delta = delta
       @raw_input.poll(screen_width, screen_height)
       all_keymappings_to_game_messages.each do |game_message|
@@ -161,51 +144,12 @@ module Jemini
     def connected_joystick_size
       @raw_input.controller_count
     end
-
-    #Add a keyboard mapping.
-    #Takes a hash with the following keys and values:
-    #[:event_name] Use any key name you want for the event name. The value will be used as the event value.
-    #[:pressed] The given key will trigger the event when pressed.
-    #[:released] The given key will trigger the event when released.
-    #[:held] The given key will trigger the event when held.
-    #[:player] The player number, starting with 0, that the event will apply to.
-    def map_key(options, &block)
-      map :key, options, &block
-    end
-
-    #Add a mouse button mapping.
-    #Takes a hash with the same keys and values as map_key.
-    def map_mouse(options, &block)
-      map :mouse, options, &block
-    end
-
-    #Add a button or axis mapping for a joystick.
-    #Takes a hash with the same keys and values as map_key.
-    #Also accepts this additional key/value pair:
-    #[:axis_update] The given axis will trigger the event when the joystick is moved along it.
-    def map_joystick(options, &block)
-      map :joystick, options, &block
-    end
     
   private
-    def find_keymaps_for(device, input_button_or_axis, id)
-      @keymap["#{device}_#{input_button_or_axis}_#{id}"]
-    end
-
-    def map(device, options, &block)
-      mapping = InputMapping.create(device, options, &block)
-      @keymap[mapping.key] << mapping
-    end
-
-    def invoke_callbacks_for(device, input_type, input_button_or_axis, id, input_message)
-      key_mappings = find_keymaps_for(device, input_type, input_button_or_axis, id)
-      key_mappings.each do |key_map|
-        @game_state.manager(:message_queue).post_message key_map.to_game_message(input_message)
-      end
-    end
 
     def all_keymappings_to_game_messages
-      @keymap.values.map {|keymap_array| poll_to_game_messages(keymap_array)}.flatten.compact
+#      @keymap.values.map {|keymap_array| poll_to_game_messages(keymap_array)}.flatten.compact
+      poll_to_game_messages(listeners).compact
     end
 
     def poll_to_game_messages(keymaps)
@@ -215,8 +159,9 @@ module Jemini
           messages << keymap.poll(@raw_input)
           false  # don't delete me
         rescue => e
-          warn "error in poll: #{e}"
-          warn "removing keymap #{keymap}"
+          # TODO: puts in test, warn in production. Is there a better way?
+          puts "error in poll: #{e}"
+          puts "removing keymap #{keymap}"
           true   # I've been bad, delete me
         end
       end

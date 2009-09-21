@@ -99,7 +99,7 @@ ENDL
       path = File.expand_path(File.join(@project_dir, 'src', 'states', 'hello_world_state.rb'))
       File.open(path, "w") do |f|
         f << <<-ENDL
-class HelloWorldState < Jemini::BaseState
+class HelloWorldState < Jemini::GameState
 end
 ENDL
       end

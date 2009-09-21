@@ -1,4 +1,4 @@
-class PlayState < Jemini::BaseState
+class PlayState < Jemini::GameState
   def load(player_count)
     set_manager :physics, create(:BasicPhysicsManager)
     set_manager :tag, create(:TagManager)
@@ -9,8 +9,6 @@ class PlayState < Jemini::BaseState
     manager(:game_object).add_layer_at :logo, 4
     manager(:game_object).add_layer_at :flag, 3
     
-    load_keymap :PlayKeymap
-
     manager(:physics).gravity = 35
     
     create :Background, "hazy-horizon.png"
@@ -39,12 +37,13 @@ class PlayState < Jemini::BaseState
 #    ceiling.set_static_body
 #    ceiling.body_position = Vector.new(screen_width / 2, 20)
     
-    manager(:sound).loop_song "mortor-maddness.ogg", 0.5
+    manager(:sound).loop_song :mortor_maddness, 0.5
 
     @tanks = []
     ground.spawn_along player_count, Vector.new(0.0, -40.0) do |index|
       tank = create :Tank, index
       tank.player_id = index
+      tank.handles_events_for "player_#{index+1}"
       @tanks << tank
       tank.on_before_remove do |unloading_tank|
         @tanks.delete unloading_tank
@@ -52,7 +51,7 @@ class PlayState < Jemini::BaseState
       tank
     end
     
-    game_end_checker = create :GameObject, :Updates, :ReceivesEvents
+    game_end_checker = create :GameObject, :Updates, :HandlesEvents
     game_end_checker.handle_event :quit do
       switch_state :MenuState, player_count
     end

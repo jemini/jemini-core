@@ -4,7 +4,7 @@ class Pointer < Jemini::Behavior
 #  depends_on :Movable2d
 #  depends_on :CollisionPoolAlgorithmTaggable
 #  depends_on :WorldCollidable
-  depends_on :ReceivesEvents
+  depends_on :HandlesEvents
   
   
   def load

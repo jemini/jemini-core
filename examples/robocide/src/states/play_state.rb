@@ -1,4 +1,4 @@
-class PlayState < Jemini::BaseState
+class PlayState < Jemini::GameState
   def load
     set_manager :physics, create_game_object(:BasicPhysicsManager)
     set_manager :tag, create_game_object(:TagManager)
@@ -38,7 +38,7 @@ class PlayState < Jemini::BaseState
     player.set_image :commando_standing
     player.set_tangible_shape :Box, player.image_size
     player.move(150, 300)
-    player.add_behavior :ReceivesEvents
+    player.add_behavior :HandlesEvents
     player.handle_event :move do |message|
       vector = Vector.new(*case message.value
                         when :up

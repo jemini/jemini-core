@@ -3,13 +3,13 @@ module Jemini
   
   # Message object that is posted to the MessageQueue.
   class Message
-    attr_accessor :name, :value
-    #Time elapsed for the message.
-    attr_accessor :delta
-    def initialize(name, value, delta=nil)
-      @name = name
+    attr_accessor :name, :value, :delta, :to
+    
+    def initialize(name, value, delta=nil, to=nil)
+      @name  = name
       @value = value
       @delta = delta
+      @to    = to
     end
   end
   
@@ -26,7 +26,11 @@ module Jemini
         
         @listeners[message.name].each do |listener|
           begin
-            listener[1].call(message)
+            if message.to.nil?
+              listener[1].call(message)
+            else
+              listener[1].call(message) if listener[0].respond_to?(:handles_events_for?) && listener[0].handles_events_for?(message.to)
+            end
           rescue Exception => e
             # Replace this with a logger
             $stderr << "Error in callback #{listener[1]} for key: #{listener[0]}\n#{e.class} - #{e.message}\n#{e.backtrace.join("\n")}"
