@@ -60,7 +60,6 @@ class PlayState < Jemini::GameState
     ground.spawn_along player_count, Vector.new(0.0, -40.0) do |index|
       tank = create :Tank, index
       tank.player_id = index
-      tank.handles_events_for "player_#{index+1}"
       @tanks << tank
       tank.on_before_remove do |unloading_tank|
         @tanks.delete unloading_tank

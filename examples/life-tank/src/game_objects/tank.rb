@@ -18,7 +18,7 @@ class Tank < Jemini::GameObject
 
   def load(player_index)
     @player_id = player_index
-    
+    handles_events_for "player_#{player_index+1}"
     set_image @game_state.manager(:render).get_cached_image(:tank_body)
     set_shape :Box, image.width, image.height / 2.0
     #set_physical_sprite_position_offset Vector.new(0.0, image.height / 2.0)
