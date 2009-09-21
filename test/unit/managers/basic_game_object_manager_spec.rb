@@ -4,7 +4,7 @@ require 'managers/basic_game_object_manager'
 describe 'BasicGameObjectManager' do
 
   before :each do
-    @state = Jemini::BaseState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
+    @state = Jemini::GameState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
     @manager = BasicGameObjectManager.new(@state)
     @state.send(:set_manager, :game_object, @manager)
   end
@@ -17,7 +17,7 @@ describe 'BasicGameObjectManager' do
   describe "#remove_game_object" do
   
     it "calls before-callback, unload, and after-callback on an object when removing it" do
-      object = @state.create :GameObject, :ReceivesEvents
+      object = @state.create :GameObject, :HandlesEvents
       @manager.should_receive(:before).ordered
       @manager.on_before_remove_game_object :before
       object.should_receive(:unload).ordered

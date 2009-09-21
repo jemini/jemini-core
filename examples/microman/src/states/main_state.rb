@@ -55,7 +55,7 @@ class MainState < Jemini::GameState
     region.toggle_debug_mode
     # uncomment to enable profiler (needs keymap too)
 #    quitter = create_game_object :GameObject
-#    quitter.add_behavior :HandlesEvents
+#    quitter.add_behavior :ReceivesEvents
 #    quitter.handle_event :quit do
 #      Profiler__::print_profile(STDERR) if $profiling
 #      Java::java::lang::System.exit 0

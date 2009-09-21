@@ -3,7 +3,7 @@ require 'score_manager'
 require 'basic_physics_manager'
 require 'ball'
 
-class MainState < Jemini::GameState
+class MainState < Jemini::GameState 
   def load
     manager(:game_object).add_layer_at(:ball_effects_layer, 1)
     manager(:game_object).add_layer_at(:ball_layer, 2)
@@ -26,7 +26,7 @@ class MainState < Jemini::GameState
     paddle.set_body_position Vector.new(500, 300)
     
     quitter = create_game_object :GameObject
-    quitter.add_behavior :HandlesEvents
+    quitter.add_behavior :ReceivesEvents
     quitter.handle_event :quit do
       Profiler__::print_profile(STDERR) if $profiling
       Java::java::lang::System.exit 0

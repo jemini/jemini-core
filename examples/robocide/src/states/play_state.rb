@@ -38,7 +38,7 @@ class PlayState < Jemini::GameState
     player.set_image :commando_standing
     player.set_tangible_shape :Box, player.image_size
     player.move(150, 300)
-    player.add_behavior :HandlesEvents
+    player.add_behavior :ReceivesEvents
     player.handle_event :move do |message|
       vector = Vector.new(*case message.value
                         when :up

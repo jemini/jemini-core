@@ -15,7 +15,7 @@ describe 'ResourceManager' do
     describe "with global assets" do
 
       before :each do
-        @state = Jemini::BaseState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
+        @state = Jemini::GameState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
         @resource_manager = ResourceManager.new(@state)
         @state.send(:set_manager, :resource, @resource_manager) #send lets us call a private method.
       end
@@ -74,7 +74,7 @@ describe 'ResourceManager' do
     describe "with state-specific assets" do
 
       before :each do
-        class FooState < Jemini::BaseState; end
+        class FooState < Jemini::GameState; end
         @foo_state = FooState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
         @resource_manager = ResourceManager.new(@foo_state)
         @foo_state.send(:set_manager, :resource, @resource_manager) #send lets us call a private method.
