@@ -13,19 +13,19 @@ end
 load 'tasks/setup.rb'
 
 ensure_in_path 'src'
-require 'gemini_version'
+require 'jemini_version'
 
 #Dir.glob("tasks/**/*.rake").each do |rake_file|
 #  load File.expand_path(File.dirname(__FILE__) + "/" + rake_file)
 #end
 
-PROJ.name = 'gemini'
+PROJ.name = 'jemini'
 PROJ.authors = 'Logan Barnett, David Koontz, Jay McGavren'
 PROJ.email = 'logustus@gmail.com'
-PROJ.url = 'http://rubyforge.org/projects/gemini/'
+PROJ.url = 'http://rubyforge.org/projects/jemini/'
 PROJ.version = Jemini::VERSION
 PROJ.summary = "Jemini is a Ruby game engine that separates the game logic from reusable game features. Includes hardware accelerated graphics, physics, standalone distros, and more."
-PROJ.rubyforge.name = 'gemini'
+PROJ.rubyforge.name = 'jemini'
 PROJ.spec.files = FileList['test/**/*_spec.rb'],
 PROJ.spec.opts << '--color'
 PROJ.spec.libs << 'test/unit'
@@ -34,7 +34,7 @@ PROJ.libs << 'src'
 PROJ.gem.dependencies << ["rawr", ">= 1.3.7"]
 PROJ.gem.platform = "java"
 PROJ.rdoc.exclude << /lib/
-PROJ.rdoc.exclude << /gemini\.jar/
+PROJ.rdoc.exclude << /jemini\.jar/
 
 task :update_version_readme do
   readme = IO.readlines( 'README.txt')

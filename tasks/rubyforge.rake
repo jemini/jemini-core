@@ -3,7 +3,7 @@
 if PROJ.rubyforge.name.valid? && HAVE_RUBYFORGE
 
   #TODO: Move to Mr. Bones config in Rakefile
-  PROJECT_NAME = 'gemini'
+  PROJECT_NAME = 'jemini'
   PACKAGE_ID = 11646
   GROUP_ID   = 8626
   

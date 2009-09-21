@@ -19,7 +19,7 @@ begin
   generator.generate_project
 rescue => exception
   abort [
-    "Usage: gemini [-RI--no-download] <dir_name>",
+    "Usage: jemini [-RI--no-download] <dir_name>",
     "Error: #{exception.message}",
     exception.backtrace
   ].join("\n")

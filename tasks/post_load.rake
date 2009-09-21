@@ -36,7 +36,7 @@ PROJ.gem.files ||=
         end
       end
       manifest << "build_configuration.rb\n"
-      manifest << File.join('package', 'jar', 'gemini.jar') + "\n"
+      manifest << File.join('package', 'jar', 'jemini.jar') + "\n"
     end
     # done with refresh
     
