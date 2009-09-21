@@ -13,21 +13,11 @@ class PlayState < Jemini::GameState
     
     manager(:game_object).add_layer_at :gui_text, 5
     
-    manager(:render).cache_image :x, "x.png"
-    manager(:render).cache_image :o, "o.png"
-    manager(:render).cache_image :x_cursor, "x-cursor.png"
-    manager(:render).cache_image :o_cursor, "o-cursor.png"
-    manager(:render).cache_image :x_match, "x-match.png"
-    manager(:render).cache_image :o_match, "o-match.png"
-
-    manager(:sound).add_sound :draw, "draw.wav"
-    manager(:sound).add_sound :no, "no.wav"
-
     load_keymap :PlayKeymap
 
-    create :Background, "grid.png"
+    create :Background, :grid
     
-    # manager(:sound).loop_song "j-hop.ogg", :volume => 0.6
+    # manager(:sound).loop_song :j-hop, 0.6
     
     game_end_checker = create :GameObject, :Updates, :ReceivesEvents
     game_end_checker.handle_event :quit do

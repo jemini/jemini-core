@@ -28,7 +28,7 @@ class Explosion < Jemini::GameObject
     self.position = (options[:location])
     game_state.manager(:sound).play_sound :explosion, options[:sound_volume], options[:sound_pitch]
     
-    smoke = game_state.create(:FadingImage, game_state.manager(:render).get_cached_image(:smoke), Color.new(:white), options[:duration] * 10.0)
+    smoke = game_state.create(:FadingImage, :smoke, Color.new(:white), options[:duration] * 10.0)
     smoke.set_position position
     smoke.scale_image_from_original(options[:radius] / 64.0)
     

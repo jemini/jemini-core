@@ -14,13 +14,6 @@ class PlayState < Jemini::GameState
     
     load_keymap :MouseKeymap
     
-    (1..5).each {|number| manager(:render).cache_image "gravity_cloud#{number}".to_sym, "gravity_cloud#{number}.png" }
-    manager(:render).cache_image :singularity, "singularity_button_background.png"
-    manager(:render).cache_image :vortex, "clockwise_vortex_large.png"
-    manager(:sound).add_sound :gobble, "gravity_gobble.wav"
-    manager(:sound).add_sound :fire_gravitor, "fire_gravitor_cannon.wav"
-    manager(:sound).add_sound :gasp, "singularity_birth.wav"
-    
     key_handler = create_game_object :GameObject, :HandlesEvents
     key_handler.handle_event :toggle_pretty_mode do
       puts "toggling pretty mode"
@@ -53,13 +46,13 @@ class PlayState < Jemini::GameState
       @emitting_gravity_at = message.value.location
       gravity_well = create_game_object :GameObject, :AnimatedSprite, :GravitySource, :TangibleSprite, :Timeable
       
-      gravity_well.set_bounded_image manager(:render).get_cached_image(:gravity_cloud5)
+      gravity_well.set_bounded_image :gravity_cloud5
 
       gravity_well.set_shape :Circle, 32
       gravity_well.gravity = GRAVITY_WELL_MASS
       gravity_well.set_mass 40
       gravity_well.add_excluded_physical ship
-#      images = (1..5).map {|number| manager(:render).get_cached_image("gravity_cloud#{number}".to_sym)}
+#      images = (1..5).map {|number| "gravity_cloud#{number}".to_sym}
 #      gravity_well.sprites(*images)
 #      gravity_well.animation_fps(30)
 #      gravity_well.animation_mode :ping_pong
@@ -107,12 +100,12 @@ class PlayState < Jemini::GameState
         
         
         vortex = create_game_object :GameObject, :Sprite, :Updates
-        vortex.set_image manager(:render).get_cached_image(:vortex)
+        vortex.set_image :vortex
 
         # oh, now you've done it.
         manager(:sound).play_sound :gasp
         singularity = create_game_object :GameObject, :TangibleSprite, :GravitySource
-        singularity.set_image manager(:render).get_cached_image(:singularity)
+        singularity.set_image :singularity
         singularity.set_shape :Circle, 32
         singularity.gravity = gravity_well.gravity
         singularity.mass = gravity_well.mass
@@ -260,6 +253,6 @@ class PlayState < Jemini::GameState
       end
     end
     #set_manager :render, create_game_object(:ScrollingRenderManager, ship)
-    manager(:sound).loop_song "gravitor_spatial_thinking.ogg"
+    manager(:sound).loop_song :gravitor_spatial_thinking
   end
 end

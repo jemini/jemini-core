@@ -134,6 +134,13 @@ module Jemini
     def listen_for(message, target=self, &block)
       target.send("on_#{message}", &block)
     end
+
+    #Get the Logger object (see the Ruby standard library documentation).
+    #The log level is set to match the $LOG_LEVEL environment variable, or Logger::ERROR by default.
+    def log
+      require 'logger'
+      @log ||= Logger.new(STDOUT, ENV['LOG_LEVEL'] || Logger::ERROR)
+    end
     
     def kind_of?(klass)
       super || @__behaviors.values.inject(false){|result, behavior| result || behavior.class == klass}

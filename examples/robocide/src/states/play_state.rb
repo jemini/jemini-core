@@ -13,9 +13,9 @@ class PlayState < Jemini::GameState
     [:red, :blue, :green, :yellow].map {|c| Color.new(c)}.each_with_index do |color, index|
       robot = create_game_object :GameObject, :Sprite, :Tangible
       robot_eye = create_game_object :GameObject, :AnimatedSprite
-      robot.set_image "robot-standing.png"
+      robot.set_image :robot-standing
       robot.set_tangible_shape :Box, robot.image_size
-      robot_eye.set_sprites "robot-eye1.png", "robot-eye2.png", "robot-eye3.png", "robot-eye4.png"
+      robot_eye.set_sprites :robot_eye1, :robot_eye2, :robot_eye3, :robot_eye4
       robot_eye.animation_mode :ping_pong
       robot_eye.animation_fps 15
       robot_eye.color = color
@@ -35,10 +35,10 @@ class PlayState < Jemini::GameState
     end
 
     player = create_game_object :GameObject, :Sprite, :Tangible
-    player.set_image "commando-standing.png"
+    player.set_image :commando_standing
     player.set_tangible_shape :Box, player.image_size
     player.move(150, 300)
-    player.add_behavior :HandlesEvents
+    player.add_behavior :ReceivesEvents
     player.handle_event :move do |message|
       vector = Vector.new(*case message.value
                         when :up
@@ -66,7 +66,7 @@ class PlayState < Jemini::GameState
     
     # negative layers don't work yet. Just make sure this is the first sprite instead
 #    background = create_game_object :GameObject, :Sprite
-#    background.set_image "loading_background.png"
+#    background.set_image :loading_background
 #    background.move_by_top_left 0, 0
 #    switch_state :MenuState
   end

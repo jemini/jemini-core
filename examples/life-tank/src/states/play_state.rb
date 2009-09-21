@@ -9,23 +9,6 @@ class PlayState < Jemini::GameState
     manager(:game_object).add_layer_at :logo, 4
     manager(:game_object).add_layer_at :flag, 3
     
-
-    manager(:render).cache_image :tank_body, "tank-body.png"
-    manager(:render).cache_image :ground, "ground.png"
-    manager(:render).cache_image :tank_barrel, "tank-barrel.png"
-    manager(:render).cache_image :power_arrow_head, "power-arrow-head.png"
-    manager(:render).cache_image :power_arrow_neck, "power-arrow-neck.png"
-    manager(:render).cache_image :shell, "shell.png"
-    manager(:render).cache_image :nuke, "nuke.png"
-    manager(:render).cache_image :rolling_mine, "rolling-mine.png"
-    manager(:render).cache_image :smoke, "smoke.png"
-    manager(:render).cache_image :tank_wheel, "tank-wheel.png"
-    manager(:render).cache_image :flag_background, "flag_background.png"
-    manager(:render).cache_image :gangplank_logo, "gangplank_logo.png"
-
-    manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
-    manager(:sound).add_sound :explosion, "shell-explosion-int.wav"
-
     manager(:physics).gravity = 35
     
     create :Background, "hazy-horizon.png"
@@ -54,7 +37,7 @@ class PlayState < Jemini::GameState
 #    ceiling.set_static_body
 #    ceiling.body_position = Vector.new(screen_width / 2, 20)
     
-    manager(:sound).loop_song "mortor-maddness.ogg", :volume => 0.5
+    manager(:sound).loop_song :mortor_maddness, 0.5
 
     @tanks = []
     ground.spawn_along player_count, Vector.new(0.0, -40.0) do |index|

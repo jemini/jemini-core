@@ -3,9 +3,9 @@ class Flag < Jemini::GameObject
   
   def load(tank)
     @tank = tank
-    set_image @game_state.manager(:render).get_cached_image(:flag_background)
+    set_image :flag_background
     @logo = @game_state.create_on_layer :GameObject, :logo, :Sprite
-    @logo.set_image @game_state.manager(:render).get_cached_image(:gangplank_logo)
+    @logo.set_image :gangplank_logo
 
     snap_to_tank
     @tank.on_after_body_position_changes { snap_to_tank }

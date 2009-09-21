@@ -12,3 +12,4 @@ require 'jemini'
 require 'test_state'
 
 require 'shared_specs'
+require 'matchers'

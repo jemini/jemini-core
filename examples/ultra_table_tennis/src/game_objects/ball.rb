@@ -2,7 +2,7 @@ class Ball < Jemini::GameObject
   has_behavior :TangibleSprite
   
   def load
-    set_image "ball.png"
+    set_image :ball
     set_shape :Circle, 15
     
     set_restitution 1.0

@@ -16,7 +16,7 @@ class Ground < Jemini::GameObject
     set_mass :infinite
     set_restitution 1.0
     set_friction 10.0
-    set_image @game_state.manager(:render).get_cached_image(:ground)
+    set_image :ground
     add_tag :ground
 #    on_physical_collided :deform_ground
   end

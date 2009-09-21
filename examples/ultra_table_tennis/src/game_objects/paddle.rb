@@ -5,10 +5,10 @@ class Paddle < Jemini::GameObject
   has_behavior :AnimatedSprite
   
   def load(player_number)
-    sprites "paddle1.png", "paddle2.png", "paddle3.png", "paddle4.png", "paddle5.png"
+    sprites :paddle1, :paddle2, :paddle3, :paddle4, :paddle5
     animation_mode :ping_pong
     animation_fps 4
-    set_bounded_image "paddle1.png"
+    set_bounded_image :paddle1
     set_rotatable false
     set_mass 10000
     set_restitution 1

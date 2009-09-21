@@ -8,7 +8,7 @@ class MainState < Jemini::GameState
 
     # negative layers don't work yet. Just make sure this is the first sprite instead
 #    background = create_game_object :GameObject, :Sprite
-#    background.set_image "loading_background.png"
+#    background.set_image :loading_background
 #    background.move_by_top_left 0, 0
     switch_state :PlayState
   end

@@ -6,13 +6,9 @@ class MenuState < Jemini::GameState
     set_manager :tag, create(:TagManager)
     set_manager :sound, create(:SoundManager)
     
-    manager(:render).cache_image :ground, "ground.png"
-    manager(:sound).loop_song "just-aimin.ogg", :volume => 0.5
+    manager(:sound).loop_song :just_aimin, 0.5
 
-    manager(:sound).add_sound :fire_cannon, "fire-cannon.wav"
-    manager(:sound).add_sound :explosion, "shell-explosion-int.wav"
-    
-    create :Background, "evening-sky.png"
+    create :Background, :evening_sky
     
     ground = create :Ground
     ground.fill_dimensions(0, screen_height / 2, screen_width, screen_height)

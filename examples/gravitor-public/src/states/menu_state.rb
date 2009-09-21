@@ -3,7 +3,7 @@ require 'sound_manager'
 require 'basic_physics_manager'
 
 # this is just the menu
-class MenuState < Jemini::GameState
+class MenuState < Jemini::GameState 
   def load
     set_manager :physics, create_game_object(:BasicPhysicsManager)
     set_manager :tag, create_game_object(:TagManager)
@@ -75,6 +75,6 @@ class MenuState < Jemini::GameState
     
     create_game_object_on_layer(:Text, :gui_text, gravity_source.x, gravity_source.y, "Start")
     
-    manager(:sound).loop_song "gravitor_menu.ogg"
+    manager(:sound).loop_song :gravitor_menu
   end
 end

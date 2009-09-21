@@ -8,11 +8,11 @@ class VictoryState < Jemini::GameState
     
     load_keymap :MouseKeymap
     
-    exiter = create_game_object :GameObject, :HandlesEvents
+    exiter = create_game_object :GameObject, :ReceivesEvents
     exiter.handle_event :mouse_button1_released do
       switch_state :MenuState
     end
     
-    manager(:sound).loop_song "gravitor_victory.ogg"
+    manager(:sound).loop_song :gravitor_victory
   end
 end

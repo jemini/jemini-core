@@ -6,21 +6,21 @@ class Microman < Jemini::GameObject
   
   def load
     @ammo = 25
-    set_bounded_image "microman-standing.png"
-    add_animation :name => :stand, :speed => 500, :sprites => ["data/microman-standing.png"]
-    add_animation :name => :jump, :speed => 500, :sprites => ["data/microman-jumping.png"]
+    set_bounded_image :microman-standing
+    add_animation :name => :stand, :speed => 500, :sprites => [:microman_standing]
+    add_animation :name => :jump, :speed => 500, :sprites => [:microman_jumping]
     add_animation :name => :walk,
                   :speed => 200,
-                  :sprites => ["data/microman-walking0.png",
-                               "data/microman-walking1.png",
-                               "data/microman-walking2.png",
-                               "data/microman-walking1.png"]
+                  :sprites => [:microman_walking0,
+                               :microman_walking1,
+                               :microman_walking2,
+                               :microman_walking1]
     add_animation :name => :walk_shoot,
                   :speed => 200,
-                  :sprites => ["data/microman-walking-shooting0.png",
-                               "data/microman-walking-shooting1.png",
-                               "data/microman-walking-shooting2.png",
-                               "data/microman-walking-shooting1.png"]
+                  :sprites => [:microman_walking_shooting0,
+                               :microman_walking_shooting1,
+                               :microman_walking_shooting2,
+                               :microman_walking_shooting1]
     # TODO: Looks like we need a post load for behaviors
     animate :stand
     

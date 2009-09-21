@@ -3,14 +3,11 @@ class MenuState < Jemini::GameState
   def load(target_score = 10)
     @target_score = target_score
     set_manager :sound, create(:SoundManager)
-    manager(:sound).loop_song "j-hop.ogg", :volume => 0.6
-    manager(:sound).add_sound :no, "no.wav"
+    manager(:sound).loop_song :j-hop, 0.6
     
-    manager(:render).cache_image :grid, "grid.png"
-
     load_keymap :GameStartKeymap
     
-    create :Background, "grid.png"
+    create :Background, :grid
     
     create :Text, screen_width / 2, screen_height * 0.33, "AtacToe"
     
