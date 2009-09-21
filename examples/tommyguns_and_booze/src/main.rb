@@ -45,5 +45,5 @@ end
   $LOAD_PATH << "src/#{dir}"
 end
 
-require 'gemini'
+require 'jemini'
 Jemini::Main.start_app("Tommyguns and Booze", 1024, 768)

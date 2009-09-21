@@ -23,7 +23,7 @@ if File.exist? File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '.
   end
 end
 
-require 'gemini'
+require 'jemini'
 
 begin
 #  game = Jemini::Game.new :title => 'Life Tank', :screen_size => Vector.new(800, 600), :fullscreen => true

@@ -75,14 +75,14 @@ if Jemini::Resolver.run_location == Jemini::Resolver::IN_FILE_SYSTEM
   $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../../../src")
 else
   $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
-#  $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../lib/ruby/gemini")
+#  $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../lib/ruby/jemini")
   $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../../../src")
   #$LOAD_PATH << (File.expand_path(File.dirname(__FILE__) + "/..") + "/../../src")
-#  $LOAD_PATH << 'lib/ruby/gemini'
-#  $LOAD_PATH << 'lib/ruby/gemini/managers'
-#  $LOAD_PATH << 'lib/ruby/gemini/game_objects'
-#  $LOAD_PATH << 'lib/ruby/gemini/states'
-#  $LOAD_PATH << 'lib/ruby/gemini/behaviors'
+#  $LOAD_PATH << 'lib/ruby/jemini'
+#  $LOAD_PATH << 'lib/ruby/jemini/managers'
+#  $LOAD_PATH << 'lib/ruby/jemini/game_objects'
+#  $LOAD_PATH << 'lib/ruby/jemini/states'
+#  $LOAD_PATH << 'lib/ruby/jemini/behaviors'
 end
 
 %w{behaviors game_objects keymaps managers states}.each do |dir|
@@ -91,9 +91,9 @@ end
 end
 #
 #puts $LOAD_PATH
-#require 'src/gemini'
-#require 'file:/Users/logan/dev/gemini/examples/ultra_table_tennis/package/deploy/ultra-table-tennis.jar!/src/gemini'
+#require 'src/jemini'
+#require 'file:/Users/logan/dev/jemini/examples/ultra_table_tennis/package/deploy/ultra-table-tennis.jar!/src/jemini'
 #puts "classpath:"
 #puts $CLASSPATH
-require 'gemini'
+require 'jemini'
 Jemini::Main.start_app("Ultra Table Tennis", 640, 480)

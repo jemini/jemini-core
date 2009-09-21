@@ -5,5 +5,5 @@ $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../../../src")
   $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/#{dir}")
 end
 
-require 'gemini'
+require 'jemini'
 Jemini::Main.new("Platform Wars", 640, 480)

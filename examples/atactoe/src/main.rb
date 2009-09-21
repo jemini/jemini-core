@@ -25,7 +25,7 @@ end
   $LOAD_PATH << "src/#{dir}"
 end
 
-require 'gemini'
+require 'jemini'
 
 begin
   # Change :HelloState to point to the initial state of your game

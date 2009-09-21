@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-  <jnlp spec='1.0+' codebase='http://www.happycamperstudios.com/gemini/ultra-table-tennis' href='ultra-table-tennis.jnlp' >
+  <jnlp spec='1.0+' codebase='http://www.happycamperstudios.com/jemini/ultra-table-tennis' href='ultra-table-tennis.jnlp' >
     <information>
     <title>ultra-table-tennis</title>
     <vendor>Jemini</vendor>
-    <homepage href='http://gemini-engine.org' />
+    <homepage href='http://jemini-engine.org' />
     <description>Fun!</description>
   </information>
 
