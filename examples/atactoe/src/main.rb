@@ -29,8 +29,9 @@ require 'jemini'
 
 begin
   # Change :HelloState to point to the initial state of your game
-  # Jemini::Main.start_app("", 800, 600, :HelloWorldState, false)
-  Jemini::Main.start_app("AtacToe", 1024, 768, :MainState, false)
+  # Jemini::Game.start_app("", 800, 600, :HelloWorldState, false)
+  game = Jemini::Game.new(:screen_title => "AtacToe", :screen_size => Vector.new(1024, 768), :fullscreen => false)
+  game.app
 rescue => e
   warn e
   warn e.backtrace

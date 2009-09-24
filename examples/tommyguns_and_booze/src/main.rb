@@ -46,4 +46,4 @@ end
 end
 
 require 'jemini'
-Jemini::Main.start_app("Tommyguns and Booze", 1024, 768)
+Jemini::Game.start_app("Tommyguns and Booze", 1024, 768)

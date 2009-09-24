@@ -6,7 +6,7 @@ class Microman < Jemini::GameObject
   
   def load
     @ammo = 25
-    set_bounded_image :microman-standing
+    set_bounded_image :microman_standing
     add_animation :name => :stand, :speed => 500, :sprites => [:microman_standing]
     add_animation :name => :jump, :speed => 500, :sprites => [:microman_jumping]
     add_animation :name => :walk,

@@ -16,7 +16,7 @@ class Sprite < Drawable
 
   #Takes a reference to an image loaded via the resource manager, and sets the sprite image.
   def image=(reference)
-    @image = @game_state.manager(:resource).get_image(reference)
+    @image = @target.game_state.manager(:resource).get_image(reference)
     set_image_size(Vector.new(@image.width, @image.height))
   end
   alias_method :set_image, :image=

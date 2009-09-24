@@ -58,25 +58,25 @@ class ResourceManager < Jemini::GameObject
 
   #Get a sound stored previously with cache_sound.
   def get_sound(key)
-    @images[key] or raise "Could not find image: #{key}"
+    @sounds[key] or raise "Could not find sound: #{key}"
   end
   alias_method :sound, :get_sound
   
   #Get all sounds stored previously with cache_sound.
   def get_all_sounds
-    @images.values
+    @sounds.values
   end
   alias_method :sounds, :get_all_sounds
   
   #Get a song stored previously with cache_song.
   def get_song(key)
-    @images[key] or raise "Could not find image: #{key}"
+    @songs[key] or raise "Could not find song: #{key}"
   end
   alias_method :song, :get_song
   
   #Get all songs stored previously with cache_song.
   def get_all_songs
-    @images.values
+    @songs.values
   end
   alias_method :songs, :get_all_songs
 

@@ -11,7 +11,7 @@ class PlayState < Jemini::GameState
     
     manager(:physics).gravity = 35
     
-    create :Background, "hazy-horizon.png"
+    create :Background, :hazy_horizon
     
     ground = create :Ground
     ground.fill_dimensions(0, screen_height / 2, screen_width, screen_height)

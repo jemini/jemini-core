@@ -1,8 +1,9 @@
 class Background < Jemini::GameObject
-  has_behavior :BigSprite
+  has_behavior :Sprite
   
-  def load(file)
-    set_image file
+  #Takes a reference to an image loaded via ResourceManager.
+  def load(image)
+    set_image image
     set_position Vector.new(@game_state.screen_width, @game_state.screen_height).half
   end
 end

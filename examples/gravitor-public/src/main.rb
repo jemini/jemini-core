@@ -2,4 +2,4 @@
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + '/../../../src')
 require 'jemini'
-Jemini::Main.start_app("Gravitor", 1024, 768)
+Jemini::Game.start_app("Gravitor", 1024, 768)

@@ -3,7 +3,7 @@ class MenuState < Jemini::GameState
   def load(target_score = 10)
     @target_score = target_score
     set_manager :sound, create(:SoundManager)
-    manager(:sound).loop_song :j-hop, 0.6
+    manager(:sound).loop_song :j_hop, 0.6
     
     load_keymap :GameStartKeymap
     

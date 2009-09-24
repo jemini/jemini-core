@@ -13,7 +13,7 @@ class PlayState < Jemini::GameState
     [:red, :blue, :green, :yellow].map {|c| Color.new(c)}.each_with_index do |color, index|
       robot = create_game_object :GameObject, :Sprite, :Tangible
       robot_eye = create_game_object :GameObject, :AnimatedSprite
-      robot.set_image :robot-standing
+      robot.set_image :robot_standing
       robot.set_tangible_shape :Box, robot.image_size
       robot_eye.set_sprites :robot_eye1, :robot_eye2, :robot_eye3, :robot_eye4
       robot_eye.animation_mode :ping_pong

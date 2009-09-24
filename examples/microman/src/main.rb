@@ -43,4 +43,4 @@ puts $LOAD_PATH
 puts "classpath:"
 puts $CLASSPATH
 require 'jemini'
-Jemini::Main.start_app("Microman", 640, 480)
+Jemini::Game.start_app("Microman", 640, 480)

@@ -6,4 +6,4 @@ $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../../../src")
 end
 
 require 'jemini'
-Jemini::Main.new("Platform Wars", 640, 480)
+Jemini::Game.new("Platform Wars", 640, 480)

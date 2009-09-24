@@ -23,8 +23,9 @@ class DrawableShape < Drawable
     end
   end
   
-  def image=(image)
-    @image = image
+  #Takes a reference to an image loaded via the resource manager, and sets the sprite image.
+  def image=(reference)
+    @image = @target.game_state.manager(:resource).get_image(reference)
   end
   alias_method :set_image, :image=
 

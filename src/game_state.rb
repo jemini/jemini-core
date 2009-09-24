@@ -23,19 +23,15 @@ module Jemini
       @container = container
       @game = game
       
-      game_object_manager = BasicGameObjectManager.new(self)
-      update_manager = BasicUpdateManager.new(self)
-      render_manager = BasicRenderManager.new(self)
-      input_manager = InputManager.new(self, container)
-      message_manager = MessageQueue.new(self)
-      
-      @managers = {:game_object => game_object_manager,
-                   :update => update_manager,
-                   :render => render_manager,
-                   :input => input_manager,
-                   :message_queue => message_manager
+      @managers = {:game_object => BasicGameObjectManager.new(self),
+                   :update => BasicUpdateManager.new(self),
+                   :render => BasicRenderManager.new(self),
+                   :input => InputManager.new(self, container),
+                   :message_queue => MessageQueue.new(self),
+                   :resource => ResourceManager.new(self)
                   }
 
+      @managers[:resource].load_resources
       configure_inputs
       @paused = false
     end

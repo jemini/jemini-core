@@ -96,4 +96,4 @@ end
 #puts "classpath:"
 #puts $CLASSPATH
 require 'jemini'
-Jemini::Main.start_app("Ultra Table Tennis", 640, 480)
+Jemini::Game.start_app("Ultra Table Tennis", 640, 480)
