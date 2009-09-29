@@ -16,8 +16,7 @@ class Sprite < Drawable
 
   #Takes a reference to an image loaded via the resource manager, and sets the sprite image.
   def image=(reference)
-    @image = @target.game_state.manager(:resource).get_image(reference)
-    set_image_size(Vector.new(@image.width, @image.height))
+    store_image(@target.game_state.manager(:resource).get_image(reference))
   end
   alias_method :set_image, :image=
 
@@ -31,7 +30,7 @@ class Sprite < Drawable
   #TODO: Take vectors for first args as well
   def image_scaling(x_scale, y_scale = nil)
     y_scale = x_scale if y_scale.nil?
-    set_image @image.get_scaled_copy(x_scale.to_f * image_size.x, y_scale.to_f * image_size.y)
+    store_image(@image.get_scaled_copy(x_scale.to_f * image_size.x, y_scale.to_f * image_size.y))
   end
 
   #Set horizontal and vertical scale for the image relative to the original.  1.0 is original scale.  If y_scale is omitted, x_scale is used for both axes.
@@ -39,7 +38,7 @@ class Sprite < Drawable
   def scale_image_from_original(x_scale, y_scale = nil)
     y_scale = x_scale if y_scale.nil?
     @original_image = @image.copy if @original_image.nil?
-    set_image @original_image.get_scaled_copy(x_scale.to_f * @original_image.width, y_scale.to_f * @original_image.height)
+    store_image(@original_image.get_scaled_copy(x_scale.to_f * @original_image.width, y_scale.to_f * @original_image.height))
   end
   
   # WARNING: Using Slick's image for rotation can cause some odd quirks with it
@@ -101,4 +100,12 @@ class Sprite < Drawable
                 @color.native_color)
     graphics.reset_transform
   end
+  
+  private
+  
+    def store_image(value)
+      @image = value
+      set_image_size(Vector.new(@image.width, @image.height))
+      @image
+    end
 end

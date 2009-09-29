@@ -69,6 +69,8 @@ describe 'ResourceManager' do
         @resource_manager.load_resources
       end
       
+      it "will not override an existing asset, unlike state-specific assets"
+      
     end
     
     describe "with state-specific assets" do
@@ -91,6 +93,8 @@ describe 'ResourceManager' do
         @resource_manager.log.should_receive(:warn).with(/duplicate image/)
         @resource_manager.load_resources
       end
+      
+      it "will override an existing asset, unlike global assets"
 
     end
     
