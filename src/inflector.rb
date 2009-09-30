@@ -26,11 +26,11 @@ module Monkeybars
     #   "Module".constantize #=> Module
     #   "Class".constantize #=> Class
     def constantize()
-      unless /\A(?:::)?([A-Z]\w*(?:::[A-Z]\w*)*)\z/ =~ self.to_s
-        raise NameError, "#{self.inspect} is not a valid constant name!"
-      end
+#      unless /\A(?:::)?([A-Z]\w*(?:::[A-Z]\w*)*)\z/ =~ self.to_s
+#        raise NameError, "#{self.inspect} is not a valid constant name!"
+#      end
 
-      Object.module_eval("::#{$1}", __FILE__, __LINE__)
+      Object.module_eval("::#{to_s}", __FILE__, __LINE__)
     end
 
     # By default, camelize converts strings to UpperCamelCase. If the argument to camelize

@@ -1,12 +1,13 @@
 require 'resource'
 
 class ResourceManager < Jemini::GameObject
-  
-  attr_accessor :data_directory
+  java_import 'org.newdawn.slick.Image'
+  java_import 'org.newdawn.slick.Music'
+  java_import 'org.newdawn.slick.Sound'
   
   #Sets a default data directory path of "data".
   def load
-    @data_directory = "data"
+
     @images = {}
     @sounds = {}
     @songs = {}
@@ -15,35 +16,33 @@ class ResourceManager < Jemini::GameObject
   #Load resources for the given state.
   #Uses the current state if none specified.
   def load_resources(state_name = nil)
-    state_name ||= self.game_state.class.name
+    state_name ||= game_state.name
     log.debug "Loading resources for state: #{state_name}"
-    if match = /\/?(\w+?)_state$/.match(state_name.underscore)
-      subdirectory = File.join(data_directory, match[1])
-      log.debug "Looking for subdirectory: #{subdirectory}"
-      load_directory(subdirectory) if File.directory?(subdirectory)
-    end
-    load_directory(data_directory)
+    subdirectory = File.join(Jemini::Resource.base_path, state_name)
+    log.debug "Looking for subdirectory: #{subdirectory}"
+    load_directory(subdirectory) if File.directory?(subdirectory)
+    load_directory(Jemini::Resource.base_path)
   end
   
   #Load the image at the given path, and make it accessible via the given key.
   def cache_image(key, path)
     log.debug "Caching image for #{key} with path: #{path}"
     log.warn "Skipping duplicate image for #{key} with path: #{path}" and return if @images[key]
-    @images[key] = Java::org::newdawn::slick::Image.new(path)
+    @images[key] = load_resource(path, :image)
   end
   
   #Load the sound at the given path, and make it accessible via the given key.
   def cache_sound(key, path)
     log.debug "Caching sound for #{key} with path: #{path}"
     log.warn "Skipping duplicate sound for #{key} with path: #{path}" and return if @sounds[key]
-    @sounds[key] = Java::org::newdawn::slick::Sound.new(path)
+    @sounds[key] = load_resource(path, :sound)
   end
   
   #Load the song at the given path, and make it accessible via the given key.
   def cache_song(key, path)
     log.debug "Caching song for #{key} with path: #{path}"
     log.warn "Skipping duplicate song for #{key} with path: #{path}" and return if @songs[key]
-    @songs[key] = Java::org::newdawn::slick::Music.new(path)
+    @songs[key] = load_resource(path, :music)
   end
   
   #Get an image stored previously with cache_image.
@@ -84,8 +83,17 @@ class ResourceManager < Jemini::GameObject
 
 private
 
-  def load_resource(path, type)
-    "Java::org::newdawn::slick::#{type.camelize}".constantize.new(Jemini::Resource.path_of(path))
+  def load_resource(path, type_name)
+    # due to some JRuby trickery involved with java_import, we can't use metaprogramming tricks here.
+    type  = case type_name
+            when :image
+              Image
+            when :sound
+              Sound
+            when :music
+              Music
+            end
+    type.new(Jemini::Resource.path_of(path))
   end
  
   def load_directory(directory)
