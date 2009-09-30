@@ -3,20 +3,16 @@ require 'managers/resource_manager'
 require 'fileutils'
 
 describe 'ResourceManager' do
-  
-  before :each do
-    Java::org::newdawn::slick::Image.stub!(:new).and_return(
-      "Had to disable Slick's image loading for specs because it throws an error if called outside init()."
-    )
-  end
 
   describe "#load_resources" do
     
     describe "with global assets" do
 
       before :each do
+        Jemini::Resource.send(:class_variable_set, :@@base_path, 'test')
         @state = Jemini::GameState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
         @resource_manager = ResourceManager.new(@state)
+        @resource_manager.stub!(:load_resource)
         @state.send(:set_manager, :resource, @resource_manager) #send lets us call a private method.
       end
     

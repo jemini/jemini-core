@@ -1,3 +1,5 @@
+require 'resource'
+
 class ResourceManager < Jemini::GameObject
   
   attr_accessor :data_directory
@@ -14,7 +16,7 @@ class ResourceManager < Jemini::GameObject
   #Uses the current state if none specified.
   def load_resources(state_name = nil)
     state_name ||= self.game_state.class.name
-    log.debug "Loading state: #{state_name}"
+    log.debug "Loading resources for state: #{state_name}"
     if match = /\/?(\w+?)_state$/.match(state_name.underscore)
       subdirectory = File.join(data_directory, match[1])
       log.debug "Looking for subdirectory: #{subdirectory}"
@@ -80,10 +82,15 @@ class ResourceManager < Jemini::GameObject
   end
   alias_method :songs, :get_all_songs
 
-  private
-  
-    def load_directory(directory)
-      log.debug "Loading contents of #{directory}"
+private
+
+  def load_resource(path, type)
+    "Java::org::newdawn::slick::#{type.camelize}".constantize.new(Jemini::Resource.path_of(path))
+  end
+ 
+  def load_directory(directory)
+    log.debug "Loading contents of #{directory}"
+    begin
       Dir.open(directory).each do |file|
         next if file =~ /^\./
         path = File.join(directory, file)
@@ -98,8 +105,9 @@ class ResourceManager < Jemini::GameObject
           else log.warn "Skipping unknown file: #{path}"
         end
       end
+    rescue Errno::ENOENT => e
+      log.debug "#{directory} directory not found. Skipping."
     end
+  end
 
-    
-  
 end
