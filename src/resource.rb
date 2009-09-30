@@ -3,7 +3,7 @@ module Jemini
     puts "+++++++++++++++++++"
     puts $0
     puts "+++++++++++++++++++"
-    @@base_path = File.in_jar?($0) ? 'data' : '../data'
+    @@base_path = File.in_jar?($0) ? 'data' : 'data'
 
     def self.base_path
       @@base_path

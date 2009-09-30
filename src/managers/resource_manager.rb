@@ -18,7 +18,7 @@ class ResourceManager < Jemini::GameObject
   def load_resources(state_name = nil)
     state_name ||= game_state.name
     log.debug "Loading resources for state: #{state_name}"
-    subdirectory = File.join(Jemini::Resource.base_path, state_name)
+    subdirectory = File.expand_path(File.join(Jemini::Resource.base_path, state_name))
     log.debug "Looking for subdirectory: #{subdirectory}"
     load_directory(subdirectory) if File.directory?(subdirectory)
     load_directory(Jemini::Resource.base_path)

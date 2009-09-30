@@ -117,11 +117,11 @@ module Jemini
       @name ||= self.class.name.underscore.sub('_state', '')
     end
     
-  private
-
     def load_resources
       @managers[:resource].load_resources
     end
+
+  private
 
     def configure_inputs
       # global - automatic

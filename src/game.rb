@@ -46,6 +46,7 @@ module Jemini
       # Workaround for image loading with Slick.
       # Must be done in game init or game loop (instead of immediately in the event).
       if @queued_state
+        @queued_state.load_resources
         @queued_state.load(*@state_args)
         GameState.active_state = @queued_state
         @queued_state = nil
