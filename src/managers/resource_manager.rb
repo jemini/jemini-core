@@ -18,9 +18,9 @@ class ResourceManager < Jemini::GameObject
   def load_resources(state_name = nil)
     state_name ||= game_state.name
     log.debug "Loading resources for state: #{state_name}"
-    subdirectory = File.expand_path(File.join(Jemini::Resource.base_path, state_name))
+    subdirectory = File.join(Jemini::Resource.base_path, state_name)
     log.debug "Looking for subdirectory: #{subdirectory}"
-    load_directory(subdirectory) if File.directory?(subdirectory)
+    load_directory(subdirectory, true) if File.directory?(subdirectory)
     load_directory(Jemini::Resource.base_path)
   end
   
@@ -96,13 +96,18 @@ private
     type.new(Jemini::Resource.path_of(path))
   end
  
-  def load_directory(directory)
+  def load_directory(directory, skippable = false)
     log.debug "Loading contents of #{directory}"
     begin
-      Dir.open(directory).each do |file|
+      #Dir.open(directory).each do |file|
+      resources_for(directory).each do |file|
+        log.debug "checking out #{file}"
         next if file =~ /^\./
-        path = File.join(directory, file)
-        next unless File.file?(path)
+#        path = File.join(directory, file)
+        path = file
+        log.debug "is the file a file? #{File.file?(path)}"
+        # File.file? doesn't work in a jar.
+#        next unless File.file?(path)
         log.debug "Processing file: #{path}"
         extension = File.extname(file)
         key = File.basename(file, extension).downcase.to_sym
@@ -114,8 +119,44 @@ private
         end
       end
     rescue Errno::ENOENT => e
-      log.debug "#{directory} directory not found. Skipping."
+      if skippable
+        log.debug "#{directory} directory not found. Skipping."
+      else
+        raise
+      end
     end
   end
 
+  def resources_for(directory)
+    if File.in_jar?(directory)
+      scan_entire_jar(directory)
+    else
+      Dir.open(directory)
+    end
+  end
+
+  # globs MUST start at the base dir of the jar, or it won't work.
+  def scan_entire_jar(directory)
+    just_dir = File.basename(directory)
+    jar_name = File.jar_of(directory)
+    log.debug "jar:"
+    log.debug jar_name
+    log.debug "-----"
+    jar_file = java.util.jar.JarFile.new(jar_name)
+    dir_regex = Regexp.new(just_dir)
+    all_entries = jar_file.entries.map {|e| e.name }
+    log.debug "all entries"
+    log.debug all_entries
+    log.debug "------------"
+    entries_under_directory = all_entries.select {|e| e =~ dir_regex }
+    log.debug "entries under dir"
+    log.debug entries_under_directory
+    log.debug "------------"
+    # need a shallow resultset
+    entries_directly_under_directory = entries_under_directory.reject {|e| e =~ /#{just_dir}\/.*\//}
+    log.debug "entries directly under dir"
+    log.debug entries_directly_under_directory
+    log.debug "------------"
+    entries_directly_under_directory
+  end 
 end

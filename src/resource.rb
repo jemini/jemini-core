@@ -2,8 +2,11 @@ module Jemini
   class Resource
     puts "+++++++++++++++++++"
     puts $0
+    puts "In jar? #{File.in_jar?($0)}"
+    puts "@#*($#*(&$@#(*$&"
+    puts org.newdawn.slick.geom.Vector2f.java_class.class_loader.find_resources('data').to_a
     puts "+++++++++++++++++++"
-    @@base_path = File.in_jar?($0) ? 'data' : 'data'
+    @@base_path = File.in_jar?($0) ? File.expand_path(File.join(File.dirname(__FILE__), 'data')) : 'data'
 
     def self.base_path
       @@base_path
