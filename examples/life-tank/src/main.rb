@@ -8,7 +8,7 @@ if $profiling
   end)
 end
 
-$LOAD_PATH.clear
+#$LOAD_PATH.clear
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'game_objects'))
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'managers'))

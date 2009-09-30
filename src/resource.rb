@@ -17,7 +17,9 @@ module Jemini
       class_loader = org.newdawn.slick.geom.Vector2f.java_class.class_loader
       jarred_path  = file
       dev_path     = File.join('..', file)
-      
+
+#      log.debug "jarred path: #{jarred_path}"
+#      log.debug "dev path: #{dev_path}"
       if class_loader.find_resource(jarred_path)
         jarred_path
       elsif File.exist?(dev_path)

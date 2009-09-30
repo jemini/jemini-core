@@ -20,8 +20,8 @@ class ResourceManager < Jemini::GameObject
     log.debug "Loading resources for state: #{state_name}"
     subdirectory = File.join(Jemini::Resource.base_path, state_name)
     log.debug "Looking for subdirectory: #{subdirectory}"
-    load_directory(subdirectory, true) if File.directory?(subdirectory)
-    load_directory(Jemini::Resource.base_path)
+    load_directory(subdirectory) if File.directory?(subdirectory)
+    load_directory(Jemini::Resource.base_path, true)
   end
   
   #Load the image at the given path, and make it accessible via the given key.
@@ -95,31 +95,39 @@ private
             end
     type.new(Jemini::Resource.path_of(path))
   end
- 
-  def load_directory(directory, skippable = false)
+
+  # root dirs can't be skipped
+  def load_directory(directory, root = false)
     log.debug "Loading contents of #{directory}"
     begin
       #Dir.open(directory).each do |file|
       resources_for(directory).each do |file|
         next if file =~ /^\./
 #        path = File.join(directory, file)
-        path = file
+        path = File.in_jar?(directory) ? file : File.join(directory, file)
+        log.debug "Dir in jar? #{File.in_jar?(directory)}"
+        log.debug "Using path #{path} for #{file}"
         # File.file? doesn't work in a jar.
 #        next unless File.file?(path)
-        extension = File.extname(file)
+        extension = File.extname(file).downcase
         key = File.basename(file, extension).downcase.to_sym
+        log.debug "Extension: #{extension}"
         case extension
-          when /(png|gif)/i then cache_image(key, path)
-          when /(wav)/i then cache_sound(key, path)
-          when /(ogg)/i then cache_song(key, path)
-          else log.warn "Skipping unknown file: #{path}"
+        when '.png', '.gif'
+          cache_image(key, path)
+        when '.wav'
+          cache_sound(key, path)
+        when '.ogg'
+          cache_song(key, path)
+        else
+          log.warn "Skipping unknown file: #{path}"
         end
       end
     rescue Errno::ENOENT => e
-      if skippable
-        log.debug "#{directory} directory not found. Skipping."
-      else
+      if root
         raise
+      else
+        log.debug "#{directory} directory not found. Skipping."
       end
     end
   end
@@ -128,7 +136,8 @@ private
     if File.in_jar?(directory)
       scan_entire_jar(directory)
     else
-      Dir.open(directory).map {|f| File.join('data', f)}
+      log.debug "opening #{directory}"
+      Dir.open(directory)
     end
   end
 
