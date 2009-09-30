@@ -101,14 +101,11 @@ private
     begin
       #Dir.open(directory).each do |file|
       resources_for(directory).each do |file|
-        log.debug "checking out #{file}"
         next if file =~ /^\./
 #        path = File.join(directory, file)
         path = file
-        log.debug "is the file a file? #{File.file?(path)}"
         # File.file? doesn't work in a jar.
 #        next unless File.file?(path)
-        log.debug "Processing file: #{path}"
         extension = File.extname(file)
         key = File.basename(file, extension).downcase.to_sym
         case extension
@@ -131,7 +128,7 @@ private
     if File.in_jar?(directory)
       scan_entire_jar(directory)
     else
-      Dir.open(directory)
+      Dir.open(directory).map {|f| File.join('data', f)}
     end
   end
 
@@ -139,24 +136,15 @@ private
   def scan_entire_jar(directory)
     just_dir = File.basename(directory)
     jar_name = File.jar_of(directory)
-    log.debug "jar:"
-    log.debug jar_name
-    log.debug "-----"
     jar_file = java.util.jar.JarFile.new(jar_name)
     dir_regex = Regexp.new(just_dir)
     all_entries = jar_file.entries.map {|e| e.name }
-    log.debug "all entries"
-    log.debug all_entries
-    log.debug "------------"
     entries_under_directory = all_entries.select {|e| e =~ dir_regex }
-    log.debug "entries under dir"
-    log.debug entries_under_directory
-    log.debug "------------"
     # need a shallow resultset
     entries_directly_under_directory = entries_under_directory.reject {|e| e =~ /#{just_dir}\/.*\//}
-    log.debug "entries directly under dir"
-    log.debug entries_directly_under_directory
-    log.debug "------------"
+#    log.debug "entries directly under dir"
+#    log.debug entries_directly_under_directory
+#    log.debug "------------"
     entries_directly_under_directory
   end 
 end
