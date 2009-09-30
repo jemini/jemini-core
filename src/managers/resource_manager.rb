@@ -20,7 +20,7 @@ class ResourceManager < Jemini::GameObject
     log.debug "Loading resources for state: #{state_name}"
     subdirectory = File.join(Jemini::Resource.base_path, state_name)
     log.debug "Looking for subdirectory: #{subdirectory}"
-    load_directory(subdirectory) if File.directory?(subdirectory)
+    load_directory(subdirectory) if File.directory?(subdirectory) || File.in_jar?(subdirectory)
     load_directory(Jemini::Resource.base_path, true)
   end
   
@@ -47,7 +47,7 @@ class ResourceManager < Jemini::GameObject
   
   #Get an image stored previously with cache_image.
   def get_image(key)
-    @images[key] or raise "Could not find image: #{key}"
+    @images[key] or raise "Could not find image: #{key} - cached images: #{@images.keys}"
   end
   alias_method :image, :get_image
   
@@ -144,7 +144,9 @@ private
   # globs MUST start at the base dir of the jar, or it won't work.
   def scan_entire_jar(directory)
     just_dir = File.basename(directory)
-    jar_name = File.jar_of(directory)
+    log.debug "just dir: #{just_dir}"
+    jar_name = File.jar_of(directory, 'data') # we're always going to get our data from the data jar
+    log.debug "opening jar #{jar_name}"
     jar_file = java.util.jar.JarFile.new(jar_name)
     dir_regex = Regexp.new(just_dir)
     all_entries = jar_file.entries.map {|e| e.name }

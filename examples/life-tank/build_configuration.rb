@@ -18,9 +18,9 @@ configuration do |c|
   c.compile_ruby_files = true
   #c.java_lib_files = []  
   c.java_lib_dirs = [File.join('..', '..', 'lib'), 'lib']
-  #c.files_to_copy = []
+#  c.files_to_copy = Dir.glob('data/**/*')
   c.java_library_path = File.join 'lib', 'native_files'
-  c.target_jvm_version = 1.5
+  c.target_jvm_version = 1.6
 
   c.jars[:data] = { :directory => 'data', :location_in_jar => 'data', :exclude => /bak/}
   # add -verbosegc to see what the GC is doing
