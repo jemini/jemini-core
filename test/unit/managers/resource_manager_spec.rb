@@ -84,6 +84,7 @@ describe 'ResourceManager' do
       end
 
       it "does not load global assets with the same name as a state asset" do
+        pending
         @state.stub!(:name).and_return 'overridden'
         Jemini::Resource.send(:class_variable_set, :@@base_path, 'test/game_with_overridden_assets/data')
         @resource_manager.log.should_receive(:warn).with(/duplicate image/)

@@ -6,7 +6,7 @@ class CameraAnchoredDrawable < Jemini::Behavior
   def load
     @target.on_before_draw do
       @render_manager = @target.game_state.manager(:render)
-      return unless @render_manager.kind_of? ScrollingRenderManager
+      return unless @render_manager.has_behavior? :ScrollingRenderManager
       @camera_position = @render_manager.camera_position
       @render_manager.renderer.gl_translatef(-@camera_position.x, -@camera_position.y, 0.0)
     end

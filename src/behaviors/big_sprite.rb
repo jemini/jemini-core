@@ -39,7 +39,7 @@ class BigSprite < Drawable
   
   #Takes a BigImage, but is otherwise identical to Sprite.set_image.
   def image=(sprite_name)
-    if sprite_name.kind_of? BigImage
+    if sprite_name.has_behavior? :BigImage
       @image = sprite_name
     else
       @image = BigImage.new(Resource.path_of(sprite_name))

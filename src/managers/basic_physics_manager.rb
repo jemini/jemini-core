@@ -23,11 +23,11 @@ class BasicPhysicsManager < Jemini::GameObject
     end
     
     @game_state.manager(:game_object).on_after_add_game_object do |game_object|
-      add_to_world game_object if game_object.kind_of? Physical
+      add_to_world game_object if game_object.has_behavior? :Physical
     end
     
     @game_state.manager(:game_object).on_after_remove_game_object do |game_object|
-      game_object.remove_from_world(@world) if game_object.kind_of? Physical
+      game_object.remove_from_world(@world) if game_object.has_behavior? :Physical
     end
     
     handle_event :toggle_debug_mode, :toggle_debug_mode
@@ -64,7 +64,7 @@ class BasicPhysicsManager < Jemini::GameObject
   def toggle_debug_mode(message)
     @debug_mode = !@debug_mode
     @game_state.manager(:game_object).game_objects.each do |game_object|
-      game_object.set_physical_debug_mode(@debug_mode) if game_object.kind_of? Physical
+      game_object.set_physical_debug_mode(@debug_mode) if game_object.has_behavior? :Physical
     end
   end
   

@@ -142,10 +142,10 @@ module Jemini
       @log ||= Logger.new(STDOUT, ENV['LOG_LEVEL'] || Logger::ERROR)
     end
     
-    def kind_of?(klass)
-      super || @__behaviors.values.inject(false){|result, behavior| result || behavior.class == klass}
-    end
-    alias_method :is_a?, :kind_of?
+#    def kind_of?(klass)
+#      super || @__behaviors.values.inject(false){|result, behavior| result || behavior.class == klass}
+#    end
+#    alias_method :is_a?, :kind_of?
     
     def load(*args)
       args.each do |behavior_name|

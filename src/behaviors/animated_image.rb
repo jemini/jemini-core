@@ -2,8 +2,10 @@
 class AnimatedImage < Jemini::Behavior
   java_import 'org.newdawn.slick.Image'
   java_import 'org.newdawn.slick.Animation'
+
   depends_on :Sprite
-  attr_accessor :animation
+  
+  attr_reader :animations
   
   def load
     @fps = 1
@@ -19,18 +21,18 @@ class AnimatedImage < Jemini::Behavior
     @mode = :normal
   end
 
-  #Takes one or more Images or names of files in the data directory to add to the animation.
-  def sprites(*sprite_names)
-    sprite_names.each do |sprite_name|
-      if sprite_name.has_behavior? :Image
-        @animation.add_frame(sprite_name, 1000)
-      else
-        @animation.add_frame(@target.game_state.manager(:resource).get_image(sprite_name), 1000)
-      end
-    end
-    @target.set_image @animation.current_frame
-  end
-  alias_method :set_sprites, :sprites
+#  #Takes one or more Images or names of files in the data directory to add to the animation.
+#  def sprites(*sprite_names)
+#    sprite_names.each do |sprite_name|
+#      if sprite_name.has_behavior? :Image
+#        @animation.add_frame(sprite_name, 1000)
+#      else
+#        @animation.add_frame(@target.game_state.manager(:resource).get_image(sprite_name), 1000)
+#      end
+#    end
+#    @target.set_image @animation.current_frame
+#  end
+#  alias_method :set_sprites, :sprites
 
   #Sets frames per second for the animation.
   def animation_fps(fps)
@@ -38,18 +40,18 @@ class AnimatedImage < Jemini::Behavior
     (0...@animation.frame_count).each {|i| @animation.set_duration(i, 1000.0/@fps)}
   end
   
-  #Sets animation mode.  Possible values are :normal, :looping, or :ping_pong.
-  def animation_mode(mode)
-    case mode
-    when :normal
-      @animation.looping = false
-      @animation.ping_pong = false
-    when :looping
-      @animation.looping = true
-      @animation.ping_pong = false
-    when :ping_pong
-      @animation.looping = true
-      @animation.ping_pong = true
-    end
-  end
+#  #Sets animation mode.  Possible values are :normal, :looping, or :ping_pong.
+#  def animation_mode(mode)
+#    case mode
+#    when :normal
+#      @animation.looping = false
+#      @animation.ping_pong = false
+#    when :looping
+#      @animation.looping = true
+#      @animation.ping_pong = false
+#    when :ping_pong
+#      @animation.looping = true
+#      @animation.ping_pong = true
+#    end
+#  end
 end

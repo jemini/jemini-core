@@ -33,6 +33,7 @@ describe 'InputBuilder' do
 
   describe '#for' do
     it 'sets the destination ID for inputs inside its block' do
+      pending
       Jemini::InputBuilder.declare do |i|
         i.for :player_1 do
           i.in_order_to :fire do
