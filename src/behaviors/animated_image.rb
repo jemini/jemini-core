@@ -1,7 +1,7 @@
 #A 2D sprite with mutltiple frames of animation.
-class AnimatedSprite < Jemini::Behavior
-  include_class 'org.newdawn.slick.Image'
-  include_class 'org.newdawn.slick.Animation'
+class AnimatedImage < Jemini::Behavior
+  java_import 'org.newdawn.slick.Image'
+  java_import 'org.newdawn.slick.Animation'
   depends_on :Sprite
   attr_accessor :animation
   
@@ -22,7 +22,7 @@ class AnimatedSprite < Jemini::Behavior
   #Takes one or more Images or names of files in the data directory to add to the animation.
   def sprites(*sprite_names)
     sprite_names.each do |sprite_name|
-      if sprite_name.kind_of? Image
+      if sprite_name.has_behavior? :Image
         @animation.add_frame(sprite_name, 1000)
       else
         @animation.add_frame(@target.game_state.manager(:resource).get_image(sprite_name), 1000)
