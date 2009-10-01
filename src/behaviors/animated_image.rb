@@ -9,16 +9,24 @@ class AnimatedImage < Jemini::Behavior
   
   def load
     @fps = 1
-    @animation = Animation.new
-    @target.game_state.manager(:update).on_before_update do |delta|
-      unless @animation.nil?
-        @animation.update(delta)
-        begin
-          @target.set_image @animation.current_frame
-        rescue; end #deliberately swallow
-      end
-    end
-    @mode = :normal
+#    @animation = Animation.new
+#    @target.game_state.manager(:update).on_before_update do |delta|
+#      unless @animation.nil?
+#        @animation.update(delta)
+#        begin
+#          @target.set_image @animation.current_frame
+#        rescue; end #deliberately swallow
+#      end
+#    end
+#    @mode = :normal
+  end
+
+  def animate_as(noun)
+    @noun = noun
+    noun_regex = Regexp.new(noun.to_s)
+    all_images_for_noun = @target.game_state.manager(:resource).images.select {|image| image.to_s =~ noun_regex }
+    animations_for_noun = all_images_for_noun.map {|image_name| image_name.to_s.sub("#{@noun}_", '')}
+    @animations = animations_for_noun.map {|animation| animation.sub(/\d/, '').to_sym}.uniq
   end
 
 #  #Takes one or more Images or names of files in the data directory to add to the animation.
