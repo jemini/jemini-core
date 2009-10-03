@@ -26,7 +26,7 @@ describe 'AnimatedImage' do
   end
 
   describe '#animation_fps=' do
-   
+    it 'allows variable speeds'
   end
 
   describe '#animate' do
@@ -41,25 +41,89 @@ describe 'AnimatedImage' do
       @game_object.update(10)
       @game_object.image.name.should match(/dwarf_walk2/)
     end
+
+    it 'reverts to the default animation when the animation is complete' do
+      @game_object.animate_as :dwarf
+      @game_object.animate :walk
+      @game_object.image.name.should match(/dwarf_walk1/)
+      @game_object.update(1250)
+      @game_object.image.name.should match(/dwarf_default1/)
+    end
   end
 
   describe '#animate_pulse' do
-    it ''
+    it 'updates only when pulsed on each frame' do
+      @game_object.animate_as :dwarf
+      @game_object.animate_pulse :walk, 250
+      @game_object.image.name.should match(/dwarf_walk1/)
+      @game_object.animate_pulse :walk, 250
+      @game_object.image.name.should match(/dwarf_walk2/)
+    end
+
+    it 'cycles the animation' do
+      @game_object.animate_as :dwarf
+      @game_object.animate_pulse :walk, 250
+      @game_object.image.name.should match(/dwarf_walk1/)
+      @game_object.animate_pulse :walk, 250
+      @game_object.image.name.should match(/dwarf_walk2/)
+      @game_object.animate_pulse :walk, 500
+      @game_object.image.name.should match(/dwarf_walk1/)
+      @game_object.animate_pulse :walk, 500
+      @game_object.image.name.should match(/dwarf_walk2/)
+    end
+
+    it 'reverts to default if the pulse is missed during a frame' do
+      @game_object.animate_as :dwarf
+      @game_object.animate_pulse :walk, 250
+      @game_object.image.name.should match(/dwarf_walk1/)
+      @game_object.update(250)
+      @game_object.image.name.should match(/dwarf_default1/)
+    end
+
   end
 
   describe '#animate_cycle' do
-    
+    it 'indefinitely repeats the animation provided' do
+      @game_object.animate_as :dwarf
+      @game_object.animate_cycle :walk
+      @game_object.image.name.should match(/dwarf_walk1/)
+      @game_object.update(10)
+      @game_object.image.name.should match(/dwarf_walk1/)
+      @game_object.update(490)
+      @game_object.image.name.should match(/dwarf_walk2/)
+      @game_object.update(10)
+      @game_object.image.name.should match(/dwarf_walk2/)
+      @game_object.update(490)
+      @game_object.image.name.should match(/dwarf_walk1/)
+      @game_object.update(10)
+      @game_object.image.name.should match(/dwarf_walk1/)
+      @game_object.update(490)
+      @game_object.image.name.should match(/dwarf_walk2/)
+    end
+
   end
 
   describe '#animation' do
-
+    it 'gets the current animation name'
   end
 
   describe '#animations' do
-    
+    it 'gets a list of all animations names'
   end
 
   describe 'default animations' do
-    
+    it 'cycles forever' do
+      @game_object.animate_as :dwarf
+      @game_object.animate :walk
+      @game_object.image.name.should match(/dwarf_walk1/)
+      @game_object.update(1500)
+      @game_object.image.name.should match(/dwarf_default1/)
+      @game_object.update(500)
+      @game_object.image.name.should match(/dwarf_default2/)
+      @game_object.update(500)
+      @game_object.image.name.should match(/dwarf_default1/)
+      @game_object.update(500)
+      @game_object.image.name.should match(/dwarf_default2/)
+    end
   end
 end

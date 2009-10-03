@@ -10,16 +10,30 @@ class AnimatedImage < Jemini::Behavior
   attr_reader :animations
   
   def load
-    @animations_per_action = {}
-    @current_action = 'default'
-    @animation_timer = 0
-    @frame_number = 1
+    @animations_per_action   = {}
+    @current_action          = 'default'
+    @animation_timer         = 0
+    @frame_number            = 1
+    @pulsing                 = false
+    @repeat                  = true
     @milliseconds_per_update = DEFAULT_MILLISECONDS_PER_UPDATE
     @target.on_update {|delta| update_animation(delta)}
   end
 
   def animate(action)
     self.current_action = action.to_s
+    @repeat = false
+  end
+
+  def animate_pulse(action, delta)
+    self.current_action = action unless @current_action.to_s == action.to_s
+    @pulsing = true
+    update_animation(delta, true) 
+  end
+
+  def animate_cycle(action)
+    animate action
+    @repeat = true
   end
 
   def animate_as(noun)
@@ -44,15 +58,23 @@ private
     @target.image = @animations_per_action[action.to_s].first
   end
 
-  def update_animation(delta)
+  def update_animation(delta, pulse=false)
     return if @noun.nil?
+    self.current_action = 'default' if @pulsing && !pulse
     @animation_timer += delta
+
     return if @animation_timer < @milliseconds_per_update
 
-    @frame_number += 1
-    @animation_timer = 0
+    @frame_number = @animation_timer / @milliseconds_per_update
 
     animations = @animations_per_action[@current_action.to_s]
-    @target.image = animations[@frame_number - 1]
+    new_frame = animations[@frame_number]
+    if new_frame
+      @target.image = new_frame
+    elsif @repeat
+      self.current_action = @current_action
+    else
+      self.current_action = 'default'
+    end
   end
 end
