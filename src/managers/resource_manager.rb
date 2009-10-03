@@ -57,6 +57,10 @@ class ResourceManager < Jemini::GameObject
   end
   alias_method :images, :get_all_images
 
+  def image_names
+    @images.keys
+  end
+  
   #Get a sound stored previously with cache_sound.
   def get_sound(key)
     @sounds[key] or raise "Could not find sound: #{key}"
