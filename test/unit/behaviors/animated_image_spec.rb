@@ -52,23 +52,39 @@ describe 'AnimatedImage' do
   end
 
   describe '#animate_pulse' do
+    it 'allows transitions to other animation types' do
+      @game_object.animate_as :dwarf
+      @game_object.animate_pulse :walk, 250
+      @game_object.update(10)
+      @game_object.image.name.should match(/dwarf_walk1/)
+      @game_object.animate :shoot
+      @game_object.update(10)
+      @game_object.image.name.should match(/dwarf_shoot1/)
+    end
+
     it 'updates only when pulsed on each frame' do
       @game_object.animate_as :dwarf
       @game_object.animate_pulse :walk, 250
+      @game_object.update(10)
       @game_object.image.name.should match(/dwarf_walk1/)
       @game_object.animate_pulse :walk, 250
+      @game_object.update(10)
       @game_object.image.name.should match(/dwarf_walk2/)
     end
 
     it 'cycles the animation' do
       @game_object.animate_as :dwarf
       @game_object.animate_pulse :walk, 250
+      @game_object.update(10)
       @game_object.image.name.should match(/dwarf_walk1/)
       @game_object.animate_pulse :walk, 250
+      @game_object.update(10)
       @game_object.image.name.should match(/dwarf_walk2/)
       @game_object.animate_pulse :walk, 500
+      @game_object.update(10)
       @game_object.image.name.should match(/dwarf_walk1/)
       @game_object.animate_pulse :walk, 500
+      @game_object.update(10)
       @game_object.image.name.should match(/dwarf_walk2/)
     end
 
@@ -77,6 +93,7 @@ describe 'AnimatedImage' do
       @game_object.animate_pulse :walk, 250
       @game_object.image.name.should match(/dwarf_walk1/)
       @game_object.update(250)
+      @game_object.update(10)
       @game_object.image.name.should match(/dwarf_default1/)
     end
 

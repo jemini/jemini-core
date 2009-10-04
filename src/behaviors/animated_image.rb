@@ -17,7 +17,10 @@ class AnimatedImage < Jemini::Behavior
     @pulsing                 = false
     @repeat                  = true
     @milliseconds_per_update = DEFAULT_MILLISECONDS_PER_UPDATE
-    @target.on_update {|delta| update_animation(delta)}
+    @target.on_update do |delta|
+      update_animation(delta)
+      @pulsed_this_frame = false
+    end
   end
 
   def animate(action)
@@ -28,7 +31,8 @@ class AnimatedImage < Jemini::Behavior
   def animate_pulse(action, delta)
     self.current_action = action unless @current_action.to_s == action.to_s
     @pulsing = true
-    update_animation(delta, true) 
+    @pulsed_this_frame = true
+    update_animation(delta) 
   end
 
   def animate_cycle(action)
@@ -52,15 +56,18 @@ class AnimatedImage < Jemini::Behavior
 private
 
   def current_action=(action)
-    @animation_timer = 0
-    @current_action = action
-    @frame_number = 1 # one based
+    @animation_timer   = 0
+    @current_action    = action
+    @frame_number      = 1 # one based
+    @pulsing           = false
+    @pulsed_this_frame = false
     @target.image = @animations_per_action[action.to_s].first
   end
 
-  def update_animation(delta, pulse=false)
+  def update_animation(delta)
     return if @noun.nil?
-    self.current_action = 'default' if @pulsing && !pulse
+    self.current_action = 'default' if @pulsing && !@pulsed_this_frame
+
     @animation_timer += delta
 
     return if @animation_timer < @milliseconds_per_update
