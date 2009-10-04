@@ -61,7 +61,7 @@ private
     @frame_number      = 1 # one based
     @pulsing           = false
     @pulsed_this_frame = false
-    @target.image = @animations_per_action[action.to_s].first
+    @target.image      = @animations_per_action[action.to_s].first
   end
 
   def update_animation(delta)
