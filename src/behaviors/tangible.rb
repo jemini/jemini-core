@@ -16,14 +16,14 @@ class Tangible < Jemini::Behavior
   attr_reader :tangible_shape
 
   def load
-    @target.enable_listeners_for :tangible_collision
+    @game_object.enable_listeners_for :tangible_collision
   end
 
   def tangible_debug_mode=(mode)
     if mode
-      @target.add_behavior :DebugTangible
+      @game_object.add_behavior :DebugTangible
     else
-      @target.remove_behavior :DebugTangible
+      @game_object.remove_behavior :DebugTangible
     end
   end
   alias_method :set_tangible_debug_mode, :tangible_debug_mode=
@@ -51,9 +51,9 @@ class Tangible < Jemini::Behavior
     #TODO: top_left isn't on spatial...
     other_shape = other_tangible.tangible_shape
 
-    ((@target.x <= other_tangible.x && (@target.x + @tangible_shape.size.x) >= other_tangible.x) ||
-    (@target.x >= other_tangible.x && @target.x <= (other_tangible.x + other_shape.size.x))) &&
-    ((@target.y <= other_tangible.y && (@target.y + @tangible_shape.size.y) >= other_tangible.y) ||
-    (@target.y >= other_tangible.y && @target.y <= (other_tangible.y + other_shape.size.y)))
+    ((@game_object.x <= other_tangible.x && (@game_object.x + @tangible_shape.size.x) >= other_tangible.x) ||
+    (@game_object.x >= other_tangible.x && @game_object.x <= (other_tangible.x + other_shape.size.x))) &&
+    ((@game_object.y <= other_tangible.y && (@game_object.y + @tangible_shape.size.y) >= other_tangible.y) ||
+    (@game_object.y >= other_tangible.y && @game_object.y <= (other_tangible.y + other_shape.size.y)))
   end
 end

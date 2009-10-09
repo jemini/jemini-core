@@ -8,11 +8,11 @@ class AnimatedSprite < Jemini::Behavior
   def load
     @fps = 1
     @animation = Animation.new
-    @target.game_state.manager(:update).on_before_update do |delta|
+    @game_object.game_state.manager(:update).on_before_update do |delta|
       unless @animation.nil?
         @animation.update(delta)
         begin
-          @target.set_image @animation.current_frame
+          @game_object.set_image @animation.current_frame
         rescue; end #deliberately swallow
       end
     end
@@ -25,10 +25,10 @@ class AnimatedSprite < Jemini::Behavior
       if sprite_name.kind_of? Image
         @animation.add_frame(sprite_name, 1000)
       else
-        @animation.add_frame(@target.game_state.manager(:resource).get_image(sprite_name), 1000)
+        @animation.add_frame(@game_object.game_state.manager(:resource).get_image(sprite_name), 1000)
       end
     end
-    @target.set_image @animation.current_frame
+    @game_object.set_image @animation.current_frame
   end
   alias_method :set_sprites, :sprites
 

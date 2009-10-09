@@ -5,27 +5,27 @@ class SplineStretchableSprite < Jemini::Behavior
   depends_on :UpdatesAtConsistantRate #TODO: Make Updates coexist with this behavior
   
   def load
-    @original_image = @target.image
-    @target.on_update do
-#      @target.width = @original_width
-#      @target.height = @original_height
-      old_width = @target.width
-      old_height = @target.height
-      @target.image = @original_image
+    @original_image = @game_object.image
+    @game_object.on_update do
+#      @game_object.width = @original_width
+#      @game_object.height = @original_height
+      old_width = @game_object.width
+      old_height = @game_object.height
+      @game_object.image = @original_image
       if INDEPENDENT_MODE == @mode
-        @target.image_scaling(@spline_x.succ, @spline_y.succ)
+        @game_object.image_scaling(@spline_x.succ, @spline_y.succ)
       else
-        @target.image_scaling(@spline.succ)
+        @game_object.image_scaling(@spline.succ)
       end
       
-      new_width = @target.width
-      new_height = @target.height
-      #recenter_position(old_width, old_height, new_width, new_height) unless @target.kind_of? TangibleSprite
+      new_width = @game_object.width
+      new_height = @game_object.height
+      #recenter_position(old_width, old_height, new_width, new_height) unless @game_object.kind_of? TangibleSprite
     end
   end
   
   def set_stretch_splines(spline_x, spline_y = nil)
-    @original_image = @target.image
+    @original_image = @game_object.image
     unless spline_y.nil?
       @spline_x = spline_x
       @spline_y = spline_y
@@ -39,7 +39,7 @@ class SplineStretchableSprite < Jemini::Behavior
   
 private
   def recenter_position(old_width, old_height, new_width, new_height)
-    @target.x = @target.x + (old_width - new_width) / 2
-    @target.y = @target.y + (old_height - new_height) / 2
+    @game_object.x = @game_object.x + (old_width - new_width) / 2
+    @game_object.y = @game_object.y + (old_height - new_height) / 2
   end
 end

@@ -11,7 +11,7 @@ class Pointer < Jemini::Behavior
 #    add_tag :ui, :gui, :pointer
 #    collides_with_tags :gui, :clickable
 #    
-    @target.handle_event :mouse_move do |message|
+    @game_object.handle_event :mouse_move do |message|
       mouse_movement(message)
     end
 #    handle_event :start_click, :start_click
@@ -25,6 +25,6 @@ class Pointer < Jemini::Behavior
   #Takes a message with a Vector indicating the x/y coordinates to move the object to.
   def mouse_movement(message)
     vector = message.value
-    @target.move(vector.location.x, vector.location.y)
+    @game_object.move(vector.location.x, vector.location.y)
   end
 end

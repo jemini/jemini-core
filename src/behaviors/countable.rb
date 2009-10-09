@@ -5,8 +5,8 @@ class Countable < Jemini::Behavior
   
   def load
     @count = 0
-    @target.enable_listeners_for :incremented
-    @target.enable_listeners_for :decremented
+    @game_object.enable_listeners_for :incremented
+    @game_object.enable_listeners_for :decremented
   end
   
   def count=(count)
@@ -14,11 +14,11 @@ class Countable < Jemini::Behavior
     @count = count
     case comparison
     when -1
-      @target.notify :decremented
+      @game_object.notify :decremented
     when 0
       # do nothing
     when 1
-      @target.notify :incremented
+      @game_object.notify :incremented
     end
   end
   

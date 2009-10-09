@@ -15,7 +15,7 @@ describe Jemini::Behavior do
       listen_for :event
 
       def fire_event
-        @target.notify :event
+        @game_object.notify :event
       end
     end
 
@@ -188,14 +188,14 @@ describe Jemini::Behavior do
     lambda { @game_object.add_behavior :SpecialMethodsTestBehavior }.should_not raise_error(Jemini::MethodExistsError)
   end
   
-  it "has a reference of the game object (@target)" do
+  it "has a reference of the game object (@game_object)" do
     class ForwardTestBehavior < Jemini::Behavior
 
       def load
-        @target.oneword
-        @target.underscore_case
-        @target.camelCase
-        @target.AllCaps
+        @game_object.oneword
+        @game_object.underscore_case
+        @game_object.camelCase
+        @game_object.AllCaps
       end
     end
     

@@ -3,9 +3,9 @@ class Timeable < Jemini::Behavior
   depends_on :Updates
   
   def load
-    @target.enable_listeners_for :timer_tick, :countdown_complete
+    @game_object.enable_listeners_for :timer_tick, :countdown_complete
     @timers = {}
-    @target.on_update do |delta|
+    @game_object.on_update do |delta|
       update_timers delta
     end
   end
@@ -14,12 +14,12 @@ class Timeable < Jemini::Behavior
   #When the specified time has elapsed, a :countdown_complete event with the specified name will be passed to the object.
   #If notify_frequency is specified, a :timer_tick event with the Timer object will be passed to the object each time the specified interval elapses.
   def add_countdown(name, seconds, notify_frequency = nil)
-    @timers[name] = Timer.new(name, Timer::COUNTDOWN, seconds, notify_frequency) {|timer| @target.notify :timer_tick, timer }
+    @timers[name] = Timer.new(name, Timer::COUNTDOWN, seconds, notify_frequency) {|timer| @game_object.notify :timer_tick, timer }
   end
   
   #Add a countup delay to the object.  See add_countdown.
   def add_countup(name, seconds, notify_frequency = nil)
-    @timers[name] = Timer.new(name, Timer::COUNTUP, seconds, notify_frequency) {|timer| @target.notify :timer_tick, timer }
+    @timers[name] = Timer.new(name, Timer::COUNTUP, seconds, notify_frequency) {|timer| @game_object.notify :timer_tick, timer }
   end
   
 private
@@ -27,7 +27,7 @@ private
     @timers.each do |name, timer|
       timer.apply_delta delta
       if timer.countdown_complete?
-        @target.notify :countdown_complete, name
+        @game_object.notify :countdown_complete, name
       end
     end
     # in order to keep from mutating the array while we iterate, handle separately.

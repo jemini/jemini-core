@@ -9,9 +9,9 @@ class HandlesEvents < Jemini::Behavior
   #Add a handler for a given event type.  Subsequent events of the given type will be passed to the given block or the given method name.
   def handle_event(event_name, method_name=nil, &block)
     if !method_name.nil?
-      @target.game_state.manager(:message_queue).add_listener(event_name, self, @target.send(:method, method_name).to_proc)
+      @game_object.game_state.manager(:message_queue).add_listener(event_name, self, @game_object.send(:method, method_name).to_proc)
     elsif block_given?
-      @target.game_state.manager(:message_queue).add_listener(event_name, self, &block)
+      @game_object.game_state.manager(:message_queue).add_listener(event_name, self, &block)
     else
       raise "Either a method name or a block must be provided"
     end
@@ -28,6 +28,6 @@ class HandlesEvents < Jemini::Behavior
 
   #Unregisters all message handlers for this object.
   def unload
-    @handled_events.each {|e| @target.game_state.manager(:message_queue).remove_listener(e, self)}
+    @handled_events.each {|e| @game_object.game_state.manager(:message_queue).remove_listener(e, self)}
   end
 end

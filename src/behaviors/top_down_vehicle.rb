@@ -6,15 +6,15 @@ class TopDownVehicle < Jemini::Behavior
   depends_on :VectoredMovement
   
   def load
-    @vm_behavior = @target.send(:instance_variable_get, :@__behaviors)[:VectoredMovement]
-    @target.set_damping 0.1
-    @target.set_angular_damping 0.1
+    @vm_behavior = @game_object.send(:instance_variable_get, :@__behaviors)[:VectoredMovement]
+    @game_object.set_damping 0.1
+    @game_object.set_angular_damping 0.1
     @minimum_speed_to_turn = 2.5
     @vectored_movement_turning = false
     
     #TODO: Replace this with a spline method that determines how far to turn based on the spline
-    @target.on_update do
-      if @turning && !@vectored_movement_turning && (@target.velocity.x.abs + @target.velocity.y.abs) > @minimum_speed_to_turn
+    @game_object.on_update do
+      if @turning && !@vectored_movement_turning && (@game_object.velocity.x.abs + @game_object.velocity.y.abs) > @minimum_speed_to_turn
         @at_beginning_of_turn.call
         @vectored_movement_turning = true
       end

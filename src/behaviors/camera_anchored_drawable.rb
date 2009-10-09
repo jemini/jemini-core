@@ -4,14 +4,14 @@ class CameraAnchoredDrawable < Jemini::Behavior
   depends_on :Sprite
   
   def load
-    @target.on_before_draw do
-      @render_manager = @target.game_state.manager(:render)
+    @game_object.on_before_draw do
+      @render_manager = @game_object.game_state.manager(:render)
       return unless @render_manager.kind_of? ScrollingRenderManager
       @camera_position = @render_manager.camera_position
       @render_manager.renderer.gl_translatef(-@camera_position.x, -@camera_position.y, 0.0)
     end
     
-    @target.on_after_draw do
+    @game_object.on_after_draw do
       return unless @render_manager
       @render_manager.renderer.gl_translatef(@camera_position.x, @camera_position.y, 0.0)
       @camera_position = nil

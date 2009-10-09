@@ -18,19 +18,19 @@ class ShootableBarrel < Jemini::Behavior
 
     @zero = Vector.new(0.0, 0.0)
     @barrel_offset = Vector.new 0.0, 10.0
-    @barrel = @target.game_state.create :Turret
+    @barrel = @game_object.game_state.create :Turret
 
-    @power_arrow_neck = @target.game_state.create :PowerArrowNeck
-    @power_arrow_head = @target.game_state.create :PowerArrowHead
+    @power_arrow_neck = @game_object.game_state.create :PowerArrowNeck
+    @power_arrow_head = @game_object.game_state.create :PowerArrowHead
     @power_changed = true # to set the proper scale on the first update, flag as true
 
-    @target.handle_event :adjust_angle, :handle_angle_adjustment
-    @target.handle_event :adjust_power, :handle_power_adjustment
-    @target.handle_event :fire_weapon, :dispatch_fire_weapon
+    @game_object.handle_event :adjust_angle, :handle_angle_adjustment
+    @game_object.handle_event :adjust_power, :handle_power_adjustment
+    @game_object.handle_event :fire_weapon, :dispatch_fire_weapon
     
-    @target.on_update :update_barrel_and_arrow
+    @game_object.on_update :update_barrel_and_arrow
 
-    @target.on_countdown_complete do |name|
+    @game_object.on_countdown_complete do |name|
       if name == :shot
         self.ready_to_fire = true
       else
@@ -38,7 +38,7 @@ class ShootableBarrel < Jemini::Behavior
       end
     end
 
-    @target.on_timer_tick do |timer|
+    @game_object.on_timer_tick do |timer|
       percent = timer.percent_complete
       @power_arrow_head.color = @power_arrow_neck.color = Color.new(percent, percent, percent)
     end
@@ -48,9 +48,9 @@ class ShootableBarrel < Jemini::Behavior
   end
 
   def unload
-    @target.game_state.remove @power_arrow_head
-    @target.game_state.remove @power_arrow_neck
-    @target.game_state.remove @barrel
+    @game_object.game_state.remove @power_arrow_head
+    @game_object.game_state.remove @power_arrow_neck
+    @game_object.game_state.remove @barrel
   end
 
   def barrel_anchor
@@ -62,9 +62,9 @@ class ShootableBarrel < Jemini::Behavior
   end
 
   def update_barrel_and_arrow(delta)
-    barrel_position = barrel_anchor.pivot_around_degrees(@barrel_offset, @target.physical_rotation + @angle)
-    @barrel.position = barrel_position + @target.body_position
-    @barrel.image_rotation = @angle + @target.physical_rotation - 90.0
+    barrel_position = barrel_anchor.pivot_around_degrees(@barrel_offset, @game_object.physical_rotation + @angle)
+    @barrel.position = barrel_position + @game_object.body_position
+    @barrel.image_rotation = @angle + @game_object.physical_rotation - 90.0
 
     if @power_changed
       width_factor = 2 * @power / 100.0
@@ -72,23 +72,23 @@ class ShootableBarrel < Jemini::Behavior
     end
 
     neck_offset = barrel_anchor + Vector.new(0.0, -7.0 - (@power_arrow_neck.image.width + @barrel.image.width) / 2.0)
-    neck_position = neck_offset.pivot_around_degrees(@zero, @target.physical_rotation + angle)
-    @power_arrow_neck.position = neck_position + @target.body_position
-    @power_arrow_neck.image_rotation = angle + @target.physical_rotation - 90.0
+    neck_position = neck_offset.pivot_around_degrees(@zero, @game_object.physical_rotation + angle)
+    @power_arrow_neck.position = neck_position + @game_object.body_position
+    @power_arrow_neck.image_rotation = angle + @game_object.physical_rotation - 90.0
 
     power_arrow_head_anchor = neck_offset + Vector.new(0.0, (7.0 - (@power_arrow_neck.image.width) / 2.0))
-    head_position = power_arrow_head_anchor.pivot_around_degrees(@zero, @target.physical_rotation + angle)
-    @power_arrow_head.position = head_position + @target.body_position
-    @power_arrow_head.image_rotation = angle + @target.physical_rotation - 90.0
+    head_position = power_arrow_head_anchor.pivot_around_degrees(@zero, @game_object.physical_rotation + angle)
+    @power_arrow_head.position = head_position + @game_object.body_position
+    @power_arrow_head.image_rotation = angle + @game_object.physical_rotation - 90.0
 
-#      @target.game_state.manager(:render).debug(:point, :red,   :position => (barrel_position + body_position))
-#      @target.game_state.manager(:render).debug(:point, :green, :position => (neck_position + body_position))
-#      @target.game_state.manager(:render).debug(:point, :blue,  :position => (head_position + body_position))
+#      @game_object.game_state.manager(:render).debug(:point, :red,   :position => (barrel_position + body_position))
+#      @game_object.game_state.manager(:render).debug(:point, :green, :position => (neck_position + body_position))
+#      @game_object.game_state.manager(:render).debug(:point, :blue,  :position => (head_position + body_position))
   end
 
   def charge_weapon
     self.ready_to_fire = false
-    @target.add_countdown :shot, RELOAD_WARMPUP_IN_SECONDS, RELOAD_UPDATES_PER_SECOND
+    @game_object.add_countdown :shot, RELOAD_WARMPUP_IN_SECONDS, RELOAD_UPDATES_PER_SECOND
   end
 
   def ready_to_fire?
@@ -104,7 +104,7 @@ class ShootableBarrel < Jemini::Behavior
   # TODO: Consider auto-wiring messages based on dispatch_ or handle_ method names
   def dispatch_fire_weapon(message)
     return unless ready_to_fire?
-    @target.fire_weapon(@power, @angle)
+    @game_object.fire_weapon(@power, @angle)
     charge_weapon
   end
 

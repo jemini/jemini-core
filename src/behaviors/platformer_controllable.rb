@@ -13,29 +13,29 @@ class PlatformerControllable < Jemini::Behavior
 #  depends_on :AxisStateful
   
   def load
-#    @target.set_state_transitions_on_axis[:vertical_platform]   = [:grounded, :jumping, :falling]
-#    @target.set_state_transitions_on_axis[:horizontal_platform] = [:walking, :standing]
-    @target.set_mass 1
+#    @game_object.set_state_transitions_on_axis[:vertical_platform]   = [:grounded, :jumping, :falling]
+#    @game_object.set_state_transitions_on_axis[:horizontal_platform] = [:walking, :standing]
+    @game_object.set_mass 1
     #set_damping 0.1
-    @target.set_friction 0
-    @target.set_speed_limit(Vector.new(20, 50))
-    @target.set_rotatable false
+    @game_object.set_friction 0
+    @game_object.set_speed_limit(Vector.new(20, 50))
+    @game_object.set_rotatable false
     @horizontal_speed = 100
     @jump_force = 20000
     @facing_right = true
-    @target.on_update do
+    @game_object.on_update do
       detect_grounded
       if @moving && grounded?
-        @target.animate :walk
+        @game_object.animate :walk
       elsif !@moving && grounded?
-        @target.animate :stand
+        @game_object.animate :stand
       else
-        @target.animate :jump
+        @game_object.animate :jump
       end
       
       if @moving
         # causes smooth movement
-        velocity = @target.velocity
+        velocity = @game_object.velocity
         # Another shameless rip of Kevin Glass's code
         # if we've been pushed back from a collision horizontally
         # then kill the velocity - don't want to keep pushing during
@@ -47,17 +47,17 @@ class PlatformerControllable < Jemini::Behavior
           velocity.x = @facing_right ? @horizontal_speed : -@horizontal_speed
         end
         
-        @target.set_velocity(velocity)
+        @game_object.set_velocity(velocity)
       else
         # comment out to allow for momentum?
-        @target.add_velocity(-@target.velocity.x, 0)
+        @game_object.add_velocity(-@game_object.velocity.x, 0)
       end
     end
-#    @target.on_collided do |message|
+#    @game_object.on_collided do |message|
 #      # The collision event hasn't been resolved yet, so we can't check all of our collisions yet
 #      # Queue up the collision check for the next update.
 #      @check_grounded_on_next_update = true
-#      #@target.gravity_effected = false
+#      #@game_object.gravity_effected = false
 #    end
   end
   
@@ -76,20 +76,20 @@ class PlatformerControllable < Jemini::Behavior
   def start_move(message)
     @moving = true
     if grounded?
-      @target.animate :walk
+      @game_object.animate :walk
     else
-      @target.animate :jump
+      @game_object.animate :jump
     end
     case message.value
     #TODO: Up and down for ladders (aka PlatformerClimbables)
     when :left
-      @target.flip_horizontally if @facing_right
+      @game_object.flip_horizontally if @facing_right
       @facing_right = false
-      @target.add_force(-@horizontal_speed, 0)
+      @game_object.add_force(-@horizontal_speed, 0)
     when :right
-      @target.flip_horizontally unless @facing_right
+      @game_object.flip_horizontally unless @facing_right
       @facing_right = true
-      @target.add_force( @horizontal_speed, 0)
+      @game_object.add_force( @horizontal_speed, 0)
     end
   end
   
@@ -97,9 +97,9 @@ class PlatformerControllable < Jemini::Behavior
   #Takes a message with :left or :right as its value.  
   def stop_move(message)
     if grounded?
-      @target.animate :stand
+      @game_object.animate :stand
     else
-      @target.animate :jump
+      @game_object.animate :jump
     end
     case message.value
     when :left
@@ -113,38 +113,38 @@ class PlatformerControllable < Jemini::Behavior
   def jump(message)
     detect_grounded
     if grounded?
-      @target.animate :jump
+      @game_object.animate :jump
       # This should help us get the object unstuck if it's sunk a little into another body
       # Although, this might also get us stuck too
       # TODO: Test to see if super low cielings cause PlatformerControllable to get stuck.
-      @target.move(@target.x, @target.y - 10)
-      #@target.add_force(0, -@jump_force)
+      @game_object.move(@game_object.x, @game_object.y - 10)
+      #@game_object.add_force(0, -@jump_force)
       # addForce doesn't always get added. Perhaps a Phys2D bug?
-      @target.add_velocity(0, -@jump_force)
+      @game_object.add_velocity(0, -@jump_force)
       @grounded = false
     end
   end
   
   #Determine if the object is touching the ground.
   def detect_grounded
-    @target.get_collision_events.each do |collision_event|
+    @game_object.get_collision_events.each do |collision_event|
       # shameless rip/port from Kevin Glass's platformer example, with his comments
       # if the point of collision was below the centre of the actor
       # i.e. near the feet
-      if collision_event.point.y > (@target.y + (@target.height / 4))
+      if collision_event.point.y > (@game_object.y + (@game_object.height / 4))
         # check the normal to work out which body we care about
         # if the right body is involved and a collision has happened
         # below it then we're on the ground
-        if (collision_event.normal.y <  0) && (collision_event.body_b.user_data == @target) ||
-           (collision_event.normal.y >  0) && (collision_event.body_a.user_data == @target) 
+        if (collision_event.normal.y <  0) && (collision_event.body_b.user_data == @game_object) ||
+           (collision_event.normal.y >  0) && (collision_event.body_a.user_data == @game_object) 
            @grounded = true
-           #@target.transfer_state_on_axis :grounded, :grounded
+           #@game_object.transfer_state_on_axis :grounded, :grounded
            return true
         end
       end
     end
-#    jumping_or_falling = @target.velocity.y > 0 ? :jumping : :falling
-#    @target.transfer_state_on_axis :grounded, jumping_or_falling
+#    jumping_or_falling = @game_object.velocity.y > 0 ? :jumping : :falling
+#    @game_object.transfer_state_on_axis :grounded, jumping_or_falling
     @grounded = false
     false
   end

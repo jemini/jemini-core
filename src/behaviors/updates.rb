@@ -3,6 +3,6 @@ class Updates < Jemini::Behavior
   listen_for :update
   
   def update(delta)
-    @target.notify :update, delta
+    @game_object.notify :update, delta
   end
 end

@@ -8,10 +8,10 @@ class ChargedJumper < Jemini::Behavior
   
   def load
     @jump_charge = 0.0
-    @target.handle_event :charge_jump,  :charge_jump
-    @target.handle_event :jump,         :jump_tank
+    @game_object.handle_event :charge_jump,  :charge_jump
+    @game_object.handle_event :jump,         :jump_tank
 
-    @target.on_update :update_jump_charge
+    @game_object.on_update :update_jump_charge
   end
 
   def update_jump_charge(delta)
@@ -21,17 +21,17 @@ class ChargedJumper < Jemini::Behavior
   end
   
   def charge_jump(message)
-    return unless message.player == @target.player_id
+    return unless message.player == @game_object.player_id
     @charging_jump = true
   end
 
   def jump_tank(message)
-    return unless message.player == @target.player_id
+    return unless message.player == @game_object.player_id
 #    return if message.value.nil?
     @charging_jump = false
     # TODO: Check to see if tank is touching anything else
-    jump_vector = Vector.from_polar_vector(@jump_charge, @target.physical_rotation)
-    @target.add_force jump_vector
+    jump_vector = Vector.from_polar_vector(@jump_charge, @game_object.physical_rotation)
+    @game_object.add_force jump_vector
     @jump_charge = 0.0
   end
 end

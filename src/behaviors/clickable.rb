@@ -5,12 +5,12 @@ class Clickable < Jemini::Behavior
   wrap_with_callbacks :pressed, :released
   
   def load
-    @target.handle_event :mouse_button1_pressed do |mouse_event|
-      pressed if @target.within_region? mouse_event.value.location
+    @game_object.handle_event :mouse_button1_pressed do |mouse_event|
+      pressed if @game_object.within_region? mouse_event.value.location
     end
     
-    @target.handle_event :mouse_button1_released do |mouse_event|
-      released if @target.within_region? mouse_event.value.location
+    @game_object.handle_event :mouse_button1_released do |mouse_event|
+      released if @game_object.within_region? mouse_event.value.location
     end
   end
   

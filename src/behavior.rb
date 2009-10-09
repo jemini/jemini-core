@@ -34,12 +34,12 @@ module Jemini
         code = <<-ENDL
           def #{method}(#{args})
             raise Jemini::InvalidWrapWithCallbacksError.new("Cannot wrap #{method} with callbacks without \\"#{method_name}\\"") unless respond_to?(:#{method_name})
-            event = ValueChangedEvent.new(@target.#{method_name}, #{args})
+            event = ValueChangedEvent.new(@game_object.#{method_name}, #{args})
             callback_abort = CallbackStatus.new
-            @target.notify :before_#{method_name}_changes, event
+            @game_object.notify :before_#{method_name}_changes, event
             if callback_abort.continue?
               self.wrapped_#{method} #{args}
-              @target.notify :after_#{method_name}_changes, event
+              @game_object.notify :after_#{method_name}_changes, event
             end
           end
         ENDL
@@ -49,10 +49,10 @@ module Jemini
         code = <<-ENDL
           def #{method}(#{(args.join(",") + ",") if args} &block)
             callback_abort = CallbackStatus.new
-            @target.notify :before_#{method}, callback_abort
+            @game_object.notify :before_#{method}, callback_abort
             if callback_abort.continue?
               self.wrapped_#{method}(#{(args.join(",") + ",") if args} &block)
-              @target.notify :after_#{method}
+              @game_object.notify :after_#{method}
             end
           end
         ENDL
@@ -135,14 +135,14 @@ module Jemini
     end
     
     def initialize(target)
-      @target = target
+      @game_object = target
       @dependant_behaviors = []
       @reference_count = 0
       
       initialize_dependant_behaviors
 
       #TODO: Move this to GameObject
-      behavior_list = @target.send(:instance_variable_get, :@__behaviors)
+      behavior_list = @game_object.send(:instance_variable_get, :@__behaviors)
       return unless behavior_list[self.class.name.to_sym].nil?
       behavior_list[self.class.name.to_sym] = self 
 
@@ -154,7 +154,7 @@ module Jemini
 
     def initialize_declared_methods
       self.class.declared_method_list.each do |method|
-        raise MethodExistsError.new("Error while adding the behavior #{self.class}. The method #{method} already exists on game object #{@target}.") if @target.respond_to? method
+        raise MethodExistsError.new("Error while adding the behavior #{self.class}. The method #{method} already exists on game object #{@game_object}.") if @game_object.respond_to? method
         if method.to_s =~ /=/
           code = <<-ENDL
           def #{method}(arg)
@@ -168,7 +168,7 @@ module Jemini
           end
           ENDL
         end
-        @target.send(:instance_eval, code, __FILE__, __LINE__)
+        @game_object.send(:instance_eval, code, __FILE__, __LINE__)
       end
     end
 
@@ -180,16 +180,16 @@ module Jemini
           raise "Cannot load dependant behavior '#{dependant_behavior}' in behavior '#{self.class}'"
         end
 
-        unless @target.kind_of? dependant_behavior_class
-          @target.add_behavior dependant_behavior_class.to_s
+        unless @game_object.kind_of? dependant_behavior_class
+          @game_object.add_behavior dependant_behavior_class.to_s
           @dependant_behaviors << dependant_behavior
         end
       end
     end
 
     def initialize_listeners
-      @target.enable_listeners_for *self.class.listener_names
-      @target.enable_listeners_for *self.class.wrapped_methods
+      @game_object.enable_listeners_for *self.class.listener_names
+      @game_object.enable_listeners_for *self.class.wrapped_methods
     end
 
     def delete
@@ -197,12 +197,12 @@ module Jemini
       unload
       __remove_listeners
       self.class.declared_method_list.each do |method_name|
-        target_class = class <<@target; self; end
+        target_class = class <<@game_object; self; end
         target_class.send(:remove_method, method_name)
       end
       #TODO: Make sure we don't delete dependent behaviors that still have depending behaviors
       @dependant_behaviors.each do |dependant| 
-        @target.remove_behavior dependant
+        @game_object.remove_behavior dependant
       end
       @deleted = true
     end
@@ -212,12 +212,12 @@ module Jemini
     def set_event_aliases(mappings, block)
       if mappings.kind_of? Hash
         mappings.each do |event, event_alias|
-          @target.handle_event(event_alias) do |message|
+          @game_object.handle_event(event_alias) do |message|
             send(event, message)
           end
         end
       else mappings.kind_of? Symbol
-        @target.handle_event(mappings) do |message|
+        @game_object.handle_event(mappings) do |message|
           message = message.dup
           send(block.call(message), message)
         end

@@ -5,7 +5,7 @@ class UpdatesAtConsistantRate < Jemini::Behavior
   def load
     @update_delay = 0
     @time_since_last_update = 0
-    @target.enable_listeners_for :update
+    @game_object.enable_listeners_for :update
     self.updates_per_second = 30
   end
   

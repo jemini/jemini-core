@@ -9,8 +9,8 @@ class VectoredMovement < Jemini::Behavior
   depends_on :HandlesEvents
   
   def load
-    @target.set_damping 0.0
-    @target.set_angular_damping 0.0
+    @game_object.set_damping 0.0
+    @game_object.set_angular_damping 0.0
     
     @forward_speed = 0
     @reverse_speed = 0
@@ -20,9 +20,9 @@ class VectoredMovement < Jemini::Behavior
     @angular_velocity = 0
     @movement_vector = Vector.new(0,0)
     
-    @target.on_update do
-      @target.set_angular_velocity(@angular_velocity)
-      @target.add_velocity(Vector.from_polar_vector(@intended_velocity, @target.rotation))
+    @game_object.on_update do
+      @game_object.set_angular_velocity(@angular_velocity)
+      @game_object.add_velocity(Vector.from_polar_vector(@intended_velocity, @game_object.rotation))
     end
   end
   

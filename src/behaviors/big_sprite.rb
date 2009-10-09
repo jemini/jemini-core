@@ -16,24 +16,24 @@ class BigSprite < Drawable
   def draw(graphics)
     half_width = @image.width / 2
     half_height = @image.height / 2
-    center_x = @target.x - half_width
-    center_y = @target.y - half_height
+    center_x = @game_object.x - half_width
+    center_y = @game_object.y - half_height
     unless 0 == @image.rotation
-      graphics.rotate @target.x, @target.y, @image.rotation
+      graphics.rotate @game_object.x, @game_object.y, @image.rotation
     end
-    @image.draw(center_x, center_y, @target.x + half_width, @target.y + half_height,
+    @image.draw(center_x, center_y, @game_object.x + half_width, @game_object.y + half_height,
                 @texture_coords[0].x * @image.width, @texture_coords[0].y * @image.height, @texture_coords[1].x * @image.width, @texture_coords[1].y * @image.height,
                 @color.native_color)
     graphics.reset_transform
   end
   
   def move_by_top_left(move_x_or_vector, move_y = nil)
-    half_width = @target.image_size.x / 2
-    half_height = @target.image_size.y / 2
+    half_width = @game_object.image_size.x / 2
+    half_height = @game_object.image_size.y / 2
     if move_y.nil?
-      @target.move(move_x_or_vector.x + half_width, move_x_or_vector.y + half_height)
+      @game_object.move(move_x_or_vector.x + half_width, move_x_or_vector.y + half_height)
     else
-      @target.move(move_x_or_vector + half_width, move_y + half_height)
+      @game_object.move(move_x_or_vector + half_width, move_y + half_height)
     end
   end
   

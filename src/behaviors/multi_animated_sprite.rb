@@ -16,13 +16,13 @@ class MultiAnimatedSprite < Jemini::Behavior
     sprites = options[:sprites]
     speed   = options[:speed]
     sprite_images = sprites.map do |reference|
-                      @target.game_state.manager(:resource).get_image(reference)
+                      @game_object.game_state.manager(:resource).get_image(reference)
                     end
     animation = Java::org::newdawn::slick::Animation.new(sprite_images.to_java(Java::org::newdawn::slick::Image), speed)
     @animations[name] = animation
   end
   
   def animate(animation_name)
-    @target.animation = @animations[animation_name]
+    @game_object.animation = @animations[animation_name]
   end
 end
