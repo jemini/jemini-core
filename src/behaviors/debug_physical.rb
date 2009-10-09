@@ -13,7 +13,7 @@ class DebugPhysical < Jemini::Behavior
   include_class 'net.phys2d.raw.shapes.Box'
 
   def load
-    @game_object.game_state.manager(:render).on_after_render do |graphics|
+    game_state.manager(:render).on_after_render do |graphics|
       draw(graphics)
     end
   end

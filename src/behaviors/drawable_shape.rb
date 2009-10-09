@@ -25,14 +25,14 @@ class DrawableShape < Drawable
   
   #Takes a reference to an image loaded via the resource manager, and sets the sprite image.
   def image=(reference)
-    @image = @game_object.game_state.manager(:resource).get_image(reference)
+    @image = game_state.manager(:resource).get_image(reference)
   end
   alias_method :set_image, :image=
 
   def draw(graphics)
     if @visual_shape.kind_of? Polygon
       #TODO: Tweak these values!!!!
-      #@image.width.to_f / @game_object.game_state.screen_width.to_f, @image.height.to_f / @game_object.game_state.screen_height.to_f
+      #@image.width.to_f / game_state.screen_width.to_f, @image.height.to_f / game_state.screen_height.to_f
       graphics.texture @visual_shape, @image, 1.0 / @image.width.to_f, 1.0 / @image.height.to_f
     else
       raise "#{@visual_shape.class} is not supported"

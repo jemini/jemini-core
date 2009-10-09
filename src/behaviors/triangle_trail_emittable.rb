@@ -7,7 +7,7 @@ class TriangleTrailEmittable < Jemini::Behavior
   depends_on_kind_of :Spatial
   
   def load
-    @emitter = @game_object.game_state.create :TriangleTrail
+    @emitter = game_state.create :TriangleTrail
     @emitter_offset = [0,0]
 
     
@@ -17,7 +17,7 @@ class TriangleTrailEmittable < Jemini::Behavior
   end
 
   def unload
-    @game_object.game_state.remove @emitter
+    game_state.remove @emitter
   end
   
   #Transparency to use.  1.0 is opaque.  Default is 0.5.
@@ -41,6 +41,6 @@ class TriangleTrailEmittable < Jemini::Behavior
   
   #Name of layer to draw trail on.
   def layer=(layer_name)
-    @game_object.game_state.manager(:game_object).move_game_object_to_layer(@emitter, layer_name)
+    game_state.manager(:game_object).move_game_object_to_layer(@emitter, layer_name)
   end
 end

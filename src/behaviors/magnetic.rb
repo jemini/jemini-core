@@ -19,7 +19,7 @@ class Magnetic < Jemini::Behavior
     @magnetism_max_radius = 1000.0
     @magnetism_min_radius =  10.0
     @game_object.on_update do |delta|
-      physicals = @game_object.game_state.manager(:game_object).game_objects.select {|game_object| game_object.kind_of? Physical}
+      physicals = game_state.manager(:game_object).game_objects.select {|game_object| game_object.kind_of? Physical}
       physicals.each do |physical|
         next if @game_object == physical
         distance = @game_object.body_position.distance_from physical

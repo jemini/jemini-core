@@ -7,7 +7,7 @@ class GameObjectEmittable < Jemini::Behavior
   end
   
   def emit_game_object(message=nil)
-    game_object = @game_object.game_state.create_game_object @emitting_game_object_name
+    game_object = game_state.create_game_object @emitting_game_object_name
     @game_object.notify :emit_game_object, game_object
   end
 end

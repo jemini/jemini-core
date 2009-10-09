@@ -5,7 +5,7 @@ class DebugTangible < Jemini::Behavior
   SlickVector = Java::org::newdawn::slick::geom::Vector2f
 
   def load
-    @game_object.game_state.manager(:render).on_after_render do |graphics|
+    game_state.manager(:render).on_after_render do |graphics|
       draw(graphics)
     end
   end

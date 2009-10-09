@@ -18,10 +18,10 @@ class ShootableBarrel < Jemini::Behavior
 
     @zero = Vector.new(0.0, 0.0)
     @barrel_offset = Vector.new 0.0, 10.0
-    @barrel = @game_object.game_state.create :Turret
+    @barrel = game_state.create :Turret
 
-    @power_arrow_neck = @game_object.game_state.create :PowerArrowNeck
-    @power_arrow_head = @game_object.game_state.create :PowerArrowHead
+    @power_arrow_neck = game_state.create :PowerArrowNeck
+    @power_arrow_head = game_state.create :PowerArrowHead
     @power_changed = true # to set the proper scale on the first update, flag as true
 
     @game_object.handle_event :adjust_angle, :handle_angle_adjustment
@@ -48,9 +48,9 @@ class ShootableBarrel < Jemini::Behavior
   end
 
   def unload
-    @game_object.game_state.remove @power_arrow_head
-    @game_object.game_state.remove @power_arrow_neck
-    @game_object.game_state.remove @barrel
+    game_state.remove @power_arrow_head
+    game_state.remove @power_arrow_neck
+    game_state.remove @barrel
   end
 
   def barrel_anchor
@@ -81,9 +81,9 @@ class ShootableBarrel < Jemini::Behavior
     @power_arrow_head.position = head_position + @game_object.body_position
     @power_arrow_head.image_rotation = angle + @game_object.physical_rotation - 90.0
 
-#      @game_object.game_state.manager(:render).debug(:point, :red,   :position => (barrel_position + body_position))
-#      @game_object.game_state.manager(:render).debug(:point, :green, :position => (neck_position + body_position))
-#      @game_object.game_state.manager(:render).debug(:point, :blue,  :position => (head_position + body_position))
+#      game_state.manager(:render).debug(:point, :red,   :position => (barrel_position + body_position))
+#      game_state.manager(:render).debug(:point, :green, :position => (neck_position + body_position))
+#      game_state.manager(:render).debug(:point, :blue,  :position => (head_position + body_position))
   end
 
   def charge_weapon

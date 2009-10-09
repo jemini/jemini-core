@@ -25,8 +25,8 @@ class Regional < Jemini::Behavior
     @last_spatials_without = nil
     @last_spatials = []
     #TODO: SAVE: This should be turned on when requested.
-#    @game_object.game_state.manager(:update).on_update do
-#      spatials = @game_object.game_state.manager(:game_object).game_objects.select {|game_object| game_object.kind_of? Tangible}.compact
+#    game_state.manager(:update).on_update do
+#      spatials = game_state.manager(:game_object).game_objects.select {|game_object| game_object.kind_of? Tangible}.compact
 #      
 #      spatials_within, spatials_without = spatials.partition {|spatial| within_region?(spatial)}
 #      (spatials_within - @last_spatials_within).each do |spatial_within|
@@ -61,7 +61,7 @@ class Regional < Jemini::Behavior
   def toggle_debug_mode
     @debug_mode = !@debug_mode
     if @debug_mode
-      @game_object.game_state.manager(:render).on_before_render do |graphics|
+      game_state.manager(:render).on_before_render do |graphics|
         old_color = graphics.color
         graphics.color = Color.new(0.0, 1.0, 0.0, 0.3).native_color
         half_width = dimensions.x / 2.0
@@ -70,7 +70,7 @@ class Regional < Jemini::Behavior
         graphics.color = old_color
       end
     else
-      @game_object.game_state.manager(:render).remove_before_draw self
+      game_state.manager(:render).remove_before_draw self
     end
   end
 end

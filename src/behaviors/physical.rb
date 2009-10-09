@@ -47,9 +47,9 @@ class Physical < Jemini::Behavior
 
   # prevent collision and interaction with all physicals now and in the future
   def exclude_all_physicals
-    @game_object.game_state.manager(:game_object).game_objects.select {|game_object| game_object.kind_of? Physical }.each {|physical| add_excluded_physical physical }
+    game_state.manager(:game_object).game_objects.select {|game_object| game_object.kind_of? Physical }.each {|physical| add_excluded_physical physical }
     
-    @game_object.game_state.manager(:game_object).on_before_add_game_object do |game_object, event|
+    game_state.manager(:game_object).on_before_add_game_object do |game_object, event|
       add_excluded_physical game_object if game_object.kind_of? Physical
     end
   end

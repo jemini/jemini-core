@@ -14,7 +14,11 @@ module Jemini
   
   class Behavior
     include ListenableMixin
-    attr_reader :reference_count, :game_object
+    attr_reader :reference_count
+    #The GameObject this Behavior belongs to.
+    attr_reader :game_object
+    #The GameState of the GameObject this Behavior belongs to.
+    def game_state; @game_object.game_state; end
     
     def self.method_added(method)
       if !callback_methods_to_wrap.member?(method) || callback_methods_wrapped.member?(method)
