@@ -32,6 +32,7 @@ module Jemini
                   }
 
       configure_inputs
+      load_resources
       @paused = false
     end
 

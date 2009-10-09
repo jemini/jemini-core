@@ -1,6 +1,6 @@
 #A 2D sprite with mutltiple frames of animation.
 class AnimatedImage < Jemini::Behavior
-  DEFAULT_MILLISECONDS_PER_UPDATE = 500 # half a second
+  DEFAULT_MILLISECONDS_PER_UPDATE = 250 # quarter of a second
   java_import 'org.newdawn.slick.Image'
   java_import 'org.newdawn.slick.Animation'
 
@@ -8,15 +8,16 @@ class AnimatedImage < Jemini::Behavior
   depends_on :Updates
   
   attr_reader :animations
+  attr_accessor :animation_speed
   
   def load
-    @animations_per_action   = {}
-    @current_action          = 'default'
-    @animation_timer         = 0
-    @frame_number            = 1
-    @pulsing                 = false
-    @repeat                  = true
-    @milliseconds_per_update = DEFAULT_MILLISECONDS_PER_UPDATE
+    @animations_per_action  = {}
+    @current_action         = 'default'
+    @animation_timer        = 0
+    @frame_number           = 1
+    @pulsing                = false
+    @repeat                 = true
+    @animation_speed        = DEFAULT_MILLISECONDS_PER_UPDATE
     @target.on_update do |delta|
       update_animation(delta)
       @pulsed_this_frame = false
@@ -70,9 +71,9 @@ private
 
     @animation_timer += delta
 
-    return if @animation_timer < @milliseconds_per_update
+    return if @animation_timer < @animation_speed
 
-    @frame_number = @animation_timer / @milliseconds_per_update
+    @frame_number = @animation_timer / @animation_speed
 
     animations = @animations_per_action[@current_action.to_s]
     new_frame = animations[@frame_number]
