@@ -14,7 +14,7 @@ module Jemini
   
   class Behavior
     include ListenableMixin
-    attr_reader :reference_count, :target
+    attr_reader :reference_count, :game_object
     
     def self.method_added(method)
       if !callback_methods_to_wrap.member?(method) || callback_methods_wrapped.member?(method)
@@ -134,8 +134,8 @@ module Jemini
       @@kind_of_behavior_dependencies[self] << behavior
     end
     
-    def initialize(target)
-      @game_object = target
+    def initialize(game_object)
+      @game_object = game_object
       @dependant_behaviors = []
       @reference_count = 0
       
