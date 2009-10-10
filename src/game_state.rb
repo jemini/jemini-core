@@ -31,8 +31,8 @@ module Jemini
                    :resource => ResourceManager.new(self)
                   }
 
-      @managers[:resource].load_resources
       configure_inputs
+      load_resources
       @paused = false
     end
 
@@ -113,6 +113,15 @@ module Jemini
     def quit_game
       java.lang.System.exit 0
     end
+
+    def name
+      @name ||= self.class.name.underscore.sub('_state', '')
+    end
+    
+    def load_resources
+      @managers[:resource].load_resources
+    end
+
   private
 
     def configure_inputs

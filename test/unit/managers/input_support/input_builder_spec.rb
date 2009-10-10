@@ -31,6 +31,37 @@ describe 'InputBuilder' do
     end
   end
 
+  describe '#for' do
+    it 'sets the destination ID for inputs inside its block' do
+      pending
+      Jemini::InputBuilder.declare do |i|
+        i.for :player_1 do
+          i.in_order_to :fire do
+            i.press :space
+          end
+        end
+      end
+
+      called = false
+      # the message queue reshapes exceptions, which will cause errors for failed assertions in RSpec to silently die
+      to     = nil
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :HandlesEvents
+      game_object.handles_events_for :player_1
+      game_object.handle_event :fire do |event|
+        called = true
+        to = event.to
+      end
+
+      @raw_input.stub!(:is_key_pressed).and_return true
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      called.should be_true
+      to.should == :player_1
+    end
+  end
+
   describe '#in_order_to' do
     describe 'destinations' do
       it 'Allows a destination ID to be specified' do

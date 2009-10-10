@@ -10,11 +10,11 @@ describe "GridBound" do
   end
 
   it "depends on Movable" do
-    @game_object.should be_kind_of(Movable)
+    @game_object.should have_behavior(:Movable)
   end
 
   it "depends on Spatial" do
-    @game_object.should be_kind_of(Spatial)
+    @game_object.should have_behavior(:Spatial)
   end
 
   describe '#adjacent_grids' do

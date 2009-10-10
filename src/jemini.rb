@@ -9,6 +9,7 @@ $LOAD_PATH << 'game_objects'
 #$LOAD_PATH << 'states'
 $LOAD_PATH << 'input_helpers'
 
+require 'file_system'
 require 'platform'
 require 'color'
 require 'vector'

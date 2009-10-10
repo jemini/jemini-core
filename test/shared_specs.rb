@@ -15,6 +15,7 @@ describe "initial mock state", :shared => true do
   
   before :each do
     @state = mock('MockState')
+    @state.stub!(:name => 'mock')
     Jemini::GameState.active_state = @state
   end
 end
