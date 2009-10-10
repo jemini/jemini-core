@@ -18,7 +18,7 @@ class AnimatedImage < Jemini::Behavior
     @pulsing                = false
     @repeat                 = true
     @animation_speed        = DEFAULT_MILLISECONDS_PER_UPDATE
-    @target.on_update do |delta|
+    game_object.on_update do |delta|
       update_animation(delta)
       @pulsed_this_frame = false
     end
@@ -44,7 +44,7 @@ class AnimatedImage < Jemini::Behavior
   def animate_as(noun)
     @noun = noun
     noun_regex = Regexp.new(noun.to_s)
-    all_images_for_noun = @target.game_state.manager(:resource).image_names.select {|image| image.to_s =~ noun_regex }
+    all_images_for_noun = game_state.manager(:resource).image_names.select {|image| image.to_s =~ noun_regex }
     animations_for_noun = all_images_for_noun.map {|image_name| image_name.to_s.sub("#{@noun}_", '')}
     @animations = animations_for_noun.map {|animation| animation.sub(/\d/, '').to_sym}.uniq
     @animations.each do |action|
@@ -62,7 +62,7 @@ private
     @frame_number      = 1 # one based
     @pulsing           = false
     @pulsed_this_frame = false
-    @target.image      = @animations_per_action[action.to_s].first
+    @game_object.image      = @animations_per_action[action.to_s].first
   end
 
   def update_animation(delta)
@@ -78,7 +78,7 @@ private
     animations = @animations_per_action[@current_action.to_s]
     new_frame = animations[@frame_number]
     if new_frame
-      @target.image = new_frame
+      @game_object.image = new_frame
     elsif @repeat
       self.current_action = @current_action
     else
