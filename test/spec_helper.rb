@@ -1,4 +1,11 @@
 require 'java'
+require 'instance_stubber'
+#require 'rubygems'
+#require 'mocha'
+
+Spec::Runner.configure do |config|
+  
+end
 
 Dir.glob(File.join('lib', '**/*.jar')).each do |jar_file|
   $CLASSPATH << jar_file

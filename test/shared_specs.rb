@@ -19,3 +19,13 @@ describe "initial mock state", :shared => true do
     Jemini::GameState.active_state = @state
   end
 end
+
+describe "resourceless game state", :shared => true do
+  before :each do
+    Jemini::GameState.stub_instance(:load_resources)
+  end
+
+  after :each do
+    Jemini::GameState.unstub_instance(:load_resources)
+  end
+end

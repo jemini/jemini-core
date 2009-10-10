@@ -2,13 +2,14 @@ require 'spec_helper'
 require 'managers/sound_manager'
 
 describe 'SoundManager' do
-
+  it_should_behave_like 'initial mock state'
   before :each do
-    @state = Jemini::GameState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
     @sound_manager = SoundManager.new(@state)
-    @state.send(:set_manager, :sound, @sound_manager)
-    @resource_manager = mock('ResourceManager')
-    @state.send(:set_manager, :resource, @resource_manager)
+    @resource_manager = ResourceManager.new(@state)
+    @resource_manager.stub!(:load_resource).and_return(mock('Resource'))
+
+    @state.stub!(:manager).with(:resource).and_return(@resource_manager)
+    @state.stub!(:manager).with(:sound).and_return(@sound_manager)
   end
   
   describe "#play_sound" do
