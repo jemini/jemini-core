@@ -5,7 +5,8 @@ MARGIN = 0.001
 MILLISECONDS = 40.0
 
 describe "Physical" do
-  
+  it_should_behave_like 'resourceless game state'
+
   def do_update
     @state.manager(:physics).update(MILLISECONDS)
   end
