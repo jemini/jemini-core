@@ -4,7 +4,7 @@ class Flag < Jemini::GameObject
   def load(tank)
     @tank = tank
     set_image :flag_background
-    @logo = @game_state.create_on_layer :GameObject, :logo, :Sprite
+    @logo = game_state.create_on_layer :GameObject, :logo, :Sprite
     @logo.set_image :gangplank_logo
 
     snap_to_tank
@@ -18,6 +18,6 @@ class Flag < Jemini::GameObject
   end
 
   def unload
-    @game_state.remove @logo
+    game_state.remove @logo
   end
 end

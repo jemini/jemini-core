@@ -8,14 +8,14 @@ class AIManager < Jemini::GameObject
     @current_wave = @waves.shift
     @action = :waiting
     
-    @game_state.manager(:update).on_before_update do |delta|
+    game_state.manager(:update).on_before_update do |delta|
       case @action
       when :waiting
         # Spawn a new wave
         case @current_wave
         when :dot_net
           10.times do
-            @enemies << @game_state.create_game_object(:DotNet)
+            @enemies << game_state.create_game_object(:DotNet)
             @enemies.last.x = 700
           end
         end

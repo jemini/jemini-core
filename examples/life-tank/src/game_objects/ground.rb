@@ -87,7 +87,7 @@ class Ground < Jemini::GameObject
       physical = yield index
       spawn_point_index = rand(spawn_points.size - 2) + 1 # offsets to prevent wall spawning
       point_along_ground = spawn_points.delete_at spawn_point_index
-      point_along_ground.x -= physical.width if point_along_ground.x + physical.width > @game_state.screen_width
+      point_along_ground.x -= physical.width if point_along_ground.x + physical.width > game_state.screen_width
       point_along_ground.x += physical.width if point_along_ground.x - physical.width < 0
       physical.body_position = point_along_ground + offset
     end

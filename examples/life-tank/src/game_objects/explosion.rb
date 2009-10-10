@@ -34,7 +34,7 @@ class Explosion < Jemini::GameObject
     
     add_countdown(:fade, options[:duration])
     on_countdown_complete do |name|
-      @game_state.remove self if name == :fade
+      game_state.remove self if name == :fade
     end
 
 #    add_tag :damage

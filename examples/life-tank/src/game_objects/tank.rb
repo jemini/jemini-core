@@ -42,9 +42,9 @@ class Tank < Jemini::GameObject
   end
 
   def unload
-    @game_state.remove @flag
-    @wheels.each {|wheel| @game_state.remove wheel }
-    @game_state.remove @balance
+    game_state.remove @flag
+    @wheels.each {|wheel| game_state.remove wheel }
+    game_state.remove @balance
   end
 
   def take_damage(collision_event)
@@ -54,8 +54,8 @@ class Tank < Jemini::GameObject
   end
 
   def explode
-    explosion = @game_state.create :Explosion, :location => body_position, :radius => 40.0
-    @game_state.remove self
+    explosion = game_state.create :Explosion, :location => body_position, :radius => 40.0
+    game_state.remove self
   end
   
   def life=(value)
@@ -66,7 +66,7 @@ class Tank < Jemini::GameObject
 private
 
   def attach_flag
-    @flag = @game_state.create_on_layer :Flag, :flag, self
+    @flag = game_state.create_on_layer :Flag, :flag, self
     @flag.color = COLOR_WHEEL[@player_id]
   end
 
@@ -100,7 +100,7 @@ private
   end
 
   def attach_balance
-    @balance = @game_state.create :Balance
+    @balance = game_state.create :Balance
     @balance.body_position = Vector.new(0.0, BALANCE_OFFSET)
     on_after_add_to_world do
       join_to_physical @balance, :joint => :basic, :anchor => @balance.body_position, :relaxation => 0.0
@@ -112,13 +112,13 @@ private
   end
 
   def attach_wheels
-    left_wheel = @game_state.create :TankWheel, self
+    left_wheel = game_state.create :TankWheel, self
     left_wheel.body_position = Vector.new(-16.0, 8.0)
 
-    middle_wheel = @game_state.create :TankWheel, self
+    middle_wheel = game_state.create :TankWheel, self
     middle_wheel.body_position = Vector.new(0.0, 8.0)
 
-    right_wheel = @game_state.create :TankWheel, self
+    right_wheel = game_state.create :TankWheel, self
     right_wheel.body_position = Vector.new(16.0, 8.0)
 
     @wheels = [left_wheel, middle_wheel, right_wheel]

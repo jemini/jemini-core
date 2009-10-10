@@ -17,7 +17,7 @@ class RollingMine < Shell
   end
 
   def explode(event)
-    explosion = @game_state.create(:Explosion,
+    explosion = game_state.create(:Explosion,
       :location => body_position,
       :sound_volume => 0.8,
       :sound_pitch => 1.2,
@@ -25,7 +25,7 @@ class RollingMine < Shell
       :radius => 32.0,
       :force => 500.0
     )
-    @game_state.remove self
+    game_state.remove self
   end
   
 end

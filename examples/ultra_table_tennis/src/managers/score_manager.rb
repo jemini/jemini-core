@@ -4,8 +4,8 @@ class ScoreManager < Jemini::GameObject
   def load
     @player1_score = 0
     @player2_score = 0
-    @player1_score_text = @game_state.create_game_object :Text, 10, 460, "Score: 0"
-    @player2_score_text = @game_state.create_game_object :Text, 580, 460, "Score: 0"
+    @player1_score_text = game_state.create_game_object :Text, 10, 460, "Score: 0"
+    @player2_score_text = game_state.create_game_object :Text, 580, 460, "Score: 0"
     
     @balls = []
     
@@ -13,7 +13,7 @@ class ScoreManager < Jemini::GameObject
   end
   
   def countdown_to_new_round
-    @countdown_text = @game_state.create_game_object :Text, 640 / 2, 480 / 2, "5"
+    @countdown_text = game_state.create_game_object :Text, 640 / 2, 480 / 2, "5"
     add_countdown(:new_round_countdown, 5, 1)
     
     on_timer_tick do |timer|
@@ -21,7 +21,7 @@ class ScoreManager < Jemini::GameObject
     end
     
     on_countdown_complete do
-      @game_state.remove_game_object @countdown_text
+      game_state.remove_game_object @countdown_text
       new_round
     end
   end
@@ -40,13 +40,13 @@ class ScoreManager < Jemini::GameObject
       @player1_score += 1
       @player1_score_text.text = "Score: #{@player1_score}"
     end
-    @game_state.manager(:game_object).remove_game_object ball
+    game_state.manager(:game_object).remove_game_object ball
     spawn_new_ball
   end
   
 private
   def spawn_new_ball
-    ball = @game_state.create_game_object_on_layer :Ball, :ball_layer
+    ball = game_state.create_game_object_on_layer :Ball, :ball_layer
     ball.move(320, rand(400 - ball.height) + 40)
     add_random_behavior_to_ball ball
 

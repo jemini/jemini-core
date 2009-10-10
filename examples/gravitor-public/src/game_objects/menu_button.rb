@@ -13,11 +13,11 @@ class MenuButton < Jemini::GameObject
   end
   
   def unload
-    @game_state.remove_game_object @text
+    game_state.remove_game_object @text
   end
   
   def text=(text)
-    @text ||= @game_state.create_game_object_on_layer(:Text, :gui_text)
+    @text ||= game_state.create_game_object_on_layer(:Text, :gui_text)
     # third time is the charm
     @text.text = text
   end

@@ -30,8 +30,8 @@ class Shell < Jemini::GameObject
   end
 
   def explode(event)
-    explosion = @game_state.create(:Explosion, :location => body_position)
-    @game_state.remove self
+    explosion = game_state.create(:Explosion, :location => body_position)
+    game_state.remove self
   end
 
   def damage

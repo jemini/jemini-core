@@ -13,7 +13,7 @@ class Nuke < Shell
   end
 
   def explode(event)
-    explosion = @game_state.create(:Explosion,
+    explosion = game_state.create(:Explosion,
       :location => body_position,
       :duration => 0.3,
       :sound_volume => 1.5,
@@ -22,7 +22,7 @@ class Nuke < Shell
       :radius => 128.0,
       :force => 5000
     )
-    @game_state.remove self
+    game_state.remove self
   end
   
 end

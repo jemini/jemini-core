@@ -3,7 +3,7 @@ class TagManager < Jemini::GameObject
   def load
     require 'behaviors/taggable'
     @tagged_objects = Hash.new { |h,k| h[k] = [] }
-    listen_for(:after_add_game_object, @game_state.manager(:game_object)) do |game_object|
+    listen_for(:after_add_game_object, game_state.manager(:game_object)) do |game_object|
       if game_object.kind_of? Taggable
         game_object.tags.each do |tag|
           @tagged_objects[tag] << game_object
@@ -17,7 +17,7 @@ class TagManager < Jemini::GameObject
       end
     end
     
-    listen_for(:after_remove_game_object, @game_state.manager(:game_object)) do |game_object|
+    listen_for(:after_remove_game_object, game_state.manager(:game_object)) do |game_object|
       if game_object.kind_of? Taggable
         game_object.tags.each do |tag|
           @tagged_objects[tag].delete game_object

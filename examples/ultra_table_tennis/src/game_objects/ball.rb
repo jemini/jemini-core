@@ -11,7 +11,7 @@ class Ball < Jemini::GameObject
     set_speed_limit 30
     on_collided do |message|
       if message.other.respond_to?(:has_tag?) && message.other.has_tag?(:score_region)
-        @game_state.manager(:score).ball_scored self
+        game_state.manager(:score).ball_scored self
       end
     end
   end

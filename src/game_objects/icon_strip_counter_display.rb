@@ -22,11 +22,11 @@ class IconStripCounterDisplay < Jemini::GameObject
       if diff > 0
         1.upto diff do
           last_icon = @icons.pop
-          @game_state.remove_game_object last_icon
+          game_state.remove_game_object last_icon
         end
       elsif diff < 0
         1.upto diff.abs do
-          sprite = @game_state.create_game_object :GameObject
+          sprite = game_state.create_game_object :GameObject
           sprite.add_behavior :Sprite
           sprite.add_behavior :CameraAnchoredDrawable
           sprite.image = @icon
