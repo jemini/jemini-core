@@ -16,6 +16,7 @@ describe 'AnimatedImage' do
     @state.stub!(:manager).with(:resource).and_return(@resource_manager)
     @resource_manager.load_resources
     @game_object = Jemini::GameObject.new(@state, :AnimatedImage)
+    @game_object.animation_speed = 500
   end
 
   describe '#animate_as' do

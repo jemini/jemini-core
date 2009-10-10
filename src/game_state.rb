@@ -58,7 +58,7 @@ module Jemini
                          elsif Module.const_defined?(type.camelize.to_sym)
                            type.constantize
                          else
-                           require type.underscore
+                           try_require("game_objects/#{type.underscore}") or try_require("managers/#{type.underscore}")
                            type.camelize.constantize
                          end
       game_object = game_object_type.new(self, *params)
@@ -142,6 +142,15 @@ module Jemini
     
     def set_manager(type, manager)
       @managers[type] = manager
+    end
+    
+    def try_require(path)
+      begin
+        require path
+      rescue LoadError => e
+        return false
+      end
+      return true
     end
   end
 end

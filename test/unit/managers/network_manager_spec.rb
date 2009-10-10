@@ -3,13 +3,11 @@ require 'spec_helper'
 require 'managers/network_manager'
 
 describe 'NetworkManager' do
-
+  it_should_behave_like 'initial mock state'
   # it_should_behave_like "a manager"
 
   before :each do
-    @state = Jemini::GameState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
     @network_manager = Jemini::NetworkManager.new(@state)
-    @state.send(:set_manager, :network, @network_manager)
   end
   
   it "accepts peer addresses" do

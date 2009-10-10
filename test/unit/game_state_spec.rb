@@ -3,12 +3,17 @@ require 'game_state'
 describe 'Jemini::GameState' do
   it_should_behave_like 'initial mock game'
   it_should_behave_like 'initial mock container'
-
+  it_should_behave_like 'resourceless game state'
+  
   before :each do
     @raw_input = mock(:MockContainerInput, :add_listener => nil, :poll => nil)
     @container.stub!(:input).and_return @raw_input
     @game_state = Jemini::GameState.new(@container, @game)
     Jemini::GameState.active_state = @game_state
+  end
+
+  after :each do
+    Jemini::GameState.unstub_instance(:load_resources)
   end
 
   describe 'input' do
