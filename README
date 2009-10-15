@@ -1,1 +1,0 @@
-JVM options: -Djava.library.path=lib/native_files -XX:+UseConcMarkSweepGC -Djruby.compile.mode=FORCE -server
