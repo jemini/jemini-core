@@ -1,0 +1,6 @@
+1.0.2
+Simpler/better input binding API. 
+ResourceManager added - loads images, sounds, and music from files.
+Behavior::AnimatedImage added.
+Now use @game_object instead of @target within behaviors to reference the object the behavior's being applied to.
+Example games moved to separate repos - see http://jemini.org.
