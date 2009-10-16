@@ -87,10 +87,10 @@ ENDL
     end
 
     def generate_default_dirs
-      mkdir_p File.expand_path(File.join(@project_dir, 'src', 'game_objects'))
+      mkdir_p File.expand_path(File.join(@project_dir, 'data'))
       mkdir_p File.expand_path(File.join(@project_dir, 'src', 'behaviors'))
-      mkdir_p File.expand_path(File.join(@project_dir, 'src', 'input_mappings'))
-      mkdir_p File.expand_path(File.join(@project_dir, 'src', 'input_helpers'))
+      mkdir_p File.expand_path(File.join(@project_dir, 'src', 'game_objects'))
+      mkdir_p File.expand_path(File.join(@project_dir, 'src', 'input'))
       mkdir_p File.expand_path(File.join(@project_dir, 'src', 'states'))
     end
 
@@ -100,6 +100,12 @@ ENDL
       File.open(path, "w") do |f|
         f << <<-ENDL
 class HelloWorldState < Jemini::GameState
+  def load
+    create(:Text,
+      "Now, place your own state code in the src/states folder!",
+      :position => Vector.new(screen_width / 2, screen_height / 2)
+    )
+  end
 end
 ENDL
       end
