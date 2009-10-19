@@ -131,8 +131,8 @@ module Jemini
       end
     end
     
-    def listen_for(message, target=self, &block)
-      target.send("on_#{message}", &block)
+    def listen_for(message, game_object=self, &block)
+      game_object.send("on_#{message}", &block)
     end
 
     #Get the Logger object (see the Ruby standard library documentation).

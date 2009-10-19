@@ -58,14 +58,6 @@ describe 'Jemini::ProjectGenerator', 'project generation' do
     File.should be_directory(File.join(@project_dir, 'src', 'inputs'))
   end
 
-  it "generates src/input_helpers" do
-    generator = Jemini::ProjectGenerator.new(:project_dir => @project_dir)
-    generator.generate_default_dirs
-
-    File.should be_exist(File.join(@project_dir, 'src', 'input_helpers'))
-    File.should be_directory(File.join(@project_dir, 'src', 'input_helpers'))
-  end
-
   it "invokes Rawr to install itself in the project" do
     generator = Jemini::ProjectGenerator.new(:project_dir => @project_dir, :rawr_install => '--no-download')
     generator.rawr_install

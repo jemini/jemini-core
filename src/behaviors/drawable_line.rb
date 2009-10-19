@@ -10,8 +10,8 @@ class DrawableLine < Jemini::Behavior
 
   def load
     @line_end_position = Vector.new(0.0, 0.0)
-    @line = Line.new @target.position.to_slick_vector, @line_end_position.to_slick_vector
-    @target.on_after_position_changes { set_line }
+    @line = Line.new @game_object.position.to_slick_vector, @line_end_position.to_slick_vector
+    @game_object.on_after_position_changes { set_line }
     #@color = Color.white
   end
 
@@ -27,6 +27,6 @@ class DrawableLine < Jemini::Behavior
 
 private
   def set_line
-    @line.set @target.position.to_slick_vector, @line_end_position.to_slick_vector
+    @line.set @game_object.position.to_slick_vector, @line_end_position.to_slick_vector
   end
 end

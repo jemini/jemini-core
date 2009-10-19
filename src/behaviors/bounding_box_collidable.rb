@@ -6,13 +6,13 @@ class BoundingBoxCollidable < Jemini::Behavior
   depends_on :Spatial2d
   
   def load
-    @target.enable_listeners_for :collided
+    @game_object.enable_listeners_for :collided
   end
   
   def collision_check(collidable)
-    return if self == collidable || @target == collidable
+    return if self == collidable || @game_object == collidable
 
-    notify :collided, BoundingBoxCollisionEvent.new(@target, collidable) if bounds.intersects(collidable.bounds)
+    notify :collided, BoundingBoxCollisionEvent.new(@game_object, collidable) if bounds.intersects(collidable.bounds)
   end
 end
 

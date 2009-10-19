@@ -5,7 +5,7 @@ class DebugTangible < Jemini::Behavior
   SlickVector = Java::org::newdawn::slick::geom::Vector2f
 
   def load
-    @target.game_state.manager(:render).on_after_render do |graphics|
+    game_state.manager(:render).on_after_render do |graphics|
       draw(graphics)
     end
   end
@@ -16,9 +16,9 @@ class DebugTangible < Jemini::Behavior
 
   def draw(graphics)
     #TODO: Support joints and composite bodies(?)
-    tangible_shape = @target.instance_variable_get(:@__behaviors)[:Tangible].instance_variable_get(:@tangible_shape)
+    tangible_shape = @game_object.instance_variable_get(:@__behaviors)[:Tangible].instance_variable_get(:@tangible_shape)
     graphics_shape = if tangible_shape.kind_of? TangibleBox
-                       Java::org.newdawn.slick.geom.Polygon.new(tangible_shape.get_points(@target.top_left_position, 0).map{|point| [point.x, point.y]}.flatten.to_java(:float))
+                       Java::org.newdawn.slick.geom.Polygon.new(tangible_shape.get_points(@game_object.top_left_position, 0).map{|point| [point.x, point.y]}.flatten.to_java(:float))
 #                     elsif tangible_shape.kind_of?(Java::net.phys2d.raw.shapes.Polygon)
 #                       Java::org.newdawn.slick.geom.Polygon.new(tangible_shape.get_vertices(body.position, body.rotation).map{|point| [point.x, point.y]}.flatten.to_java(:float))
 #                     elsif tangible_shape.kind_of? Java::net.phys2d.raw.shapes.Circle

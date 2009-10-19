@@ -6,20 +6,20 @@ class PhysicalSprite < Jemini::Behavior
   alias_method :set_tiled_to_bounds, :tiled_to_bounds=
   
   def load
-    @target.on_before_draw :draw_physical_sprite
+    @game_object.on_before_draw :draw_physical_sprite
     @offset_position = Vector.new
     @offset_rotation = 0.0
   end
   
   def bounded_image=(new_image)
-    @target.set_image new_image
-    @target.set_shape(:Box, @target.image_size.x, @target.image_size.y)
+    @game_object.set_image new_image
+    @game_object.set_shape(:Box, @game_object.image_size.x, @game_object.image_size.y)
   end
   alias_method :set_bounded_image, :bounded_image=
   
   def tiled_to_bounds=(state)
     @tiled_to_bounds = state
-    @target.image_size = @target.box_size
+    @game_object.image_size = @game_object.box_size
   end
 
   def physical_sprite_position_offset=(offset)
@@ -33,13 +33,13 @@ class PhysicalSprite < Jemini::Behavior
   alias_method :set_physical_sprite_rotation_offset, :physical_sprite_rotation_offset=
 
   def draw_physical_sprite(graphics)
-    @target.image_rotation = @target.physical_rotation unless @target.image.nil?
+    @game_object.image_rotation = @game_object.physical_rotation unless @game_object.image.nil?
     #TODO: Only execute this if the shape is bound to the image.
     #TODO: Call raw_move instead of x= and y=
-    position = @target.body_position
+    position = @game_object.body_position
 
-    offset = Vector::ORIGIN.pivot_around_degrees(@offset_position, @target.physical_rotation + @offset_rotation)
-    @target.x = position.x + offset.x
-    @target.y = position.y + offset.y
+    offset = Vector::ORIGIN.pivot_around_degrees(@offset_position, @game_object.physical_rotation + @offset_rotation)
+    @game_object.x = position.x + offset.x
+    @game_object.y = position.y + offset.y
   end
 end

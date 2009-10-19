@@ -18,25 +18,25 @@ class Regional < Jemini::Behavior
   
   # This is bad. We need a real collision system
   def load
-    @target.enable_listeners_for :entered_region, :exited_region
-    @target.move(0,0)
+    @game_object.enable_listeners_for :entered_region, :exited_region
+    @game_object.move(0,0)
     @dimensions = Vector.new(1,1)
     @last_spatials_within = []
     @last_spatials_without = nil
     @last_spatials = []
     #TODO: SAVE: This should be turned on when requested.
-#    @target.game_state.manager(:update).on_update do
-#      spatials = @target.game_state.manager(:game_object).game_objects.select {|game_object| game_object.kind_of? Tangible}.compact
+#    game_state.manager(:update).on_update do
+#      spatials = game_state.manager(:game_object).game_objects.select {|game_object| game_object.kind_of? Tangible}.compact
 #      
 #      spatials_within, spatials_without = spatials.partition {|spatial| within_region?(spatial)}
 #      (spatials_within - @last_spatials_within).each do |spatial_within|
-#        @target.notify :entered_region, RegionalTransitionEvent.new(self, spatial_within) if existed_last_update? spatial_within
+#        @game_object.notify :entered_region, RegionalTransitionEvent.new(self, spatial_within) if existed_last_update? spatial_within
 #      end
 #      @last_spatials_within = spatials_within
 #      
 #      unless @last_spatials_without.nil?
 #        (spatials_without - @last_spatials_without).each do |spatial_without|
-#          @target.notify :exited_region, RegionalTransitionEvent.new(self, spatial_without) if existed_last_update? spatial_without
+#          @game_object.notify :exited_region, RegionalTransitionEvent.new(self, spatial_without) if existed_last_update? spatial_without
 #        end
 #      end
 #      @last_spatials_without = spatials_without
@@ -48,8 +48,8 @@ class Regional < Jemini::Behavior
   def within_region?(spatial)
     half_width = dimensions.x / 2.0
     half_height = dimensions.y / 2.0
-    ((@target.x - half_width) < spatial.x) && ((@target.x + half_width) > spatial.x) &&
-    ((@target.y - half_height) < spatial.y) && ((@target.y + half_height) > spatial.y)
+    ((@game_object.x - half_width) < spatial.x) && ((@game_object.x + half_width) > spatial.x) &&
+    ((@game_object.y - half_height) < spatial.y) && ((@game_object.y + half_height) > spatial.y)
   end
   
   #Indicates whether the given object existed on the previous world update.
@@ -61,16 +61,16 @@ class Regional < Jemini::Behavior
   def toggle_debug_mode
     @debug_mode = !@debug_mode
     if @debug_mode
-      @target.game_state.manager(:render).on_before_render do |graphics|
+      game_state.manager(:render).on_before_render do |graphics|
         old_color = graphics.color
         graphics.color = Color.new(0.0, 1.0, 0.0, 0.3).native_color
         half_width = dimensions.x / 2.0
         half_height = dimensions.y / 2.0
-        graphics.fill_rect(@target.x - half_width, @target.y - half_height, dimensions.x, dimensions.y)
+        graphics.fill_rect(@game_object.x - half_width, @game_object.y - half_height, dimensions.x, dimensions.y)
         graphics.color = old_color
       end
     else
-      @target.game_state.manager(:render).remove_before_draw self
+      game_state.manager(:render).remove_before_draw self
     end
   end
 end

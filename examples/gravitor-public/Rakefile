@@ -1,6 +1,0 @@
-require 'rawr'
-
-task :import_jemini do
-  FileUtils.rm_rf 'lib'
-  FileUtils.cp_r('../jemini/package/jar', 'lib')
-end

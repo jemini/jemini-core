@@ -18,15 +18,15 @@ class BasicPhysicsManager < Jemini::GameObject
     @world = World.new(Vector2f.new(0, 0), 5, QuadSpaceStrategy.new(20, 5))
 #    @world = World.new(Vector2f.new(0, 0), 10, BruteCollisionStrategy.new)
     @world.add_listener self
-    @game_state.manager(:update).on_update do |delta|
+    game_state.manager(:update).on_update do |delta|
       update delta
     end
     
-    @game_state.manager(:game_object).on_after_add_game_object do |game_object|
+    game_state.manager(:game_object).on_after_add_game_object do |game_object|
       add_to_world game_object if game_object.has_behavior? :Physical
     end
     
-    @game_state.manager(:game_object).on_after_remove_game_object do |game_object|
+    game_state.manager(:game_object).on_after_remove_game_object do |game_object|
       game_object.remove_from_world(@world) if game_object.has_behavior? :Physical
     end
     

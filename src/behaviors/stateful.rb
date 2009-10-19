@@ -17,8 +17,8 @@ class Stateful < Jemini::Behavior
   
   def load
     @state_transitions = {}
-    @target.enable_listeners_for :state_transfer_accepted
-    @target.enable_listeners_for :state_transfer_rejected
+    @game_object.enable_listeners_for :state_transfer_accepted
+    @game_object.enable_listeners_for :state_transfer_rejected
   end
   
   def transfer_state(state)

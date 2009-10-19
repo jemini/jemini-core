@@ -30,7 +30,8 @@ PROJ.spec.files = FileList['test/**/*_spec.rb'],
 PROJ.spec.opts << '--color'
 PROJ.spec.libs << 'test/unit'
 PROJ.ruby_opts = []
-PROJ.libs << 'src'
+PROJ.gem.files = FileList['src/**/*', 'lib/**/*', 'package/jar/*', 'README.txt']
+PROJ.gem.executables = ['jemini']
 PROJ.gem.dependencies << ["rawr", ">= 1.3.7"]
 PROJ.gem.platform = "java"
 PROJ.rdoc.exclude << /lib/
@@ -48,7 +49,7 @@ end
 desc "Create documentation"
 Rake::RDocTask.new do |task|
   task.rdoc_dir = "doc"
-  task.rdoc_files = FileList["src/**/*.rb", "README.txt"]
+  task.rdoc_files = FileList["src/**/*.rb", "README.txt", "COPYING", "CONTRIBUTORS"]
   task.options = [
     "--title", "Jemini - A game library for Ruby/JRuby",
     "--main", "README.txt"

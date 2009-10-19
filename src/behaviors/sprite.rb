@@ -16,7 +16,7 @@ class Sprite < Drawable
 
   #Takes a reference to an image loaded via the resource manager, and sets the sprite image.
   def image=(reference)
-    store_image(@target.game_state.manager(:resource).get_image(reference))
+    store_image(game_state.manager(:resource).get_image(reference))
   end
   alias_method :set_image, :image=
 
@@ -71,7 +71,7 @@ class Sprite < Drawable
   #Returns a Vector with the x/y coordinates of the sprite Image's top left corner.
   def top_left_position
     #Vector.new(center_position.x - image_size.x / 2.0, center_position.y - image_size.y / 2.0)
-    Vector.new(@target.x - image_size.x / 2.0, @target.y - image_size.y / 2.0)
+    Vector.new(@game_object.x - image_size.x / 2.0, @game_object.y - image_size.y / 2.0)
   end
   
   #Takes either a single Vector or the x/y coordinates to move the sprite Image's top left corner to.
@@ -79,9 +79,9 @@ class Sprite < Drawable
     half_width = image_size.x / 2.0
     half_height = image_size.y / 2.0
     if move_y.nil?
-      @target.move(move_x_or_vector.x + half_width, move_x_or_vector.y + half_height)
+      @game_object.move(move_x_or_vector.x + half_width, move_x_or_vector.y + half_height)
     else
-      @target.move(move_x_or_vector + half_width, move_y + half_height)
+      @game_object.move(move_x_or_vector + half_width, move_y + half_height)
     end
   end
   
@@ -90,12 +90,12 @@ class Sprite < Drawable
     return if @image.nil? || @image_size.nil?
     half_width = image_size.x / 2.0
     half_height = image_size.y / 2.0
-    center_x = @target.x - half_width
-    center_y = @target.y - half_height
+    center_x = @game_object.x - half_width
+    center_y = @game_object.y - half_height
     unless 0 == @rotation
-      graphics.rotate @target.x, @target.y, @rotation
+      graphics.rotate @game_object.x, @game_object.y, @rotation
     end
-    @image.draw(center_x, center_y, @target.x + half_width, @target.y + half_height,
+    @image.draw(center_x, center_y, @game_object.x + half_width, @game_object.y + half_height,
                 @texture_coords[0].x * image_size.x, @texture_coords[0].y * image_size.y, @texture_coords[1].x * image_size.x, @texture_coords[1].y * image_size.y,
                 @color.native_color)
     graphics.reset_transform

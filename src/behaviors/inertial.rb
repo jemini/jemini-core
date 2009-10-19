@@ -7,7 +7,7 @@ class Inertial < Jemini::Behavior
   
   def load
     @inertia = [0,0]
-    @target.on_update do
+    @game_object.on_update do
       move(@inertia[0] + x, @inertia[1] + y)
     end
   end

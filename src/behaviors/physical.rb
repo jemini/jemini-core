@@ -29,12 +29,12 @@ class Physical < Jemini::Behavior
     @shape = Box.new(1,1)
     setup_body
     @body.restitution = 0.0
-    @body.user_data = @target
+    @body.user_data = @game_object
     @angular_damping = 0.0
-    @target.enable_listeners_for :physical_collided
-    @target.on_after_position_changes { move_body @target.position }
+    @game_object.enable_listeners_for :physical_collided
+    @game_object.on_after_position_changes { move_body @game_object.position }
     # Manual angular damping. New Phys2D may support this? If not, file a bug.
-    @target.on_update do |delta|
+    @game_object.on_update do |delta|
       next if @angular_damping.zero? || angular_velocity.zero?
       decay = (delta * @angular_damping * angular_velocity) / (mass * shape.surface_factor)
       set_angular_velocity(angular_velocity - decay) unless decay.nan?
@@ -47,9 +47,9 @@ class Physical < Jemini::Behavior
 
   # prevent collision and interaction with all physicals now and in the future
   def exclude_all_physicals
-    @target.game_state.manager(:game_object).game_objects.select {|game_object| game_object.has_behavior? :Physical }.each {|physical| add_excluded_physical physical }
+    game_state.manager(:game_object).game_objects.select {|game_object| game_object.has_behavior? :Physical }.each {|physical| add_excluded_physical physical }
     
-    @target.game_state.manager(:game_object).on_before_add_game_object do |game_object, event|
+    game_state.manager(:game_object).on_before_add_game_object do |game_object, event|
       add_excluded_physical game_object if game_object.has_behavior? :Physical
     end
   end
@@ -223,7 +223,7 @@ class Physical < Jemini::Behavior
     @body.set(@shape, @mass)
     # TODO: Consider moving to set_shape
     # A body's position is lost when it moves, reset the position to where it was
-    @body.move @target.position.x, @target.position.y
+    @body.move @game_object.position.x, @game_object.position.y
   end
   alias_method :set_mass, :mass=
 
@@ -248,8 +248,8 @@ class Physical < Jemini::Behavior
     saved_angular_damping = angular_damping
     saved_body_position = body_position
     saved_friction = friction
-    saved_position = @target.position
-    saved_x, saved_y = @target.x, @target.y
+    saved_position = @game_object.position
+    saved_x, saved_y = @game_object.x, @game_object.y
     if shape.respond_to?(:to_str) || shape.kind_of?(Symbol)
       case shape.to_s
       when 'Polygon', 'ConvexPolygon'
@@ -262,9 +262,9 @@ class Physical < Jemini::Behavior
 
     @body.set(@shape, @mass)
     set_body_position saved_body_position
-    @target.set_position saved_position
+    @game_object.set_position saved_position
     set_friction saved_friction
-    @target.position = Vector.new(saved_x, saved_y)
+    @game_object.position = Vector.new(saved_x, saved_y)
     self.damping = saved_damping
     self.angular_damping = saved_angular_damping
   end
@@ -289,9 +289,9 @@ class Physical < Jemini::Behavior
   #Turn debug mode on or off for this object.
   def physical_debug_mode=(flag)
     if flag
-      @target.add_behavior :DebugPhysical
+      @game_object.add_behavior :DebugPhysical
     else
-      @target.remove_behavior :DebugPhysical
+      @game_object.remove_behavior :DebugPhysical
     end
   end
   alias_method :set_physical_debug_mode, :physical_debug_mode=

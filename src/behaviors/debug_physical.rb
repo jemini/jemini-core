@@ -13,7 +13,7 @@ class DebugPhysical < Jemini::Behavior
   include_class 'net.phys2d.raw.shapes.Box'
 
   def load
-    @target.game_state.manager(:render).on_after_render do |graphics|
+    game_state.manager(:render).on_after_render do |graphics|
       draw(graphics)
     end
   end
@@ -25,7 +25,7 @@ class DebugPhysical < Jemini::Behavior
 private
   def draw(graphics)
     #TODO: Support joints and composite bodies(?)
-    body = @target.instance_variable_get(:@__behaviors)[:Physical].instance_variable_get(:@body)
+    body = @game_object.instance_variable_get(:@__behaviors)[:Physical].instance_variable_get(:@body)
     physics_shape = body.shape
     graphics_shape = if physics_shape.kind_of? Box
                        SlickPolygon.new(physics_shape.get_points(body.position, body.rotation).map{|point| [point.x, point.y]}.flatten.to_java(:float))

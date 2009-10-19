@@ -13,7 +13,7 @@ class GridBound < Jemini::Behavior
 
   def load
     @grid_size = DEFAULT_GRID_SIZE
-    @target.on_movement { notify_grid_changed }
+    @game_object.on_movement { notify_grid_changed }
     @grid_position = detect_grid_position
   end
 
@@ -27,7 +27,7 @@ class GridBound < Jemini::Behavior
   # position is a vector
   # setting grid position calculates at the center of the grid
   def grid_position=(grid_position)
-    @target.position = position_at(grid_position)
+    @game_object.position = position_at(grid_position)
     @grid_position = grid_position
   end
 
@@ -63,13 +63,13 @@ class GridBound < Jemini::Behavior
   end
 
   def move_to_grid(grid)
-    @target.move_to position_at(grid)
+    @game_object.move_to position_at(grid)
   end
 
   def snap_to_grid
     grids = adjacent_grids
     grids << grid_position
-    nearest_grid = grids.min_by { |g| position_at(g).distance_from(@target.position) }
+    nearest_grid = grids.min_by { |g| position_at(g).distance_from(@game_object.position) }
     self.grid_position = nearest_grid
   end
 
@@ -98,11 +98,11 @@ private
 
     unless old_position == new_position
       @grid_position = new_position
-      @target.notify(:grid_changed, GridChangedEvent.new(new_position, old_position))
+      @game_object.notify(:grid_changed, GridChangedEvent.new(new_position, old_position))
     end
   end
 
   def detect_grid_position
-    grid_at @target.position
+    grid_at @game_object.position
   end
 end

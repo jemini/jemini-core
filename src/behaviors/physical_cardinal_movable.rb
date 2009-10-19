@@ -26,8 +26,8 @@ class PhysicalCardinalMovable < Jemini::Behavior
     @facing_direction = NORTH
     @allowed_directions = CARDINAL_DIRECTIONS.dup
     @cardinal_speed = 25
-    @target.on_update do
-      @target.add_velocity @cardinal_velocity if @moving
+    @game_object.on_update do
+      @game_object.add_velocity @cardinal_velocity if @moving
     end
   end
   
