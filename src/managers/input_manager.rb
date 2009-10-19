@@ -124,7 +124,7 @@ module Jemini
 
     def use_input(input)
       @@loading_input_manager = self
-      require File.join('input', "#{input}_input")
+      require File.join('inputs', "#{input}_input")
       @@loading_input_manager = nil
       $".pop # remove the entry so we can require it again
     end

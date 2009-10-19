@@ -14,7 +14,7 @@ module Jemini
     def generate_project
       generate_default_dirs
       generate_main
-      generate_main_with_natives
+#      generate_main_with_natives
       copy_libs
       rawr_install
       generate_hello_world_state
@@ -89,7 +89,7 @@ ENDL
     def generate_default_dirs
       mkdir_p File.expand_path(File.join(@project_dir, 'src', 'game_objects'))
       mkdir_p File.expand_path(File.join(@project_dir, 'src', 'behaviors'))
-      mkdir_p File.expand_path(File.join(@project_dir, 'src', 'input_mappings'))
+      mkdir_p File.expand_path(File.join(@project_dir, 'src', 'inputs'))
       mkdir_p File.expand_path(File.join(@project_dir, 'src', 'input_helpers'))
       mkdir_p File.expand_path(File.join(@project_dir, 'src', 'states'))
     end
