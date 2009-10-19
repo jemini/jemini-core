@@ -7,7 +7,7 @@ ANGLE_LEFT  = -ANGLE_RIGHT
 
 
 Jemini::InputBuilder.declare do |i|
-  i.for 'player_1' do
+#  i.for 'player_1' do
     i.in_order_to :adjust_angle do
       i.hold :a, :value => ANGLE_LEFT
       i.hold :d, :value => ANGLE_RIGHT
@@ -27,7 +27,7 @@ Jemini::InputBuilder.declare do |i|
       i.hold :space
       i.hold :left_shift
     end
-  end
+#  end
 #  i.in_order_to :steer do
 ##    i.move :xbox_360_left_stick, :using => :x_axis
 #    i.move :left_arrow,          :value =>  1.0
