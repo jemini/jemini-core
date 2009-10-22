@@ -7,7 +7,3 @@ Jemini is a game library designed to allow creation of reusable features. How ma
 == License
 
 Jemini is released under the BSD license.  See the COPYING file for the full license.
-
-== Project Site
-
-Full source code, a wiki with additional documentation and tutorials, and a user forum are available on the project website: http://kenai.com/projects/jemini
