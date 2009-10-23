@@ -3,10 +3,9 @@ module Jemini
     puts "+++++++++++++++++++"
     puts $0
     puts "In jar? #{File.in_jar?($0)}"
-    puts "@#*($#*(&$@#(*$&"
-    puts org.newdawn.slick.geom.Vector2f.java_class.class_loader.find_resources('data').to_a
     puts "+++++++++++++++++++"
-    @@base_path = File.in_jar?($0) ? File.expand_path(File.join(File.dirname(__FILE__), 'data')) : 'data'
+    # go up two dirs from lib/java
+    @@base_path = File.in_jar?($0) ? File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'data.jar!', 'data')) : 'data'
 
     def self.base_path
       @@base_path

@@ -149,6 +149,7 @@ private
   def scan_entire_jar(directory)
     just_dir = File.basename(directory)
     log.debug "just dir: #{just_dir}"
+    log.debug "dir:      #{directory}"
     jar_name = File.jar_of(directory, 'data') # we're always going to get our data from the data jar
     log.debug "opening jar #{jar_name}"
     jar_file = java.util.jar.JarFile.new(jar_name)
