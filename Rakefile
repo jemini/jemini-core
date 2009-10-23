@@ -36,6 +36,8 @@ PROJ.gem.dependencies << ["rawr", ">= 1.3.7"]
 PROJ.gem.platform = "java"
 PROJ.rdoc.exclude << /lib/
 PROJ.rdoc.exclude << /jemini\.jar/
+PROJ.rdoc.exclude << /package/
+PROJ.rdoc.exclude << /\.java/
 
 task :update_version_readme do
   readme = IO.readlines( 'README.txt')
