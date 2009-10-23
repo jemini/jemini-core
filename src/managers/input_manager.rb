@@ -94,20 +94,8 @@ module Jemini
   # Consumes raw slick_input events and outputs events based on 
   # registered key bindings.
   class InputManager < Jemini::GameObject
-    attr_reader :listeners
-    
-    $LOAD_PATH.each do |path|
-      if File.basename(path) == "input_helpers"
-        # could be .class or .rb, we'll just search for *.* and hope nobody is silly (:
-        Dir.glob(File.join(File.expand_path(path), "*.*").gsub('%20', ' ')).each do |input_helper_path|
-          require input_helper_path.sub('.class', '') # .class can't be required directly
-          include File.basename(input_helper_path, '.rb').sub('.class', '').camelize.constantize
-        end
-      end
-    end
+    attr_reader :listeners 
 
-    MAX_CONTROLLERS = 6
-    
     @@loading_input_manager = nil
     def self.loading_input_manager
       @@loading_input_manager
