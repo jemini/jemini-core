@@ -52,8 +52,8 @@ class Tangible < Jemini::Behavior
     other_shape = other_tangible.tangible_shape
 
     ((@game_object.x <= other_tangible.x && (@game_object.x + @tangible_shape.size.x) >= other_tangible.x) ||
-    (@game_object.x >= other_tangible.x && @game_object.x <= (other_tangible.x + other_shape.size.x))) &&
+    ( @game_object.x >= other_tangible.x &&  @game_object.x <= (other_tangible.x + other_shape.size.x))) &&
     ((@game_object.y <= other_tangible.y && (@game_object.y + @tangible_shape.size.y) >= other_tangible.y) ||
-    (@game_object.y >= other_tangible.y && @game_object.y <= (other_tangible.y + other_shape.size.y)))
+    ( @game_object.y >= other_tangible.y &&  @game_object.y <= (other_tangible.y + other_shape.size.y)))
   end
 end
