@@ -31,7 +31,9 @@ module Jemini
       @input_type     = button_type
       @input_button_or_axis = button_id
       @game_message   = message
-      @game_state     = GameState.active_state
+      # TODO: There has to be a better, threadsafe way to do this.
+      # Maybe threadsafety isn't a huge concern here?
+      @game_state     = Jemini::InputManager::loading_input_manager.game_state
     end
 
     def poll(raw_input)
