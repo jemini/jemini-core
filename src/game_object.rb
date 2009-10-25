@@ -1,9 +1,11 @@
 require 'behavior'
 require 'listenable_mixin'
+require 'logger_mixin'
 
 module Jemini
   class GameObject
     include ListenableMixin
+    include LoggerMixin
     attr_reader :game_state
     
     @@declared_behaviors = Hash.new{|h,k| h[k] = []}
@@ -135,13 +137,6 @@ module Jemini
       game_object.send("on_#{message}", &block)
     end
 
-    #Get the Logger object (see the Ruby standard library documentation).
-    #The log level is set to match the $LOG_LEVEL environment variable, or Logger::ERROR by default.
-    def log
-      require 'logger'
-      @log ||= Logger.new(STDOUT, ENV['LOG_LEVEL'] || Logger::ERROR)
-    end
-    
 #    def kind_of?(klass)
 #      super || @__behaviors.values.inject(false){|result, behavior| result || behavior.class == klass}
 #    end

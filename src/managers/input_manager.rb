@@ -112,7 +112,9 @@ module Jemini
 
     def use_input(input)
       @@loading_input_manager = self
-      require File.join('inputs', "#{input}_input")
+      file_name = File.join('inputs', "#{input}_input")
+      log.debug "Using input mapping: #{file_name}"
+      require file_name
       @@loading_input_manager = nil
       $".pop # remove the entry so we can require it again
     end
