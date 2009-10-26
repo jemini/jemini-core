@@ -20,3 +20,12 @@ require 'test_state'
 
 require 'shared_specs'
 require 'matchers'
+
+def stub_image_resource(reference)
+  @references ||= {}
+  @references[reference] = mock("resource for #{reference}")
+  @game_state.manager(:resource).should_not be_nil
+  @game_state.manager(:resource).stub!(:get_image) do |key|
+    @references[key]
+  end
+end

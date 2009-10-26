@@ -1,10 +1,19 @@
-class BasicRenderManager < Jemini::GameObject
-  include_class 'org.newdawn.slick.geom.Circle'
+require 'managers/render_support/hardware_cursor'
 
+class BasicRenderManager < Jemini::GameObject
+  java_import 'org.newdawn.slick.geom.Circle'
+
+  include HardwareCursor
+  
   def load
     enable_listeners_for :before_render, :after_render
     @image_cache = {}
     @debug_queue = []
+    use_available_hardware_cursor
+  end
+
+  def unload
+    revert_hardware_cursor
   end
   
   #Render all game objects to the given graphics context.

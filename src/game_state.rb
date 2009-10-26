@@ -5,7 +5,9 @@ module Jemini
   class GameState
     
     include LoggerMixin
-    
+
+    attr_reader :container
+
     @@active_state = nil
     def self.active_state
       @@active_state
