@@ -1,10 +1,10 @@
 class FadingImage < Jemini::GameObject
-  has_behavior :Sprite
+  has_behavior :DrawableImage
   has_behavior :Spatial
   has_behavior :Timeable
   
-  def load(sprite, color, seconds_to_fade_away)
-    self.image = sprite
+  def load(image, color, seconds_to_fade_away)
+    self.image = image
     self.color = color
     add_countdown :fade_timer, seconds_to_fade_away, 1.0 / 30.0 
     

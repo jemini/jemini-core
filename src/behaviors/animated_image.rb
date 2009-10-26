@@ -1,10 +1,10 @@
-#A 2D sprite with mutltiple frames of animation.
+#A 2D image with mutltiple frames of animation.
 class AnimatedImage < Jemini::Behavior
   DEFAULT_MILLISECONDS_PER_UPDATE = 250 # quarter of a second
   java_import 'org.newdawn.slick.Image'
   java_import 'org.newdawn.slick.Animation'
 
-  depends_on :Sprite
+  depends_on :DrawableImage
   depends_on :Updates
   
   attr_reader :animations

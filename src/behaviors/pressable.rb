@@ -1,6 +1,6 @@
 #Makes an object change appearance when clicked.
 class Pressable < Jemini::Behavior
-  depends_on :Sprite
+  depends_on :DrawableImage
   depends_on :Clickable
   
   def load

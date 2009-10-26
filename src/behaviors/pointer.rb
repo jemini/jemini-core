@@ -1,6 +1,6 @@
 #Makes an object move with the mouse.
 class Pointer < Jemini::Behavior
-  depends_on :Sprite
+  depends_on :DrawableImage
 #  depends_on :Movable2d
 #  depends_on :CollisionPoolAlgorithmTaggable
 #  depends_on :WorldCollidable

@@ -1,5 +1,5 @@
 class Background < Jemini::GameObject
-  has_behavior :Sprite
+  has_behavior :DrawableImage
   
   #Takes a reference to an image loaded via ResourceManager.
   def load(image)

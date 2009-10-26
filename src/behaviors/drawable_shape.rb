@@ -30,7 +30,7 @@ class DrawableShape < Jemini::Behavior
     end
   end
   
-  #Takes a reference to an image loaded via the resource manager, and sets the sprite image.
+  #Takes a reference to an image loaded via the resource manager, and sets the bitmap.
   def image=(reference)
     @image = game_state.manager(:resource).get_image(reference)
   end

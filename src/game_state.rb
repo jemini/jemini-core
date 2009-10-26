@@ -1,6 +1,11 @@
+require 'logger_mixin'
+
 #All other game states should inherit from this class.
 module Jemini
   class GameState
+    
+    include LoggerMixin
+    
     @@active_state = nil
     def self.active_state
       @@active_state
@@ -56,6 +61,7 @@ module Jemini
       game_object_type = if :game_object == type.to_sym || :GameObject == type.to_sym
                            Jemini::GameObject
                          elsif Module.const_defined?(type.camelize.to_sym)
+                           log.debug "Creating: #{type.camelize.to_sym}"
                            type.constantize
                          else
                            try_require("game_objects/#{type.underscore}") or try_require("managers/#{type.underscore}")
@@ -148,8 +154,10 @@ module Jemini
       begin
         require path
       rescue LoadError => e
+        log.warn "Failed to require: #{path}"
         return false
       end
+      log.debug "Successful require: #{path}"
       return true
     end
   end

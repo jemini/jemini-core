@@ -1,7 +1,7 @@
 require 'behaviors/drawable'
 
 #Makes an object draw itself as a bitmap image.
-class Sprite < Drawable
+class DrawableImage < Drawable
   include_class 'org.newdawn.slick.Image'
   depends_on :Spatial
   attr_accessor :image, :color, :texture_coords, :image_size
@@ -14,13 +14,13 @@ class Sprite < Drawable
     @rotation = 0.0
   end
 
-  #Takes a reference to an image loaded via the resource manager, and sets the sprite image.
+  #Takes a reference to an image loaded via the resource manager, and sets the bitmap.
   def image=(reference)
     store_image(game_state.manager(:resource).get_image(reference))
   end
   alias_method :set_image, :image=
 
-  #Assign a Color to the sprite.
+  #Assign a Color to the image.
   def color=(color)
     @color = color
   end
@@ -68,13 +68,13 @@ class Sprite < Drawable
     @texture_coords[1].y, @texture_coords[0].y = @texture_coords[0].y, @texture_coords[1].y
   end
   
-  #Returns a Vector with the x/y coordinates of the sprite Image's top left corner.
+  #Returns a Vector with the x/y coordinates of the image's top left corner.
   def top_left_position
     #Vector.new(center_position.x - image_size.x / 2.0, center_position.y - image_size.y / 2.0)
     Vector.new(@game_object.x - image_size.x / 2.0, @game_object.y - image_size.y / 2.0)
   end
   
-  #Takes either a single Vector or the x/y coordinates to move the sprite Image's top left corner to.
+  #Takes either a single Vector or the x/y coordinates to move the image's top left corner to.
   def move_by_top_left(move_x_or_vector, move_y = nil)
     half_width = image_size.x / 2.0
     half_height = image_size.y / 2.0
@@ -85,7 +85,7 @@ class Sprite < Drawable
     end
   end
   
-  #Draw the sprite to the given graphic context.
+  #Draw the image to the given graphic context.
   def draw(graphics)
     return if @image.nil? || @image_size.nil?
     half_width = image_size.x / 2.0
