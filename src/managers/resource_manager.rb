@@ -7,7 +7,7 @@ class ResourceManager < Jemini::GameObject
   
   #Sets a default data directory path of "data".
   def load
-
+    enable_listeners_for :resources_loaded
     @images = {}
     @sounds = {}
     @songs = {}
@@ -22,6 +22,7 @@ class ResourceManager < Jemini::GameObject
     log.debug "Looking for subdirectory: #{subdirectory}"
     load_directory(subdirectory) if File.directory?(subdirectory) || File.in_jar?(subdirectory)
     load_directory(Jemini::Resource.base_path, true)
+    notify :resources_loaded
   end
   
   #Load the image at the given path, and make it accessible via the given key.

@@ -47,8 +47,9 @@ module Jemini
       # Must be done in game init or game loop (instead of immediately in the event).
       if @queued_state
 #        @queued_state.load_resources
-        @queued_state.load(*@state_args)
-        GameState.active_state = @queued_state
+        game_state = load_state(*@queued_state)
+        game_state.load(*@state_args)
+        GameState.active_state = game_state
         @queued_state = nil
         @fresh_state = true
         return
@@ -73,8 +74,8 @@ module Jemini
       queue_state load_state(state_name)
     end
 
-    def queue_state(state)
-      @queued_state = state
+    def queue_state(state, *args)
+      @queued_state = [state, *args]
     end
 
     def fresh_state?

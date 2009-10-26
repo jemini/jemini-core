@@ -14,7 +14,7 @@ describe "HardwareCursor" do
     it 'loads :mouse_cursor as an image resource for a static cursor' do
       stub_image_resource(:mouse_cursor)
       @container.should_receive(:set_mouse_cursor)
-      @mock_render_manager.use_available_hardware_cursor
+      @game_state.manager(:resource).send(:notify, :resources_loaded)
     end
 
     it "does nothing to the hardware cursor if the resource cannot be loaded" do
@@ -33,7 +33,7 @@ describe "HardwareCursor" do
     it 'loads the :mouse_cursor as an image resource for a static cursor' do
       stub_image_resource(:mouse_cursor)
       @container.should_receive(:set_mouse_cursor)
-      @game_state.create :basic_render_manager
+      @game_state.manager(:resource).send(:notify, :resources_loaded)
     end
 
     it "does nothing to the hardware cursor if the resource cannot be loaded" do

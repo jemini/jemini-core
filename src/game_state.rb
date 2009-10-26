@@ -29,14 +29,15 @@ module Jemini
     def initialize(container, game)
       @container = container
       @game = game
-      
-      @managers = {:game_object => BasicGameObjectManager.new(self),
-                   :update => BasicUpdateManager.new(self),
-                   :render => BasicRenderManager.new(self),
-                   :input => InputManager.new(self, container),
-                   :message_queue => MessageQueue.new(self),
-                   :resource => ResourceManager.new(self)
-                  }
+
+      # don't use a hash literal because it messes up the load order and @managers isn't available for the managers to use
+      @managers = {}
+      @managers[:game_object]   = BasicGameObjectManager.new(self)
+      @managers[:update]        = BasicUpdateManager.new(self)
+      @managers[:message_queue] = MessageQueue.new(self)
+      @managers[:resource]      = ResourceManager.new(self)
+      @managers[:input]         = InputManager.new(self, container)
+      @managers[:render]        = BasicRenderManager.new(self)
 
       configure_inputs
       load_resources
@@ -105,11 +106,8 @@ module Jemini
     end
     
     def switch_state(state_name, *args)
-      state = @game.load_state state_name, args
-      @game.queue_state state
-      #self.class.active_state = state
-      #state.load
-      state
+      @game.queue_state state_name, args
+      state_name
     end
 
     def use_input(input)
