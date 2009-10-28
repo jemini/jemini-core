@@ -4,8 +4,8 @@ if PROJ.rubyforge.name.valid? && HAVE_RUBYFORGE
 
   #TODO: Move to Mr. Bones config in Rakefile
   PROJECT_NAME = 'jemini'
-  PACKAGE_ID = 11646
-  GROUP_ID   = 8626
+  PACKAGE_ID = 12398
+  GROUP_ID   = 9035
   
 require 'rubyforge'
 require 'rake/contrib/sshpublisher'
@@ -13,7 +13,9 @@ require 'rake/contrib/sshpublisher'
 namespace :gem do
   desc 'Package and upload to RubyForge'
   task :release => [:clobber, :package] do |t|
-    v = ENV['VERSION'] or abort 'Must supply VERSION=x.y.z'
+    require 'src/jemini_version'
+    #v = ENV['VERSION'] or abort 'Must supply VERSION=x.y.z'
+    v = Jemini::VERSION 
     abort "Versions don't match #{v} vs #{PROJ.version}" if v != PROJ.version
     pkg = "pkg/#{PROJ.gem._spec.full_name}"
 

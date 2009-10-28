@@ -1,3 +1,4 @@
 module Jemini
-  VERSION = "1.0.2"
+  today = Date.today
+  VERSION = "#{today.year}.#{today.month}.#{today.day}"
 end

@@ -1,4 +1,4 @@
-Jemini 1.0.2
+Jemini 2009.10.27
 
 == Description
 
