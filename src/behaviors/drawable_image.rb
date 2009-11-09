@@ -1,5 +1,3 @@
-require 'behaviors/drawable'
-
 #Makes an object draw itself as a bitmap image.
 class DrawableImage < Jemini::Behavior
   include_class 'org.newdawn.slick.Image'

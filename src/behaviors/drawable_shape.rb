@@ -1,5 +1,3 @@
-require 'behaviors/drawable'
-
 #Makes an object draw itself on the screen as a polygon.
 class DrawableShape < Jemini::Behavior
   java_import 'org.newdawn.slick.geom.Vector2f'
