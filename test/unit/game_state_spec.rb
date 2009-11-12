@@ -16,6 +16,13 @@ describe 'Jemini::GameState' do
     Jemini::GameState.unstub_instance(:load_resources)
   end
 
+  describe 'game object loading' do
+    it 'does not load game objects outside of game_objects and managers directories' do
+      # Shell is a valid game object name, but part of stdlib. It can be required with require 'shell' and used
+      lambda { @game_state.create :Shell }.should raise_error
+    end
+  end
+
   describe 'input' do
     it 'allows adding of inputs with .input' do
       class InputState < Jemini::GameState

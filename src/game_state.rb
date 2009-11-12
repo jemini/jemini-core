@@ -67,7 +67,8 @@ module Jemini
                            log.debug "Creating: #{type.camelize.to_sym}"
                            type.constantize
                          else
-                           try_require("game_objects/#{type.underscore}") or try_require("managers/#{type.underscore}")
+                           successful_require = try_require("game_objects/#{type.underscore}") || try_require("managers/#{type.underscore}")
+                           raise "Could not find the game object #{type.inspect}." unless successful_require
                            type.camelize.constantize
                          end
       game_object = game_object_type.new(self, *params)
@@ -153,12 +154,13 @@ module Jemini
     def try_require(path)
       begin
         require path
+        log.debug "Successful require: #{path}"
+        true
       rescue LoadError => e
         log.warn "Failed to require: #{path}"
-        return false
+        puts e
+        false
       end
-      log.debug "Successful require: #{path}"
-      return true
     end
   end
 end
