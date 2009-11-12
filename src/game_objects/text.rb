@@ -1,5 +1,3 @@
-require 'behaviors/drawable'
-
 class Text < Jemini::GameObject
   include_class "org.newdawn.slick.TrueTypeFont"
   include_class "java.awt.Font"

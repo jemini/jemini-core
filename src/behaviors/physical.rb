@@ -198,7 +198,8 @@ class Physical < Jemini::Behavior
   end
 
   def angular_velocity=(delta)
-    @body.adjust_angular_velocity(delta - angular_velocity)
+    velocity = (delta - angular_velocity).to_f
+    @body.adjust_angular_velocity java.lang.Float.new(velocity) 
   end
   alias_method :set_angular_velocity, :angular_velocity=
 
