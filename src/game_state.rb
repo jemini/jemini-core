@@ -158,7 +158,6 @@ module Jemini
         true
       rescue LoadError => e
         log.warn "Failed to require: #{path}"
-        puts e
         false
       end
     end
