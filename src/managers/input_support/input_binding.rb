@@ -25,6 +25,8 @@ module Jemini
     def detect_device(button_id, type)
       if mouse_button?(button_id, type)
         :mouse
+      elsif joystick_button?(button_id, type)
+        :joystick
       else
         :key
       end
@@ -34,6 +36,8 @@ module Jemini
       case device
       when :mouse
         detect_mouse_button(button_id)
+      when :joystick
+        detect_joystick_button(button_id)
       when :key
         case button_id.to_s
         when /(left|right)_alt/
@@ -57,6 +61,16 @@ module Jemini
       return true if MOUSE_BUTTON_NAMES.include? button_id
       return false unless button_id.respond_to? :has_key?
       return true if button_id.has_key? :mouse_button
+    end
+
+    def joystick_button?(button_id, type)
+      return true if type == :move && button_id == :joystick
+      return false unless button_id.respond_to? :has_key?
+      return true if button_id.has_key? :joystick_button
+    end
+
+    def detect_joystick_button(button_id)
+      
     end
 
     def detect_mouse_button(button_id)
