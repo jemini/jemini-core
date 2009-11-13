@@ -17,13 +17,13 @@ module Jemini
       end
 
       case @input_type
-      when :axis_update
+      when :move, :axis_update
         @axis_id ||= find_axis_id_by_axis_name(raw_input, @input_button_or_axis)
         axis_value = raw_input.get_axis_value(@joystick_id, @axis_id)
         axis_value
-      when :pressed
+      when :press
         if @joystick_id.nil?
-          result = (0..raw_input.controller_count).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)} unless raw_input.controller_count.zero?
+          result = (0...raw_input.controller_count).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)}
         else
           result = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
         end
@@ -31,15 +31,15 @@ module Jemini
         @key_down_on_last_poll = result
         cancel_post! unless pressed
         pressed
-      when :held
+      when :hold
         if @joystick_id.nil?
-          result = (0..raw_input.controller_count).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)} unless raw_input.controller_count.zero?
+          result = (0...raw_input.controller_count).any? {|i| raw_input.is_button_pressed(@input_button_or_axis, i)}
         else
           result = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
         end
         cancel_post! unless result
         result
-      when :released
+      when :release
         button_down = raw_input.is_button_pressed(@input_button_or_axis, @joystick_id)
         result = (@key_down_on_last_poll && !button_down) ? true : false
         @key_down_on_last_poll = button_down

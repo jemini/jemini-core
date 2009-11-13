@@ -285,6 +285,37 @@ describe 'InputBuilder' do
     end
 
     it 'can bind to a given xbox number'
+
+    it 'can bind to a given joystick button number' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :fire_primary do
+          i.press :joystick_button => 0
+        end
+
+        i.in_order_to :fire_secondary do
+          i.press :joystick_button => 1
+        end
+      end
+
+      @raw_input.stub!(:controller_count).and_return 1
+      @raw_input.stub!(:is_button_pressed).with(0, 0).and_return true
+      @raw_input.stub!(:is_button_pressed).with(1, 0).and_return false
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :HandlesEvents
+      game_object.handle_event :fire_primary do
+        @primary = true
+      end
+      game_object.handle_event :fire_secondary do
+        @secondary = true
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      @primary.should be_true
+      @secondary.should be_nil
+    end
   end
 
   describe '#move' do

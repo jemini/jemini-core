@@ -64,13 +64,14 @@ module Jemini
     end
 
     def joystick_button?(button_id, type)
-      return true if type == :move && button_id == :joystick
+      return true if type == :move && button_id.respond_to?(:has_key?) && button_id.has_key?(:joystick_axis)
       return false unless button_id.respond_to? :has_key?
+      return true if button_id.has_key? :joystick_button
       return true if button_id.has_key? :joystick_button
     end
 
     def detect_joystick_button(button_id)
-      
+      button_id[:joystick_button] || button_id[:joystick_axis]
     end
 
     def detect_mouse_button(button_id)
