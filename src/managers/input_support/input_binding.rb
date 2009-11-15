@@ -13,12 +13,14 @@ module Jemini
     # type can be one of :hold, :release, :press, and :move
     def add_input_listener(type, button_id, options={})
       device                 = detect_device(button_id, type)
-      real_button            = detect_button(button_id, device)
+      real_button            = detect_button(button_id, options, device)
       value                  = options[:value]
       to                     = options[:to]
+      id                     = options[:id]
       listener               = InputListener.create(action_name, type, device, real_button)
       listener.default_value = value
       listener.message_to    = to
+      listener.joystick_id   = id
       InputManager.loading_input_manager.listeners << listener
     end
 
@@ -32,12 +34,12 @@ module Jemini
       end
     end
 
-    def detect_button(button_id, device)
+    def detect_button(button_id, options, device)
       case device
       when :mouse
         detect_mouse_button(button_id)
       when :joystick
-        detect_joystick_button(button_id)
+        detect_joystick_button(button_id, options)
       when :key
         case button_id.to_s
         when /(left|right)_alt/
@@ -64,14 +66,15 @@ module Jemini
     end
 
     def joystick_button?(button_id, type)
-      return true if type == :move && button_id.respond_to?(:has_key?) && button_id.has_key?(:joystick_axis)
-      return false unless button_id.respond_to? :has_key?
-      return true if button_id.has_key? :joystick_button
-      return true if button_id.has_key? :joystick_button
+      return true if button_id == :joystick
+#      return true if type == :move && button_id == :joystick
+#      return false unless button_id.respond_to? :has_key?
+#      return true if button_id.has_key? :joystick_button
+#      return true if button_id.has_key? :joystick_button
     end
 
-    def detect_joystick_button(button_id)
-      button_id[:joystick_button] || button_id[:joystick_axis]
+    def detect_joystick_button(button_id, options)
+      options[:button] || options[:axis]
     end
 
     def detect_mouse_button(button_id)

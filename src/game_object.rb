@@ -31,20 +31,21 @@ module Jemini
     end
 
     def add_behavior(behavior_name)
+      underscored_name = behavior_name.underscore
       klass = nil
       retried = false
       begin
         klass = behavior_name.camelize.constantize
       rescue NameError
         raise if retried
-        require "behaviors/#{behavior_name.underscore}"
+        require "behaviors/#{underscored_name}"
         retried = true
         retry
       end
-      @__behaviors[behavior_name] = klass.new(self) if @__behaviors[behavior_name].nil?
+      @__behaviors[underscored_name] = klass.new(self) if @__behaviors[underscored_name].nil?
       validate_dependant_behaviors
     rescue NameError => e
-      raise "Unable to load behavior #{behavior_name}, #{e.message}\n#{e.backtrace.join("\n")}"
+      raise "Unable to load behavior #{underscored_name}, #{e.message}\n#{e.backtrace.join("\n")}"
     end
 
     def __destroy

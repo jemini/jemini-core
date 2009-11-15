@@ -289,11 +289,11 @@ describe 'InputBuilder' do
     it 'can bind to a given joystick button number' do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :fire_primary do
-          i.press :joystick_button => 0
+          i.press :joystick, :button => 0
         end
 
         i.in_order_to :fire_secondary do
-          i.press :joystick_button => 1
+          i.press :joystick, :button => 1
         end
       end
 
@@ -342,7 +342,56 @@ describe 'InputBuilder' do
 #      game_object.position.should == Vector.new(40, 50)
     end
 
-    it 'works with joystick axes'
+    it 'works with joystick axes' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :steer do
+          i.move :joystick, :axis => 'x'
+        end
+      end
+
+      @raw_input.stub!(:controller_count).and_return 1
+      @raw_input.stub!(:get_axis_count).with(0).and_return 1
+      @raw_input.stub!(:get_axis_name).with(0, 0).and_return 'x'
+#      @raw_input.stub!(:get_axis_value).with(0, 'x').and_return 0.5
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :HandlesEvents
+      game_object.add_behavior :Spatial
+      event_called = false
+      game_object.handle_event :steer do |event|
+        event_called = true
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      event_called.should be_true
+    end
+
+    it 'works with joystick axes with joystick ids' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :steer do
+          i.move :joystick, :axis => 'x', :id => 0
+        end
+      end
+
+      @raw_input.stub!(:controller_count).and_return 1
+      @raw_input.stub!(:get_axis_count).with(0).and_return 1
+      @raw_input.stub!(:get_axis_name).with(0, 0).and_return 'x'
+      @raw_input.stub!(:get_axis_value).with(0, 0).and_return 0.5
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :HandlesEvents
+      game_object.add_behavior :Spatial
+      game_object.handle_event :steer do |event|
+        game_object.position = Vector.new(10.0, event.value)
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      game_object.position.should be_near(Vector.new(10.0, 0.5), 0.25)
+    end
 
     it 'works with the mouse position' do
       Jemini::InputBuilder.declare do |i|
