@@ -393,6 +393,31 @@ describe 'InputBuilder' do
       game_object.position.should be_near(Vector.new(10.0, 0.5), 0.25)
     end
 
+    it 'inverts axis values when given :invert => true' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :steer do
+          i.move :joystick, :axis => 'x', :id => 0, :invert => true
+        end
+      end
+
+      @raw_input.stub!(:controller_count).and_return 1
+      @raw_input.stub!(:get_axis_count).with(0).and_return 1
+      @raw_input.stub!(:get_axis_name).with(0, 0).and_return 'x'
+      @raw_input.stub!(:get_axis_value).with(0, 0).and_return 0.5
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :HandlesEvents
+      game_object.add_behavior :Spatial
+      game_object.handle_event :steer do |event|
+        game_object.position = Vector.new(10.0, event.value)
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      game_object.position.should be_near(Vector.new(10.0, -0.5), 0.25)
+    end
+
     it 'works with the mouse position' do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :steer do

@@ -21,6 +21,7 @@ module Jemini
       listener.default_value = value
       listener.message_to    = to
       listener.joystick_id   = id
+      listener.axis_inverted = options[:invert]
       InputManager.loading_input_manager.listeners << listener
     end
 

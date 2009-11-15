@@ -11,7 +11,8 @@ module Jemini
                   :input_callback,
                   :game_state,
                   :default_value,
-                  :message_to
+                  :message_to,
+                  :axis_inverted
 
     def self.create(message, type, device, button_id, options={}, &callback)
       options[:input_callback] = callback
@@ -52,6 +53,10 @@ module Jemini
 
     def post_canceled?
       @cancel_post
+    end
+
+    def axis_inverted?
+      @axis_inverted
     end
 
     def key
