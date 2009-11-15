@@ -12,7 +12,8 @@ module Jemini
                   :game_state,
                   :default_value,
                   :message_to,
-                  :axis_inverted
+                  :axis_inverted,
+                  :deadzone
 
     def self.create(message, type, device, button_id, options={}, &callback)
       options[:input_callback] = callback

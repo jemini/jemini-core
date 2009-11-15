@@ -390,7 +390,32 @@ describe 'InputBuilder' do
       @input_manager.poll(200, 200, 10)
       @message_queue.process_messages 10
 
-      game_object.position.should be_near(Vector.new(10.0, 0.5), 0.25)
+      game_object.position.should be_near(Vector.new(10.0, 0.5), 0.05)
+    end
+
+    it 'works with joystick axes with joystick ids for negative values' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :steer do
+          i.move :joystick, :axis => 'x', :id => 0
+        end
+      end
+
+      @raw_input.stub!(:controller_count).and_return 1
+      @raw_input.stub!(:get_axis_count).with(0).and_return 1
+      @raw_input.stub!(:get_axis_name).with(0, 0).and_return 'x'
+      @raw_input.stub!(:get_axis_value).with(0, 0).and_return -0.5
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :HandlesEvents
+      game_object.add_behavior :Spatial
+      game_object.handle_event :steer do |event|
+        game_object.position = Vector.new(10.0, event.value)
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      game_object.position.should be_near(Vector.new(10.0, -0.5), 0.05)
     end
 
     it 'inverts axis values when given :invert => true' do
@@ -415,7 +440,107 @@ describe 'InputBuilder' do
       @input_manager.poll(200, 200, 10)
       @message_queue.process_messages 10
 
-      game_object.position.should be_near(Vector.new(10.0, -0.5), 0.25)
+      game_object.position.should be_near(Vector.new(10.0, -0.5), 0.05)
+    end
+
+    it 'trims axis values to 0.0 when under the dead zone if provided' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :steer do
+          i.move :joystick, :axis => 'x', :id => 0, :deadzone => 0.2
+        end
+      end
+
+      @raw_input.stub!(:controller_count).and_return 1
+      @raw_input.stub!(:get_axis_count).with(0).and_return 1
+      @raw_input.stub!(:get_axis_name).with(0, 0).and_return 'x'
+      @raw_input.stub!(:get_axis_value).with(0, 0).and_return 0.17
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :HandlesEvents
+      game_object.add_behavior :Spatial
+      game_object.handle_event :steer do |event|
+        game_object.position = Vector.new(10.0, event.value)
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      game_object.position.should be_near(Vector.new(10.0, 0.0), 0.05)
+    end
+
+    it 'trims axis values to 0.0 when under the dead zone if provided for negative values' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :steer do
+          i.move :joystick, :axis => 'x', :id => 0, :deadzone => 0.2
+        end
+      end
+
+      @raw_input.stub!(:controller_count).and_return 1
+      @raw_input.stub!(:get_axis_count).with(0).and_return 1
+      @raw_input.stub!(:get_axis_name).with(0, 0).and_return 'x'
+      @raw_input.stub!(:get_axis_value).with(0, 0).and_return -0.17
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :HandlesEvents
+      game_object.add_behavior :Spatial
+      game_object.handle_event :steer do |event|
+        game_object.position = Vector.new(10.0, event.value)
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      game_object.position.should be_near(Vector.new(10.0, 0.0), 0.05)
+    end
+
+    it 'does not trim values that are higher than the deadzone for negative values' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :steer do
+          i.move :joystick, :axis => 'x', :id => 0, :deadzone => 0.2
+        end
+      end
+
+      @raw_input.stub!(:controller_count).and_return 1
+      @raw_input.stub!(:get_axis_count).with(0).and_return 1
+      @raw_input.stub!(:get_axis_name).with(0, 0).and_return 'x'
+      @raw_input.stub!(:get_axis_value).with(0, 0).and_return -0.5
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :HandlesEvents
+      game_object.add_behavior :Spatial
+      game_object.handle_event :steer do |event|
+        game_object.position = Vector.new(10.0, event.value)
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      game_object.position.should be_near(Vector.new(10.0, -0.5), 0.05)
+    end
+
+    it 'trims inverted axis values to 0.0 when above the dead zone if provided' do
+      Jemini::InputBuilder.declare do |i|
+        i.in_order_to :steer do
+          i.move :joystick, :axis => 'x', :id => 0, :deadzone => 0.2, :invert => true
+        end
+      end
+
+      @raw_input.stub!(:controller_count).and_return 1
+      @raw_input.stub!(:get_axis_count).with(0).and_return 1
+      @raw_input.stub!(:get_axis_name).with(0, 0).and_return 'x'
+      @raw_input.stub!(:get_axis_value).with(0, 0).and_return 0.17
+
+      game_object = Jemini::GameObject.new(@state)
+      game_object.add_behavior :HandlesEvents
+      game_object.add_behavior :Spatial
+      game_object.handle_event :steer do |event|
+        game_object.position = Vector.new(10.0, event.value)
+      end
+
+      @input_manager.poll(200, 200, 10)
+      @message_queue.process_messages 10
+
+      game_object.position.should be_near(Vector.new(10.0, 0.0), 0.05)
     end
 
     it 'works with the mouse position' do

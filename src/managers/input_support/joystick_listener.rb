@@ -21,6 +21,7 @@ module Jemini
           nil # how do we send back multiple axis values?
         else
           axis_value = raw_input.get_axis_value(@joystick_id, @axis_id)
+          axis_value = 0.0 if deadzone && (deadzone > axis_value.abs)
           axis_value *= -1 if axis_inverted?
           axis_value
         end
