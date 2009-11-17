@@ -14,7 +14,7 @@ class BasicPhysicsManager < Jemini::GameObject
   has_behavior :HandlesEvents
   
   def load
-    @delta_debt = 0
+#    @delta_debt = 0
     @world = World.new(Vector2f.new(0, 0), 5, QuadSpaceStrategy.new(20, 5))
 #    @world = World.new(Vector2f.new(0, 0), 10, BruteCollisionStrategy.new)
     @world.add_listener self
@@ -34,24 +34,25 @@ class BasicPhysicsManager < Jemini::GameObject
   end
 
   def update(delta)
-    delta += @delta_debt
-    @delta_debt = 0
-    if delta == MILLISECONDS_PER_UPDATE
-      sleep PHYS2D_UPDATE_DIFF / 1000.0
-      step
-    else
-      temp_delta = delta
-      until temp_delta <= 0
-        new_delta = temp_delta > MILLISECONDS_PER_UPDATE ? MILLISECONDS_PER_UPDATE : temp_delta
-        if new_delta < MILLISECONDS_PER_UPDATE
-          @delta_debt = new_delta
-          return #don't step, we'll try again next update
-        else
-          step
-          temp_delta -= new_delta
-        end
-      end
-    end
+    step
+#    delta += @delta_debt
+#    @delta_debt = 0
+#    if delta == MILLISECONDS_PER_UPDATE
+#      sleep PHYS2D_UPDATE_DIFF / 1000.0
+#      step
+#    else
+#      temp_delta = delta
+#      until temp_delta <= 0
+#        new_delta = temp_delta > MILLISECONDS_PER_UPDATE ? MILLISECONDS_PER_UPDATE : temp_delta
+#        if new_delta < MILLISECONDS_PER_UPDATE
+#          @delta_debt = new_delta
+#          return #don't step, we'll try again next update
+#        else
+#          step
+#          temp_delta -= new_delta
+#        end
+#      end
+#    end
   end
   
   # there's a typo in the API, I swears it.

@@ -4,7 +4,7 @@ class DebugPhysical < Jemini::Behavior
   PhysVector   = Java::net::phys2d::math::Vector2f
   PhysCircle   = Java::net.phys2d.raw.shapes.Circle
   PhysPolygon  = Java::net.phys2d.raw.shapes.Polygon
-  PhysLine  = Java::net.phys2d.raw.shapes.Line
+  PhysLine     = Java::net.phys2d.raw.shapes.Line
   SlickVector  = Java::org::newdawn::slick::geom::Vector2f
   SlickPolygon = Java::org.newdawn.slick.geom.Polygon
   SlickCircle  = Java::org.newdawn.slick.geom.Circle
@@ -33,8 +33,9 @@ private
                        SlickPolygon.new(physics_shape.get_vertices(body.position, body.rotation).map{|point| [point.x, point.y]}.flatten.to_java(:float))
                      elsif physics_shape.kind_of? PhysCircle
                        SlickCircle.new(body.position.x, body.position.y, physics_shape.radius)
-#                     elsif physics_shape.kind_of? PhysLine
-#                       SlickLine.new(body_position.x, )
+                     elsif physics_shape.kind_of? PhysLine
+#                       SlickLine.new(physics_shape.start.x, physics_shape.start.y, physics_shape.end.x, physics_shape.end.y)
+                        SlickLine.new(*physics_shape.get_vertices(body.position, body.rotation).map{|point| [point.x, point.y]}.flatten.to_java(:float))
                      else
                        raise "#{self.class} does not know how to draw the shape #{physics_shape.class}"
                      end

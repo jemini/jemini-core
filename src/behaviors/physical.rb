@@ -6,18 +6,19 @@ class Physical < Jemini::Behavior
 
   INFINITE_MASS = Java::net::phys2d::raw::Body::INFINITE_MASS
 
-  include_class "net.phys2d.raw.Body"
-  include_class "net.phys2d.raw.shapes.Box"
-  include_class "net.phys2d.raw.shapes.Circle"
-  include_class "net.phys2d.raw.shapes.Line"
-  include_class "net.phys2d.raw.shapes.Polygon"
-  include_class "net.phys2d.raw.shapes.ConvexPolygon"
-  include_class "net.phys2d.math.Vector2f"
-  include_class 'net.phys2d.raw.AngleJoint'
-  include_class 'net.phys2d.raw.BasicJoint'
-  include_class 'net.phys2d.raw.SpringJoint'
-  include_class 'net.phys2d.raw.FixedAngleJoint'
-  include_class 'net.phys2d.raw.DistanceJoint'
+  java_import "net.phys2d.raw.Body"
+  java_import "net.phys2d.raw.shapes.Box"
+  java_import "net.phys2d.raw.shapes.Circle"
+  java_import "net.phys2d.raw.shapes.Line"
+  java_import "net.phys2d.raw.shapes.Polygon"
+  java_import "net.phys2d.raw.shapes.ConvexPolygon"
+  java_import "net.phys2d.math.Vector2f"
+  java_import 'net.phys2d.raw.AngleJoint'
+  java_import 'net.phys2d.raw.BasicJoint'
+  java_import 'net.phys2d.raw.SpringJoint'
+  java_import 'net.phys2d.raw.FixedAngleJoint'
+  java_import 'net.phys2d.raw.DistanceJoint'
+  java_import 'net.phys2d.raw.FixedJoint'
 
   attr_reader :mass, :name, :shape
   depends_on :Spatial
@@ -92,6 +93,9 @@ class Physical < Jemini::Behavior
             when :basic
               joint = BasicJoint.new(@body, other_body, options[:anchor].to_phys2d_vector)
               joint.relaxation = options[:relaxation] if options[:relaxation]
+              joint
+            when :fixed
+              joint = FixedJoint.new(@body, other_body)
               joint
             when :spring
               joint = SpringJoint.new(@body, other_body, options[:self_anchor].to_phys2d_vector, options[:other_anchor].to_phys2d_vector)
@@ -255,6 +259,8 @@ class Physical < Jemini::Behavior
       case shape.to_s
       when 'Polygon', 'ConvexPolygon'
         params = [params.map {|vector| vector.to_phys2d_vector }.to_java(Vector2f)]
+      when 'Line'
+        params = params.map {|vector| vector.to_phys2d_vector }.to_java(Vector2f)
       end
       @shape = ("Physical::" + shape.to_s).constantize.new(*params)
     else
