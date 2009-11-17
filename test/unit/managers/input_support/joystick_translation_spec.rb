@@ -18,7 +18,7 @@ describe "Keyboard Translation" do
     lambda do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :jump do
-          i.hold :joystick_button => 1
+          i.hold :joystick, :button => 1
         end
       end
     end.should_not raise_error
@@ -28,7 +28,7 @@ describe "Keyboard Translation" do
     lambda do
       Jemini::InputBuilder.declare do |i|
         i.in_order_to :jump do
-          i.move :joystick_axis => 'x'
+          i.move :joystick, :axis => 'x'
         end
       end
     end.should_not raise_error
