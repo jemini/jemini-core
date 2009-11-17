@@ -1,19 +1,16 @@
 class Text < Jemini::GameObject
-  include_class "org.newdawn.slick.TrueTypeFont"
-  include_class "java.awt.Font"
+  java_import "org.newdawn.slick.TrueTypeFont"
+  java_import "java.awt.Font"
   
   has_behavior :Spatial
-  PLAIN = Font::PLAIN
-  ITALIC = Font::ITALIC
-  BOLD = Font::BOLD
   
   attr_accessor :text, :size, :style, :font_name
   
   def load(text, options={})
-    @font_name = "Arial"
-    @size = 12
-    @text = text
-    @style = PLAIN
+    @font_name = options[:name] || "Arial"
+    @size      = options[:size] || 12
+    @text      = text
+    @style     = get_style(options[:style])
     load_font
     orient_text(options)
   end
@@ -45,8 +42,8 @@ class Text < Jemini::GameObject
   alias_method :set_size, :size=
   
   def style=(style)
-    raise "Invalid font style, must be PLAIN, ITALIC or BOLD" unless [PLAIN, ITALIC, BOLD].member? style
-    @style = style
+    raise "Invalid font style #{style.inspect}, must be :bold, :italic or :plain" unless [:bold, :italic, :plain].member? style
+    @style = get_style(style)
     load_font
   end
   alias_method :set_style, :style=
@@ -65,5 +62,16 @@ private
 
   def load_font
     @font = TrueTypeFont.new(Font.new(@font_name, @style, @size), true)
+  end
+
+  def get_style(style)
+    case style
+    when :bold
+      Font::BOLD
+    when :italic
+      Font::ITALIC
+    when :plain, nil
+      Font::PLAIN
+    end
   end
 end
