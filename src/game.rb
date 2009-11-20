@@ -99,9 +99,9 @@ module Jemini
     def create_canvas
       @canvas = Java::org::newdawn::slick::CanvasGameContainer.new(self)
       @canvas.set_size(screen_size.x, screen_size.y)
-      @app.vsync = true
       container = @canvas.container
       container.vsync = false
+#      container.vsync = true
       container.maximum_logic_update_interval = 60
       #container.start
       @canvas
