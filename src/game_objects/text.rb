@@ -56,7 +56,7 @@ private
     when :bottom_right
       self.position = options[:position] - Vector.new(text_width, text_height).half if options[:position]
     when :center, nil
-      self.position = options[:position]
+      self.position = options[:position] if options[:position]
     end
   end
 
