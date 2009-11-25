@@ -8,6 +8,7 @@ class ResourceManager < Jemini::GameObject
   #Sets a default data directory path of "data".
   def load
     enable_listeners_for :resources_loaded
+    @configs = {}
     @images = {}
     @sounds = {}
     @songs = {}
@@ -23,6 +24,13 @@ class ResourceManager < Jemini::GameObject
     load_directory(subdirectory) if File.directory?(subdirectory) || File.in_jar?(subdirectory)
     load_directory(Jemini::Resource.base_path, true)
     notify :resources_loaded
+  end
+  
+  #Load the config at the given path, and make it accessible via the given key.
+  def cache_config(key, path)
+    log.debug "Caching config for #{key} with path: #{path}"
+    log.warn "Skipping duplicate config for #{key} with path: #{path}" and return if @configs[key]
+    @configs[key] = load_resource(path, :config)
   end
   
   #Load the image at the given path, and make it accessible via the given key.
@@ -44,6 +52,22 @@ class ResourceManager < Jemini::GameObject
     log.debug "Caching song for #{key} with path: #{path}"
     log.warn "Skipping duplicate song for #{key} with path: #{path}" and return if @songs[key]
     @songs[key] = load_resource(path, :music)
+  end
+  
+  #Get a config stored previously with cache_config.
+  def get_config(key)
+    @configs[key] or raise "Could not find config: #{key} - cached configs: #{@configs.keys}"
+  end
+  alias_method :config, :get_config
+  
+  #Get all configs stored previously with cache_config.
+  def get_all_configs
+    @configs.values
+  end
+  alias_method :configs, :get_all_configs
+
+  def config_names
+    @configs.keys
   end
   
   #Get an image stored previously with cache_image.
@@ -90,30 +114,27 @@ private
 
   def load_resource(path, type_name)
     # due to some JRuby trickery involved with java_import, we can't use metaprogramming tricks here.
-    type  = case type_name
-            when :image
-              Image
-            when :sound
-              Sound
-            when :music
-              Music
-            end
-    type.new(Jemini::Resource.path_of(path))
+    case type_name
+    when :config
+      File.read(Jemini::Resource.path_of(path))
+    when :image
+      Image.new(Jemini::Resource.path_of(path))
+    when :sound
+      Sound.new(Jemini::Resource.path_of(path))
+    when :music
+      Music.new(Jemini::Resource.path_of(path))
+    end
   end
 
   # root dirs can't be skipped
   def load_directory(directory, root = false)
     log.debug "Loading contents of #{directory}"
     begin
-      #Dir.open(directory).each do |file|
       resources_for(directory).each do |file|
         next if file =~ /^\./
-#        path = File.join(directory, file)
         path = File.in_jar?(directory) ? file : File.join(directory, file)
         log.debug "Dir in jar? #{File.in_jar?(directory)}"
         log.debug "Using path #{path} for #{file}"
-        # File.file? doesn't work in a jar.
-#        next unless File.file?(path)
         extension = File.extname(file).downcase
         key = File.basename(file, extension).downcase.to_sym
         log.debug "Extension: #{extension}"
@@ -124,6 +145,8 @@ private
           cache_sound(key, path)
         when '.ogg'
           cache_song(key, path)
+        when '.ini'
+          cache_config(key, path)
         else
           log.warn "Skipping unknown file: #{path}"
         end
@@ -159,9 +182,6 @@ private
     entries_under_directory = all_entries.select {|e| e =~ dir_regex }
     # need a shallow resultset
     entries_directly_under_directory = entries_under_directory.reject {|e| e =~ /#{just_dir}\/.*\//}
-#    log.debug "entries directly under dir"
-#    log.debug entries_directly_under_directory
-#    log.debug "------------"
     entries_directly_under_directory
   end 
 end
