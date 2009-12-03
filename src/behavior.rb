@@ -42,7 +42,7 @@ module Jemini
             callback_abort = CallbackStatus.new
             @game_object.notify :before_#{method_name}_changes, event
             if callback_abort.continue?
-              self.wrapped_#{method} #{args}
+              self.wrapped_#{method} event.desired_value
               @game_object.notify :after_#{method_name}_changes, event
             end
           end
