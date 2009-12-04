@@ -1,7 +1,6 @@
 #Tracks tags applied to objects.
 class TagManager < Jemini::GameObject
   def load
-    require 'behaviors/taggable'
     @tagged_objects = Hash.new { |h,k| h[k] = [] }
     listen_for(:after_add_game_object, game_state.manager(:game_object)) do |game_object|
       if game_object.has_behavior? :Taggable
