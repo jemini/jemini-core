@@ -15,6 +15,9 @@ end
 $game_path = File.expand_path(File.join(File.dirname(__FILE__), 'game'))
 $LOAD_PATH << $game_path
 
+#Margin of error for RSpec be_close matchers.
+MARGIN = 0.001
+
 require 'jemini'
 require 'test_state'
 

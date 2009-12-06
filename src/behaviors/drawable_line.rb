@@ -1,12 +1,13 @@
 # draws a line on the screen
-# TODO: Enable color
 class DrawableLine < Jemini::Behavior
   java_import 'org.newdawn.slick.geom.Line'
   java_import 'org.newdawn.slick.Color'
   depends_on :Spatial
   wrap_with_callbacks :draw
 
+  #A Vector with the coordinates of the other end of the line.
   attr_reader :line_end_position
+  #The Color to draw the line in.
   attr_accessor :color
 
   def load
@@ -22,6 +23,7 @@ class DrawableLine < Jemini::Behavior
     @line_end_position
   end
 
+  #Draw the line to the given graphics context.
   def draw(graphics)
     graphics.set_color @color
     graphics.draw @line
