@@ -272,6 +272,35 @@ describe Jemini::Behavior, "callback registration" do
     end
     @game_object.foo = "bar"
   end
+
+  it "can alter the desired value with a on_before_foo_changes block handler" do
+    class AlteringBlockCallbackBehavior < Jemini::Behavior
+      wrap_with_callbacks :foo=
+      attr_accessor :foo
+    end
+
+    @game_object.add_behavior :AlteringBlockCallbackBehavior
+    @game_object.on_before_foo_changes do |event|
+      event.desired_value = "bazz"
+    end
+    @game_object.foo = "bar"
+    @game_object.foo.should == "bazz"
+  end
+
+  it "can alter the desired value with a on_before_foo_changes method handler" do
+    class AlteringMethodCallbackBehavior < Jemini::Behavior
+      wrap_with_callbacks :foo=
+      attr_accessor :foo
+    end
+
+    @game_object.add_behavior :AlteringMethodCallbackBehavior
+    @game_object.on_before_foo_changes :handle_before_foo
+    @game_object.should_receive(:handle_before_foo).with(an_instance_of(Jemini::ValueChangedEvent)) do |event|
+      event.desired_value = "bazz"
+    end
+    @game_object.foo = "bar"
+    @game_object.foo.should == "bazz"
+  end
 end
 
 describe Jemini::Behavior, ".wrap_with_callbacks" do
