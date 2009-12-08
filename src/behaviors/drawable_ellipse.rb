@@ -19,20 +19,20 @@ class DrawableEllipse < Jemini::Behavior
 
   #The ellipse height.
   def height=(value)
-    @ellipse.radius1 = value / 2.0
+    @ellipse.radius2 = value / 2.0
     set_drawing_location
   end
   def height
-    @ellipse.radius1 * 2.0
+    @ellipse.radius2 * 2.0
   end
 
   #The ellipse width.
   def width=(value)
-    @ellipse.radius2 = value / 2.0
+    @ellipse.radius1 = value / 2.0
     set_drawing_location
   end
   def width
-    @ellipse.radius2 * 2.0
+    @ellipse.radius1 * 2.0
   end
   
   #Draw an outline to the given graphics context.
@@ -47,7 +47,7 @@ class DrawableEllipse < Jemini::Behavior
   
 private
   def set_drawing_location
-    @ellipse.x = @game_object.position.x - @ellipse.radius2
-    @ellipse.y = @game_object.position.y - @ellipse.radius1
+    @ellipse.x = @game_object.position.x - @ellipse.radius1
+    @ellipse.y = @game_object.position.y - @ellipse.radius2
   end
 end

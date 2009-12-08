@@ -15,8 +15,8 @@ describe 'DrawableEllipse' do
     @game_object.width = 10
     graphics = mock('Graphics', :null_object => true)
     graphics.should_receive(:fill).with do |ellipse|
-      ellipse.radius1.should be_close(10, MARGIN)
-      ellipse.radius2.should be_close(5, MARGIN)
+      ellipse.radius1.should be_close(5, MARGIN)
+      ellipse.radius2.should be_close(10, MARGIN)
       ellipse.x.should be_close(15, MARGIN) #20 - 10 / 2
       ellipse.y.should be_close(30, MARGIN) #40 - 20 / 2
     end
