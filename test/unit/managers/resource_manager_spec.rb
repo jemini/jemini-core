@@ -14,7 +14,6 @@ describe 'ResourceManager' do
 
     describe "with global assets" do
 
-
       it "loads assets from global data directory" do
         Jemini::Resource.send(:class_variable_set, :@@base_path, 'test/game_with_global_assets/data')
         @resource_manager.images.should have(0).images
@@ -28,6 +27,13 @@ describe 'ResourceManager' do
         lambda{@resource_manager.get_image(:foobar)}.should raise_error
       end
   
+      it "loads ini files" do
+        Jemini::Resource.send(:class_variable_set, :@@base_path, 'test/game_with_ini/data') #TODO: Refactor Jemini::Resource.
+        @resource_manager.configs.should have(0).configs
+        @resource_manager.load_resources
+        @resource_manager.configs.should have(1).config
+      end
+
       it "loads png files" do
         Jemini::Resource.send(:class_variable_set, :@@base_path, 'test/game_with_pngs/data')
         @resource_manager.images.should have(0).images
