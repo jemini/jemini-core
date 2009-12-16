@@ -92,7 +92,6 @@ class Physical < Jemini::Behavior
               AngleJoint.new(@body, other_body, self_body_point, other_body_point, options[:self_body_angle], options[:other_body_angle])
             when :basic
               joint = BasicJoint.new(@body, other_body, options[:anchor].to_phys2d_vector)
-              joint.relaxation = options[:relaxation] if options[:relaxation]
               joint
             when :fixed
               joint = FixedJoint.new(@body, other_body)
@@ -103,6 +102,7 @@ class Physical < Jemini::Behavior
             else
               raise "Joint type #{options[:joint].inspect} not supported."
             end
+    joint.relaxation = options[:relaxation] if options[:relaxation]
     @world.add joint
   end
 
