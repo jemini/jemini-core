@@ -1,13 +1,21 @@
-require 'rawr'
+   require 'rawr'
 require 'rake'
 require 'spec/rake/spectask'
 require 'rake/rdoctask'
+require 'rcov/rcovtask'
 
-desc "Run all spec tests"
+desc "Run all specs"
 Spec::Rake::SpecTask.new do |t|
   t.libs << ["src", 'test']
   t.spec_files = FileList['test/unit/**/*_spec.rb']
   t.spec_opts = ['--color']
+end
+
+desc "Run all specs with coverage"
+Rcov::RcovTask.new do |t|
+  t.libs << ["src", 'test']
+  t.test_files = FileList['test/unit/**/*_spec.rb']
+#  t.spec_opts = ['--color']
 end
 
 load 'tasks/setup.rb'

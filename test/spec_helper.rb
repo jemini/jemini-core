@@ -1,5 +1,7 @@
 require 'java'
 require 'instance_stubber'
+gem 'rspec'
+require 'spec'
 #require 'rubygems'
 #require 'mocha'
 
