@@ -1,4 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'spec_helper'))
+require 'game_object'
 
 describe "Jemini::GameObject" do
   it_should_behave_like "initial mock state"

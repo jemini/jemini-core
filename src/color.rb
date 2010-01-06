@@ -1,14 +1,19 @@
 class Color
+  SlickColor = Java::org::newdawn::slick::Color
   attr_reader :native_color
   
-  def initialize(red_or_other, blue = 0.0, green = 0.0, alpha = 1.0)
+  def initialize(red_or_other, blue = nil, green = nil, alpha = 1.0)
     if red_or_other.kind_of? Numeric
-      @native_color = new_native_color(red_or_other, blue, green, alpha)
+      if green.nil? && blue.nil? #alpha defaults to 1.0
+        @native_color = SlickColor.new(red_or_other)
+      else
+        @native_color = SlickColor.new(red_or_other, blue, green, alpha)
+      end
     else
       # create from predefined Slick colors
-      fixed_color = Java::org::newdawn::slick::Color.send(red_or_other.to_s.downcase)
+      fixed_color = SlickColor.send(red_or_other.to_s.downcase)
       # we don't want to change the original, so we copy it
-      @native_color = new_native_color(fixed_color.r, fixed_color.g, fixed_color.b, fixed_color.a)
+      @native_color = SlickColor.new(fixed_color.r, fixed_color.g, fixed_color.b, fixed_color.a)
     end
   end
   
@@ -62,9 +67,5 @@ class Color
   
   def fade_by(amount)
     self.alpha = alpha * (1.0 - amount)
-  end
-  private
-  def new_native_color(red, blue, green, alpha)
-    Java::org::newdawn::slick::Color.new(red, blue, green, alpha)
   end
 end
