@@ -228,14 +228,6 @@ module Jemini
       end
     end
     
-    def add_reference_count
-      @reference_count += 1
-    end
-    
-    def remove_reference_count
-      @reference_count -= 1
-    end
-
     def load; end
     def unload; end
   end

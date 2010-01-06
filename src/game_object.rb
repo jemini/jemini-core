@@ -50,11 +50,9 @@ module Jemini
 
     def __destroy
       notify :before_remove, self
-      #TODO: Perhaps expose this as a method on Behavior
-      #Jemini::Behavior.send(:class_variable_get, :@@depended_on_by).delete self
       __remove_listeners
       @__behaviors.each do |name, behavior|
-        #the list is being modified as we go through it, so check before use.
+        # the list is being modified as we go through it, so check before use.
         next if behavior.nil?
         behavior.send(:delete)
       end
@@ -100,6 +98,7 @@ module Jemini
     end
 
     def remove_registered_listener(listener_method_name, object, callback_or_callback_method)
+      
       if callback_or_callback_method.nil? || callback_or_callback_method.kind_of?(Symbol)
         @callbacks[listener_method_name].delete callback_or_callback_method
       else
