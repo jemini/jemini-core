@@ -1,5 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'spec_helper'))
-require 'color'
+#require 'color'
 
 describe "Color" do
   it "accepts separate RGBA values within a 0.0-1.0 range" do
@@ -84,4 +84,39 @@ describe "Color" do
     color.blue.should  be_close(0.5, 0.001)
   end
 
+  it "can be assigned a new red" do
+    color = Color.new(:white)
+
+    color.red = 0.5
+
+    color.red.should be_close(0.5, 0.001)
+  end
+
+  it "can be assigned a new green" do
+    color = Color.new(:white)
+
+    color.green = 0.5
+
+    color.green.should be_close(0.5, 0.001)
+  end
+
+  it "can be assigned a new blue" do
+    color = Color.new(:white)
+
+    color.blue = 0.5
+
+    color.blue.should be_close(0.5, 0.001)
+  end
+
+  it "can fade out by a percent" do
+    color = Color.new(:white)
+
+    color.fade_by 0.5
+
+    color.alpha.should be_close(0.5, 0.001)
+
+    color.fade_by 0.5
+
+    color.alpha.should be_close(0.25, 0.001)
+  end
 end
