@@ -62,4 +62,26 @@ describe "Color" do
     color.transparency.should be_close(0.67, 0.001)
   end
 
+  it "can produce a new darkened color with a percent" do
+    color = Color.new(:white)
+    darker_color = color.darken_by 0.5
+
+    color.red.should   be_close(1.0, 0.001)
+    color.green.should be_close(1.0, 0.001)
+    color.blue.should  be_close(1.0, 0.001)
+
+    darker_color.red.should   be_close(0.5, 0.001)
+    darker_color.green.should be_close(0.5, 0.001)
+    darker_color.blue.should  be_close(0.5, 0.001)
+  end
+
+  it "can darken itself with a percent" do
+    color = Color.new(:white)
+    color.darken_by! 0.5
+
+    color.red.should   be_close(0.5, 0.001)
+    color.green.should be_close(0.5, 0.001)
+    color.blue.should  be_close(0.5, 0.001)
+  end
+
 end
