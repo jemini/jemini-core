@@ -34,6 +34,8 @@ class Physical < Jemini::Behavior
     @angular_damping = 0.0
     @game_object.enable_listeners_for :physical_collided
     @game_object.on_after_position_changes { move_body @game_object.position }
+    @joints = []
+    
     # Manual angular damping. New Phys2D may support this? If not, file a bug.
     @game_object.on_update do |delta|
       next if @angular_damping.zero? || angular_velocity.zero?
@@ -76,6 +78,9 @@ class Physical < Jemini::Behavior
   end
   alias_method :set_body_position, :body_position=
 
+  def add_joint(joint)
+    @joints << joint
+  end
   # See about Phys2D joints here: http://www.cokeandcode.com/phys2d/source/javadoc/net/phys2d/raw/Joint.html
   # TODO: Make the joint a game object and/or behavior
   def join_to_physical(physical_game_object, options={})
@@ -103,7 +108,11 @@ class Physical < Jemini::Behavior
               raise "Joint type #{options[:joint].inspect} not supported."
             end
     joint.relaxation = options[:relaxation] if options[:relaxation]
+
+    @joints << joint 
+
     @world.add joint
+    joint
   end
 
   #The maximum speed the object is allowed to travel.  Takes either a Vector with the x/y limits or the numeric value to assign to both x and y.
@@ -290,6 +299,7 @@ class Physical < Jemini::Behavior
   #Remove this object from the control of the physics engine.
   def remove_from_world(world)
     world.remove @body
+    @joints.each {|j| world.remove j }
     @world = nil
   end
 
