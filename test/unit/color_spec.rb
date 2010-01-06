@@ -29,4 +29,37 @@ describe "Color" do
     color.blue.should  be_close(0.6, 0.001)
     color.alpha.should be_close(1.0, 0.001)
   end
+
+  it 'inverts alpha to show transparency' do
+    color = Color.new(:white)
+    color.alpha.should        be_close(1.0, 0.001)
+    color.transparency.should be_close(0.0, 0.001)
+
+    color.alpha = 0.5
+
+    color.alpha.should        be_close(0.5, 0.001)
+    color.transparency.should be_close(0.5, 0.001)
+
+    color.alpha = 0.33
+
+    color.alpha.should        be_close(0.33, 0.001)
+    color.transparency.should be_close(0.67, 0.001)
+  end
+
+  it "can set alpha via transparency (inverted)" do
+    color = Color.new(:white)
+    color.alpha.should        be_close(1.0, 0.001)
+    color.transparency.should be_close(0.0, 0.001)
+
+    color.transparency = 0.5
+
+    color.alpha.should        be_close(0.5, 0.001)
+    color.transparency.should be_close(0.5, 0.001)
+
+    color.transparency = 0.67
+
+    color.alpha.should        be_close(0.33, 0.001)
+    color.transparency.should be_close(0.67, 0.001)
+  end
+
 end
