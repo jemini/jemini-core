@@ -4,6 +4,8 @@ require 'spec'
 #require 'rubygems'
 #require 'mocha'
 
+ENV['LOG_LEVEL'] ||= 'UNKNOWN'
+
 Spec::Runner.configure do |config|
   
 end
