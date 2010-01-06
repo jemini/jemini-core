@@ -1,7 +1,6 @@
 # draws a line on the screen
 class DrawableEllipse < Jemini::Behavior
   java_import 'org.newdawn.slick.geom.Ellipse'
-  java_import 'org.newdawn.slick.Color'
   depends_on :Spatial
   wrap_with_callbacks :draw
 
@@ -11,7 +10,7 @@ class DrawableEllipse < Jemini::Behavior
   attr_accessor :ellipse_filled
 
   def load
-    @color = Color.white
+    @color = Color.new :white
     @ellipse_filled = true
     @ellipse = Ellipse.new @game_object.position.x, @game_object.position.y, 1.0, 1.0
     @game_object.on_after_position_changes { set_drawing_location }
@@ -37,7 +36,7 @@ class DrawableEllipse < Jemini::Behavior
   
   #Draw an outline to the given graphics context.
   def draw(graphics)
-    graphics.set_color @color
+    graphics.set_color @color.native_color
     if @ellipse_filled
       graphics.fill @ellipse
     else

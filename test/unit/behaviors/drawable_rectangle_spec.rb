@@ -26,7 +26,8 @@ describe 'DrawableRectangle' do
   it "accepts a color" do
     @game_object.color = Color.new(0.25, 0.5, 1.0, 0.75)
     graphics = mock('Graphics', :null_object => true)
-    graphics.should_receive(:set_color).with do |color|
+    graphics.should_receive(:set_color).with do |native_color|
+      color = Color.new native_color
       color.red.should be_close(0.25, MARGIN)
       color.green.should be_close(0.5, MARGIN)
       color.blue.should be_close(1.0, MARGIN)

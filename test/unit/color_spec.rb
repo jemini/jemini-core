@@ -119,4 +119,6 @@ describe "Color" do
 
     color.alpha.should be_close(0.25, 0.001)
   end
+
+
 end

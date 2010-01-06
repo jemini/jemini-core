@@ -1,7 +1,6 @@
 # draws a line on the screen
 class DrawableRectangle < Jemini::Behavior
   java_import 'org.newdawn.slick.geom.Rectangle'
-  java_import 'org.newdawn.slick.Color'
   depends_on :Spatial
   wrap_with_callbacks :draw
 
@@ -11,7 +10,7 @@ class DrawableRectangle < Jemini::Behavior
   attr_accessor :rectangle_filled
 
   def load
-    @color = Color.white
+    @color = Color.new :white
     @rectangle_filled = true
     @rectangle = Rectangle.new @game_object.position.x, @game_object.position.y, 1.0, 1.0
     @game_object.on_after_position_changes { set_drawing_location }
@@ -37,7 +36,7 @@ class DrawableRectangle < Jemini::Behavior
   
   #Draw an outline to the given graphics context.
   def draw(graphics)
-    graphics.set_color @color
+    graphics.set_color @color.native_color
     if @rectangle_filled
       graphics.fill @rectangle
     else
