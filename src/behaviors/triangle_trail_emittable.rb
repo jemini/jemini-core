@@ -17,6 +17,10 @@ class TriangleTrailEmittable < Jemini::Behavior
   def unload
     game_state.remove @emitter
   end
+
+  def triangle_trail
+    @emitter
+  end
   
   #Transparency to use.  1.0 is opaque.  Default is 0.5.
   def alpha
