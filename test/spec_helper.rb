@@ -4,6 +4,8 @@ require 'spec'
 #require 'rubygems'
 #require 'mocha'
 
+#java.lang.System.set_property('java.jruby.debug.fullTrace', 'true')
+
 ENV['LOG_LEVEL'] ||= 'UNKNOWN'
 
 Spec::Runner.configure do |config|

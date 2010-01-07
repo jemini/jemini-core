@@ -11,12 +11,28 @@ Spec::Rake::SpecTask.new do |t|
   t.spec_opts = ['--color']
 end
 
+
 desc "Run all specs with coverage"
-Rcov::RcovTask.new do |t|
+Spec::Rake::SpecTask.new :rcov do |t|
   t.libs << ["src", 'test']
-  t.test_files = FileList['test/unit/**/*_spec.rb']
-#  t.spec_opts = ['--color']
+  t.spec_files = FileList['test/unit/**/*_spec.rb']
+  t.spec_opts = ['--color']
+  t.ruby_opts = ["--debug"]
+  puts t.spec_files
+#  t.rcov_opts = "-i src"
+  t.rcov_opts = ["--exclude jruby,test"]
+#  t.rcov_opts = ["-i " + t.spec_files.to_s.gsub(' ', ',')]
+  t.rcov = true
 end
+
+#Rcov::RcovTask.new do |t|
+#  t.libs << ["src", 'test']
+#  t.test_files = FileList['test/unit/**/*_spec.rb']
+#  t.ruby_opts  = ["--debug"]
+#  t.verbose    = true
+##  raise t.methods.join("\n")
+##  t.spec_opts = ['--color']
+#end
 
 load 'tasks/setup.rb'
 
