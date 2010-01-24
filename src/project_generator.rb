@@ -12,6 +12,7 @@ module Jemini
     end
 
     def generate_project
+      copy_skeleton
       generate_default_dirs
       generate_main
 #      generate_main_with_natives
@@ -19,6 +20,11 @@ module Jemini
       rawr_install
       generate_hello_world_state
       copy_jemini_jar
+    end
+
+    def copy_skeleton
+      skeleton_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'skeleton', '.'))
+      cp_r skeleton_dir, @project_dir 
     end
 
     def generate_main
@@ -100,10 +106,8 @@ ENDL
         f << <<-ENDL
 class HelloWorldState < Jemini::GameState
   def load
-    create(:Text,
-      "Now, place your own state code in the src/states folder!",
-      :position => Vector.new(screen_width / 2, screen_height / 2)
-    )
+    create(:Sprite, :jemini_logo).position = Vector.new(screen_size.half.x, screen_size.y * 0.25)
+    create(:Text, "Now, place your own state code in the src/states folder!", :position => screen_size.half)
   end
 end
 ENDL
@@ -116,7 +120,12 @@ ENDL
       puts `rawr install #{@rawr_install_args} #{@project_dir}`
       build_config_path = File.join(@project_dir, 'build_configuration.rb')
       build_config = File.read build_config_path
-      build_config.sub!('#c.java_library_path = "lib/java/native"', 'c.java_library_path = "lib/java/native_files"')
+      build_config.sub!('#c.java_library_path = "lib/java/native"', <<-CONFIG)
+  c.java_library_path = "lib/java/native_files"'
+  c.mac_icon_path     = File.expand_path('icons/jemini.icns')
+  c.windows_icon_path = File.expand_path('icons/jemini.ico')
+CONFIG
+
       build_config.sub!('#c.jvm_arguments = "-server"', 'c.jvm_arguments = "-XX:+UseConcMarkSweepGC -Djruby.compile.mode=FORCE -Xms256m -Xmx512m"')
       build_config.sub!(%Q{#c.jars[:data] = { :directory => 'data/images', :location_in_jar => 'images', :exclude => /bak/}}, %Q{c.jars[:data] = { :directory => 'data', :location_in_jar => 'data', :exclude => /bak/}})
       build_config.sub!(%Q{#c.files_to_copy = Dir['other_files/dir/**/*']}, %Q{c.files_to_copy = Dir['lib/java/native_files/**/*']})

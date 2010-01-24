@@ -1,4 +1,4 @@
-   require 'rawr'
+require 'rawr'
 require 'rake'
 require 'spec/rake/spectask'
 require 'rake/rdoctask'
@@ -18,7 +18,7 @@ Spec::Rake::SpecTask.new :rcov do |t|
   t.spec_files = FileList['test/unit/**/*_spec.rb']
   t.spec_opts = ['--color']
   t.ruby_opts = ["--debug"]
-  puts t.spec_files
+#  puts t.spec_files
 #  t.rcov_opts = "-i src"
   t.rcov_opts = ["--exclude jruby,test"]
 #  t.rcov_opts = ["-i " + t.spec_files.to_s.gsub(' ', ',')]
@@ -54,7 +54,7 @@ PROJ.spec.files = FileList['test/**/*_spec.rb'],
 PROJ.spec.opts << '--color'
 PROJ.spec.libs << 'test/unit'
 PROJ.ruby_opts = []
-PROJ.gem.files = FileList['src/**/*', 'lib/**/*', 'package/jar/*', 'README.txt']
+PROJ.gem.files = FileList['src/**/*', 'lib/**/*', 'package/jar/*', 'README.txt', 'skeleton/**/*']
 PROJ.gem.executables = ['jemini']
 PROJ.gem.dependencies << ["rawr", ">= 1.3.7"]
 PROJ.gem.platform = "java"
