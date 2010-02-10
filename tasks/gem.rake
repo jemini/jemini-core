@@ -79,7 +79,7 @@ namespace :gem do
     end
 
   desc "Build the gem file #{gem_file}"
-  task :package => ['gem:prereqs', "#{pkg.package_dir}/#{gem_file}"]
+  task :package => ['gem:prereqs', 'rawr:jar', "#{pkg.package_dir}/#{gem_file}"]
 
   file "#{pkg.package_dir}/#{gem_file}" => [pkg.package_dir] + PROJ.gem._spec.files do
     when_writing("Creating GEM") {
