@@ -4,7 +4,6 @@ require 'behaviors/drawable_line'
 describe 'DrawableLine' do
   
   before :each do
-    ResourceManager.stub_instance(:load_resource)
     @state = TestState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
     @game_object = @state.create :GameObject, :DrawableLine
   end

@@ -4,7 +4,6 @@ require 'behaviors/drawable_rectangle'
 describe 'DrawableRectangle' do
   
   before :each do
-    ResourceManager.stub_instance(:load_resource)
     @state = TestState.new(mock('Container', :null_object => true), mock('Game', :null_object => true))
     @game_object = @state.create :GameObject, :DrawableRectangle
   end

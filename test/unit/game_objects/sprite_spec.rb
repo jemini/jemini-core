@@ -5,13 +5,14 @@ describe "Sprite" do
   it_should_behave_like "initial mock state"
 
   before do
-    Jemini::Resource.send(:class_variable_set, :@@base_path, 'test/game/data')
+    Java::org::newdawn::slick::Image.stub!(:new).and_return do |name|
+      mock('Image', :width => 16, :height => 16, :name => name)
+    end
     @resource_manager = ResourceManager.new(@state)
-
-    def @resource_manager.load_resource(name, type)
+    @resource_manager.base_path = 'test/game/data'
+    @resource_manager.stub!(:load_resource).and_return do |name, type|
       OpenStruct.new(:width => 16, :height => 16, :name => name)
     end
-
     @state.stub!(:manager).with(:resource).and_return(@resource_manager)
     @resource_manager.load_resources
   end
