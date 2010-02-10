@@ -65,6 +65,10 @@ describe 'Configurable' do
       @game_object.config[:b].should == '\\"bar\\"'
     end
     
+    it "auto-sets attributes specified as config keys"
+    
+    it "does not attempt to set attributes for config keys that have no attribute methods"
+    
   end
   
 end

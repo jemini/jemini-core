@@ -1,10 +1,10 @@
-require 'resource'
-
 class ResourceManager < Jemini::GameObject
   java_import 'org.newdawn.slick.Image'
   java_import 'org.newdawn.slick.Music'
   java_import 'org.newdawn.slick.Sound'
-  
+
+  attr_accessor :base_path
+
   #Sets a default data directory path of "data".
   def load
     enable_listeners_for :resources_loaded
@@ -12,17 +12,20 @@ class ResourceManager < Jemini::GameObject
     @images = {}
     @sounds = {}
     @songs = {}
+    @base_path ||= choose_base_path
   end
   
   #Load resources for the given state.
   #Uses the current state if none specified.
-  def load_resources(state_name = nil)
-    state_name ||= game_state.name
-    log.debug "Loading resources for state: #{state_name}"
-    subdirectory = File.join(Jemini::Resource.base_path, state_name)
-    log.debug "Looking for subdirectory: #{subdirectory}"
-    load_directory(subdirectory) if File.directory?(subdirectory) || File.in_jar?(subdirectory)
-    load_directory(Jemini::Resource.base_path, true)
+  def load_resources(state_name = game_state.name)
+    subdirectory = File.join(@base_path, state_name)
+    [subdirectory, @base_path].each do |directory|
+      begin
+        load_directory(directory)
+      rescue Errno::ENOENT
+        log.debug "#{directory} not found"
+      end
+    end
     notify :resources_loaded
   end
   
@@ -30,28 +33,28 @@ class ResourceManager < Jemini::GameObject
   def cache_config(key, path)
     log.debug "Caching config for #{key} with path: #{path}"
     log.warn "Skipping duplicate config for #{key} with path: #{path}" and return if @configs[key]
-    @configs[key] = load_resource(path, :config)
+    @configs[key] = File.read(path)
   end
   
   #Load the image at the given path, and make it accessible via the given key.
   def cache_image(key, path)
     log.debug "Caching image for #{key} with path: #{path}"
     log.warn "Skipping duplicate image for #{key} with path: #{path}" and return if @images[key]
-    @images[key] = load_resource(path, :image)
+    @images[key] = Image.new(strip_jar_path(path))
   end
   
   #Load the sound at the given path, and make it accessible via the given key.
   def cache_sound(key, path)
     log.debug "Caching sound for #{key} with path: #{path}"
     log.warn "Skipping duplicate sound for #{key} with path: #{path}" and return if @sounds[key]
-    @sounds[key] = load_resource(path, :sound)
+    @sounds[key] = Sound.new(strip_jar_path(path))
   end
   
   #Load the song at the given path, and make it accessible via the given key.
   def cache_song(key, path)
     log.debug "Caching song for #{key} with path: #{path}"
     log.warn "Skipping duplicate song for #{key} with path: #{path}" and return if @songs[key]
-    @songs[key] = load_resource(path, :music)
+    @songs[key] = Music.new(strip_jar_path(path))
   end
   
   #Get a config stored previously with cache_config.
@@ -66,10 +69,11 @@ class ResourceManager < Jemini::GameObject
   end
   alias_method :configs, :get_all_configs
 
+  #Get keys for all configurations stored previously with cache_config.
   def config_names
     @configs.keys
   end
-  
+    
   #Get an image stored previously with cache_image.
   def get_image(key)
     @images[key] or raise "Could not find image: #{key} - cached images: #{@images.keys}"
@@ -82,10 +86,11 @@ class ResourceManager < Jemini::GameObject
   end
   alias_method :images, :get_all_images
 
+  #Get keys for all images stored previously with cache_config.
   def image_names
     @images.keys
   end
-  
+
   #Get a sound stored previously with cache_sound.
   def get_sound(key)
     @sounds[key] or raise "Could not find sound: #{key}"
@@ -111,77 +116,68 @@ class ResourceManager < Jemini::GameObject
   alias_method :songs, :get_all_songs
 
 private
-
-  def load_resource(path, type_name)
-    # due to some JRuby trickery involved with java_import, we can't use metaprogramming tricks here.
-    case type_name
-    when :config
-      File.read(Jemini::Resource.path_of(path))
-    when :image
-      Image.new(Jemini::Resource.path_of(path))
-    when :sound
-      Sound.new(Jemini::Resource.path_of(path))
-    when :music
-      Music.new(Jemini::Resource.path_of(path))
-    end
-  end
-
-  # root dirs can't be skipped
-  def load_directory(directory, root = false)
-    log.debug "Loading contents of #{directory}"
-    begin
+    
+    def load_directory(directory)
       resources_for(directory).each do |file|
         next if file =~ /^\./
-        path = File.in_jar?(directory) ? file : File.join(directory, file)
-        log.debug "Dir in jar? #{File.in_jar?(directory)}"
-        log.debug "Using path #{path} for #{file}"
-        extension = File.extname(file).downcase
-        key = File.basename(file, extension).downcase.to_sym
-        log.debug "Extension: #{extension}"
-        case extension
-        when '.png', '.gif'
-          cache_image(key, path)
-        when '.wav'
-          cache_sound(key, path)
-        when '.ogg'
-          cache_song(key, path)
-        when '.ini'
-          cache_config(key, path)
-        else
-          log.warn "Skipping unknown file: #{path}"
-        end
+        log.debug "directory: #{directory} file: #{file}"
+        load_file(File.join(directory, file))
       end
-    rescue Errno::ENOENT => e
-      if root
-        raise
+    end
+
+    def load_file(file)
+      extension = File.extname(file)
+      key = File.basename(file, extension).downcase.to_sym
+      log.debug "Extension: #{extension}"
+      case extension.downcase
+      when '.png', '.gif'
+        cache_image(key, file)
+      when '.wav'
+        cache_sound(key, file)
+      when '.ogg'
+        cache_song(key, file)
+      when '.ini'
+        cache_config(key, file)
       else
-        log.debug "#{directory} directory not found. Skipping."
+        log.warn "Skipping unknown file: #{file}"
       end
     end
-  end
 
-  def resources_for(directory)
-    if File.in_jar?(directory)
-      scan_entire_jar(directory)
-    else
-      log.debug "opening #{directory}"
-      Dir.open(directory)
+    def resources_for(directory)
+      log.debug("resources_for(#{directory})")
+      if directory =~ /^(?:file\:)?(.*data\.jar)\!(.*)/
+        #Example: "/mygame/data.jar!/data/mystate/foo.png" - we need "data/mystate/" and "foo.png"
+        jar_path = $1
+        jarred_directory = $2.sub(/^[\\\/]/, '')
+        jar = java.util.jar.JarFile.new(jar_path)
+        jarred_directory_regex = Regexp.new("^#{jarred_directory}")
+        resources = jar.entries.map{|f| f.name} #Gives us all resources in jar.
+        resources = resources.select{|f| f =~ jarred_directory_regex} #Keep only entries under desired directory.
+        resources = resources.reject{|f| f =~ /#{jarred_directory}[\\\/](.*)[\\\/]/} #Discard entries in subdirectories of desired directory.
+        return resources.map{|f| File.basename(f)}
+      else
+        return Dir.open(directory)
+      end
     end
-  end
+    
+    def choose_base_path
+      #If running from jar, use data jar.
+      if $0 =~ /(\.jar!)|(^-$)/
+        File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', '..', 'data.jar!', 'data'))
+      #Otherwise use data directory.
+      else
+        'data'
+      end
+    end
+    
+    #If given path is within a jar, return only the path within the jar.
+    #Example: "/mygame/data.jar!/data/mystate/foo.png" - we need "data/mystate/foo.png"
+    def strip_jar_path(path)
+      if path =~ /\bdata\.jar\![\\\/](.*)$/
+        return $1
+      else
+        return path
+      end
+    end
 
-  # globs MUST start at the base dir of the jar, or it won't work.
-  def scan_entire_jar(directory)
-    just_dir = File.basename(directory)
-    log.debug "just dir: #{just_dir}"
-    log.debug "dir:      #{directory}"
-    jar_name = File.jar_of(directory, 'data') # we're always going to get our data from the data jar
-    log.debug "opening jar #{jar_name}"
-    jar_file = java.util.jar.JarFile.new(jar_name)
-    dir_regex = Regexp.new(just_dir)
-    all_entries = jar_file.entries.map {|e| e.name }
-    entries_under_directory = all_entries.select {|e| e =~ dir_regex }
-    # need a shallow resultset
-    entries_directly_under_directory = entries_under_directory.reject {|e| e =~ /#{just_dir}\/.*\//}
-    entries_directly_under_directory
-  end 
 end
