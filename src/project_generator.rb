@@ -120,15 +120,16 @@ ENDL
       puts `rawr install #{@rawr_install_args} #{@project_dir}`
       build_config_path = File.join(@project_dir, 'build_configuration.rb')
       build_config = File.read build_config_path
-      build_config.sub!('#c.java_library_path = "lib/java/native"', <<-CONFIG)
-  c.java_library_path = "lib/java/native_files"'
+
+      #TODO: Fail on substitution failure.
+      build_config.sub!(/\#c.java_library_path = .*/, <<-CONFIG)
+  c.java_library_path = "lib/java/native_files"
   c.mac_icon_path     = File.expand_path('icons/jemini.icns')
   c.windows_icon_path = File.expand_path('icons/jemini.ico')
 CONFIG
-
-      build_config.sub!('#c.jvm_arguments = "-server"', 'c.jvm_arguments = "-XX:+UseConcMarkSweepGC -Djruby.compile.mode=FORCE -Xms256m -Xmx512m"')
-      build_config.sub!(%Q{#c.jars[:data] = { :directory => 'data/images', :location_in_jar => 'images', :exclude => /bak/}}, %Q{c.jars[:data] = { :directory => 'data', :location_in_jar => 'data', :exclude => /bak/}})
-      build_config.sub!(%Q{#c.files_to_copy = Dir['other_files/dir/**/*']}, %Q{c.files_to_copy = Dir['lib/java/native_files/**/*']})
+      build_config.sub!(/\#c.jvm_arguments = .*/, 'c.jvm_arguments = "-XX:+UseConcMarkSweepGC -Djruby.compile.mode=FORCE -Xms256m -Xmx512m"')
+      build_config.sub!(/\#c.extra_user_jars\[:data\] = \{.*?\}/m, %Q{c.extra_user_jars[:data] = { :directory => 'data', :location_in_jar => 'data', :exclude => /bak/}})
+      build_config.sub!(/\#c.files_to_copy = .*/, %Q{c.files_to_copy = Dir['lib/java/native_files/**/*']})
       File.open(build_config_path, 'w') {|f| f << build_config}
     end
 

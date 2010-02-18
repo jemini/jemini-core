@@ -56,7 +56,7 @@ PROJ.spec.libs << 'test/unit'
 PROJ.ruby_opts = []
 PROJ.gem.files = FileList['src/**/*', 'lib/**/*', 'package/jar/*', 'README.txt', 'skeleton/**/*']
 PROJ.gem.executables = ['jemini']
-PROJ.gem.dependencies << ["rawr", ">= 1.3.7"]
+PROJ.gem.dependencies << ["rawr", "1.3.9"]
 PROJ.gem.platform = "java"
 PROJ.rdoc.exclude << /lib/
 PROJ.rdoc.exclude << /jemini\.jar/
