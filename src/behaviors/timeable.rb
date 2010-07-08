@@ -39,6 +39,9 @@ end
 class Timer
   COUNTDOWN = :countdown
   COUNTUP = :countup
+  
+  attr_reader :name
+  
   def initialize(name, direction, seconds, notify_frequency, &notify_callback)
     @name = name
     @direction = direction
